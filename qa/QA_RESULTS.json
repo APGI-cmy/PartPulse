@@ -1,0 +1,468 @@
+{
+  "timestamp": "2025-12-04T16:10:31.989230",
+  "total_requirements": 55,
+  "passed": 3,
+  "failed": 52,
+  "pass_rate": 5.454545454545454,
+  "categories": {
+    "Configuration": {
+      "total": 7,
+      "passed": 0,
+      "failed": 7,
+      "pass_rate": 0.0
+    },
+    "Database": {
+      "total": 3,
+      "passed": 0,
+      "failed": 3,
+      "pass_rate": 0.0
+    },
+    "Authentication": {
+      "total": 3,
+      "passed": 0,
+      "failed": 3,
+      "pass_rate": 0.0
+    },
+    "App Pages": {
+      "total": 7,
+      "passed": 0,
+      "failed": 7,
+      "pass_rate": 0.0
+    },
+    "UI Components": {
+      "total": 8,
+      "passed": 0,
+      "failed": 8,
+      "pass_rate": 0.0
+    },
+    "Form Components": {
+      "total": 3,
+      "passed": 0,
+      "failed": 3,
+      "pass_rate": 0.0
+    },
+    "API Routes": {
+      "total": 8,
+      "passed": 0,
+      "failed": 8,
+      "pass_rate": 0.0
+    },
+    "Utilities": {
+      "total": 5,
+      "passed": 0,
+      "failed": 5,
+      "pass_rate": 0.0
+    },
+    "Types": {
+      "total": 2,
+      "passed": 0,
+      "failed": 2,
+      "pass_rate": 0.0
+    },
+    "Documentation": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "pass_rate": 100.0
+    },
+    "Component Content": {
+      "total": 2,
+      "passed": 0,
+      "failed": 2,
+      "pass_rate": 0.0
+    },
+    "Database Schema": {
+      "total": 4,
+      "passed": 0,
+      "failed": 4,
+      "pass_rate": 0.0
+    }
+  },
+  "details": [
+    {
+      "category": "Configuration",
+      "name": "package.json",
+      "description": "Package configuration file",
+      "status": "RED",
+      "details": "File missing: package.json"
+    },
+    {
+      "category": "Configuration",
+      "name": "tsconfig.json",
+      "description": "TypeScript configuration",
+      "status": "RED",
+      "details": "File missing: tsconfig.json"
+    },
+    {
+      "category": "Configuration",
+      "name": ".eslintrc.json",
+      "description": "ESLint configuration",
+      "status": "RED",
+      "details": "File missing: .eslintrc.json"
+    },
+    {
+      "category": "Configuration",
+      "name": "next.config.js",
+      "description": "Next.js configuration",
+      "status": "RED",
+      "details": "File missing: next.config.js"
+    },
+    {
+      "category": "Configuration",
+      "name": "tailwind.config.js",
+      "description": "Tailwind CSS configuration",
+      "status": "RED",
+      "details": "File missing: tailwind.config.js"
+    },
+    {
+      "category": "Configuration",
+      "name": ".env.example",
+      "description": "Environment variables template",
+      "status": "RED",
+      "details": "File missing: .env.example"
+    },
+    {
+      "category": "Configuration",
+      "name": ".gitignore",
+      "description": "Git ignore patterns",
+      "status": "RED",
+      "details": "File missing: .gitignore"
+    },
+    {
+      "category": "Database",
+      "name": "prisma/schema.prisma",
+      "description": "Database schema file",
+      "status": "RED",
+      "details": "File missing: prisma/schema.prisma"
+    },
+    {
+      "category": "Database",
+      "name": "prisma/seed.ts",
+      "description": "Database seed script",
+      "status": "RED",
+      "details": "File missing: prisma/seed.ts"
+    },
+    {
+      "category": "Database",
+      "name": "lib/prisma.ts",
+      "description": "Prisma client singleton",
+      "status": "RED",
+      "details": "File missing: lib/prisma.ts"
+    },
+    {
+      "category": "Authentication",
+      "name": "lib/auth.ts",
+      "description": "NextAuth configuration",
+      "status": "RED",
+      "details": "File missing: lib/auth.ts"
+    },
+    {
+      "category": "Authentication",
+      "name": "app/api/auth/[...nextauth]/route.ts",
+      "description": "Auth API endpoints",
+      "status": "RED",
+      "details": "File missing: app/api/auth/[...nextauth]/route.ts"
+    },
+    {
+      "category": "Authentication",
+      "name": "middleware.ts",
+      "description": "Route protection middleware",
+      "status": "RED",
+      "details": "File missing: middleware.ts"
+    },
+    {
+      "category": "App Pages",
+      "name": "app/layout.tsx",
+      "description": "Root layout with sidebar",
+      "status": "RED",
+      "details": "File missing: app/layout.tsx"
+    },
+    {
+      "category": "App Pages",
+      "name": "app/page.tsx",
+      "description": "Dashboard/home page",
+      "status": "RED",
+      "details": "File missing: app/page.tsx"
+    },
+    {
+      "category": "App Pages",
+      "name": "app/internal-transfer/page.tsx",
+      "description": "Internal transfer list page",
+      "status": "RED",
+      "details": "File missing: app/internal-transfer/page.tsx"
+    },
+    {
+      "category": "App Pages",
+      "name": "app/warranty/page.tsx",
+      "description": "Warranty claims list page",
+      "status": "RED",
+      "details": "File missing: app/warranty/page.tsx"
+    },
+    {
+      "category": "App Pages",
+      "name": "app/users/invite/page.tsx",
+      "description": "User invitation page",
+      "status": "RED",
+      "details": "File missing: app/users/invite/page.tsx"
+    },
+    {
+      "category": "App Pages",
+      "name": "app/reports/page.tsx",
+      "description": "Reports dashboard page",
+      "status": "RED",
+      "details": "File missing: app/reports/page.tsx"
+    },
+    {
+      "category": "App Pages",
+      "name": "app/settings/page.tsx",
+      "description": "Settings page",
+      "status": "RED",
+      "details": "File missing: app/settings/page.tsx"
+    },
+    {
+      "category": "UI Components",
+      "name": "components/ui/sidebar.tsx",
+      "description": "Navigation sidebar component",
+      "status": "RED",
+      "details": "File missing: components/ui/sidebar.tsx"
+    },
+    {
+      "category": "UI Components",
+      "name": "components/ui/button.tsx",
+      "description": "Button component",
+      "status": "RED",
+      "details": "File missing: components/ui/button.tsx"
+    },
+    {
+      "category": "UI Components",
+      "name": "components/ui/input.tsx",
+      "description": "Input component",
+      "status": "RED",
+      "details": "File missing: components/ui/input.tsx"
+    },
+    {
+      "category": "UI Components",
+      "name": "components/ui/select.tsx",
+      "description": "Select component",
+      "status": "RED",
+      "details": "File missing: components/ui/select.tsx"
+    },
+    {
+      "category": "UI Components",
+      "name": "components/ui/modal.tsx",
+      "description": "Modal component",
+      "status": "RED",
+      "details": "File missing: components/ui/modal.tsx"
+    },
+    {
+      "category": "UI Components",
+      "name": "components/ui/table.tsx",
+      "description": "Table component",
+      "status": "RED",
+      "details": "File missing: components/ui/table.tsx"
+    },
+    {
+      "category": "UI Components",
+      "name": "components/ui/badge.tsx",
+      "description": "Badge component",
+      "status": "RED",
+      "details": "File missing: components/ui/badge.tsx"
+    },
+    {
+      "category": "UI Components",
+      "name": "components/ui/card.tsx",
+      "description": "Card component",
+      "status": "RED",
+      "details": "File missing: components/ui/card.tsx"
+    },
+    {
+      "category": "Form Components",
+      "name": "components/forms/transfer-form.tsx",
+      "description": "Transfer form component",
+      "status": "RED",
+      "details": "File missing: components/forms/transfer-form.tsx"
+    },
+    {
+      "category": "Form Components",
+      "name": "components/forms/warranty-form.tsx",
+      "description": "Warranty form component",
+      "status": "RED",
+      "details": "File missing: components/forms/warranty-form.tsx"
+    },
+    {
+      "category": "Form Components",
+      "name": "components/forms/user-invite-form.tsx",
+      "description": "User invite form component",
+      "status": "RED",
+      "details": "File missing: components/forms/user-invite-form.tsx"
+    },
+    {
+      "category": "API Routes",
+      "name": "app/api/transfers/route.ts",
+      "description": "Transfer CRUD API",
+      "status": "RED",
+      "details": "File missing: app/api/transfers/route.ts"
+    },
+    {
+      "category": "API Routes",
+      "name": "app/api/claims/route.ts",
+      "description": "Warranty claim CRUD API",
+      "status": "RED",
+      "details": "File missing: app/api/claims/route.ts"
+    },
+    {
+      "category": "API Routes",
+      "name": "app/api/users/route.ts",
+      "description": "User management API",
+      "status": "RED",
+      "details": "File missing: app/api/users/route.ts"
+    },
+    {
+      "category": "API Routes",
+      "name": "app/api/users/invite/route.ts",
+      "description": "User invitation API",
+      "status": "RED",
+      "details": "File missing: app/api/users/invite/route.ts"
+    },
+    {
+      "category": "API Routes",
+      "name": "app/api/reports/route.ts",
+      "description": "Report generation API",
+      "status": "RED",
+      "details": "File missing: app/api/reports/route.ts"
+    },
+    {
+      "category": "API Routes",
+      "name": "app/api/pdf/route.ts",
+      "description": "PDF generation API",
+      "status": "RED",
+      "details": "File missing: app/api/pdf/route.ts"
+    },
+    {
+      "category": "API Routes",
+      "name": "app/api/email/route.ts",
+      "description": "Email sending API",
+      "status": "RED",
+      "details": "File missing: app/api/email/route.ts"
+    },
+    {
+      "category": "API Routes",
+      "name": "app/api/audit/route.ts",
+      "description": "Audit log API",
+      "status": "RED",
+      "details": "File missing: app/api/audit/route.ts"
+    },
+    {
+      "category": "Utilities",
+      "name": "lib/validators.ts",
+      "description": "Zod validation schemas",
+      "status": "RED",
+      "details": "File missing: lib/validators.ts"
+    },
+    {
+      "category": "Utilities",
+      "name": "lib/utils.ts",
+      "description": "Helper functions",
+      "status": "RED",
+      "details": "File missing: lib/utils.ts"
+    },
+    {
+      "category": "Utilities",
+      "name": "lib/email.ts",
+      "description": "Email utilities",
+      "status": "RED",
+      "details": "File missing: lib/email.ts"
+    },
+    {
+      "category": "Utilities",
+      "name": "lib/pdf.ts",
+      "description": "PDF generation utilities",
+      "status": "RED",
+      "details": "File missing: lib/pdf.ts"
+    },
+    {
+      "category": "Utilities",
+      "name": "lib/constants.ts",
+      "description": "App constants",
+      "status": "RED",
+      "details": "File missing: lib/constants.ts"
+    },
+    {
+      "category": "Types",
+      "name": "types/index.ts",
+      "description": "TypeScript type definitions",
+      "status": "RED",
+      "details": "File missing: types/index.ts"
+    },
+    {
+      "category": "Types",
+      "name": "types/api.ts",
+      "description": "API type definitions",
+      "status": "RED",
+      "details": "File missing: types/api.ts"
+    },
+    {
+      "category": "Documentation",
+      "name": "README.md",
+      "description": "Project overview",
+      "status": "GREEN",
+      "details": "File exists: README.md"
+    },
+    {
+      "category": "Documentation",
+      "name": "rules.md",
+      "description": "App rules and specifications",
+      "status": "GREEN",
+      "details": "File exists: rules.md"
+    },
+    {
+      "category": "Documentation",
+      "name": "architecture/architecture.md",
+      "description": "Architecture specification",
+      "status": "GREEN",
+      "details": "File exists: architecture/architecture.md"
+    },
+    {
+      "category": "Component Content",
+      "name": "Sidebar Navigation",
+      "description": "Sidebar contains all required navigation items",
+      "status": "RED",
+      "details": "Sidebar component file not found"
+    },
+    {
+      "category": "Component Content",
+      "name": "Primary Color",
+      "description": "Tailwind config uses primary color #FF2B00",
+      "status": "RED",
+      "details": "Tailwind config file not found"
+    },
+    {
+      "category": "Database Schema",
+      "name": "User Model",
+      "description": "User model exists in Prisma schema",
+      "status": "RED",
+      "details": "Prisma schema file not found"
+    },
+    {
+      "category": "Database Schema",
+      "name": "Transfer Model",
+      "description": "Transfer model exists in Prisma schema",
+      "status": "RED",
+      "details": "Prisma schema file not found"
+    },
+    {
+      "category": "Database Schema",
+      "name": "Warranty Claim Model",
+      "description": "WarrantyClaim model exists in Prisma schema",
+      "status": "RED",
+      "details": "Prisma schema file not found"
+    },
+    {
+      "category": "Database Schema",
+      "name": "Audit Log Model",
+      "description": "AuditLog model exists in Prisma schema",
+      "status": "RED",
+      "details": "Prisma schema file not found"
+    }
+  ]
+}
