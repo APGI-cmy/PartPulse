@@ -77,9 +77,9 @@ class QASystem:
         config_files = [
             ("Configuration", "package.json", "Package configuration file", "package.json"),
             ("Configuration", "tsconfig.json", "TypeScript configuration", "tsconfig.json"),
-            ("Configuration", ".eslintrc.json", "ESLint configuration", ".eslintrc.json"),
-            ("Configuration", "next.config.js", "Next.js configuration", "next.config.js"),
-            ("Configuration", "tailwind.config.js", "Tailwind CSS configuration", "tailwind.config.js"),
+            ("Configuration", "eslint.config.mjs", "ESLint configuration", "eslint.config.mjs"),
+            ("Configuration", "next.config.ts", "Next.js configuration", "next.config.ts"),
+            ("Configuration", "tailwind.config.ts", "Tailwind CSS configuration", "tailwind.config.ts"),
             ("Configuration", ".env.example", "Environment variables template", ".env.example"),
             ("Configuration", ".gitignore", "Git ignore patterns", ".gitignore"),
         ]
@@ -257,16 +257,15 @@ class QASystem:
     
     def check_primary_color(self) -> Tuple[bool, str]:
         """Check if primary color is set correctly"""
-        if not self.check_file_exists("tailwind.config.js") and not self.check_file_exists("tailwind.config.ts"):
-            return False, "Tailwind config file not found"
+        config_files = ["tailwind.config.js", "tailwind.config.ts", "app/globals.css"]
         
-        for config_file in ["tailwind.config.js", "tailwind.config.ts"]:
+        for config_file in config_files:
             if self.check_file_exists(config_file):
                 content = (PROJECT_ROOT / config_file).read_text()
                 if "#FF2B00" in content or "FF2B00" in content:
-                    return True, "Primary color #FF2B00 found"
+                    return True, f"Primary color #FF2B00 found in {config_file}"
         
-        return False, "Primary color #FF2B00 not found in Tailwind config"
+        return False, "Primary color #FF2B00 not found in Tailwind config or globals.css"
     
     def check_user_model(self) -> Tuple[bool, str]:
         """Check if User model exists in Prisma schema"""
