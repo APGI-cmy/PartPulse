@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Sidebar from "@/components/ui/sidebar";
+import AuthProvider from "@/components/auth/SessionProvider";
 
 export const metadata: Metadata = {
   title: "PartPulse - Part Distribution App",
@@ -15,12 +16,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <div className="flex min-h-screen">
-          <Sidebar />
-          <main className="flex-1 overflow-auto bg-gray-50 lg:ml-0">
-            {children}
-          </main>
-        </div>
+        <AuthProvider>
+          <div className="flex min-h-screen">
+            <Sidebar />
+            <main className="flex-1 overflow-auto bg-gray-50 lg:ml-0">
+              {children}
+            </main>
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );
