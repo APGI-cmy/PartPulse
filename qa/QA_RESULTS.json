@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-12-05T06:51:51.401374",
+  "timestamp": "2025-12-05T09:57:29.587965",
   "total_requirements": 73,
-  "passed": 38,
-  "failed": 35,
-  "pass_rate": 52.054794520547944,
+  "passed": 48,
+  "failed": 25,
+  "pass_rate": 65.75342465753424,
   "categories": {
     "Configuration": {
       "total": 7,
@@ -13,15 +13,15 @@
     },
     "Database": {
       "total": 3,
-      "passed": 0,
-      "failed": 3,
-      "pass_rate": 0.0
+      "passed": 3,
+      "failed": 0,
+      "pass_rate": 100.0
     },
     "Authentication": {
       "total": 3,
-      "passed": 0,
-      "failed": 3,
-      "pass_rate": 0.0
+      "passed": 3,
+      "failed": 0,
+      "pass_rate": 100.0
     },
     "App Pages": {
       "total": 7,
@@ -43,9 +43,9 @@
     },
     "API Routes": {
       "total": 9,
-      "passed": 1,
-      "failed": 8,
-      "pass_rate": 11.11111111111111
+      "passed": 2,
+      "failed": 7,
+      "pass_rate": 22.22222222222222
     },
     "Wave 2 - Internal Transfer": {
       "total": 7,
@@ -67,9 +67,9 @@
     },
     "Types": {
       "total": 2,
-      "passed": 0,
-      "failed": 2,
-      "pass_rate": 0.0
+      "passed": 1,
+      "failed": 1,
+      "pass_rate": 50.0
     },
     "Documentation": {
       "total": 3,
@@ -85,9 +85,9 @@
     },
     "Database Schema": {
       "total": 4,
-      "passed": 0,
-      "failed": 4,
-      "pass_rate": 0.0
+      "passed": 2,
+      "failed": 2,
+      "pass_rate": 50.0
     },
     "Architecture Documentation": {
       "total": 2,
@@ -156,43 +156,43 @@
       "category": "Database",
       "name": "prisma/schema.prisma",
       "description": "Database schema file",
-      "status": "RED",
-      "details": "File missing: prisma/schema.prisma"
+      "status": "GREEN",
+      "details": "File exists: prisma/schema.prisma"
     },
     {
       "category": "Database",
       "name": "prisma/seed.ts",
       "description": "Database seed script",
-      "status": "RED",
-      "details": "File missing: prisma/seed.ts"
+      "status": "GREEN",
+      "details": "File exists: prisma/seed.ts"
     },
     {
       "category": "Database",
       "name": "lib/prisma.ts",
       "description": "Prisma client singleton",
-      "status": "RED",
-      "details": "File missing: lib/prisma.ts"
+      "status": "GREEN",
+      "details": "File exists: lib/prisma.ts"
     },
     {
       "category": "Authentication",
       "name": "lib/auth.ts",
       "description": "NextAuth configuration",
-      "status": "RED",
-      "details": "File missing: lib/auth.ts"
+      "status": "GREEN",
+      "details": "File exists: lib/auth.ts"
     },
     {
       "category": "Authentication",
       "name": "app/api/auth/[...nextauth]/route.ts",
       "description": "Auth API endpoints",
-      "status": "RED",
-      "details": "File missing: app/api/auth/[...nextauth]/route.ts"
+      "status": "GREEN",
+      "details": "File exists: app/api/auth/[...nextauth]/route.ts"
     },
     {
       "category": "Authentication",
       "name": "middleware.ts",
       "description": "Route protection middleware",
-      "status": "RED",
-      "details": "File missing: middleware.ts"
+      "status": "GREEN",
+      "details": "File exists: middleware.ts"
     },
     {
       "category": "App Pages",
@@ -352,8 +352,8 @@
       "category": "API Routes",
       "name": "app/api/users/invite/route.ts",
       "description": "User invitation API",
-      "status": "RED",
-      "details": "File missing: app/api/users/invite/route.ts"
+      "status": "GREEN",
+      "details": "File exists: app/api/users/invite/route.ts"
     },
     {
       "category": "API Routes",
@@ -513,8 +513,8 @@
       "category": "Types",
       "name": "types/index.ts",
       "description": "TypeScript type definitions",
-      "status": "RED",
-      "details": "File missing: types/index.ts"
+      "status": "GREEN",
+      "details": "File exists: types/index.ts"
     },
     {
       "category": "Types",
@@ -562,15 +562,15 @@
       "category": "Database Schema",
       "name": "User Model",
       "description": "User model exists in Prisma schema",
-      "status": "RED",
-      "details": "Prisma schema file not found"
+      "status": "GREEN",
+      "details": "User model found"
     },
     {
       "category": "Database Schema",
       "name": "Transfer Model",
       "description": "Transfer model exists in Prisma schema",
       "status": "RED",
-      "details": "Prisma schema file not found"
+      "details": "Transfer model not found"
     },
     {
       "category": "Architecture Documentation",
@@ -604,15 +604,15 @@
       "category": "Database Schema",
       "name": "Warranty Claim Model",
       "description": "WarrantyClaim model exists in Prisma schema",
-      "status": "RED",
-      "details": "Prisma schema file not found"
+      "status": "GREEN",
+      "details": "WarrantyClaim model found"
     },
     {
       "category": "Database Schema",
       "name": "Audit Log Model",
       "description": "AuditLog model exists in Prisma schema",
       "status": "RED",
-      "details": "Prisma schema file not found"
+      "details": "AuditLog model not found"
     }
   ]
 }
