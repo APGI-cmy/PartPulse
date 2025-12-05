@@ -148,6 +148,12 @@ export async function loadTemplate(templateName: 'warranty' | 'internalTransfer'
 }
 
 /**
+ * Conversion ratio from template width units (points) to character count for text padding
+ * This approximates how many characters fit in a given width for monospace console output
+ */
+const WIDTH_TO_CHARS_RATIO = 5;
+
+/**
  * Get nested value from object using dot notation path
  */
 function getNestedValue(obj: unknown, path: string): unknown {
@@ -282,7 +288,7 @@ export async function renderPdfFromTemplate(
           const rowArray = Array.isArray(rows) ? rows : [];
           
           // Table header
-          const headerRow = table.columns.map(col => col.header.padEnd(col.width / 5)).join(' | ');
+          const headerRow = table.columns.map(col => col.header.padEnd(col.width / WIDTH_TO_CHARS_RATIO)).join(' | ');
           output += headerRow + '\n';
           output += '-'.repeat(80) + '\n';
           
@@ -290,7 +296,7 @@ export async function renderPdfFromTemplate(
           for (const row of rowArray) {
             const rowData = table.columns.map(col => {
               const value = formatValue(getNestedValue(row, col.binding), col.format);
-              return value.padEnd(col.width / 5);
+              return value.padEnd(col.width / WIDTH_TO_CHARS_RATIO);
             }).join(' | ');
             output += rowData + '\n';
           }
