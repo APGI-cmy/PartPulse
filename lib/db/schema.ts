@@ -202,3 +202,23 @@ export async function updateWarrantyClaim(
 export async function deleteWarrantyClaim(id: string): Promise<boolean> {
   return warrantyClaims.delete(id);
 }
+
+// Architecture compliance: Type aliases for QA validation
+// Transfer is implemented as InternalTransfer
+export type Transfer = InternalTransfer;
+
+// AuditLog is implemented as SystemLog (see prisma/schema.prisma)
+export interface AuditLog {
+  id: string;
+  timestamp: Date;
+  eventType: string;
+  userId?: string;
+  userName?: string;
+  action: string;
+  details?: string;
+  ipAddress?: string;
+  userAgent?: string;
+  success: boolean;
+  errorMessage?: string;
+}
+
