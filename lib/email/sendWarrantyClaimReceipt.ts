@@ -1,10 +1,19 @@
 /**
  * Email notification for Warranty Claim Receipt
- * This is a stub implementation for MVP
+ * Uses branded HTML template system for professional emails
  * In production, this would integrate with an email service like SendGrid, AWS SES, or Resend
  */
 
 import type { WarrantyClaim } from '../db/schema';
+import {
+  createEmailTemplate,
+  createInfoRow,
+  createButton,
+  createStatusBadge,
+  createInfoBox,
+  createTable,
+  createDivider,
+} from './templates';
 
 export interface EmailOptions {
   to: string;
@@ -88,186 +97,57 @@ export async function sendWarrantyClaimReceipt(
 }
 
 /**
- * Generate HTML email content
+ * Generate HTML email content using branded templates
  */
 function generateEmailHTML(claim: WarrantyClaim): string {
-  return `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Warranty Claim Confirmation</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .header {
-      background-color: #FF2B00;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      border-radius: 8px 8px 0 0;
-    }
-    .content {
-      background-color: #f9fafb;
-      padding: 20px;
-      border: 1px solid #e5e7eb;
-      border-top: none;
-      border-radius: 0 0 8px 8px;
-    }
-    .info-row {
-      margin: 10px 0;
-      padding: 8px 0;
-      border-bottom: 1px solid #e5e7eb;
-    }
-    .label {
-      font-weight: 600;
-      color: #6b7280;
-      display: inline-block;
-      width: 180px;
-    }
-    .value {
-      color: #111827;
-    }
-    .footer {
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid #e5e7eb;
-      text-align: center;
-      color: #6b7280;
-      font-size: 12px;
-    }
-    .button {
-      display: inline-block;
-      padding: 12px 24px;
-      background-color: #FF2B00;
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
-      margin: 20px 0;
-    }
-    .parts-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 15px 0;
-    }
-    .parts-table th,
-    .parts-table td {
-      border: 1px solid #e5e7eb;
-      padding: 8px;
-      text-align: left;
-      font-size: 12px;
-    }
-    .parts-table th {
-      background-color: #f3f4f6;
-      font-weight: 600;
-    }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <h1 style="margin: 0;">Warranty Claim Confirmed</h1>
-  </div>
-  <div class="content">
-    <p>Dear ${claim.technicianName},</p>
-    <p>Your warranty claim has been successfully submitted and is now being processed.</p>
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  
+  // Prepare parts table data
+  const tableHeaders = ['Part No.', 'Qty', 'Failed Serial', 'Replaced Serial'];
+  const tableRows = claim.items.map(item => [
+    item.partNo,
+    String(item.quantity),
+    item.failedPartSerial,
+    item.replacedPartSerial,
+  ]);
+  
+  const content = `
+    <p style="font-size: 16px; margin-bottom: 20px;">Dear ${claim.technicianName},</p>
+    <p style="margin-bottom: 20px;">Your warranty claim has been successfully submitted and is now being processed.</p>
     
-    <h2>Claim Details</h2>
-    <div class="info-row">
-      <span class="label">Claim ID:</span>
-      <span class="value">${claim.id}</span>
-    </div>
-    <div class="info-row">
-      <span class="label">Date:</span>
-      <span class="value">${new Date(claim.date).toLocaleDateString()}</span>
-    </div>
-    <div class="info-row">
-      <span class="label">Chiller Model:</span>
-      <span class="value">${claim.chillerModel}</span>
-    </div>
-    <div class="info-row">
-      <span class="label">Chiller Serial Number:</span>
-      <span class="value">${claim.chillerSerial}</span>
-    </div>
-    <div class="info-row">
-      <span class="label">Job Number / SSID #:</span>
-      <span class="value">${claim.ssidJobNumber}</span>
-    </div>
-    ${claim.buildingName ? `
-    <div class="info-row">
-      <span class="label">Building Name:</span>
-      <span class="value">${claim.buildingName}</span>
-    </div>
-    ` : ''}
-    <div class="info-row">
-      <span class="label">Site Name:</span>
-      <span class="value">${claim.siteName}</span>
-    </div>
-    <div class="info-row">
-      <span class="label">Warranty Status:</span>
-      <span class="value">${claim.coveredByWarranty ? '✓ Covered by Warranty' : '✗ Not Covered'}</span>
-    </div>
-    <div class="info-row">
-      <span class="label">Status:</span>
-      <span class="value" style="text-transform: capitalize;">${claim.status || 'pending'}</span>
-    </div>
-    <div class="info-row">
-      <span class="label">Submitted:</span>
-      <span class="value">${claim.createdAt.toLocaleString()}</span>
+    <h2 style="color: #111827; font-size: 18px; margin: 25px 0 15px 0;">Claim Details</h2>
+    <div class="info-box">
+      ${createInfoRow('Claim ID', claim.id)}
+      ${createInfoRow('Date', new Date(claim.date).toLocaleDateString())}
+      ${createInfoRow('Chiller Model', claim.chillerModel)}
+      ${createInfoRow('Chiller Serial', claim.chillerSerial)}
+      ${createInfoRow('SSID/Job Number', claim.ssidJobNumber)}
+      ${claim.buildingName ? createInfoRow('Building Name', claim.buildingName) : ''}
+      ${createInfoRow('Site Name', claim.siteName)}
+      ${createInfoRow('Warranty Status', claim.coveredByWarranty ? '✓ Covered' : '✗ Not Covered')}
+      ${createInfoRow('Status', createStatusBadge(claim.status || 'pending'))}
+      ${createInfoRow('Submitted', claim.createdAt.toLocaleString())}
     </div>
     
-    <h3>Parts Details</h3>
-    <table class="parts-table">
-      <thead>
-        <tr>
-          <th>Part No.</th>
-          <th>Qty</th>
-          <th>Failed Serial</th>
-          <th>Replaced Serial</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${claim.items.map(item => `
-        <tr>
-          <td>${item.partNo}</td>
-          <td>${item.quantity}</td>
-          <td>${item.failedPartSerial}</td>
-          <td>${item.replacedPartSerial}</td>
-        </tr>
-        `).join('')}
-      </tbody>
-    </table>
+    ${createDivider()}
+    
+    <h3 style="color: #374151; font-size: 16px; margin: 20px 0 10px 0;">Parts Details</h3>
+    ${createTable(tableHeaders, tableRows)}
     
     ${claim.comments ? `
-    <div style="margin-top: 15px;">
-      <strong>Comments:</strong>
-      <p style="background-color: white; padding: 10px; border-radius: 4px;">${claim.comments}</p>
+    ${createDivider()}
+    <h3 style="color: #374151; font-size: 16px; margin: 20px 0 10px 0;">Comments</h3>
+    <div style="background-color: #f9fafb; padding: 15px; border-radius: 6px; border-left: 4px solid #FF2B00;">
+      <p style="margin: 0; color: #4b5563;">${claim.comments}</p>
     </div>
     ` : ''}
     
-    <div style="text-align: center;">
-      <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/warranty-claims/${claim.id}" class="button">
-        View Claim Details
-      </a>
-    </div>
+    ${createButton('View Claim Details', `${appUrl}/warranty-claims/${claim.id}`)}
     
-    <p style="margin-top: 20px;">
-      <strong>Note:</strong> A PDF copy of this warranty claim is attached to this email for your records.
-    </p>
-  </div>
-  <div class="footer">
-    <p>This is an automated message from PartPulse Warranty Claims System.</p>
-    <p>Please do not reply to this email.</p>
-  </div>
-</body>
-</html>
+    ${createInfoBox('📎 <strong>Note:</strong> A PDF copy of this warranty claim is attached to this email for your records.')}
   `;
+  
+  return createEmailTemplate('Warranty Claim Confirmed', content);
 }
 
 /**
@@ -312,17 +192,98 @@ Please do not reply to this email.
 }
 
 /**
- * Send notification to admin when a warranty claim is processed
+ * Send notification to admin when a warranty claim is submitted
  */
 export async function sendAdminNotification(
   claim: WarrantyClaim
 ): Promise<{ success: boolean; messageId?: string }> {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
+  
+  const content = `
+    <p style="font-size: 16px; margin-bottom: 20px;">A new warranty claim has been submitted and requires review.</p>
+    
+    <h2 style="color: #111827; font-size: 18px; margin: 25px 0 15px 0;">Claim Summary</h2>
+    <div class="info-box">
+      ${createInfoRow('Claim ID', claim.id)}
+      ${createInfoRow('Technician', claim.technicianName)}
+      ${createInfoRow('Chiller Model', claim.chillerModel)}
+      ${createInfoRow('SSID/Job Number', claim.ssidJobNumber)}
+      ${createInfoRow('Parts Count', String(claim.items.length))}
+      ${createInfoRow('Warranty Status', claim.coveredByWarranty ? '✓ Covered' : '✗ Not Covered')}
+      ${createInfoRow('Submitted', claim.createdAt.toLocaleString())}
+    </div>
+    
+    ${createButton('Review Claim', `${appUrl}/warranty-claims/${claim.id}/admin`)}
+    
+    ${createInfoBox('⚡ <strong>Action Required:</strong> Please review and process this warranty claim.')}
+  `;
+  
+  const html = createEmailTemplate('New Warranty Claim - Action Required', content);
+  
   console.log('[EMAIL STUB] Sending admin notification');
   console.log('[EMAIL STUB] Claim ID:', claim.id);
+  console.log('[EMAIL STUB] Admin email:', adminEmail);
   console.log('[EMAIL STUB] Admin notification simulated successfully');
   
   return {
     success: true,
     messageId: `stub-admin-${Date.now()}`,
+  };
+}
+
+/**
+ * Send approval notification to technician
+ */
+export async function sendApprovalNotification(
+  claim: WarrantyClaim,
+  adminName: string,
+  pdfContent?: string
+): Promise<{ success: boolean; messageId?: string }> {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  
+  const content = `
+    <p style="font-size: 16px; margin-bottom: 20px;">Dear ${claim.technicianName},</p>
+    <p style="margin-bottom: 20px;">Good news! Your warranty claim has been <strong style="color: #059669;">approved</strong>.</p>
+    
+    <h2 style="color: #111827; font-size: 18px; margin: 25px 0 15px 0;">Claim Details</h2>
+    <div class="info-box">
+      ${createInfoRow('Claim ID', claim.id)}
+      ${createInfoRow('Status', createStatusBadge('approved'))}
+      ${createInfoRow('Approved By', adminName)}
+      ${createInfoRow('Approved On', new Date().toLocaleString())}
+      ${createInfoRow('Chiller Model', claim.chillerModel)}
+      ${createInfoRow('SSID/Job Number', claim.ssidJobNumber)}
+    </div>
+    
+    ${createButton('View Claim', `${appUrl}/warranty-claims/${claim.id}`)}
+    
+    ${createInfoBox('✅ <strong>Next Steps:</strong> Your warranty claim has been processed and approved for reimbursement.')}
+  `;
+  
+  const emailOptions: EmailOptions = {
+    to: getTechnicianEmail(claim.technicianName),
+    subject: `Warranty Claim Approved - ${claim.id}`,
+    html: createEmailTemplate('Warranty Claim Approved', content),
+    text: `Your warranty claim ${claim.id} has been approved by ${adminName}.`,
+  };
+  
+  if (pdfContent) {
+    emailOptions.attachments = [
+      {
+        filename: `warranty-claim-${claim.id}-approved.pdf`,
+        content: pdfContent,
+        contentType: 'application/pdf',
+      },
+    ];
+  }
+  
+  console.log('[EMAIL STUB] Sending approval notification');
+  console.log('[EMAIL STUB] Claim ID:', claim.id);
+  console.log('[EMAIL STUB] Email would be sent to:', emailOptions.to);
+  
+  return {
+    success: true,
+    messageId: `stub-approval-${Date.now()}`,
   };
 }
