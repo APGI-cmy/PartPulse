@@ -1,21 +1,138 @@
-import { notFound } from "next/navigation";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Header from "@/components/layout/Header";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
-import { getWarrantyClaim } from "@/lib/db/schema";
 
-interface PageProps {
-  params: Promise<{
-    id: string;
-  }>;
+interface WarrantyItem {
+  partNo: string;
+  quantity: number;
+  failedPartSerial: string;
+  replacedPartSerial: string;
+  dateOfFailure: string;
+  dateOfRepair: string;
 }
 
-export default async function WarrantyClaimDetailPage({ params }: PageProps) {
-  const { id } = await params;
-  const claim = await getWarrantyClaim(id);
+interface WarrantyClaim {
+  id: string;
+  date: string;
+  chillerModel: string;
+  chillerSerial: string;
+  ssidJobNumber: string;
+  buildingName?: string;
+  siteName: string;
+  technicianName: string;
+  items: WarrantyItem[];
+  comments?: string;
+  coveredByWarranty: boolean;
+  technicianSignature?: string;
+  adminSignature?: string;
+  adminProcessedStamp?: boolean;
+  createdAt: string;
+}
 
-  if (!claim) {
-    notFound();
+export default function WarrantyClaimDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const claimId = params.id as string;
+  
+  const [claim, setClaim] = useState<WarrantyClaim | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchClaim() {
+      try {
+        const response = await fetch(`/api/warranty-claims?id=${claimId}`);
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          // Find the claim by ID from the list
+          const foundClaim = result.data.find((c: WarrantyClaim) => c.id === claimId);
+          if (foundClaim) {
+            setClaim(foundClaim);
+          } else {
+            setError("Warranty claim not found");
+          }
+        } else {
+          setError(result.error?.message || "Failed to load warranty claim");
+        }
+      } catch (err) {
+        console.error("Error fetching warranty claim:", err);
+        setError("An unexpected error occurred");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (claimId) {
+      fetchClaim();
+    }
+  }, [claimId]);
+
+  const handleDownloadPDF = () => {
+    // Stub for PDF download
+    alert("PDF download functionality will be implemented in a future update.\n\nThis would download: warranty-claim-" + claimId + ".pdf");
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header title="Loading..." description="Please wait" />
+        <div className="p-4 sm:p-6 lg:p-8">
+          <div className="max-w-7xl mx-auto">
+            <Card>
+              <CardBody className="text-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+                <p className="mt-4 text-gray-600">Loading warranty claim details...</p>
+              </CardBody>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !claim) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header title="Error" description="Warranty claim not found" />
+        <div className="p-4 sm:p-6 lg:p-8">
+          <div className="max-w-7xl mx-auto">
+            <Card>
+              <CardBody className="text-center py-12">
+                <div className="mb-4">
+                  <svg
+                    className="mx-auto h-12 w-12 text-error"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    />
+                  </svg>
+                </div>
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                  {error || "Warranty Claim Not Found"}
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  The warranty claim you are looking for does not exist or has been removed.
+                </p>
+                <Button variant="primary" onClick={() => router.push("/warranty-claims")}>
+                  Back to Warranty Claims
+                </Button>
+              </CardBody>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -24,7 +141,9 @@ export default async function WarrantyClaimDetailPage({ params }: PageProps) {
         title="Warranty Claim Details" 
         description={`Claim ID: ${claim.id}`}
       >
-        <Button variant="primary">Download PDF</Button>
+        <Button variant="primary" onClick={handleDownloadPDF}>
+          Download PDF
+        </Button>
       </Header>
       
       <div className="p-4 sm:p-6 lg:p-8">
@@ -38,7 +157,7 @@ export default async function WarrantyClaimDetailPage({ params }: PageProps) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-gray-600">Date</p>
-                  <p className="text-base font-medium text-gray-900">{claim.date.toLocaleDateString()}</p>
+                  <p className="text-base font-medium text-gray-900">{new Date(claim.date).toLocaleDateString()}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Chiller Model</p>
@@ -105,11 +224,11 @@ export default async function WarrantyClaimDetailPage({ params }: PageProps) {
                       </div>
                       <div>
                         <p className="text-sm text-gray-600">Date of Failure</p>
-                        <p className="text-base font-medium text-gray-900">{item.dateOfFailure.toLocaleDateString()}</p>
+                        <p className="text-base font-medium text-gray-900">{new Date(item.dateOfFailure).toLocaleDateString()}</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-600">Date of Repair</p>
-                        <p className="text-base font-medium text-gray-900">{item.dateOfRepair.toLocaleDateString()}</p>
+                        <p className="text-base font-medium text-gray-900">{new Date(item.dateOfRepair).toLocaleDateString()}</p>
                       </div>
                     </div>
                   </div>
@@ -145,7 +264,7 @@ export default async function WarrantyClaimDetailPage({ params }: PageProps) {
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Submitted</p>
-                  <p className="text-base font-medium text-gray-900">{claim.createdAt.toLocaleString()}</p>
+                  <p className="text-base font-medium text-gray-900">{new Date(claim.createdAt).toLocaleString()}</p>
                 </div>
               </div>
               
@@ -171,6 +290,16 @@ export default async function WarrantyClaimDetailPage({ params }: PageProps) {
               </ul>
             </CardBody>
           </Card>
+
+          {/* Actions */}
+          <div className="flex justify-between">
+            <Button variant="secondary" onClick={() => router.push("/warranty-claims")}>
+              Back to Warranty Claims
+            </Button>
+            <Button variant="primary" onClick={handleDownloadPDF}>
+              Download PDF Report
+            </Button>
+          </div>
         </div>
       </div>
     </div>
