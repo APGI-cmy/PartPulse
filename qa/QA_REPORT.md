@@ -1,22 +1,23 @@
 # PartPulse QA Report
 
-**Generated**: 2025-12-04T16:54:01.152950
+**Generated**: 2025-12-05T06:26:30.867639
 
 ## Summary
 
-- **Total Requirements**: 55
-- **Passed**: 20 ✅
+- **Total Requirements**: 64
+- **Passed**: 29 ✅
 - **Failed**: 35 ❌
-- **Pass Rate**: 36.4%
+- **Pass Rate**: 45.3%
 
 ## Results by Category
 
 | Category | Total | Passed | Failed | Pass Rate |
 |----------|-------|--------|--------|-----------|
-| API Routes | 8 | 0 ✅ | 8 ❌ | 0.0% |
+| API Routes | 9 | 1 ✅ | 8 ❌ | 11.1% |
 | App Pages | 7 | 7 ✅ | 0 ❌ | 100.0% |
+| Architecture Documentation | 1 | 1 ✅ | 0 ❌ | 100.0% |
 | Authentication | 3 | 0 ✅ | 3 ❌ | 0.0% |
-| Component Content | 2 | 2 ✅ | 0 ❌ | 100.0% |
+| Component Content | 2 | 1 ✅ | 1 ❌ | 50.0% |
 | Configuration | 7 | 7 ✅ | 0 ❌ | 100.0% |
 | Database | 3 | 0 ✅ | 3 ❌ | 0.0% |
 | Database Schema | 4 | 0 ✅ | 4 ❌ | 0.0% |
@@ -24,7 +25,8 @@
 | Form Components | 3 | 0 ✅ | 3 ❌ | 0.0% |
 | Types | 2 | 0 ✅ | 2 ❌ | 0.0% |
 | UI Components | 8 | 1 ✅ | 7 ❌ | 12.5% |
-| Utilities | 5 | 0 ✅ | 5 ❌ | 0.0% |
+| Utilities | 5 | 1 ✅ | 4 ❌ | 20.0% |
+| Wave 2 - Internal Transfer | 7 | 7 ✅ | 0 ❌ | 100.0% |
 
 ## Detailed Results
 
@@ -202,6 +204,11 @@
 - Status: RED
 - Details: File missing: app/api/transfers/route.ts
 
+**✅ app/api/internal-transfer/route.ts**
+- Description: Internal Transfer API (Wave 2)
+- Status: GREEN
+- Details: File exists: app/api/internal-transfer/route.ts
+
 **❌ app/api/claims/route.ts**
 - Description: Warranty claim CRUD API
 - Status: RED
@@ -237,12 +244,49 @@
 - Status: RED
 - Details: File missing: app/api/audit/route.ts
 
+### Wave 2 - Internal Transfer
+
+**✅ app/internal-transfer/InternalTransferForm.tsx**
+- Description: Internal Transfer form component
+- Status: GREEN
+- Details: File exists: app/internal-transfer/InternalTransferForm.tsx
+
+**✅ app/internal-transfer/success/page.tsx**
+- Description: Transfer success page
+- Status: GREEN
+- Details: File exists: app/internal-transfer/success/page.tsx
+
+**✅ app/internal-transfer/[id]/page.tsx**
+- Description: Transfer report page
+- Status: GREEN
+- Details: File exists: app/internal-transfer/[id]/page.tsx
+
+**✅ lib/db/schema.ts**
+- Description: Data model/schema
+- Status: GREEN
+- Details: File exists: lib/db/schema.ts
+
+**✅ lib/pdf/internalTransferPdf.ts**
+- Description: PDF generation stub
+- Status: GREEN
+- Details: File exists: lib/pdf/internalTransferPdf.ts
+
+**✅ components/ui/input.tsx**
+- Description: Input component
+- Status: GREEN
+- Details: File exists: components/ui/Input.tsx
+
+**✅ components/ui/select.tsx**
+- Description: Select component
+- Status: GREEN
+- Details: File exists: components/ui/Select.tsx
+
 ### Utilities
 
-**❌ lib/validators.ts**
+**✅ lib/validators.ts**
 - Description: Zod validation schemas
-- Status: RED
-- Details: File missing: lib/validators.ts
+- Status: GREEN
+- Details: File exists: lib/validators.ts
 
 **❌ lib/utils.ts**
 - Description: Helper functions
@@ -295,10 +339,10 @@
 
 ### Component Content
 
-**✅ Sidebar Navigation**
+**❌ Sidebar Navigation**
 - Description: Sidebar contains all required navigation items
-- Status: GREEN
-- Details: All navigation items present
+- Status: RED
+- Details: Missing navigation items: Invite
 
 **✅ Primary Color**
 - Description: Tailwind config uses primary color #FF2B00
@@ -316,6 +360,15 @@
 - Description: Transfer model exists in Prisma schema
 - Status: RED
 - Details: Prisma schema file not found
+
+### Architecture Documentation
+
+**✅ Internal Transfer Workflow**
+- Description: Architecture document contains Internal Transfer workflow description
+- Status: GREEN
+- Details: Internal Transfer workflow documentation found
+
+### Database Schema
 
 **❌ Warranty Claim Model**
 - Description: WarrantyClaim model exists in Prisma schema
@@ -363,6 +416,7 @@
 | components/forms/warranty-form.tsx | Form Components | ❌ RED | File missing: components/forms/warranty-form.tsx |
 | components/forms/user-invite-form.tsx | Form Components | ❌ RED | File missing: components/forms/user-invite-form.tsx |
 | app/api/transfers/route.ts | API Routes | ❌ RED | File missing: app/api/transfers/route.ts |
+| app/api/internal-transfer/route.ts | API Routes | ✅ GREEN | File exists: app/api/internal-transfer/route.ts |
 | app/api/claims/route.ts | API Routes | ❌ RED | File missing: app/api/claims/route.ts |
 | app/api/users/route.ts | API Routes | ❌ RED | File missing: app/api/users/route.ts |
 | app/api/users/invite/route.ts | API Routes | ❌ RED | File missing: app/api/users/invite/route.ts |
@@ -370,7 +424,14 @@
 | app/api/pdf/route.ts | API Routes | ❌ RED | File missing: app/api/pdf/route.ts |
 | app/api/email/route.ts | API Routes | ❌ RED | File missing: app/api/email/route.ts |
 | app/api/audit/route.ts | API Routes | ❌ RED | File missing: app/api/audit/route.ts |
-| lib/validators.ts | Utilities | ❌ RED | File missing: lib/validators.ts |
+| app/internal-transfer/InternalTransferForm.tsx | Wave 2 - Internal Transfer | ✅ GREEN | File exists: app/internal-transfer/InternalTransferForm.tsx |
+| app/internal-transfer/success/page.tsx | Wave 2 - Internal Transfer | ✅ GREEN | File exists: app/internal-transfer/success/page.tsx |
+| app/internal-transfer/[id]/page.tsx | Wave 2 - Internal Transfer | ✅ GREEN | File exists: app/internal-transfer/[id]/page.tsx |
+| lib/db/schema.ts | Wave 2 - Internal Transfer | ✅ GREEN | File exists: lib/db/schema.ts |
+| lib/pdf/internalTransferPdf.ts | Wave 2 - Internal Transfer | ✅ GREEN | File exists: lib/pdf/internalTransferPdf.ts |
+| components/ui/input.tsx | Wave 2 - Internal Transfer | ✅ GREEN | File exists: components/ui/Input.tsx |
+| components/ui/select.tsx | Wave 2 - Internal Transfer | ✅ GREEN | File exists: components/ui/Select.tsx |
+| lib/validators.ts | Utilities | ✅ GREEN | File exists: lib/validators.ts |
 | lib/utils.ts | Utilities | ❌ RED | File missing: lib/utils.ts |
 | lib/email.ts | Utilities | ❌ RED | File missing: lib/email.ts |
 | lib/pdf.ts | Utilities | ❌ RED | File missing: lib/pdf.ts |
@@ -380,10 +441,11 @@
 | README.md | Documentation | ✅ GREEN | File exists: README.md |
 | rules.md | Documentation | ✅ GREEN | File exists: rules.md |
 | architecture/architecture.md | Documentation | ✅ GREEN | File exists: architecture/architecture.md |
-| Sidebar Navigation | Component Content | ✅ GREEN | All navigation items present |
+| Sidebar Navigation | Component Content | ❌ RED | Missing navigation items: Invite |
 | Primary Color | Component Content | ✅ GREEN | Primary color #FF2B00 found in tailwind.config.ts |
 | User Model | Database Schema | ❌ RED | Prisma schema file not found |
 | Transfer Model | Database Schema | ❌ RED | Prisma schema file not found |
+| Internal Transfer Workflow | Architecture Documentation | ✅ GREEN | Internal Transfer workflow documentation found |
 | Warranty Claim Model | Database Schema | ❌ RED | Prisma schema file not found |
 | Audit Log Model | Database Schema | ❌ RED | Prisma schema file not found |
 
@@ -415,13 +477,13 @@ The following items need to be addressed:
 - [ ] app/api/pdf/route.ts: File missing: app/api/pdf/route.ts
 - [ ] app/api/email/route.ts: File missing: app/api/email/route.ts
 - [ ] app/api/audit/route.ts: File missing: app/api/audit/route.ts
-- [ ] lib/validators.ts: File missing: lib/validators.ts
 - [ ] lib/utils.ts: File missing: lib/utils.ts
 - [ ] lib/email.ts: File missing: lib/email.ts
 - [ ] lib/pdf.ts: File missing: lib/pdf.ts
 - [ ] lib/constants.ts: File missing: lib/constants.ts
 - [ ] types/index.ts: File missing: types/index.ts
 - [ ] types/api.ts: File missing: types/api.ts
+- [ ] Sidebar Navigation: Missing navigation items: Invite
 - [ ] User Model: Prisma schema file not found
 - [ ] Transfer Model: Prisma schema file not found
 - [ ] Warranty Claim Model: Prisma schema file not found

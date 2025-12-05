@@ -149,6 +149,7 @@ class QASystem:
         # API Routes
         api_routes = [
             ("API Routes", "app/api/transfers/route.ts", "Transfer CRUD API", "app/api/transfers/route.ts"),
+            ("API Routes", "app/api/internal-transfer/route.ts", "Internal Transfer API (Wave 2)", "app/api/internal-transfer/route.ts"),
             ("API Routes", "app/api/claims/route.ts", "Warranty claim CRUD API", "app/api/claims/route.ts"),
             ("API Routes", "app/api/users/route.ts", "User management API", "app/api/users/route.ts"),
             ("API Routes", "app/api/users/invite/route.ts", "User invitation API", "app/api/users/invite/route.ts"),
@@ -159,6 +160,20 @@ class QASystem:
         ]
         
         for cat, name, desc, path in api_routes:
+            self.add_requirement(cat, name, desc, file_path=path)
+        
+        # Wave 2 - Internal Transfer Workflow
+        wave2_components = [
+            ("Wave 2 - Internal Transfer", "app/internal-transfer/InternalTransferForm.tsx", "Internal Transfer form component", "app/internal-transfer/InternalTransferForm.tsx"),
+            ("Wave 2 - Internal Transfer", "app/internal-transfer/success/page.tsx", "Transfer success page", "app/internal-transfer/success/page.tsx"),
+            ("Wave 2 - Internal Transfer", "app/internal-transfer/[id]/page.tsx", "Transfer report page", "app/internal-transfer/[id]/page.tsx"),
+            ("Wave 2 - Internal Transfer", "lib/db/schema.ts", "Data model/schema", "lib/db/schema.ts"),
+            ("Wave 2 - Internal Transfer", "lib/pdf/internalTransferPdf.ts", "PDF generation stub", "lib/pdf/internalTransferPdf.ts"),
+            ("Wave 2 - Internal Transfer", "components/ui/input.tsx", "Input component", "components/ui/Input.tsx"),
+            ("Wave 2 - Internal Transfer", "components/ui/select.tsx", "Select component", "components/ui/Select.tsx"),
+        ]
+        
+        for cat, name, desc, path in wave2_components:
             self.add_requirement(cat, name, desc, file_path=path)
         
         # Utilities
@@ -219,6 +234,13 @@ class QASystem:
             "Transfer Model",
             "Transfer model exists in Prisma schema",
             component_check=self.check_transfer_model
+        )
+        
+        self.add_requirement(
+            "Architecture Documentation",
+            "Internal Transfer Workflow",
+            "Architecture document contains Internal Transfer workflow description",
+            component_check=self.check_internal_transfer_workflow_docs
         )
         
         self.add_requirement(
@@ -302,6 +324,15 @@ class QASystem:
         if self.check_file_contains("prisma/schema.prisma", r"model\s+AuditLog\s*{"):
             return True, "AuditLog model found"
         return False, "AuditLog model not found"
+    
+    def check_internal_transfer_workflow_docs(self) -> Tuple[bool, str]:
+        """Check if architecture.md contains Internal Transfer workflow documentation"""
+        if not self.check_file_exists("architecture/architecture.md"):
+            return False, "Architecture document not found"
+        
+        if self.check_file_contains("architecture/architecture.md", r"Internal Transfer Workflow"):
+            return True, "Internal Transfer workflow documentation found"
+        return False, "Internal Transfer workflow not documented in architecture.md"
     
     def run_checks(self):
         """Run all requirement checks"""

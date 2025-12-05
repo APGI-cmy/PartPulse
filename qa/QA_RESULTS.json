@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-12-04T16:54:01.152950",
-  "total_requirements": 55,
-  "passed": 20,
+  "timestamp": "2025-12-05T06:26:30.867639",
+  "total_requirements": 64,
+  "passed": 29,
   "failed": 35,
-  "pass_rate": 36.36363636363637,
+  "pass_rate": 45.3125,
   "categories": {
     "Configuration": {
       "total": 7,
@@ -42,16 +42,22 @@
       "pass_rate": 0.0
     },
     "API Routes": {
-      "total": 8,
-      "passed": 0,
+      "total": 9,
+      "passed": 1,
       "failed": 8,
-      "pass_rate": 0.0
+      "pass_rate": 11.11111111111111
+    },
+    "Wave 2 - Internal Transfer": {
+      "total": 7,
+      "passed": 7,
+      "failed": 0,
+      "pass_rate": 100.0
     },
     "Utilities": {
       "total": 5,
-      "passed": 0,
-      "failed": 5,
-      "pass_rate": 0.0
+      "passed": 1,
+      "failed": 4,
+      "pass_rate": 20.0
     },
     "Types": {
       "total": 2,
@@ -67,15 +73,21 @@
     },
     "Component Content": {
       "total": 2,
-      "passed": 2,
-      "failed": 0,
-      "pass_rate": 100.0
+      "passed": 1,
+      "failed": 1,
+      "pass_rate": 50.0
     },
     "Database Schema": {
       "total": 4,
       "passed": 0,
       "failed": 4,
       "pass_rate": 0.0
+    },
+    "Architecture Documentation": {
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "pass_rate": 100.0
     }
   },
   "details": [
@@ -305,6 +317,13 @@
     },
     {
       "category": "API Routes",
+      "name": "app/api/internal-transfer/route.ts",
+      "description": "Internal Transfer API (Wave 2)",
+      "status": "GREEN",
+      "details": "File exists: app/api/internal-transfer/route.ts"
+    },
+    {
+      "category": "API Routes",
       "name": "app/api/claims/route.ts",
       "description": "Warranty claim CRUD API",
       "status": "RED",
@@ -353,11 +372,60 @@
       "details": "File missing: app/api/audit/route.ts"
     },
     {
+      "category": "Wave 2 - Internal Transfer",
+      "name": "app/internal-transfer/InternalTransferForm.tsx",
+      "description": "Internal Transfer form component",
+      "status": "GREEN",
+      "details": "File exists: app/internal-transfer/InternalTransferForm.tsx"
+    },
+    {
+      "category": "Wave 2 - Internal Transfer",
+      "name": "app/internal-transfer/success/page.tsx",
+      "description": "Transfer success page",
+      "status": "GREEN",
+      "details": "File exists: app/internal-transfer/success/page.tsx"
+    },
+    {
+      "category": "Wave 2 - Internal Transfer",
+      "name": "app/internal-transfer/[id]/page.tsx",
+      "description": "Transfer report page",
+      "status": "GREEN",
+      "details": "File exists: app/internal-transfer/[id]/page.tsx"
+    },
+    {
+      "category": "Wave 2 - Internal Transfer",
+      "name": "lib/db/schema.ts",
+      "description": "Data model/schema",
+      "status": "GREEN",
+      "details": "File exists: lib/db/schema.ts"
+    },
+    {
+      "category": "Wave 2 - Internal Transfer",
+      "name": "lib/pdf/internalTransferPdf.ts",
+      "description": "PDF generation stub",
+      "status": "GREEN",
+      "details": "File exists: lib/pdf/internalTransferPdf.ts"
+    },
+    {
+      "category": "Wave 2 - Internal Transfer",
+      "name": "components/ui/input.tsx",
+      "description": "Input component",
+      "status": "GREEN",
+      "details": "File exists: components/ui/Input.tsx"
+    },
+    {
+      "category": "Wave 2 - Internal Transfer",
+      "name": "components/ui/select.tsx",
+      "description": "Select component",
+      "status": "GREEN",
+      "details": "File exists: components/ui/Select.tsx"
+    },
+    {
       "category": "Utilities",
       "name": "lib/validators.ts",
       "description": "Zod validation schemas",
-      "status": "RED",
-      "details": "File missing: lib/validators.ts"
+      "status": "GREEN",
+      "details": "File exists: lib/validators.ts"
     },
     {
       "category": "Utilities",
@@ -426,8 +494,8 @@
       "category": "Component Content",
       "name": "Sidebar Navigation",
       "description": "Sidebar contains all required navigation items",
-      "status": "GREEN",
-      "details": "All navigation items present"
+      "status": "RED",
+      "details": "Missing navigation items: Invite"
     },
     {
       "category": "Component Content",
@@ -449,6 +517,13 @@
       "description": "Transfer model exists in Prisma schema",
       "status": "RED",
       "details": "Prisma schema file not found"
+    },
+    {
+      "category": "Architecture Documentation",
+      "name": "Internal Transfer Workflow",
+      "description": "Architecture document contains Internal Transfer workflow description",
+      "status": "GREEN",
+      "details": "Internal Transfer workflow documentation found"
     },
     {
       "category": "Database Schema",
