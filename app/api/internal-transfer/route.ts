@@ -5,8 +5,9 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { InternalTransferSchema, sanitizeObject } from '@/lib/validators';
-import { saveInternalTransfer, getAllInternalTransfers } from '@/lib/db/schema';
+import { saveInternalTransfer, updateInternalTransfer, getAllInternalTransfers } from '@/lib/db/schema';
 import { generateInternalTransferPDF, savePDF } from '@/lib/pdf/internalTransferPdf';
+import { sendInternalTransferReceipt } from '@/lib/email/sendInternalTransferReceipt';
 
 /**
  * POST /api/internal-transfer
@@ -47,24 +48,32 @@ export async function POST(request: NextRequest) {
     // }
     
     // Save to database (currently in-memory, will be Prisma in production)
-    const transfer = await saveInternalTransfer(sanitizedData);
+    let transfer = await saveInternalTransfer(sanitizedData);
     
-    // Generate PDF stub
+    // Generate and save PDF
+    let pdfContent: string | undefined;
     try {
-      const pdfContent = await generateInternalTransferPDF(transfer);
-      await savePDF(pdfContent, `transfer-${transfer.id}.pdf`);
+      pdfContent = await generateInternalTransferPDF(transfer);
+      const pdfResult = await savePDF(pdfContent, `transfer-${transfer.id}.pdf`);
+      if (pdfResult.success && pdfResult.path) {
+        // Update transfer with PDF path
+        const updated = await updateInternalTransfer(transfer.id, { pdfPath: pdfResult.path });
+        if (updated) {
+          transfer = updated;
+        }
+      }
     } catch (pdfError) {
       // Log PDF generation error but don't fail the request
       console.error('PDF generation failed:', pdfError);
     }
     
-    // In production, trigger email notification here
-    // await sendEmail({
-    //   to: 'admin@example.com',
-    //   subject: `New Internal Transfer: ${transfer.id}`,
-    //   template: 'internal-transfer-notification',
-    //   data: transfer,
-    // });
+    // Send email notification
+    try {
+      await sendInternalTransferReceipt(transfer, pdfContent);
+    } catch (emailError) {
+      // Log email error but don't fail the request
+      console.error('Email notification failed:', emailError);
+    }
     
     // Return success response
     return NextResponse.json(

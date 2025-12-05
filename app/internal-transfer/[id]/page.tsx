@@ -20,6 +20,8 @@ interface Transfer {
   comments?: string;
   images?: string[];
   signature?: string;
+  status: 'submitted' | 'processed';
+  pdfPath?: string;
   createdAt: string;
 }
 
@@ -63,8 +65,34 @@ export default function InternalTransferDetailPage() {
   }, [transferId]);
 
   const handleDownloadPDF = () => {
-    // Stub for PDF download
-    alert("PDF download functionality will be implemented in a future update.\n\nThis would download: transfer-" + transferId + ".pdf");
+    if (transfer?.pdfPath) {
+      // In MVP, PDF is text-based - show in new window
+      // In production, this would trigger actual PDF download
+      window.open(`${transfer.pdfPath}`, '_blank');
+    } else {
+      // Generate PDF on-the-fly
+      fetch(`/api/internal-transfer/${transferId}/pdf`)
+        .then(response => {
+          if (response.ok) {
+            return response.blob();
+          }
+          throw new Error('PDF generation failed');
+        })
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `transfer-${transferId}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        })
+        .catch(error => {
+          console.error('PDF download error:', error);
+          alert('PDF download is not yet available.\n\nThis feature will be implemented in a future update.');
+        });
+    }
   };
 
   if (loading) {
@@ -148,6 +176,18 @@ export default function InternalTransferDetailPage() {
                 <div>
                   <dt className="text-sm font-medium text-gray-500">Transfer ID</dt>
                   <dd className="mt-1 text-sm text-gray-900 font-mono">{transfer.id}</dd>
+                </div>
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">Status</dt>
+                  <dd className="mt-1">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      transfer.status === 'processed' 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {transfer.status === 'processed' ? '✓ Processed' : '⏳ Submitted'}
+                    </span>
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-sm font-medium text-gray-500">Date Created</dt>
