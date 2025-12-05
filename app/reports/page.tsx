@@ -1,153 +1,135 @@
+import Header from "@/components/layout/Header";
+import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/Card";
+
 export default function ReportsPage() {
   return (
-    <div className="p-8">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Reports</h1>
+    <div className="min-h-screen bg-gray-50">
+      <Header 
+        title="Reports" 
+        description="This page will allow users to generate and view detailed analytics and reports."
+      />
+      
+      <div className="p-4 sm:p-6 lg:p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Transfer Reports Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Transfer Reports</CardTitle>
+              </CardHeader>
+              <CardBody>
+                <p className="text-sm text-gray-600 mb-4">
+                  Analytics and insights on internal part transfers
+                </p>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex items-center">
+                    <span className="text-primary mr-2">•</span>
+                    Transfer Summary
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-primary mr-2">•</span>
+                    Transfers by User
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-primary mr-2">•</span>
+                    Transfers by Part
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-primary mr-2">•</span>
+                    Transfer Timeline
+                  </li>
+                </ul>
+              </CardBody>
+            </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {/* Transfer Reports */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Transfer Reports</h2>
-            <ul className="space-y-3">
-              <li>
-                <a href="#" className="text-primary hover:underline">
-                  Transfer Summary
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-primary hover:underline">
-                  Transfers by User
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-primary hover:underline">
-                  Transfers by Part
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-primary hover:underline">
-                  Transfer Timeline
-                </a>
-              </li>
-            </ul>
+            {/* Warranty Reports Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Warranty Reports</CardTitle>
+              </CardHeader>
+              <CardBody>
+                <p className="text-sm text-gray-600 mb-4">
+                  Track and analyze warranty claim patterns
+                </p>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex items-center">
+                    <span className="text-primary mr-2">•</span>
+                    Claims Summary
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-primary mr-2">•</span>
+                    Claim Rate Analysis
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-primary mr-2">•</span>
+                    Claims by Part
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-primary mr-2">•</span>
+                    Resolution Time
+                  </li>
+                </ul>
+              </CardBody>
+            </Card>
+
+            {/* User Activity Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle>User Activity</CardTitle>
+              </CardHeader>
+              <CardBody>
+                <p className="text-sm text-gray-600 mb-4">
+                  Monitor user engagement and activity
+                </p>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex items-center">
+                    <span className="text-primary mr-2">•</span>
+                    User Activity Log
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-primary mr-2">•</span>
+                    Login History
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-primary mr-2">•</span>
+                    Invitation Status
+                  </li>
+                </ul>
+              </CardBody>
+            </Card>
           </div>
 
-          {/* Warranty Reports */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Warranty Reports</h2>
-            <ul className="space-y-3">
-              <li>
-                <a href="#" className="text-primary hover:underline">
-                  Claims Summary
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-primary hover:underline">
-                  Claim Rate Analysis
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-primary hover:underline">
-                  Claims by Part
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-primary hover:underline">
-                  Resolution Time
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* User Activity Reports */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">User Activity</h2>
-            <ul className="space-y-3">
-              <li>
-                <a href="#" className="text-primary hover:underline">
-                  User Activity Log
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-primary hover:underline">
-                  Login History
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-primary hover:underline">
-                  Invitation Status
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Audit Reports (Admin Only) */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Audit Reports</h2>
-            <ul className="space-y-3">
-              <li>
-                <a href="#" className="text-primary hover:underline">
-                  Complete Audit Trail
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-primary hover:underline">
-                  Security Events
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-primary hover:underline">
-                  Data Access Log
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Date Range Selector */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Generate Custom Report</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Report Type
-              </label>
-              <select className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary">
-                <option>Select report type...</option>
-                <option>Transfer Summary</option>
-                <option>Warranty Claims</option>
-                <option>User Activity</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Start Date
-              </label>
-              <input
-                type="date"
-                className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                End Date
-              </label>
-              <input
-                type="date"
-                className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-          </div>
-          <div className="mt-4 flex gap-4">
-            <button className="px-6 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors">
-              Generate Report
-            </button>
-            <button className="px-6 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors">
-              Export as PDF
-            </button>
-            <button className="px-6 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors">
-              Export as CSV
-            </button>
+          {/* Placeholder for upcoming charts and filters */}
+          <div className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Upcoming Features</CardTitle>
+              </CardHeader>
+              <CardBody>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-start">
+                    <span className="text-primary mr-2">•</span>
+                    <span>Interactive charts and graphs for visual data analysis</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-primary mr-2">•</span>
+                    <span>Date range filters for custom report periods</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-primary mr-2">•</span>
+                    <span>Export reports as PDF, CSV, or Excel</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-primary mr-2">•</span>
+                    <span>Scheduled reports delivered via email</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-primary mr-2">•</span>
+                    <span>Role-based data filtering (Technicians see only their data)</span>
+                  </li>
+                </ul>
+              </CardBody>
+            </Card>
           </div>
         </div>
       </div>

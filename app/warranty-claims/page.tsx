@@ -2,14 +2,14 @@ import Header from "@/components/layout/Header";
 import { Card, CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 
-export default function InternalTransferPage() {
+export default function WarrantyClaimsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header 
-        title="Internal Transfer" 
-        description="This page will allow technicians to submit and track internal part movements."
+        title="Warranty Claims" 
+        description="This page will allow technicians to submit and track warranty claims for defective parts."
       >
-        <Button variant="primary">+ New Transfer</Button>
+        <Button variant="primary">+ New Claim</Button>
       </Header>
       
       <div className="p-4 sm:p-6 lg:p-8">
@@ -18,11 +18,11 @@ export default function InternalTransferPage() {
             <CardBody className="text-center py-12 text-gray-500">
               <div className="mb-4">
                 <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <p className="text-lg font-medium mb-2">No transfers yet</p>
-              <p className="text-sm">Create your first internal transfer to get started</p>
+              <p className="text-lg font-medium mb-2">No warranty claims yet</p>
+              <p className="text-sm">Submit your first warranty claim to get started</p>
             </CardBody>
           </Card>
 
@@ -34,23 +34,23 @@ export default function InternalTransferPage() {
                 <ul className="space-y-2 text-sm text-gray-600">
                   <li className="flex items-start">
                     <span className="text-primary mr-2">•</span>
-                    <span>Create internal transfers with part details, quantities, and locations</span>
+                    <span>Submit warranty claims with part details and failure descriptions</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-primary mr-2">•</span>
-                    <span>Track transfer status (Pending, In Transit, Completed, Cancelled)</span>
+                    <span>Track claim status (Submitted, Under Review, Approved, Denied, Resolved)</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-primary mr-2">•</span>
-                    <span>Set urgency levels (Normal, High, Critical)</span>
+                    <span>Upload photos of defective parts</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-primary mr-2">•</span>
-                    <span>Add serial numbers and tracking information</span>
+                    <span>View claim history and resolution details</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-primary mr-2">•</span>
-                    <span>Generate PDF documents with QR codes for scanning</span>
+                    <span>Generate PDF reports for warranty claims</span>
                   </li>
                 </ul>
               </CardBody>
