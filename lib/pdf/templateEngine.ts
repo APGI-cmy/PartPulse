@@ -162,7 +162,7 @@ function getNestedValue(obj: unknown, path: string): unknown {
   }
   
   return path.split('.').reduce((current: unknown, key) => {
-    if (current && typeof current === 'object' && key in current) {
+    if (current && typeof current === 'object' && Object.prototype.hasOwnProperty.call(current, key)) {
       return (current as Record<string, unknown>)[key];
     }
     return undefined;
@@ -178,8 +178,17 @@ function formatValue(value: unknown, format?: 'date' | 'number' | 'text'): strin
   }
   
   switch (format) {
-    case 'date':
-      return value instanceof Date ? value.toLocaleDateString() : new Date(value as string | number).toLocaleDateString();
+    case 'date': {
+      if (value instanceof Date) {
+        return value.toLocaleDateString();
+      }
+      const dateValue = new Date(value as string | number);
+      // Check if date is valid
+      if (isNaN(dateValue.getTime())) {
+        return String(value);
+      }
+      return dateValue.toLocaleDateString();
+    }
     case 'number':
       return typeof value === 'number' ? value.toString() : String(value);
     case 'text':
