@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-12-05T06:26:30.867639",
-  "total_requirements": 64,
-  "passed": 29,
+  "timestamp": "2025-12-05T06:51:51.401374",
+  "total_requirements": 73,
+  "passed": 38,
   "failed": 35,
-  "pass_rate": 45.3125,
+  "pass_rate": 52.054794520547944,
   "categories": {
     "Configuration": {
       "total": 7,
@@ -53,6 +53,12 @@
       "failed": 0,
       "pass_rate": 100.0
     },
+    "Wave 3 - Warranty Claims": {
+      "total": 6,
+      "passed": 6,
+      "failed": 0,
+      "pass_rate": 100.0
+    },
     "Utilities": {
       "total": 5,
       "passed": 1,
@@ -84,8 +90,14 @@
       "pass_rate": 0.0
     },
     "Architecture Documentation": {
-      "total": 1,
-      "passed": 1,
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "pass_rate": 100.0
+    },
+    "Data Schema": {
+      "total": 2,
+      "passed": 2,
       "failed": 0,
       "pass_rate": 100.0
     }
@@ -421,6 +433,48 @@
       "details": "File exists: components/ui/Select.tsx"
     },
     {
+      "category": "Wave 3 - Warranty Claims",
+      "name": "app/warranty-claims/WarrantyClaimForm.tsx",
+      "description": "Warranty Claim form component",
+      "status": "GREEN",
+      "details": "File exists: app/warranty-claims/WarrantyClaimForm.tsx"
+    },
+    {
+      "category": "Wave 3 - Warranty Claims",
+      "name": "app/warranty-claims/[id]/page.tsx",
+      "description": "Warranty claim report page",
+      "status": "GREEN",
+      "details": "File exists: app/warranty-claims/[id]/page.tsx"
+    },
+    {
+      "category": "Wave 3 - Warranty Claims",
+      "name": "app/api/warranty-claims/route.ts",
+      "description": "Warranty Claims API route",
+      "status": "GREEN",
+      "details": "File exists: app/api/warranty-claims/route.ts"
+    },
+    {
+      "category": "Wave 3 - Warranty Claims",
+      "name": "lib/pdf/warrantyClaimPdf.ts",
+      "description": "Warranty PDF generation",
+      "status": "GREEN",
+      "details": "File exists: lib/pdf/warrantyClaimPdf.ts"
+    },
+    {
+      "category": "Wave 3 - Warranty Claims",
+      "name": "public/assets/logo/trane-logo.svg",
+      "description": "Trane logo placeholder",
+      "status": "GREEN",
+      "details": "File exists: public/assets/logo/trane-logo.svg"
+    },
+    {
+      "category": "Wave 3 - Warranty Claims",
+      "name": "public/assets/logo/trane-tech-logo.svg",
+      "description": "Trane Technologies logo placeholder",
+      "status": "GREEN",
+      "details": "File exists: public/assets/logo/trane-tech-logo.svg"
+    },
+    {
       "category": "Utilities",
       "name": "lib/validators.ts",
       "description": "Zod validation schemas",
@@ -524,6 +578,27 @@
       "description": "Architecture document contains Internal Transfer workflow description",
       "status": "GREEN",
       "details": "Internal Transfer workflow documentation found"
+    },
+    {
+      "category": "Architecture Documentation",
+      "name": "Warranty Claims Workflow",
+      "description": "Architecture document contains Warranty Claims workflow description",
+      "status": "GREEN",
+      "details": "Warranty Claims workflow documentation found"
+    },
+    {
+      "category": "Data Schema",
+      "name": "Warranty Claim Schema",
+      "description": "WarrantyClaim interface exists in schema.ts",
+      "status": "GREEN",
+      "details": "WarrantyClaim interface found in schema.ts"
+    },
+    {
+      "category": "Data Schema",
+      "name": "Warranty Item Schema",
+      "description": "WarrantyItem interface exists in schema.ts",
+      "status": "GREEN",
+      "details": "WarrantyItem interface found in schema.ts"
     },
     {
       "category": "Database Schema",

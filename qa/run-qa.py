@@ -176,6 +176,19 @@ class QASystem:
         for cat, name, desc, path in wave2_components:
             self.add_requirement(cat, name, desc, file_path=path)
         
+        # Wave 3 - Warranty Claims Workflow
+        wave3_components = [
+            ("Wave 3 - Warranty Claims", "app/warranty-claims/WarrantyClaimForm.tsx", "Warranty Claim form component", "app/warranty-claims/WarrantyClaimForm.tsx"),
+            ("Wave 3 - Warranty Claims", "app/warranty-claims/[id]/page.tsx", "Warranty claim report page", "app/warranty-claims/[id]/page.tsx"),
+            ("Wave 3 - Warranty Claims", "app/api/warranty-claims/route.ts", "Warranty Claims API route", "app/api/warranty-claims/route.ts"),
+            ("Wave 3 - Warranty Claims", "lib/pdf/warrantyClaimPdf.ts", "Warranty PDF generation", "lib/pdf/warrantyClaimPdf.ts"),
+            ("Wave 3 - Warranty Claims", "public/assets/logo/trane-logo.svg", "Trane logo placeholder", "public/assets/logo/trane-logo.svg"),
+            ("Wave 3 - Warranty Claims", "public/assets/logo/trane-tech-logo.svg", "Trane Technologies logo placeholder", "public/assets/logo/trane-tech-logo.svg"),
+        ]
+        
+        for cat, name, desc, path in wave3_components:
+            self.add_requirement(cat, name, desc, file_path=path)
+        
         # Utilities
         utilities = [
             ("Utilities", "lib/validators.ts", "Zod validation schemas", "lib/validators.ts"),
@@ -241,6 +254,27 @@ class QASystem:
             "Internal Transfer Workflow",
             "Architecture document contains Internal Transfer workflow description",
             component_check=self.check_internal_transfer_workflow_docs
+        )
+        
+        self.add_requirement(
+            "Architecture Documentation",
+            "Warranty Claims Workflow",
+            "Architecture document contains Warranty Claims workflow description",
+            component_check=self.check_warranty_workflow_docs
+        )
+        
+        self.add_requirement(
+            "Data Schema",
+            "Warranty Claim Schema",
+            "WarrantyClaim interface exists in schema.ts",
+            component_check=self.check_warranty_schema
+        )
+        
+        self.add_requirement(
+            "Data Schema",
+            "Warranty Item Schema",
+            "WarrantyItem interface exists in schema.ts",
+            component_check=self.check_warranty_item_schema
         )
         
         self.add_requirement(
@@ -333,6 +367,33 @@ class QASystem:
         if self.check_file_contains("architecture/architecture.md", r"Internal Transfer Workflow"):
             return True, "Internal Transfer workflow documentation found"
         return False, "Internal Transfer workflow not documented in architecture.md"
+    
+    def check_warranty_workflow_docs(self) -> Tuple[bool, str]:
+        """Check if architecture.md contains Warranty Claims workflow documentation"""
+        if not self.check_file_exists("architecture/architecture.md"):
+            return False, "Architecture document not found"
+        
+        if self.check_file_contains("architecture/architecture.md", r"Warranty Claims Workflow"):
+            return True, "Warranty Claims workflow documentation found"
+        return False, "Warranty Claims workflow not documented in architecture.md"
+    
+    def check_warranty_schema(self) -> Tuple[bool, str]:
+        """Check if WarrantyClaim interface exists in schema.ts"""
+        if not self.check_file_exists("lib/db/schema.ts"):
+            return False, "Schema file not found"
+        
+        if self.check_file_contains("lib/db/schema.ts", r"interface\s+WarrantyClaim\s*{"):
+            return True, "WarrantyClaim interface found in schema.ts"
+        return False, "WarrantyClaim interface not found in schema.ts"
+    
+    def check_warranty_item_schema(self) -> Tuple[bool, str]:
+        """Check if WarrantyItem interface exists in schema.ts"""
+        if not self.check_file_exists("lib/db/schema.ts"):
+            return False, "Schema file not found"
+        
+        if self.check_file_contains("lib/db/schema.ts", r"interface\s+WarrantyItem\s*{"):
+            return True, "WarrantyItem interface found in schema.ts"
+        return False, "WarrantyItem interface not found in schema.ts"
     
     def run_checks(self):
         """Run all requirement checks"""

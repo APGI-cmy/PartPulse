@@ -70,3 +70,85 @@ export async function getAllInternalTransfers(): Promise<InternalTransfer[]> {
 export async function deleteInternalTransfer(id: string): Promise<boolean> {
   return transfers.delete(id);
 }
+
+/**
+ * Warranty Item - represents a single part in a warranty claim
+ */
+export interface WarrantyItem {
+  partNo: string;
+  quantity: number;
+  failedPartSerial: string;
+  replacedPartSerial: string;
+  dateOfFailure: Date;
+  dateOfRepair: Date;
+}
+
+/**
+ * Warranty Claim - represents a complete warranty claim submission
+ */
+export interface WarrantyClaim {
+  id: string;
+  date: Date;
+  chillerModel: string;
+  chillerSerial: string;
+  ssidJobNumber: string;
+  buildingName?: string;
+  siteName: string;
+  technicianName: string;
+  items: WarrantyItem[];
+  comments?: string;
+  coveredByWarranty: boolean;
+  technicianSignature?: string;
+  adminSignature?: string;
+  adminProcessedStamp?: boolean;
+  createdAt: Date;
+}
+
+/**
+ * In-memory storage for warranty claims (MVP implementation)
+ */
+const warrantyClaims: Map<string, WarrantyClaim> = new Map();
+
+/**
+ * Generate a unique ID for warranty claims
+ */
+function generateWarrantyId(): string {
+  return `WC-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+}
+
+/**
+ * Save a new warranty claim
+ */
+export async function saveWarrantyClaim(
+  data: Omit<WarrantyClaim, 'id' | 'createdAt'>
+): Promise<WarrantyClaim> {
+  const claim: WarrantyClaim = {
+    ...data,
+    id: generateWarrantyId(),
+    createdAt: new Date(),
+  };
+  
+  warrantyClaims.set(claim.id, claim);
+  return claim;
+}
+
+/**
+ * Get a warranty claim by ID
+ */
+export async function getWarrantyClaim(id: string): Promise<WarrantyClaim | null> {
+  return warrantyClaims.get(id) || null;
+}
+
+/**
+ * Get all warranty claims
+ */
+export async function getAllWarrantyClaims(): Promise<WarrantyClaim[]> {
+  return Array.from(warrantyClaims.values());
+}
+
+/**
+ * Delete a warranty claim (admin only)
+ */
+export async function deleteWarrantyClaim(id: string): Promise<boolean> {
+  return warrantyClaims.delete(id);
+}
