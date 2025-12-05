@@ -16,7 +16,7 @@ export default function Select({
   id,
   ...props
 }: SelectProps) {
-  const selectId = id || `select-${Math.random().toString(36).substring(2, 9)}`;
+  const selectId = id || `select-${crypto.randomUUID()}`;
   
   return (
     <div className="w-full">
