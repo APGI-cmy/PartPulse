@@ -1,12 +1,11 @@
 /**
  * PDF Generation for Warranty Claims
- * Now using JSON-driven template engine
+ * Now using JSON-driven template engine with storage abstraction
  */
 
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
 import type { WarrantyClaim } from '../db/schema';
 import { renderPdfFromTemplate } from './templateEngine';
+import { getStorage } from '../storage';
 
 /**
  * Generate a PDF representation of the Trane Warranty Parts Claims Form
@@ -20,7 +19,7 @@ export async function generateWarrantyClaimPDF(
 }
 
 /**
- * Save PDF to storage directory
+ * Save PDF using configured storage provider
  * @param content - The PDF content (text for MVP, will be actual PDF buffer in production)
  * @param filename - The filename to save as
  * @returns Promise with success status and path
@@ -28,26 +27,26 @@ export async function generateWarrantyClaimPDF(
 export async function savePDF(
   content: string,
   filename: string
-): Promise<{ success: boolean; path?: string }> {
+): Promise<{ success: boolean; path?: string; url?: string }> {
   try {
-    // Determine storage path
-    const storagePath = join(process.cwd(), 'storage', 'pdfs', 'warranty-claims');
+    const storage = getStorage();
+    const storagePath = `pdfs/warranty-claims/${filename}`;
     
-    // Ensure directory exists
-    await mkdir(storagePath, { recursive: true });
+    const result = await storage.save(storagePath, content, 'application/pdf');
     
-    const filePath = join(storagePath, filename);
-    
-    // Save PDF content to file
-    // In MVP, this is text content. In production, this would be actual PDF buffer
-    await writeFile(filePath, content, 'utf-8');
-    
-    console.log(`[PDF] Saved warranty claim PDF to: ${filePath}`);
-    
-    return {
-      success: true,
-      path: `/storage/pdfs/warranty-claims/${filename}`,
-    };
+    if (result.success) {
+      console.log(`[PDF] Saved warranty claim PDF using storage provider: ${result.path}`);
+      return {
+        success: true,
+        path: result.path,
+        url: result.url,
+      };
+    } else {
+      console.error('[PDF] Storage provider returned error:', result.error);
+      return {
+        success: false,
+      };
+    }
   } catch (error) {
     console.error('[PDF] Error saving warranty claim PDF:', error);
     return {
