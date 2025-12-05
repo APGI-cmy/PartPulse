@@ -23,13 +23,7 @@ export default function WarrantyClaimDetailPage() {
         const result = await response.json();
 
         if (response.ok && result.success) {
-          // Find the claim by ID from the list
-          const foundClaim = result.data.find((c: SerializedWarrantyClaim) => c.id === claimId);
-          if (foundClaim) {
-            setClaim(foundClaim);
-          } else {
-            setError("Warranty claim not found");
-          }
+          setClaim(result.data);
         } else {
           setError(result.error?.message || "Failed to load warranty claim");
         }
@@ -233,20 +227,44 @@ export default function WarrantyClaimDetailPage() {
                 <div>
                   <p className="text-sm text-gray-600">Status</p>
                   <p className="text-base font-medium text-gray-900">
-                    {claim.adminProcessedStamp ? '✓ Processed' : 'Pending Review'}
+                    {claim.status === 'approved' ? '✓ Approved' :
+                     claim.status === 'rejected' ? '✗ Rejected' :
+                     'Pending Review'}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Submitted</p>
                   <p className="text-base font-medium text-gray-900">{new Date(claim.createdAt).toLocaleString()}</p>
                 </div>
+                {claim.adminProcessedStamp && (
+                  <div>
+                    <p className="text-sm text-gray-600">Processed Stamp</p>
+                    <p className="text-base font-medium text-green-600">✓ Applied</p>
+                  </div>
+                )}
+                {claim.adminDate && (
+                  <div>
+                    <p className="text-sm text-gray-600">Admin Processed Date</p>
+                    <p className="text-base font-medium text-gray-900">
+                      {new Date(claim.adminDate).toLocaleString()}
+                    </p>
+                  </div>
+                )}
               </div>
               
-              {/* Admin approval button - future wave */}
-              <div className="mt-6 p-4 bg-gray-50 rounded-md">
-                <p className="text-sm text-gray-600">
-                  <span className="font-medium">Coming Soon:</span> Admin approval and processing workflow
-                </p>
+              {/* Admin link */}
+              <div className="mt-6 p-4 bg-blue-50 rounded-md">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-blue-800">
+                    <span className="font-medium">Admin Access:</span> Review and process this claim
+                  </p>
+                  <Button 
+                    variant="primary" 
+                    onClick={() => router.push(`/warranty-claims/${claimId}/admin`)}
+                  >
+                    Admin Review
+                  </Button>
+                </div>
               </div>
             </CardBody>
           </Card>
