@@ -1,0 +1,432 @@
+{
+  "page": {
+    "size": "A4",
+    "margin": 20,
+    "orientation": "portrait"
+  },
+  "header": {
+    "logos": [
+      {
+        "src": "/assets/logo/trane-logo.svg",
+        "x": 20,
+        "y": 20,
+        "width": 80
+      },
+      {
+        "src": "/assets/logo/trane-tech-logo.svg",
+        "x": 450,
+        "y": 25,
+        "width": 100
+      }
+    ],
+    "title": {
+      "text": "TRANE WARRANTY PARTS CLAIMS FORM",
+      "x": 0,
+      "y": 90,
+      "align": "center",
+      "fontSize": 14,
+      "bold": true
+    }
+  },
+  "sections": [
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 20
+      }
+    },
+    {
+      "type": "line",
+      "line": {
+        "x1": 20,
+        "x2": 575,
+        "strokeWidth": 1
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 15
+      }
+    },
+    {
+      "type": "text",
+      "label": "Section Header",
+      "text": {
+        "content": "GENERAL INFORMATION",
+        "x": 20,
+        "fontSize": 11,
+        "align": "left"
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 10
+      }
+    },
+    {
+      "type": "fields",
+      "fields": [
+        {
+          "label": "DATE:",
+          "binding": "date",
+          "x": 20,
+          "labelWidth": 100,
+          "width": 200,
+          "fontSize": 10,
+          "bold": true,
+          "format": "date"
+        },
+        {
+          "label": "CHILLER MODEL:",
+          "binding": "chillerModel",
+          "x": 20,
+          "labelWidth": 150,
+          "width": 250,
+          "fontSize": 10,
+          "bold": true
+        },
+        {
+          "label": "CHILLER SERIAL NUMBER:",
+          "binding": "chillerSerial",
+          "x": 20,
+          "labelWidth": 180,
+          "width": 250,
+          "fontSize": 10,
+          "bold": true
+        },
+        {
+          "label": "JOB NUMBER / SSID #:",
+          "binding": "ssidJobNumber",
+          "x": 20,
+          "labelWidth": 160,
+          "width": 250,
+          "fontSize": 10,
+          "bold": true
+        },
+        {
+          "label": "BUILDING NAME:",
+          "binding": "buildingName",
+          "x": 20,
+          "labelWidth": 140,
+          "width": 250,
+          "fontSize": 10,
+          "bold": true
+        },
+        {
+          "label": "SITE NAME:",
+          "binding": "siteName",
+          "x": 20,
+          "labelWidth": 100,
+          "width": 250,
+          "fontSize": 10,
+          "bold": true
+        },
+        {
+          "label": "ATTENDED BY:",
+          "binding": "technicianName",
+          "x": 20,
+          "labelWidth": 120,
+          "width": 250,
+          "fontSize": 10,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 20
+      }
+    },
+    {
+      "type": "line",
+      "line": {
+        "x1": 20,
+        "x2": 575,
+        "strokeWidth": 1
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 15
+      }
+    },
+    {
+      "type": "text",
+      "label": "Parts Section",
+      "text": {
+        "content": "PARTS DETAILS",
+        "x": 20,
+        "fontSize": 11,
+        "align": "left"
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 10
+      }
+    },
+    {
+      "type": "table",
+      "table": {
+        "columns": [
+          {
+            "header": "Part No.",
+            "binding": "partNo",
+            "width": 80
+          },
+          {
+            "header": "Qty",
+            "binding": "quantity",
+            "width": 40,
+            "format": "number"
+          },
+          {
+            "header": "Serial Number for Failed Parts",
+            "binding": "failedPartSerial",
+            "width": 110
+          },
+          {
+            "header": "Serial Number for Replaced Part",
+            "binding": "replacedPartSerial",
+            "width": 110
+          },
+          {
+            "header": "Date of Failure",
+            "binding": "dateOfFailure",
+            "width": 80,
+            "format": "date"
+          },
+          {
+            "header": "Date of Repair",
+            "binding": "dateOfRepair",
+            "width": 80,
+            "format": "date"
+          }
+        ],
+        "rowsBinding": "items",
+        "x": 20,
+        "headerHeight": 30,
+        "rowHeight": 25,
+        "fontSize": 9
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 20
+      }
+    },
+    {
+      "type": "line",
+      "line": {
+        "x1": 20,
+        "x2": 575,
+        "strokeWidth": 1
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 15
+      }
+    },
+    {
+      "type": "text",
+      "label": "Comments Header",
+      "text": {
+        "content": "COMMENTS",
+        "x": 20,
+        "fontSize": 11,
+        "align": "left"
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 5
+      }
+    },
+    {
+      "type": "text",
+      "text": {
+        "binding": "comments",
+        "x": 20,
+        "width": 555,
+        "height": 60,
+        "fontSize": 10,
+        "multiline": true
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 20
+      }
+    },
+    {
+      "type": "checkbox",
+      "checkbox": {
+        "label": "TICK IF COVERED BY WARRANTY",
+        "binding": "coveredByWarranty",
+        "x": 20,
+        "size": 12
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 20
+      }
+    },
+    {
+      "type": "line",
+      "line": {
+        "x1": 20,
+        "x2": 575,
+        "strokeWidth": 1
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 15
+      }
+    },
+    {
+      "type": "text",
+      "label": "Notes Header",
+      "text": {
+        "content": "IMPORTANT NOTES",
+        "x": 20,
+        "fontSize": 11,
+        "align": "left"
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 5
+      }
+    },
+    {
+      "type": "text",
+      "text": {
+        "content": "* Need Serial Number to be able to make a claim (Mandatory).",
+        "x": 20,
+        "fontSize": 9
+      }
+    },
+    {
+      "type": "text",
+      "text": {
+        "content": "* Provide Photos of Failed Parts.",
+        "x": 20,
+        "fontSize": 9
+      }
+    },
+    {
+      "type": "text",
+      "text": {
+        "content": "* Provide Service Reports for Failed Parts.",
+        "x": 20,
+        "fontSize": 9
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 25
+      }
+    },
+    {
+      "type": "line",
+      "line": {
+        "x1": 20,
+        "x2": 575,
+        "strokeWidth": 1
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 15
+      }
+    },
+    {
+      "type": "text",
+      "label": "Admin Section",
+      "text": {
+        "content": "OFFICE ADMIN USE ONLY",
+        "x": 20,
+        "fontSize": 11,
+        "align": "left"
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 10
+      }
+    },
+    {
+      "type": "stamp",
+      "stamp": {
+        "text": "PROCESSED",
+        "binding": "adminProcessedStamp",
+        "x": 450,
+        "fontSize": 16,
+        "rotation": -15,
+        "color": "#FF0000"
+      }
+    },
+    {
+      "type": "fields",
+      "fields": [
+        {
+          "label": "Admin Date:",
+          "binding": "adminDate",
+          "x": 20,
+          "labelWidth": 100,
+          "width": 150,
+          "fontSize": 10,
+          "format": "date"
+        }
+      ]
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 10
+      }
+    },
+    {
+      "type": "signature",
+      "signature": {
+        "label": "Admin Signature:",
+        "binding": "adminSignature",
+        "x": 20,
+        "width": 250
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 15
+      }
+    },
+    {
+      "type": "signature",
+      "signature": {
+        "label": "Technician Signature:",
+        "binding": "technicianSignature",
+        "x": 20,
+        "width": 250
+      }
+    }
+  ]
+}

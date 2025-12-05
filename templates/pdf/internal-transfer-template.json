@@ -1,0 +1,410 @@
+{
+  "page": {
+    "size": "A4",
+    "margin": 20,
+    "orientation": "portrait"
+  },
+  "header": {
+    "logos": [
+      {
+        "src": "/assets/logo/trane-logo.svg",
+        "x": 20,
+        "y": 20,
+        "width": 80
+      },
+      {
+        "src": "/assets/logo/trane-tech-logo.svg",
+        "x": 450,
+        "y": 25,
+        "width": 100
+      }
+    ],
+    "title": {
+      "text": "TRANE INTERNAL PARTS",
+      "x": 0,
+      "y": 90,
+      "align": "center",
+      "fontSize": 14,
+      "bold": true
+    },
+    "subtitle": {
+      "text": "TRANSFER ORDER FORMS",
+      "x": 0,
+      "y": 105,
+      "align": "center",
+      "fontSize": 14
+    }
+  },
+  "sections": [
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 20
+      }
+    },
+    {
+      "type": "line",
+      "line": {
+        "x1": 20,
+        "x2": 575,
+        "strokeWidth": 1
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 15
+      }
+    },
+    {
+      "type": "text",
+      "label": "Section Header",
+      "text": {
+        "content": "GENERAL INFORMATION",
+        "x": 20,
+        "fontSize": 11,
+        "align": "left"
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 10
+      }
+    },
+    {
+      "type": "fields",
+      "fields": [
+        {
+          "label": "Date:",
+          "binding": "createdAt",
+          "x": 20,
+          "labelWidth": 100,
+          "width": 200,
+          "fontSize": 10,
+          "bold": true,
+          "format": "date"
+        },
+        {
+          "label": "SSID/PSID Number:",
+          "binding": "serial",
+          "x": 20,
+          "labelWidth": 140,
+          "width": 250,
+          "fontSize": 10,
+          "bold": true
+        },
+        {
+          "label": "Site Name:",
+          "binding": "department",
+          "x": 20,
+          "labelWidth": 100,
+          "width": 250,
+          "fontSize": 10,
+          "bold": true
+        },
+        {
+          "label": "PO Number:",
+          "binding": "part",
+          "x": 20,
+          "labelWidth": 100,
+          "width": 250,
+          "fontSize": 10,
+          "bold": true
+        },
+        {
+          "label": "Technician Name:",
+          "binding": "technician",
+          "x": 20,
+          "labelWidth": 130,
+          "width": 250,
+          "fontSize": 10,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 10
+      }
+    },
+    {
+      "type": "signature",
+      "signature": {
+        "label": "Technician Signature:",
+        "binding": "signature",
+        "x": 20,
+        "width": 250
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 20
+      }
+    },
+    {
+      "type": "line",
+      "line": {
+        "x1": 20,
+        "x2": 575,
+        "strokeWidth": 1
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 15
+      }
+    },
+    {
+      "type": "text",
+      "label": "Parts Section",
+      "text": {
+        "content": "PARTS DETAILS",
+        "x": 20,
+        "fontSize": 11,
+        "align": "left"
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 10
+      }
+    },
+    {
+      "type": "table",
+      "table": {
+        "columns": [
+          {
+            "header": "QTY",
+            "binding": "quantity",
+            "width": 60,
+            "format": "number"
+          },
+          {
+            "header": "PART NO.",
+            "binding": "partNo",
+            "width": 150
+          },
+          {
+            "header": "DISCRIPTION",
+            "binding": "description",
+            "width": 290
+          }
+        ],
+        "rowsBinding": "items",
+        "x": 20,
+        "headerHeight": 25,
+        "rowHeight": 25,
+        "fontSize": 9
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 20
+      }
+    },
+    {
+      "type": "line",
+      "line": {
+        "x1": 20,
+        "x2": 575,
+        "strokeWidth": 1
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 15
+      }
+    },
+    {
+      "type": "text",
+      "label": "Client Section Header",
+      "text": {
+        "content": "CLIENT COLLECTION",
+        "x": 20,
+        "fontSize": 11,
+        "align": "left"
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 5
+      }
+    },
+    {
+      "type": "text",
+      "text": {
+        "content": "Below is for parts that are sold and collected by client...",
+        "x": 20,
+        "fontSize": 9
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 10
+      }
+    },
+    {
+      "type": "fields",
+      "fields": [
+        {
+          "label": "Client Name:",
+          "binding": "clientName",
+          "x": 20,
+          "labelWidth": 100,
+          "width": 250,
+          "fontSize": 10
+        }
+      ]
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 10
+      }
+    },
+    {
+      "type": "fields",
+      "fields": [
+        {
+          "label": "Date:",
+          "binding": "clientDate",
+          "x": 20,
+          "labelWidth": 100,
+          "width": 150,
+          "fontSize": 10,
+          "format": "date"
+        }
+      ]
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 10
+      }
+    },
+    {
+      "type": "signature",
+      "signature": {
+        "label": "Client Signature:",
+        "binding": "clientSignature",
+        "x": 20,
+        "width": 250
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 20
+      }
+    },
+    {
+      "type": "line",
+      "line": {
+        "x1": 20,
+        "x2": 575,
+        "strokeWidth": 1
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 15
+      }
+    },
+    {
+      "type": "text",
+      "label": "Admin Section",
+      "text": {
+        "content": "OFFICE ADMIN USE ONLY",
+        "x": 20,
+        "fontSize": 11,
+        "align": "left"
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 10
+      }
+    },
+    {
+      "type": "stamp",
+      "stamp": {
+        "text": "PROCESSED",
+        "binding": "adminProcessedStamp",
+        "x": 450,
+        "fontSize": 16,
+        "rotation": -15,
+        "color": "#FF0000"
+      }
+    },
+    {
+      "type": "checkbox",
+      "checkbox": {
+        "label": "A",
+        "binding": "adminOptionA",
+        "x": 20,
+        "size": 12
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 5
+      }
+    },
+    {
+      "type": "checkbox",
+      "checkbox": {
+        "label": "B",
+        "binding": "adminOptionB",
+        "x": 20,
+        "size": 12
+      }
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 10
+      }
+    },
+    {
+      "type": "fields",
+      "fields": [
+        {
+          "label": "Date:",
+          "binding": "adminDate",
+          "x": 20,
+          "labelWidth": 100,
+          "width": 150,
+          "fontSize": 10,
+          "format": "date"
+        }
+      ]
+    },
+    {
+      "type": "spacer",
+      "spacer": {
+        "height": 10
+      }
+    },
+    {
+      "type": "signature",
+      "signature": {
+        "label": "Admin Signature:",
+        "binding": "adminSignature",
+        "x": 20,
+        "width": 250
+      }
+    }
+  ]
+}
