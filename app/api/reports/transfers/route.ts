@@ -1,10 +1,6 @@
-/**
- * Transfer Reports API Route
- * Handles retrieval of internal transfer reports with pagination, filtering, and sorting
- */
-
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllInternalTransfers } from '@/lib/db/schema';
+import { getAllInternalTransfers, InternalTransfer } from '@/lib/db/schema';
+import { sortItems } from '../utils';
 
 /**
  * GET /api/reports/transfers
@@ -54,43 +50,32 @@ export async function GET(request: NextRequest) {
     }
     
     // Apply sorting
-    transfers.sort((a, b) => {
-      let aValue: number | string;
-      let bValue: number | string;
-      
-      switch (sortBy) {
-        case 'createdAt':
-          aValue = new Date(a.createdAt).getTime();
-          bValue = new Date(b.createdAt).getTime();
-          break;
-        case 'technician':
-          aValue = a.technician.toLowerCase();
-          bValue = b.technician.toLowerCase();
-          break;
-        case 'status':
-          aValue = a.status;
-          bValue = b.status;
-          break;
-        default:
-          aValue = new Date(a.createdAt).getTime();
-          bValue = new Date(b.createdAt).getTime();
+    const sortedTransfers = sortItems(
+      transfers,
+      sortBy,
+      sortOrder as 'asc' | 'desc',
+      (transfer: InternalTransfer, field: string) => {
+        switch (field) {
+          case 'createdAt':
+            return new Date(transfer.createdAt).getTime();
+          case 'technician':
+            return transfer.technician.toLowerCase();
+          case 'status':
+            return transfer.status;
+          default:
+            return new Date(transfer.createdAt).getTime();
+        }
       }
-      
-      if (sortOrder === 'asc') {
-        return aValue > bValue ? 1 : -1;
-      } else {
-        return aValue < bValue ? 1 : -1;
-      }
-    });
+    );
     
     // Calculate pagination
-    const total = transfers.length;
+    const total = sortedTransfers.length;
     const totalPages = Math.ceil(total / perPage);
     const startIndex = (page - 1) * perPage;
     const endIndex = startIndex + perPage;
     
     // Get paginated results
-    const paginatedTransfers = transfers.slice(startIndex, endIndex);
+    const paginatedTransfers = sortedTransfers.slice(startIndex, endIndex);
     
     return NextResponse.json(
       {

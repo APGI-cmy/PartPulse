@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/layout/Header";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/Card";
@@ -151,6 +151,12 @@ export default function ReportsPage() {
       fetchClaims(1);
     }
   };
+  
+  // Calculate approval rate with useMemo to avoid unnecessary re-calculations
+  const approvalRate = useMemo(() => {
+    if (claims.length === 0) return 0;
+    return Math.round((claims.filter(c => c.status === 'approved').length / claims.length) * 100);
+  }, [claims]);
   
   const getStatusBadgeClass = (status?: string) => {
     switch (status) {
@@ -537,9 +543,7 @@ export default function ReportsPage() {
               <CardBody>
                 <h3 className="text-sm font-medium text-gray-500">Approval Rate</h3>
                 <p className="mt-2 text-3xl font-bold text-gray-900">
-                  {claims.length > 0 
-                    ? Math.round((claims.filter(c => c.status === 'approved').length / claims.length) * 100) 
-                    : 0}%
+                  {approvalRate}%
                 </p>
               </CardBody>
             </Card>

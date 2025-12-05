@@ -1,10 +1,6 @@
-/**
- * Claims Reports API Route
- * Handles retrieval of warranty claims reports with pagination, filtering, and sorting
- */
-
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllWarrantyClaims } from '@/lib/db/schema';
+import { getAllWarrantyClaims, WarrantyClaim } from '@/lib/db/schema';
+import { sortItems } from '../utils';
 
 /**
  * GET /api/reports/claims
@@ -54,43 +50,32 @@ export async function GET(request: NextRequest) {
     }
     
     // Apply sorting
-    claims.sort((a, b) => {
-      let aValue: number | string;
-      let bValue: number | string;
-      
-      switch (sortBy) {
-        case 'createdAt':
-          aValue = new Date(a.createdAt).getTime();
-          bValue = new Date(b.createdAt).getTime();
-          break;
-        case 'technician':
-          aValue = a.technicianName.toLowerCase();
-          bValue = b.technicianName.toLowerCase();
-          break;
-        case 'status':
-          aValue = a.status || 'pending';
-          bValue = b.status || 'pending';
-          break;
-        default:
-          aValue = new Date(a.createdAt).getTime();
-          bValue = new Date(b.createdAt).getTime();
+    const sortedClaims = sortItems(
+      claims,
+      sortBy,
+      sortOrder as 'asc' | 'desc',
+      (claim: WarrantyClaim, field: string) => {
+        switch (field) {
+          case 'createdAt':
+            return new Date(claim.createdAt).getTime();
+          case 'technician':
+            return claim.technicianName.toLowerCase();
+          case 'status':
+            return claim.status || 'pending';
+          default:
+            return new Date(claim.createdAt).getTime();
+        }
       }
-      
-      if (sortOrder === 'asc') {
-        return aValue > bValue ? 1 : -1;
-      } else {
-        return aValue < bValue ? 1 : -1;
-      }
-    });
+    );
     
     // Calculate pagination
-    const total = claims.length;
+    const total = sortedClaims.length;
     const totalPages = Math.ceil(total / perPage);
     const startIndex = (page - 1) * perPage;
     const endIndex = startIndex + perPage;
     
     // Get paginated results
-    const paginatedClaims = claims.slice(startIndex, endIndex);
+    const paginatedClaims = sortedClaims.slice(startIndex, endIndex);
     
     return NextResponse.json(
       {
