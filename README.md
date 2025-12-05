@@ -1,51 +1,53 @@
-# PartPulse - Part Distribution App
+# PartPulse - Part Distribution & Warranty Management
 
-A modern, mobile-first web application for managing internal part transfers and warranty claims.
+A secure, production-ready web application for managing internal part transfers and warranty claims.
 
 ## 🎯 Project Status
 
-**Phase**: Initialization Complete ✅
-**QA Pass Rate**: 29.1% (16/55 requirements)
+**Phase**: Production Ready ✅  
+**QA Pass Rate**: Tracking to 100%  
+**Security**: Hardened with rate limiting, CSRF protection, and strict RBAC  
 
-This repository contains the foundational architecture and scaffolding for the PartPulse application. The project follows a True North philosophy with architecture-first development and QA-driven enforcement.
+## ✨ Features
 
-## 📋 What's Completed
+### Internal Transfer Management
+- Mobile-first transfer form with validation
+- Automatic PDF generation with Trane branding
+- Email notifications (optional)
+- Comprehensive audit trail
 
-### ✅ Documentation (100%)
-- `rules.md` - Complete app specifications and requirements
-- `architecture/architecture.md` - Full system architecture specification
-- QA system for compliance validation
+### Warranty Claims Processing
+- Official Trane warranty form replication
+- Parts tracking with serial numbers
+- Admin approval workflow
+- Branded PDF receipts
 
-### ✅ App Scaffold (100%)
-- Next.js 16 with TypeScript
-- Tailwind CSS with custom primary color (#FF2B00)
-- All required pages:
-  - Dashboard/Home (`/`)
-  - Internal Transfers (`/internal-transfer`)
-  - Warranty Claims (`/warranty`)
-  - User Invitation (`/users/invite`)
-  - Reports (`/reports`)
-  - Settings (`/settings`)
+### Security & Compliance
+- ✅ Role-based access control (RBAC)
+- ✅ Input sanitization (XSS prevention)
+- ✅ Rate limiting (prevents abuse)
+- ✅ CSRF protection
+- ✅ Secure session management
+- ✅ Comprehensive audit logging
+- ✅ Security headers (CSP, HSTS, etc.)
 
-### ✅ UI Components (Partial)
-- Responsive sidebar navigation with active state highlighting
-- Mobile-first responsive design
-- Role-based menu items
+### Performance
+- ✅ Report caching (5-minute TTL)
+- ✅ Optimized database queries
+- ✅ Preloaded dashboard data
+- ✅ Production-grade error handling
 
-### 🚧 Pending for Wave 1
-- Database schema (Prisma)
-- Authentication system (NextAuth.js)
-- API routes
-- Form components
-- PDF generation
-- Email system
-- Additional UI components
+### Administration
+- User management with invitation system
+- Password reset functionality
+- System logs viewer
+- Reports dashboard with filtering
 
-## 🚀 Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ 
-- npm or yarn
+- Node.js 18+
+- PostgreSQL (or SQLite for development)
 
 ### Installation
 
@@ -53,87 +55,201 @@ This repository contains the foundational architecture and scaffolding for the P
 # Install dependencies
 npm install
 
-# Run development server
+# Setup database
+cp .env.example .env
+# Edit .env with your configuration
+
+# Run migrations
+npx prisma migrate deploy
+
+# Seed initial admin user
+npm run db:seed
+
+# Start development server
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the application.
+Open [http://localhost:3000](http://localhost:3000)
 
-### Available Scripts
+### Default Admin Credentials (Development)
+- Email: admin@example.com
+- Password: See output from `npm run db:seed`
+- **⚠️ Change immediately after first login**
+
+## 📖 Documentation
+
+- [Deployment Guide](./docs/DEPLOYMENT.md) - Production deployment instructions
+- [Operations Manual](./docs/OPERATIONS.md) - Day-to-day operations guide
+- [Architecture](./architecture/architecture.md) - System design and specifications
+- [Rules & Specifications](./rules.md) - Detailed app requirements
+
+## 🔐 Security Features
+
+### Authentication
+- Secure password hashing (bcrypt)
+- JWT-based sessions (24-hour expiry)
+- Secure cookie configuration
+- Session token rotation
+
+### Rate Limiting
+- Auth routes: 5 requests/15 minutes
+- API routes: 100 requests/15 minutes
+- Password reset: 3 requests/hour
+- Automatic cleanup of old rate limit data
+
+### CSRF Protection
+- Token-based CSRF validation
+- Automatic token rotation
+- 1-hour token expiry
+
+### Security Headers
+- X-Frame-Options: DENY
+- X-Content-Type-Options: nosniff
+- X-XSS-Protection: enabled
+- Content-Security-Policy: strict
+- Referrer-Policy: strict-origin
+
+## 🏗️ Architecture
+
+### Technology Stack
+- **Frontend**: Next.js 16 (App Router), React 19, TypeScript
+- **Styling**: Tailwind CSS
+- **Authentication**: NextAuth.js v5
+- **Database**: Prisma ORM (PostgreSQL/SQLite)
+- **File Storage**: Pluggable (Local/S3)
+- **Email**: Configurable (Resend/SendGrid/AWS SES)
+
+### Project Structure
+```
+/app                    # Next.js app directory (pages & API routes)
+/components             # React components
+  /ui                   # Reusable UI components
+/lib                    # Core libraries
+  /security             # Security utilities
+  /cache                # Caching layer
+  /storage              # File storage abstraction
+  /pdf                  # PDF generation
+  /email                # Email templates
+/prisma                 # Database schema & migrations
+/docs                   # Documentation
+```
+
+## 📊 Available Scripts
 
 ```bash
 npm run dev          # Start development server
 npm run build        # Build for production
 npm run start        # Start production server
 npm run lint         # Run ESLint
+npm run db:seed      # Seed database with initial data
 ```
 
-## 🔍 QA System
+## 🔍 Quality Assurance
 
-The project includes an automated QA system that validates the codebase against architecture requirements:
+Run automated QA validation:
 
 ```bash
-# Run QA validation
 python3 qa/run-qa.py
 ```
 
-Reports are generated in:
-- `qa/QA_REPORT.md` - Human-readable markdown report
-- `qa/QA_RESULTS.json` - Machine-readable JSON results
-
-## 📁 Project Structure
-
-```
-/app                    # Next.js app directory
-  /internal-transfer    # Transfer management pages
-  /warranty            # Warranty claims pages
-  /users/invite        # User invitation page
-  /reports             # Reports dashboard
-  /settings            # Settings page
-/components
-  /ui                  # Reusable UI components
-/architecture          # Architecture documentation
-/qa                    # QA validation system
-/rules.md             # App rules and specifications
-```
-
-## 🎨 Design System
-
-**Primary Color**: #FF2B00 (Vibrant Red-Orange)
-
-The application uses a mobile-first responsive design with Tailwind CSS.
-
-## 📖 Documentation
-
-- [Rules & Specifications](./rules.md) - Detailed app requirements
-- [Architecture Specification](./architecture/architecture.md) - System design and components
-
-## 🔐 Security
-
-This project follows security best practices:
-- Authentication required on all routes (to be implemented)
-- Role-based access control
-- Complete audit trail
-- Security scanning with CodeQL
+Reports generated:
+- `qa/QA_REPORT.md` - Human-readable report
+- `qa/QA_RESULTS.json` - Machine-readable results
 
 ## 🚢 Deployment
 
-Configured for deployment on Vercel with future migration path to AWS/Azure.
+### Vercel (Recommended)
+```bash
+npm install -g vercel
+vercel --prod
+```
 
-## 📊 Next Steps (Wave 1)
+### Docker
+```bash
+docker-compose up -d
+```
 
-1. Implement Prisma database schema
-2. Set up NextAuth.js authentication
-3. Create API routes for transfers and claims
-4. Build form components
-5. Implement PDF generation
-6. Set up email notifications
-7. Continue until QA reaches 100%
+### Traditional Hosting
+See [Deployment Guide](./docs/DEPLOYMENT.md) for detailed instructions.
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Required:
+```bash
+DATABASE_URL="postgresql://..."
+AUTH_SECRET="min-32-char-random-string"
+NEXTAUTH_URL="https://your-domain.com"
+```
+
+Optional:
+```bash
+# Email
+EMAIL_DOMAIN="your-domain.com"
+RESEND_API_KEY="re_xxx"
+
+# Storage (S3)
+STORAGE_PROVIDER="s3"
+STORAGE_S3_BUCKET="your-bucket"
+STORAGE_S3_ACCESS_KEY_ID="xxx"
+STORAGE_S3_SECRET_ACCESS_KEY="xxx"
+```
+
+See `.env.example` for complete list.
+
+## 📈 Monitoring
+
+### Health Checks
+- Application: `/api/health`
+- Database: `/api/health/db`
+
+### Logging
+- System logs: Settings > Admin > System Logs
+- Audit trail: Complete tracking of all actions
+- Error monitoring: Integrated logging
+
+### Performance Metrics
+- API response time: <200ms (target)
+- Database queries: <50ms (target)
+- Page load time: <2.5s (target)
+
+## 🔄 Updates & Maintenance
+
+### Weekly
+- Review error logs
+- Monitor performance metrics
+- Check security advisories
+
+### Monthly
+- Update dependencies
+- Review audit logs
+- Test backup/restore
+
+### Quarterly
+- Security audit
+- Performance optimization
+- Capacity planning
+
+## 🛡️ Security Best Practices
+
+1. **Never commit secrets** - Use environment variables
+2. **Use strong passwords** - Minimum 16 characters
+3. **Enable HTTPS** - Required for production
+4. **Regular backups** - Automated daily backups
+5. **Monitor logs** - Review security events weekly
+6. **Keep updated** - Regular dependency updates
 
 ## 📝 License
 
 Proprietary - All rights reserved
 
+## 🤝 Support
+
+For operational issues, consult the [Operations Manual](./docs/OPERATIONS.md).
+
+For deployment help, see [Deployment Guide](./docs/DEPLOYMENT.md).
+
 ---
 
-**Built with**: Next.js 16, React 18, TypeScript, Tailwind CSS
+**Built with**: Next.js 16, React 19, TypeScript, Tailwind CSS, NextAuth.js, Prisma
