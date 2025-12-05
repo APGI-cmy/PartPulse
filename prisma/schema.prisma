@@ -118,3 +118,21 @@ model WarrantyItem {
   dateOfFailure        DateTime
   dateOfRepair         DateTime
 }
+
+model SystemLog {
+  id          String   @id @default(cuid())
+  timestamp   DateTime @default(now())
+  eventType   String   // submission | pdf_generation | admin_approval | auth_event | user_management
+  userId      String?  // User who triggered the event
+  userName    String?  // Name of the user for display
+  action      String   // Specific action taken
+  details     String?  // JSON string with additional details
+  ipAddress   String?  // IP address of the request
+  userAgent   String?  // User agent string
+  success     Boolean  @default(true)
+  errorMessage String? // Error message if success is false
+  
+  @@index([eventType])
+  @@index([userId])
+  @@index([timestamp])
+}

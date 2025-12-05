@@ -8,6 +8,7 @@ import { InternalTransferSchema, sanitizeObject } from '@/lib/validators';
 import { saveInternalTransfer, updateInternalTransfer, getAllInternalTransfers } from '@/lib/db/schema';
 import { generateInternalTransferPDF, savePDF } from '@/lib/pdf/internalTransferPdf';
 import { sendInternalTransferReceipt } from '@/lib/email/sendInternalTransferReceipt';
+import { logInternalTransferSubmission, logPdfGeneration } from '@/lib/logging/systemLog';
 
 /**
  * POST /api/internal-transfer
@@ -50,6 +51,13 @@ export async function POST(request: NextRequest) {
     // Save to database (currently in-memory, will be Prisma in production)
     let transfer = await saveInternalTransfer(sanitizedData);
     
+    // Log submission
+    await logInternalTransferSubmission({
+      transferId: transfer.id,
+      success: true,
+      request,
+    });
+    
     // Generate and save PDF
     let pdfContent: string | undefined;
     try {
@@ -61,10 +69,24 @@ export async function POST(request: NextRequest) {
         if (updated) {
           transfer = updated;
         }
+        
+        // Log successful PDF generation
+        await logPdfGeneration({
+          entityId: transfer.id,
+          entityType: 'internal_transfer',
+          pdfPath: pdfResult.path,
+          success: true,
+        });
       }
     } catch (pdfError) {
       // Log PDF generation error but don't fail the request
       console.error('PDF generation failed:', pdfError);
+      await logPdfGeneration({
+        entityId: transfer.id,
+        entityType: 'internal_transfer',
+        success: false,
+        errorMessage: pdfError instanceof Error ? pdfError.message : 'Unknown error',
+      });
     }
     
     // Send email notification
@@ -86,6 +108,14 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error('Error creating internal transfer:', error);
+    
+    // Log failed submission
+    await logInternalTransferSubmission({
+      transferId: 'unknown',
+      success: false,
+      errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      request,
+    });
     
     return NextResponse.json(
       {

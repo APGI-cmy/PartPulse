@@ -17,6 +17,7 @@ const navItems: NavItem[] = [
   { name: "Employees", href: "/employees", icon: "👥" },
   { name: "Reports", href: "/reports", icon: "📊" },
   { name: "Settings", href: "/settings", icon: "⚙", adminOnly: true },
+  { name: "Admin Dashboard", href: "/settings/admin", icon: "🔧", adminOnly: true },
 ];
 
 export default function Sidebar() {
