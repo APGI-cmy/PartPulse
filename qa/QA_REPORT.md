@@ -1,13 +1,13 @@
 # PartPulse QA Report
 
-**Generated**: 2025-12-04T16:54:01.152950
+**Generated**: 2025-12-05T06:17:54.130635
 
 ## Summary
 
 - **Total Requirements**: 55
-- **Passed**: 20 ✅
-- **Failed**: 35 ❌
-- **Pass Rate**: 36.4%
+- **Passed**: 19 ✅
+- **Failed**: 36 ❌
+- **Pass Rate**: 34.5%
 
 ## Results by Category
 
@@ -16,7 +16,7 @@
 | API Routes | 8 | 0 ✅ | 8 ❌ | 0.0% |
 | App Pages | 7 | 7 ✅ | 0 ❌ | 100.0% |
 | Authentication | 3 | 0 ✅ | 3 ❌ | 0.0% |
-| Component Content | 2 | 2 ✅ | 0 ❌ | 100.0% |
+| Component Content | 2 | 1 ✅ | 1 ❌ | 50.0% |
 | Configuration | 7 | 7 ✅ | 0 ❌ | 100.0% |
 | Database | 3 | 0 ✅ | 3 ❌ | 0.0% |
 | Database Schema | 4 | 0 ✅ | 4 ❌ | 0.0% |
@@ -295,10 +295,10 @@
 
 ### Component Content
 
-**✅ Sidebar Navigation**
+**❌ Sidebar Navigation**
 - Description: Sidebar contains all required navigation items
-- Status: GREEN
-- Details: All navigation items present
+- Status: RED
+- Details: Missing navigation items: Invite
 
 **✅ Primary Color**
 - Description: Tailwind config uses primary color #FF2B00
@@ -380,7 +380,7 @@
 | README.md | Documentation | ✅ GREEN | File exists: README.md |
 | rules.md | Documentation | ✅ GREEN | File exists: rules.md |
 | architecture/architecture.md | Documentation | ✅ GREEN | File exists: architecture/architecture.md |
-| Sidebar Navigation | Component Content | ✅ GREEN | All navigation items present |
+| Sidebar Navigation | Component Content | ❌ RED | Missing navigation items: Invite |
 | Primary Color | Component Content | ✅ GREEN | Primary color #FF2B00 found in tailwind.config.ts |
 | User Model | Database Schema | ❌ RED | Prisma schema file not found |
 | Transfer Model | Database Schema | ❌ RED | Prisma schema file not found |
@@ -422,6 +422,7 @@ The following items need to be addressed:
 - [ ] lib/constants.ts: File missing: lib/constants.ts
 - [ ] types/index.ts: File missing: types/index.ts
 - [ ] types/api.ts: File missing: types/api.ts
+- [ ] Sidebar Navigation: Missing navigation items: Invite
 - [ ] User Model: Prisma schema file not found
 - [ ] Transfer Model: Prisma schema file not found
 - [ ] Warranty Claim Model: Prisma schema file not found

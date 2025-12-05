@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-12-04T16:54:01.152950",
+  "timestamp": "2025-12-05T06:17:54.130635",
   "total_requirements": 55,
-  "passed": 20,
-  "failed": 35,
-  "pass_rate": 36.36363636363637,
+  "passed": 19,
+  "failed": 36,
+  "pass_rate": 34.54545454545455,
   "categories": {
     "Configuration": {
       "total": 7,
@@ -67,9 +67,9 @@
     },
     "Component Content": {
       "total": 2,
-      "passed": 2,
-      "failed": 0,
-      "pass_rate": 100.0
+      "passed": 1,
+      "failed": 1,
+      "pass_rate": 50.0
     },
     "Database Schema": {
       "total": 4,
@@ -426,8 +426,8 @@
       "category": "Component Content",
       "name": "Sidebar Navigation",
       "description": "Sidebar contains all required navigation items",
-      "status": "GREEN",
-      "details": "All navigation items present"
+      "status": "RED",
+      "details": "Missing navigation items: Invite"
     },
     {
       "category": "Component Content",
