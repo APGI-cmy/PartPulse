@@ -1256,3 +1256,296 @@ interface InternalTransfer {
 - QR code generation
 - Authentication/authorization
 - Organization-level isolation
+
+## Warranty Claims Workflow (Wave 3 - Implemented)
+
+### Workflow Overview
+
+The Warranty Claims feature allows technicians to submit warranty claims for defective Trane parts. The workflow replicates the official Trane Warranty Parts Claims Form and includes validation, PDF generation, and admin processing capabilities.
+
+### Workflow Diagram
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Technician Actions                        │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │ Fill Warranty Form   │
+          │ - Chiller info       │
+          │ - Parts table        │
+          │ - Failure details    │
+          │ - Comments           │
+          └──────────┬───────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │  Client Validation   │
+          │  (Zod Schema)        │
+          └──────────┬───────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │  Submit to API       │
+          │  POST /api/warranty- │
+          │       claims         │
+          └──────────┬───────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │  Server Validation   │
+          │  - Schema check      │
+          │  - Sanitization      │
+          └──────────┬───────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │  Save to Database    │
+          │  (In-memory MVP)     │
+          └──────────┬───────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │  Generate PDF        │
+          │  (Trane Form Stub)   │
+          └──────────┬───────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │  Success Response    │
+          │  - Claim ID          │
+          │  - Confirmation      │
+          └──────────┬───────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │  Redirect to Claim   │
+          │  Detail Page         │
+          └──────────┬───────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │  View Claim Report   │
+          │  /warranty-claims/   │
+          │  [id]                │
+          └──────────────────────┘
+```
+
+### API Flow
+
+**POST /api/warranty-claims**
+```typescript
+Request:
+{
+  date: Date,
+  chillerModel: string,
+  chillerSerial: string,
+  ssidJobNumber: string,
+  buildingName?: string,
+  siteName: string,
+  technicianName: string,
+  items: WarrantyItem[],
+  comments?: string,
+  coveredByWarranty: boolean,
+  technicianSignature?: string
+}
+
+Response (Success):
+{
+  success: true,
+  data: {
+    id: string,
+    ...formData,
+    createdAt: Date
+  },
+  message: string
+}
+
+Response (Error):
+{
+  success: false,
+  error: {
+    code: string,
+    message: string,
+    details?: any
+  }
+}
+```
+
+**GET /api/warranty-claims**
+```typescript
+Response:
+{
+  success: true,
+  data: WarrantyClaim[]
+}
+```
+
+### Data Model
+
+```typescript
+interface WarrantyItem {
+  partNo: string;              // Part number
+  quantity: number;            // Quantity of parts
+  failedPartSerial: string;    // Serial of failed part
+  replacedPartSerial: string;  // Serial of replacement part
+  dateOfFailure: Date;         // When part failed
+  dateOfRepair: Date;          // When part was repaired
+}
+
+interface WarrantyClaim {
+  id: string;                  // Auto-generated unique ID
+  date: Date;                  // Claim date
+  chillerModel: string;        // Chiller model number
+  chillerSerial: string;       // Chiller serial number
+  ssidJobNumber: string;       // Job/SSID number
+  buildingName?: string;       // Building name (optional)
+  siteName: string;            // Site name
+  technicianName: string;      // Technician name
+  items: WarrantyItem[];       // Array of parts claimed
+  comments?: string;           // Additional comments
+  coveredByWarranty: boolean;  // Warranty coverage flag
+  technicianSignature?: string; // Technician signature (optional)
+  adminSignature?: string;     // Admin signature (optional)
+  adminProcessedStamp?: boolean; // Processing status
+  createdAt: Date;             // Timestamp
+}
+```
+
+### PDF Generation - Trane Form Specification
+
+The PDF generator replicates the official Trane Warranty Parts Claims Form:
+
+**Header Section**
+- Trane red circle logo (left)
+- "TRANE" text
+- "TRANE TECHNOLOGIES" logo
+- Centered title: "TRANE WARRANTY PARTS CLAIMS FORM"
+
+**General Information Fields**
+- DATE
+- CHILLER MODEL
+- CHILLER SERIAL NUMBER
+- JOB NUMBER / SSID #
+- BUILDING NAME
+- SITE NAME
+- ATTENDED BY
+
+**Parts Table**
+Columns:
+- Part No.
+- Qty
+- Serial Number for Failed Parts
+- Serial Number for Replaced Part
+- Date of Failure
+- Date of Repair
+
+**Additional Sections**
+- Comments (large text area)
+- Warranty checkbox
+- Important notes (3 bullet points):
+  * Need Serial Number to be able to make a claim (Mandatory).
+  * Provide Photos of Failed Parts.
+  * Provide Service Reports for Failed Parts.
+
+**Admin Processing Section**
+- Red PROCESSED stamp
+- Admin date
+- Admin signature
+
+**Design Specifications**
+- Fonts: Arial/Helvetica
+- Colors: Black + Trane Red (#EE3124)
+- Logos: `/public/assets/logo/trane-logo.svg` and `/public/assets/logo/trane-tech-logo.svg`
+
+### PDF Flow
+
+1. User submits warranty claim form
+2. Server saves claim record
+3. `generateWarrantyClaimPDF()` called with claim data
+4. Text-based PDF stub generated matching Trane form layout (MVP)
+5. PDF saved/logged for reference
+6. Future: Full PDF with exact visual styling, logos, and signatures
+
+### Form Components
+
+**WarrantyClaimForm.tsx**
+- General information fields
+- Dynamic parts table (add/remove rows)
+- Comments textarea
+- Warranty coverage checkbox
+- Zod validation
+- Real-time error feedback
+- Loading states during submission
+- Redirect to claim detail on completion
+
+**Input.tsx**
+- Reusable form input component
+- Support for text, number, date types
+- Error state styling
+- Required field indicators
+
+### Pages
+
+1. **Warranty Claims Form Page** (`/warranty-claims`)
+   - Displays the warranty claim form
+   - Trane form layout
+   - Mobile-responsive design
+
+2. **Claim Detail Page** (`/warranty-claims/[id]`)
+   - Claim information display
+   - Parts details table
+   - Download PDF button (stub)
+   - Admin approval placeholder (future wave)
+
+### Validation & Security
+
+**Client-Side Validation**
+- Zod schema validation for all fields
+- Required field checks
+- Type validation (dates, numbers)
+- Array validation for parts table
+- Real-time error feedback
+
+**Server-Side Validation**
+- Schema validation with Zod
+- Input sanitization (XSS prevention)
+- Type safety with TypeScript
+- Error handling
+- Organisation validation ready
+
+**Security Measures**
+- Input sanitization on all string fields
+- HTML entity encoding
+- Server-side validation (never trust client)
+- Prepared for organization_id header validation
+- Ready for rate limiting
+
+### Current Implementation Status
+
+✅ Implemented:
+- Warranty claim data model (WarrantyClaim, WarrantyItem)
+- Warranty claim form UI with all required fields
+- Dynamic parts table (add/remove rows)
+- Client-side validation with Zod
+- API route with POST/GET handlers
+- Input sanitization
+- In-memory data storage
+- PDF generation stub (text-based, Trane form layout)
+- Claim detail/report page
+- Mobile-responsive design
+- Trane logo placeholders (SVG)
+
+⏳ Future Enhancements:
+- Database persistence (Prisma)
+- Full PDF generation with exact visual styling
+- Logo integration in PDF
+- Admin approval workflow
+- Photo upload functionality
+- Email notifications
+- Signature capture
+- Audit trail logging
+- Authentication/authorization
+- Organization-level isolation
+- Export to external warranty systems
