@@ -66,8 +66,8 @@ export function setInCache<T>(
  */
 export function invalidateCache(key: string): void {
   if (key.includes('*')) {
-    // Pattern matching
-    const pattern = key.replace('*', '');
+    // Pattern matching - replace all occurrences of *
+    const pattern = key.replace(/\*/g, '');
     Object.keys(cache).forEach(cacheKey => {
       if (cacheKey.includes(pattern)) {
         delete cache[cacheKey];
