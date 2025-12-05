@@ -4,6 +4,15 @@
  * Using file-based storage for MVP (no Prisma dependency yet)
  */
 
+/**
+ * Internal Transfer Item - represents a single part in a transfer
+ */
+export interface InternalTransferItem {
+  quantity: number;
+  partNo: string;
+  description: string;
+}
+
 export interface InternalTransfer {
   id: string;
   technician: string;
@@ -18,6 +27,9 @@ export interface InternalTransfer {
   comments?: string;
   images?: string[];
   signature?: string;
+  items?: InternalTransferItem[];
+  status: 'submitted' | 'processed';
+  pdfPath?: string;
   createdAt: Date;
 }
 
@@ -38,11 +50,12 @@ function generateId(): string {
  * Save a new internal transfer
  */
 export async function saveInternalTransfer(
-  data: Omit<InternalTransfer, 'id' | 'createdAt'>
+  data: Omit<InternalTransfer, 'id' | 'createdAt' | 'status'>
 ): Promise<InternalTransfer> {
   const transfer: InternalTransfer = {
     ...data,
     id: generateId(),
+    status: 'submitted',
     createdAt: new Date(),
   };
   

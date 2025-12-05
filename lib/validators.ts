@@ -4,6 +4,15 @@
 import { z } from 'zod';
 
 /**
+ * Internal Transfer Item validation schema
+ */
+export const InternalTransferItemSchema = z.object({
+  quantity: z.number().min(1, 'Quantity must be at least 1'),
+  partNo: z.string().min(1, 'Part number is required'),
+  description: z.string().min(1, 'Description is required'),
+});
+
+/**
  * Internal Transfer validation schema
  */
 export const InternalTransferSchema = z.object({
@@ -19,6 +28,7 @@ export const InternalTransferSchema = z.object({
   comments: z.string().optional(),
   images: z.array(z.string()).optional(),
   signature: z.string().optional(),
+  items: z.array(InternalTransferItemSchema).optional(),
   createdAt: z.date().optional(),
 });
 
