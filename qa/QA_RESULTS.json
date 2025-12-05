@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-12-05T06:51:51.401374",
+  "timestamp": "2025-12-05T07:49:24.968881",
   "total_requirements": 73,
-  "passed": 38,
-  "failed": 35,
-  "pass_rate": 52.054794520547944,
+  "passed": 39,
+  "failed": 34,
+  "pass_rate": 53.42465753424658,
   "categories": {
     "Configuration": {
       "total": 7,
@@ -67,9 +67,9 @@
     },
     "Types": {
       "total": 2,
-      "passed": 0,
-      "failed": 2,
-      "pass_rate": 0.0
+      "passed": 1,
+      "failed": 1,
+      "pass_rate": 50.0
     },
     "Documentation": {
       "total": 3,
@@ -513,8 +513,8 @@
       "category": "Types",
       "name": "types/index.ts",
       "description": "TypeScript type definitions",
-      "status": "RED",
-      "details": "File missing: types/index.ts"
+      "status": "GREEN",
+      "details": "File exists: types/index.ts"
     },
     {
       "category": "Types",
