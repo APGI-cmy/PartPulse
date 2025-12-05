@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth"
 import prisma from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 import { sanitizeObject } from "@/lib/validators"
+import { logUserManagement } from "@/lib/logging/systemLog"
 
 export async function POST(req: NextRequest) {
   try {
@@ -61,6 +62,17 @@ export async function POST(req: NextRequest) {
       },
     })
 
+    // Log the user creation
+    await logUserManagement({
+      action: "user_invited",
+      targetUserId: user.id,
+      targetUserEmail: user.email,
+      adminUserId: session.user.id,
+      adminUserName: session.user.name || undefined,
+      success: true,
+      request: req,
+    })
+
     // In production, send email with invitation link
     // For now, return the temporary password (NOT SECURE - for development only)
     return NextResponse.json({
@@ -77,6 +89,17 @@ export async function POST(req: NextRequest) {
     })
   } catch (error) {
     console.error("Error inviting user:", error)
+    
+    const session = await auth()
+    await logUserManagement({
+      action: "user_invited",
+      adminUserId: session?.user?.id,
+      adminUserName: session?.user?.name || undefined,
+      success: false,
+      errorMessage: error instanceof Error ? error.message : "Unknown error",
+      request: req,
+    })
+
     return NextResponse.json(
       { error: "Failed to invite user" },
       { status: 500 }
