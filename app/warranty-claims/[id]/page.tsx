@@ -5,40 +5,14 @@ import { useParams, useRouter } from "next/navigation";
 import Header from "@/components/layout/Header";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
-
-interface WarrantyItem {
-  partNo: string;
-  quantity: number;
-  failedPartSerial: string;
-  replacedPartSerial: string;
-  dateOfFailure: string;
-  dateOfRepair: string;
-}
-
-interface WarrantyClaim {
-  id: string;
-  date: string;
-  chillerModel: string;
-  chillerSerial: string;
-  ssidJobNumber: string;
-  buildingName?: string;
-  siteName: string;
-  technicianName: string;
-  items: WarrantyItem[];
-  comments?: string;
-  coveredByWarranty: boolean;
-  technicianSignature?: string;
-  adminSignature?: string;
-  adminProcessedStamp?: boolean;
-  createdAt: string;
-}
+import type { SerializedWarrantyClaim } from "@/types";
 
 export default function WarrantyClaimDetailPage() {
   const params = useParams();
   const router = useRouter();
   const claimId = params.id as string;
   
-  const [claim, setClaim] = useState<WarrantyClaim | null>(null);
+  const [claim, setClaim] = useState<SerializedWarrantyClaim | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,7 +24,7 @@ export default function WarrantyClaimDetailPage() {
 
         if (response.ok && result.success) {
           // Find the claim by ID from the list
-          const foundClaim = result.data.find((c: WarrantyClaim) => c.id === claimId);
+          const foundClaim = result.data.find((c: SerializedWarrantyClaim) => c.id === claimId);
           if (foundClaim) {
             setClaim(foundClaim);
           } else {

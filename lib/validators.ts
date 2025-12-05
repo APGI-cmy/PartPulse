@@ -38,6 +38,7 @@ export function sanitizeString(input: string): string {
 
 /**
  * Sanitize an object with string values
+ * Recursively handles nested objects and arrays
  */
 export function sanitizeObject<T extends Record<string, unknown>>(obj: T): T {
   const sanitized: Record<string, unknown> = {};
@@ -45,9 +46,16 @@ export function sanitizeObject<T extends Record<string, unknown>>(obj: T): T {
     if (typeof value === 'string') {
       sanitized[key] = sanitizeString(value);
     } else if (Array.isArray(value)) {
-      sanitized[key] = value.map(item => 
-        typeof item === 'string' ? sanitizeString(item) : item
-      );
+      sanitized[key] = value.map(item => {
+        if (typeof item === 'string') {
+          return sanitizeString(item);
+        } else if (typeof item === 'object' && item !== null) {
+          return sanitizeObject(item as Record<string, unknown>);
+        }
+        return item;
+      });
+    } else if (typeof value === 'object' && value !== null) {
+      sanitized[key] = sanitizeObject(value as Record<string, unknown>);
     } else {
       sanitized[key] = value;
     }

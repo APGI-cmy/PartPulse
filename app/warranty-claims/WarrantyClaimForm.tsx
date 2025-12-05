@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import Input, { Textarea } from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/Card";
+import type { WarrantyItem } from "@/lib/db/schema";
 
-interface WarrantyItem {
+interface FormWarrantyItem {
   partNo: string;
   quantity: number;
   failedPartSerial: string;
@@ -23,7 +24,7 @@ interface FormData {
   buildingName: string;
   siteName: string;
   technicianName: string;
-  items: WarrantyItem[];
+  items: FormWarrantyItem[];
   comments: string;
   coveredByWarranty: boolean;
   technicianSignature: string;
@@ -82,7 +83,7 @@ export default function WarrantyClaimForm() {
     }
   };
 
-  const handleItemChange = (index: number, field: keyof WarrantyItem, value: string | number) => {
+  const handleItemChange = (index: number, field: keyof FormWarrantyItem, value: string | number) => {
     setFormData((prev) => {
       const newItems = [...prev.items];
       newItems[index] = {
