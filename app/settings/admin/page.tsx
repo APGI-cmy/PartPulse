@@ -368,7 +368,13 @@ export default function AdminDashboardPage() {
                             </span>
                           </td>
                           <td className="px-4 py-4 text-sm text-gray-900 max-w-xs truncate">
-                            {log.errorMessage || (log.details ? JSON.parse(log.details).type || "—" : "—")}
+                            {log.errorMessage || (() => {
+                              try {
+                                return log.details ? JSON.parse(log.details).type || "—" : "—";
+                              } catch {
+                                return "—";
+                              }
+                            })()}
                           </td>
                         </tr>
                       ))}

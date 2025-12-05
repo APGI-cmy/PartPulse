@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 import { sanitizeObject } from "@/lib/validators"
 import { logUserManagement } from "@/lib/logging/systemLog"
+import crypto from "crypto"
 
 export async function POST(req: NextRequest) {
   try {
@@ -48,8 +49,8 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Generate temporary password (in production, send via email)
-    const temporaryPassword = Math.random().toString(36).slice(-8)
+    // Generate secure temporary password (in production, send via email)
+    const temporaryPassword = crypto.randomBytes(4).toString('hex') // 8 characters
     const hashedPassword = await bcrypt.hash(temporaryPassword, 10)
 
     // Create user

@@ -8,6 +8,7 @@ import { WarrantyClaimSchema, sanitizeObject } from '@/lib/validators';
 import { saveWarrantyClaim, updateWarrantyClaim, getAllWarrantyClaims, getWarrantyClaim } from '@/lib/db/schema';
 import { generateWarrantyClaimPDF, savePDF } from '@/lib/pdf/warrantyClaimPdf';
 import { sendWarrantyClaimReceipt } from '@/lib/email/sendWarrantyClaimReceipt';
+import { logWarrantyClaimSubmission, logPdfGeneration, logAdminAction } from '@/lib/logging/systemLog';
 
 /**
  * POST /api/warranty-claims
@@ -43,6 +44,13 @@ export async function POST(request: NextRequest) {
       status: 'pending',
     });
 
+    // Log submission
+    await logWarrantyClaimSubmission({
+      claimId: warrantyClaim.id,
+      success: true,
+      request,
+    });
+
     // Generate and save PDF
     let pdfContent: string | undefined;
     try {
@@ -54,10 +62,24 @@ export async function POST(request: NextRequest) {
         if (updated) {
           warrantyClaim = updated;
         }
+        
+        // Log successful PDF generation
+        await logPdfGeneration({
+          entityId: warrantyClaim.id,
+          entityType: 'warranty_claim',
+          pdfPath: pdfResult.path,
+          success: true,
+        });
       }
     } catch (pdfError) {
       // Log PDF generation error but don't fail the request
       console.error('PDF generation failed:', pdfError);
+      await logPdfGeneration({
+        entityId: warrantyClaim.id,
+        entityType: 'warranty_claim',
+        success: false,
+        errorMessage: pdfError instanceof Error ? pdfError.message : 'Unknown error',
+      });
     }
 
     // Send email notification
@@ -79,6 +101,15 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error('Error creating warranty claim:', error);
+    
+    // Log failed submission
+    await logWarrantyClaimSubmission({
+      claimId: 'unknown',
+      success: false,
+      errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      request,
+    });
+    
     return NextResponse.json(
       {
         success: false,
@@ -216,6 +247,17 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
+    // Log admin action
+    if (status === 'approved' || status === 'rejected') {
+      await logAdminAction({
+        entityId: updatedClaim.id,
+        entityType: 'warranty_claim',
+        action: status,
+        adminUserName: adminSignature,
+        request,
+      });
+    }
+
     // Regenerate PDF with admin information
     if (status === 'approved' || status === 'rejected') {
       try {
@@ -226,9 +268,23 @@ export async function PATCH(request: NextRequest) {
           if (updated) {
             updatedClaim = updated;
           }
+          
+          // Log PDF regeneration
+          await logPdfGeneration({
+            entityId: updatedClaim.id,
+            entityType: 'warranty_claim',
+            pdfPath: pdfResult.path,
+            success: true,
+          });
         }
       } catch (pdfError) {
         console.error('PDF regeneration failed:', pdfError);
+        await logPdfGeneration({
+          entityId: updatedClaim.id,
+          entityType: 'warranty_claim',
+          success: false,
+          errorMessage: pdfError instanceof Error ? pdfError.message : 'Unknown error',
+        });
       }
     }
 
