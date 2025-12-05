@@ -5,7 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { InternalTransferSchema, sanitizeObject } from '@/lib/validators';
-import { saveInternalTransfer, getAllInternalTransfers } from '@/lib/db/schema';
+import { saveInternalTransfer, updateInternalTransfer, getAllInternalTransfers } from '@/lib/db/schema';
 import { generateInternalTransferPDF, savePDF } from '@/lib/pdf/internalTransferPdf';
 import { sendInternalTransferReceipt } from '@/lib/email/sendInternalTransferReceipt';
 
@@ -48,18 +48,19 @@ export async function POST(request: NextRequest) {
     // }
     
     // Save to database (currently in-memory, will be Prisma in production)
-    const transfer = await saveInternalTransfer(sanitizedData);
+    let transfer = await saveInternalTransfer(sanitizedData);
     
     // Generate and save PDF
-    let pdfPath: string | undefined;
     let pdfContent: string | undefined;
     try {
       pdfContent = await generateInternalTransferPDF(transfer);
       const pdfResult = await savePDF(pdfContent, `transfer-${transfer.id}.pdf`);
-      if (pdfResult.success) {
-        pdfPath = pdfResult.path;
-        // Update transfer with PDF path (in production, this would update the DB)
-        transfer.pdfPath = pdfPath;
+      if (pdfResult.success && pdfResult.path) {
+        // Update transfer with PDF path
+        const updated = await updateInternalTransfer(transfer.id, { pdfPath: pdfResult.path });
+        if (updated) {
+          transfer = updated;
+        }
       }
     } catch (pdfError) {
       // Log PDF generation error but don't fail the request

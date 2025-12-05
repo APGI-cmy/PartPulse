@@ -3,7 +3,7 @@
  * Now using JSON-driven template engine
  */
 
-import { writeFile } from 'fs/promises';
+import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import type { InternalTransfer } from '../db/schema';
 import { renderPdfFromTemplate } from './templateEngine';
@@ -45,6 +45,10 @@ export async function savePDF(
   try {
     // Determine storage path
     const storagePath = join(process.cwd(), 'storage', 'pdfs', 'internal-transfer');
+    
+    // Ensure directory exists
+    await mkdir(storagePath, { recursive: true });
+    
     const filePath = join(storagePath, filename);
     
     // Save PDF content to file

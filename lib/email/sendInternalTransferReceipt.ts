@@ -19,6 +19,24 @@ export interface EmailOptions {
 }
 
 /**
+ * Generate email address for technician
+ * In production, this should look up the actual email from user database
+ */
+function getTechnicianEmail(technician: string): string {
+  // For MVP, use environment variable for email domain or default to example.com
+  const emailDomain = process.env.EMAIL_DOMAIN || 'example.com';
+  
+  // Simple sanitization: lowercase, replace spaces with dots, remove special chars
+  const sanitizedName = technician
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '.')
+    .replace(/[^a-z0-9.]/g, '');
+  
+  return `${sanitizedName}@${emailDomain}`;
+}
+
+/**
  * Send confirmation email to technician with PDF attached
  * @param transfer - The internal transfer data
  * @param pdfContent - Optional PDF content to attach
@@ -37,7 +55,7 @@ export async function sendInternalTransferReceipt(
   
   // Build email content
   const emailOptions: EmailOptions = {
-    to: `${transfer.technician.toLowerCase().replace(/\s+/g, '.')}@example.com`,
+    to: getTechnicianEmail(transfer.technician),
     subject: `Internal Transfer Confirmation - ${transfer.id}`,
     html: generateEmailHTML(transfer),
     text: generateEmailText(transfer),

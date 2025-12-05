@@ -64,6 +64,23 @@ export async function saveInternalTransfer(
 }
 
 /**
+ * Update an internal transfer
+ */
+export async function updateInternalTransfer(
+  id: string,
+  updates: Partial<InternalTransfer>
+): Promise<InternalTransfer | null> {
+  const transfer = transfers.get(id);
+  if (!transfer) {
+    return null;
+  }
+  
+  const updatedTransfer = { ...transfer, ...updates };
+  transfers.set(id, updatedTransfer);
+  return updatedTransfer;
+}
+
+/**
  * Get an internal transfer by ID
  */
 export async function getInternalTransfer(id: string): Promise<InternalTransfer | null> {
