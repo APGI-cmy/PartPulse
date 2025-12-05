@@ -1020,3 +1020,239 @@ The architecture is complete when:
 8. Emails send successfully
 9. Audit logs capture all actions
 10. QA system validates 100% compliance
+
+## Internal Transfer Workflow (Wave 2 - Implemented)
+
+### Workflow Overview
+
+The Internal Transfer feature allows technicians to record part movements within the organization. The workflow is designed for mobile-first usage and includes validation, confirmation, and reporting capabilities.
+
+### Workflow Diagram
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Technician Actions                        │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │  Fill Transfer Form  │
+          │  - Technician info   │
+          │  - Part details      │
+          │  - Transfer type     │
+          │  - Reason            │
+          └──────────┬───────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │   Client Validation  │
+          │   (Zod Schema)       │
+          └──────────┬───────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │  Submit to API       │
+          │  POST /api/internal- │
+          │       transfer       │
+          └──────────┬───────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │  Server Validation   │
+          │  - Schema check      │
+          │  - Sanitization      │
+          └──────────┬───────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │  Save to Database    │
+          │  (In-memory MVP)     │
+          └──────────┬───────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │  Generate PDF Stub   │
+          │  (Text-based)        │
+          └──────────┬───────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │  Success Response    │
+          │  - Transfer ID       │
+          │  - Confirmation      │
+          └──────────┬───────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │  Redirect to Success │
+          │  Page                │
+          └──────────┬───────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │  View Report         │
+          │  /internal-transfer/ │
+          │  [id]                │
+          └──────────────────────┘
+```
+
+### API Flow
+
+**POST /api/internal-transfer**
+```typescript
+Request:
+{
+  technician: string,
+  department: string,
+  transferType: string,
+  serial: string,
+  model: string,
+  part: string,
+  description: string,
+  reason: string,
+  newUnit?: string,
+  comments?: string,
+  images?: string[],
+  signature?: string
+}
+
+Response (Success):
+{
+  success: true,
+  data: {
+    id: string,
+    ...formData,
+    createdAt: Date
+  },
+  message: string
+}
+
+Response (Error):
+{
+  success: false,
+  error: {
+    code: string,
+    message: string,
+    details?: any
+  }
+}
+```
+
+**GET /api/internal-transfer**
+```typescript
+Response:
+{
+  success: true,
+  data: InternalTransfer[]
+}
+```
+
+### Data Model
+
+```typescript
+interface InternalTransfer {
+  id: string;                  // Auto-generated unique ID
+  technician: string;          // Technician name
+  department: string;          // Department
+  transferType: string;        // Type of transfer
+  serial: string;              // Serial number
+  model: string;               // Model number
+  part: string;                // Part number
+  description: string;         // Part description
+  reason: string;              // Reason for removal
+  newUnit?: string;            // New unit/job number (optional)
+  comments?: string;           // Additional comments (optional)
+  images?: string[];           // Image URLs (optional, future)
+  signature?: string;          // Signature data (optional, future)
+  createdAt: Date;             // Timestamp
+}
+```
+
+### PDF Flow
+
+1. User submits transfer form
+2. Server saves transfer record
+3. `generateInternalTransferPDF()` called with transfer data
+4. Text-based PDF stub generated (MVP)
+5. PDF saved/logged for reference
+6. Future: Full PDF with styling, QR codes, and signatures
+
+### Form Components
+
+**InternalTransferForm.tsx**
+- All required fields with validation
+- Conditional fields based on transfer type
+- Real-time error feedback
+- Loading states during submission
+- Redirect to success page on completion
+
+**Input.tsx & Select.tsx**
+- Reusable form components
+- Error state styling
+- Required field indicators
+- Helper text support
+- Accessible labels
+
+### Pages
+
+1. **Main Form Page** (`/internal-transfer`)
+   - Displays the transfer form
+   - Usage instructions
+   - Mobile-responsive design
+
+2. **Success Page** (`/internal-transfer/success`)
+   - Confirmation message
+   - Transfer ID display
+   - Link to view report
+   - Next steps information
+
+3. **Report Page** (`/internal-transfer/[id]`)
+   - Transfer details display
+   - Part information
+   - Download PDF button (stub)
+   - Audit trail placeholder
+
+### Validation & Security
+
+**Client-Side Validation**
+- Zod schema validation
+- Required field checks
+- Type validation
+- Real-time error feedback
+
+**Server-Side Validation**
+- Schema validation with Zod
+- Input sanitization (XSS prevention)
+- Type safety with TypeScript
+- Error handling
+
+**Security Measures**
+- Input sanitization on all string fields
+- HTML entity encoding
+- Server-side validation (never trust client)
+- Prepared for organization_id header validation
+- Ready for rate limiting
+
+### Current Implementation Status
+
+✅ Implemented:
+- Form UI with all required fields
+- Client-side validation with Zod
+- API route with POST/GET handlers
+- Input sanitization
+- In-memory data storage
+- PDF generation stub
+- Success page
+- Report/detail page
+- Mobile-responsive design
+
+⏳ Future Enhancements:
+- Database persistence (Prisma)
+- Image upload functionality
+- Signature capture
+- Email notifications
+- Audit trail logging
+- Full PDF generation with styling
+- QR code generation
+- Authentication/authorization
+- Organization-level isolation
