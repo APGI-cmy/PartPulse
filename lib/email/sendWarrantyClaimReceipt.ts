@@ -219,7 +219,7 @@ export async function sendAdminNotification(
     ${createInfoBox('⚡ <strong>Action Required:</strong> Please review and process this warranty claim.')}
   `;
   
-  const html = createEmailTemplate('New Warranty Claim - Action Required', content);
+  createEmailTemplate('New Warranty Claim - Action Required', content);
   
   console.log('[EMAIL STUB] Sending admin notification');
   console.log('[EMAIL STUB] Claim ID:', claim.id);

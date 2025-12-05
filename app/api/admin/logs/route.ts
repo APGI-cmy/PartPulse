@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { getSystemLogs } from "@/lib/logging/systemLog";
+import { getSystemLogs, type EventType } from "@/lib/logging/systemLog";
 
 /**
  * GET /api/admin/logs
@@ -28,7 +28,8 @@ export async function GET(req: NextRequest) {
 
     // Get query parameters
     const searchParams = req.nextUrl.searchParams;
-    const eventType = searchParams.get("eventType") as any;
+    const eventTypeParam = searchParams.get("eventType");
+    const eventType = eventTypeParam as EventType | undefined;
     const userId = searchParams.get("userId") || undefined;
     const limit = parseInt(searchParams.get("limit") || "100");
     const offset = parseInt(searchParams.get("offset") || "0");
