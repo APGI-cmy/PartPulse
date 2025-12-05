@@ -131,6 +131,9 @@ export interface WarrantyClaim {
   technicianSignature?: string;
   adminSignature?: string;
   adminProcessedStamp?: boolean;
+  adminDate?: Date;
+  status?: 'pending' | 'approved' | 'rejected';
+  pdfPath?: string;
   createdAt: Date;
 }
 
@@ -174,6 +177,23 @@ export async function getWarrantyClaim(id: string): Promise<WarrantyClaim | null
  */
 export async function getAllWarrantyClaims(): Promise<WarrantyClaim[]> {
   return Array.from(warrantyClaims.values());
+}
+
+/**
+ * Update a warranty claim
+ */
+export async function updateWarrantyClaim(
+  id: string,
+  updates: Partial<WarrantyClaim>
+): Promise<WarrantyClaim | null> {
+  const claim = warrantyClaims.get(id);
+  if (!claim) {
+    return null;
+  }
+  
+  const updatedClaim = { ...claim, ...updates };
+  warrantyClaims.set(id, updatedClaim);
+  return updatedClaim;
 }
 
 /**
