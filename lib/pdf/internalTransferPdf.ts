@@ -1,59 +1,20 @@
 /**
  * PDF Generation for Internal Transfers
- * This is a STUB implementation for Wave 2
- * Full styling and proper PDF generation will be implemented later
+ * Now using JSON-driven template engine
  */
 
 import type { InternalTransfer } from '../db/schema';
+import { renderPdfFromTemplate } from './templateEngine';
 
 /**
- * Generate a simple text-based PDF representation
- * This is a stub - in production, this would use PDFKit or jsPDF
+ * Generate a PDF representation of the Internal Transfer form
+ * Uses the JSON template engine for consistent, configurable output
  */
 export async function generateInternalTransferPDF(
   transfer: InternalTransfer
 ): Promise<string> {
-  // This is a simplified stub that returns a text representation
-  // In production, this would generate an actual PDF file
-  
-  const pdfContent = `
-INTERNAL TRANSFER REPORT
-========================
-
-Transfer ID: ${transfer.id}
-Date: ${transfer.createdAt.toLocaleDateString()}
-
-TECHNICIAN INFORMATION
-----------------------
-Technician: ${transfer.technician}
-Department: ${transfer.department}
-
-TRANSFER DETAILS
-----------------
-Transfer Type: ${transfer.transferType}
-Serial Number: ${transfer.serial}
-Model Number: ${transfer.model}
-Part Number: ${transfer.part}
-
-DESCRIPTION
------------
-${transfer.description}
-
-REASON FOR REMOVAL
-------------------
-${transfer.reason}
-
-${transfer.newUnit ? `NEW UNIT/JOB NUMBER\n-------------------\n${transfer.newUnit}\n` : ''}
-${transfer.comments ? `ADDITIONAL COMMENTS\n-------------------\n${transfer.comments}\n` : ''}
-${transfer.signature ? `SIGNATURE\n---------\n[Signature Present]\n` : ''}
-${transfer.images && transfer.images.length > 0 ? `\nIMAGES\n------\n${transfer.images.length} image(s) attached\n` : ''}
-
-========================
-Generated: ${new Date().toISOString()}
-PartPulse Internal Transfer System
-  `.trim();
-  
-  return pdfContent;
+  // Use the template engine to render the PDF
+  return await renderPdfFromTemplate('internalTransfer', transfer);
 }
 
 /**

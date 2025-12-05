@@ -1,0 +1,376 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PDF Template Schema",
+  "description": "Schema for JSON-driven PDF template generation",
+  "type": "object",
+  "required": ["page", "sections"],
+  "properties": {
+    "page": {
+      "type": "object",
+      "required": ["size", "margin"],
+      "properties": {
+        "size": {
+          "type": "string",
+          "enum": ["A4", "Letter", "Legal"],
+          "description": "Page size for the PDF"
+        },
+        "margin": {
+          "type": "number",
+          "description": "Page margin in points"
+        },
+        "orientation": {
+          "type": "string",
+          "enum": ["portrait", "landscape"],
+          "default": "portrait"
+        }
+      }
+    },
+    "header": {
+      "type": "object",
+      "properties": {
+        "logos": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["src", "x", "y"],
+            "properties": {
+              "src": {
+                "type": "string",
+                "description": "Path to logo image file"
+              },
+              "x": {
+                "type": "number",
+                "description": "X position in points"
+              },
+              "y": {
+                "type": "number",
+                "description": "Y position in points"
+              },
+              "width": {
+                "type": "number",
+                "description": "Width in points"
+              },
+              "height": {
+                "type": "number",
+                "description": "Height in points (optional, maintains aspect ratio if not specified)"
+              }
+            }
+          }
+        },
+        "title": {
+          "type": "object",
+          "required": ["text", "y"],
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "Title text"
+            },
+            "x": {
+              "type": "number",
+              "description": "X position (0 for center alignment)",
+              "default": 0
+            },
+            "y": {
+              "type": "number",
+              "description": "Y position in points"
+            },
+            "align": {
+              "type": "string",
+              "enum": ["left", "center", "right"],
+              "default": "left"
+            },
+            "fontSize": {
+              "type": "number",
+              "default": 12
+            },
+            "bold": {
+              "type": "boolean",
+              "default": false
+            },
+            "underline": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "subtitle": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            },
+            "align": {
+              "type": "string",
+              "enum": ["left", "center", "right"],
+              "default": "left"
+            },
+            "fontSize": {
+              "type": "number",
+              "default": 10
+            }
+          }
+        }
+      }
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["fields", "table", "text", "checkbox", "signature", "stamp", "spacer", "line"]
+          },
+          "label": {
+            "type": "string",
+            "description": "Section label/title"
+          },
+          "y": {
+            "type": "number",
+            "description": "Y position in points (optional, auto-positioned if not specified)"
+          },
+          "fields": {
+            "type": "array",
+            "description": "For type='fields': array of field definitions",
+            "items": {
+              "type": "object",
+              "required": ["label", "binding"],
+              "properties": {
+                "label": {
+                  "type": "string",
+                  "description": "Field label text"
+                },
+                "binding": {
+                  "type": "string",
+                  "description": "Data binding path (e.g., 'date', 'chillerModel', 'items.0.partNo')"
+                },
+                "x": {
+                  "type": "number",
+                  "description": "X position"
+                },
+                "y": {
+                  "type": "number",
+                  "description": "Y position (relative to section if not absolute)"
+                },
+                "width": {
+                  "type": "number",
+                  "description": "Field width"
+                },
+                "labelWidth": {
+                  "type": "number",
+                  "description": "Width of the label part"
+                },
+                "fontSize": {
+                  "type": "number",
+                  "default": 10
+                },
+                "bold": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "underline": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "format": {
+                  "type": "string",
+                  "enum": ["date", "number", "text"],
+                  "description": "How to format the value"
+                }
+              }
+            }
+          },
+          "table": {
+            "type": "object",
+            "description": "For type='table': table definition",
+            "required": ["columns", "rowsBinding"],
+            "properties": {
+              "columns": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["header", "binding", "width"],
+                  "properties": {
+                    "header": {
+                      "type": "string"
+                    },
+                    "binding": {
+                      "type": "string",
+                      "description": "Binding path relative to row data"
+                    },
+                    "width": {
+                      "type": "number"
+                    },
+                    "format": {
+                      "type": "string",
+                      "enum": ["date", "number", "text"]
+                    }
+                  }
+                }
+              },
+              "rowsBinding": {
+                "type": "string",
+                "description": "Path to array of row data (e.g., 'items')"
+              },
+              "x": {
+                "type": "number"
+              },
+              "headerHeight": {
+                "type": "number",
+                "default": 25
+              },
+              "rowHeight": {
+                "type": "number",
+                "default": 20
+              },
+              "fontSize": {
+                "type": "number",
+                "default": 9
+              }
+            }
+          },
+          "text": {
+            "type": "object",
+            "description": "For type='text': static or bound text",
+            "properties": {
+              "content": {
+                "type": "string",
+                "description": "Static text or binding path"
+              },
+              "binding": {
+                "type": "string",
+                "description": "Alternative binding path"
+              },
+              "x": {
+                "type": "number"
+              },
+              "width": {
+                "type": "number"
+              },
+              "height": {
+                "type": "number"
+              },
+              "fontSize": {
+                "type": "number",
+                "default": 10
+              },
+              "align": {
+                "type": "string",
+                "enum": ["left", "center", "right"]
+              },
+              "multiline": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          },
+          "checkbox": {
+            "type": "object",
+            "description": "For type='checkbox': checkbox definition",
+            "required": ["label", "binding"],
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "binding": {
+                "type": "string"
+              },
+              "x": {
+                "type": "number"
+              },
+              "size": {
+                "type": "number",
+                "default": 12
+              }
+            }
+          },
+          "signature": {
+            "type": "object",
+            "description": "For type='signature': signature line",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "binding": {
+                "type": "string",
+                "description": "Binding to signature data (optional)"
+              },
+              "x": {
+                "type": "number"
+              },
+              "width": {
+                "type": "number",
+                "default": 200
+              }
+            }
+          },
+          "stamp": {
+            "type": "object",
+            "description": "For type='stamp': stamp (e.g., PROCESSED)",
+            "required": ["text", "binding"],
+            "properties": {
+              "text": {
+                "type": "string",
+                "description": "Stamp text"
+              },
+              "binding": {
+                "type": "string",
+                "description": "Binding to boolean that determines if stamp is shown"
+              },
+              "x": {
+                "type": "number"
+              },
+              "fontSize": {
+                "type": "number",
+                "default": 14
+              },
+              "rotation": {
+                "type": "number",
+                "description": "Rotation angle in degrees",
+                "default": 0
+              },
+              "color": {
+                "type": "string",
+                "description": "Hex color code",
+                "default": "#FF0000"
+              }
+            }
+          },
+          "line": {
+            "type": "object",
+            "description": "For type='line': horizontal line separator",
+            "properties": {
+              "x1": {
+                "type": "number"
+              },
+              "x2": {
+                "type": "number"
+              },
+              "strokeWidth": {
+                "type": "number",
+                "default": 1
+              }
+            }
+          },
+          "spacer": {
+            "type": "object",
+            "description": "For type='spacer': vertical spacing",
+            "properties": {
+              "height": {
+                "type": "number",
+                "description": "Height in points"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
