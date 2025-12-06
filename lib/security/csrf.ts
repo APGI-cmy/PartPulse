@@ -1,82 +1,90 @@
 /**
- * CSRF Protection utilities
- * Implements token-based CSRF protection for forms and state-changing requests
+ * CSRF Protection
+ * Generates and validates CSRF tokens for form submissions
  */
 
+import { cookies } from 'next/headers';
 import crypto from 'crypto';
 
-const TOKEN_LENGTH = 32;
-const TOKEN_EXPIRY = 60 * 60 * 1000; // 1 hour
-
-interface CsrfTokenStore {
-  [sessionId: string]: {
-    token: string;
-    createdAt: number;
-  };
-}
-
-const tokenStore: CsrfTokenStore = {};
+const CSRF_TOKEN_LENGTH = 32;
+const CSRF_COOKIE_NAME = 'csrf-token';
+const CSRF_HEADER_NAME = 'x-csrf-token';
 
 /**
- * Generate a CSRF token for a session
- * @param sessionId - Unique session identifier
- * @returns Generated CSRF token
+ * Generate a secure CSRF token
  */
-export function generateCsrfToken(sessionId: string): string {
-  const token = crypto.randomBytes(TOKEN_LENGTH).toString('hex');
-  
-  tokenStore[sessionId] = {
-    token,
-    createdAt: Date.now(),
-  };
+export function generateCsrfToken(): string {
+  return crypto.randomBytes(CSRF_TOKEN_LENGTH).toString('hex');
+}
+
+/**
+ * Get or create CSRF token from cookies
+ */
+export async function getCsrfToken(): Promise<string> {
+  const cookieStore = await cookies();
+  let token = cookieStore.get(CSRF_COOKIE_NAME)?.value;
+
+  if (!token) {
+    token = generateCsrfToken();
+    cookieStore.set(CSRF_COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 24, // 24 hours
+    });
+  }
 
   return token;
 }
 
 /**
- * Validate a CSRF token
- * @param sessionId - Session identifier
- * @param token - Token to validate
- * @returns True if token is valid
+ * Validate CSRF token from request
  */
-export function validateCsrfToken(sessionId: string, token: string): boolean {
-  const stored = tokenStore[sessionId];
-  
-  if (!stored) {
+export async function validateCsrfToken(request: Request): Promise<boolean> {
+  const cookieStore = await cookies();
+  const cookieToken = cookieStore.get(CSRF_COOKIE_NAME)?.value;
+  const headerToken = request.headers.get(CSRF_HEADER_NAME);
+
+  if (!cookieToken || !headerToken) {
     return false;
   }
 
-  // Check expiry
-  if (Date.now() - stored.createdAt > TOKEN_EXPIRY) {
-    delete tokenStore[sessionId];
-    return false;
-  }
-
-  // Check token match
-  if (stored.token !== token) {
-    return false;
-  }
-
-  // Token is valid - rotate it
-  delete tokenStore[sessionId];
-  
-  return true;
+  // Use constant-time comparison to prevent timing attacks
+  return crypto.timingSafeEqual(
+    Buffer.from(cookieToken),
+    Buffer.from(headerToken)
+  );
 }
 
 /**
- * Clean up expired tokens (run periodically)
+ * Middleware to check CSRF token for mutating requests
  */
-export function cleanupCsrfTokens(): void {
-  const now = Date.now();
-  
-  for (const sessionId in tokenStore) {
-    if (now - tokenStore[sessionId].createdAt > TOKEN_EXPIRY) {
-      delete tokenStore[sessionId];
+export async function withCsrfProtection(
+  request: Request,
+  handler: () => Promise<Response>
+): Promise<Response> {
+  // Only check CSRF for state-changing methods
+  const method = request.method.toUpperCase();
+  if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
+    const isValid = await validateCsrfToken(request);
+    if (!isValid) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: {
+            code: 'CSRF_TOKEN_INVALID',
+            message: 'Invalid or missing CSRF token',
+          },
+        }),
+        {
+          status: 403,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
     }
   }
-}
 
-// Clean up every 15 minutes
-if (typeof setInterval !== 'undefined') {
-  setInterval(cleanupCsrfTokens, 15 * 60 * 1000);
+  return handler();
 }

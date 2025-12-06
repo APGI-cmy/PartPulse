@@ -1,71 +1,78 @@
 # PartPulse - Part Distribution & Warranty Management
 
-A secure, production-ready web application for managing internal part transfers and warranty claims.
+A modern, secure, production-ready web application for managing internal part transfers and warranty claims.
 
 ## 🎯 Project Status
 
-**Phase**: Production Ready ✅  
-**QA Pass Rate**: Tracking to 100%  
-**Security**: Hardened with rate limiting, CSRF protection, and strict RBAC  
+**Phase**: Production Hardening Complete ✅
+**QA Pass Rate**: Targeting 100%
+**Security**: Hardened with rate limiting, CSRF protection, and security headers
 
-## ✨ Features
+This is a production-ready application built with Next.js 16, featuring comprehensive security controls, performance optimizations, and complete operational documentation.
 
-### Internal Transfer Management
-- Mobile-first transfer form with validation
-- Automatic PDF generation with Trane branding
-- Email notifications (optional)
-- Comprehensive audit trail
+## 📋 Features
 
-### Warranty Claims Processing
-- Official Trane warranty form replication
-- Parts tracking with serial numbers
-- Admin approval workflow
-- Branded PDF receipts
+### ✅ Core Features (100%)
+- **Internal Transfers** - Track part movements within the organization
+- **Warranty Claims** - Submit and manage warranty claims
+- **User Management** - Invite users, manage roles and permissions
+- **Reports** - Generate reports on transfers and claims
+- **PDF Generation** - Professional branded PDFs with Trane styling
+- **Email Notifications** - Automated email receipts and notifications
+- **Admin Dashboard** - System logs, user management, password resets
+- **Audit Trail** - Complete audit logging for compliance
 
-### Security & Compliance
-- ✅ Role-based access control (RBAC)
-- ✅ Input sanitization (XSS prevention)
-- ✅ Rate limiting (prevents abuse)
-- ✅ CSRF protection
-- ✅ Secure session management
-- ✅ Comprehensive audit logging
-- ✅ Security headers (CSP, HSTS, etc.)
+### 🔐 Security Features
+- **Authentication** - NextAuth.js with secure JWT sessions (8-hour timeout)
+- **Authorization** - Role-based access control (Admin, Technician)
+- **Rate Limiting** - Protection against brute force and API abuse
+- **CSRF Protection** - Token-based protection for state-changing operations
+- **Security Headers** - HSTS, X-Frame-Options, CSP, and more
+- **Input Sanitization** - XSS prevention on all user inputs
+- **Secure Cookies** - HttpOnly, Secure, SameSite protection
 
-### Performance
-- ✅ Report caching (5-minute TTL)
-- ✅ Optimized database queries
-- ✅ Preloaded dashboard data
-- ✅ Production-grade error handling
+### ⚡ Performance Features
+- **Caching** - In-memory cache for expensive reports
+- **Optimized Builds** - Production-grade Next.js optimization
+- **CDN Ready** - Static asset optimization
+- **Database Optimization** - Indexed queries and connection pooling
 
-### Administration
-- User management with invitation system
-- Password reset functionality
-- System logs viewer
-- Reports dashboard with filtering
+### 📚 Documentation (100%)
+- `README.md` - Project overview and quick start
+- `architecture/architecture.md` - Complete system architecture
+- `docs/DEPLOYMENT.md` - Deployment guide for multiple platforms
+- `docs/OPERATIONS.md` - Daily operations and maintenance manual
+- `docs/SECRET_ROTATION.md` - Security credential rotation procedures
+- `rules.md` - Application rules and specifications
+- QA system for automated compliance validation
 
-## 🚀 Quick Start
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+
-- PostgreSQL (or SQLite for development)
+- Node.js 18+ 
+- npm or yarn
+- PostgreSQL or SQLite database
 
 ### Installation
 
 ```bash
+# Clone repository
+git clone https://github.com/MaturionISMS/PartPulse.git
+cd PartPulse
+
 # Install dependencies
 npm install
 
-# Setup database
+# Set up environment variables
 cp .env.example .env
 # Edit .env with your configuration
 
-# Run migrations
+# Initialize database
+npx prisma generate
 npx prisma migrate deploy
+npx prisma db seed
 
-# Seed initial admin user
-npm run db:seed
-
-# Start development server
+# Run development server
 npm run dev
 ```
 
@@ -76,65 +83,15 @@ Open [http://localhost:3000](http://localhost:3000)
 - Password: See output from `npm run db:seed`
 - **⚠️ Change immediately after first login**
 
-## 📖 Documentation
+### Default Credentials (Development)
 
-- [Deployment Guide](./docs/DEPLOYMENT.md) - Production deployment instructions
-- [Operations Manual](./docs/OPERATIONS.md) - Day-to-day operations guide
-- [Architecture](./architecture/architecture.md) - System design and specifications
-- [Rules & Specifications](./rules.md) - Detailed app requirements
+After seeding, use these credentials to login:
+- **Admin:** admin@example.com / password123
+- **Technician:** tech@example.com / password123
 
-## 🔐 Security Features
+**⚠️ Change these immediately in production!**
 
-### Authentication
-- Secure password hashing (bcrypt)
-- JWT-based sessions (24-hour expiry)
-- Secure cookie configuration
-- Session token rotation
-
-### Rate Limiting
-- Auth routes: 5 requests/15 minutes
-- API routes: 100 requests/15 minutes
-- Password reset: 3 requests/hour
-- Automatic cleanup of old rate limit data
-
-### CSRF Protection
-- Token-based CSRF validation
-- Automatic token rotation
-- 1-hour token expiry
-
-### Security Headers
-- X-Frame-Options: DENY
-- X-Content-Type-Options: nosniff
-- X-XSS-Protection: enabled
-- Content-Security-Policy: strict
-- Referrer-Policy: strict-origin
-
-## 🏗️ Architecture
-
-### Technology Stack
-- **Frontend**: Next.js 16 (App Router), React 19, TypeScript
-- **Styling**: Tailwind CSS
-- **Authentication**: NextAuth.js v5
-- **Database**: Prisma ORM (PostgreSQL/SQLite)
-- **File Storage**: Pluggable (Local/S3)
-- **Email**: Configurable (Resend/SendGrid/AWS SES)
-
-### Project Structure
-```
-/app                    # Next.js app directory (pages & API routes)
-/components             # React components
-  /ui                   # Reusable UI components
-/lib                    # Core libraries
-  /security             # Security utilities
-  /cache                # Caching layer
-  /storage              # File storage abstraction
-  /pdf                  # PDF generation
-  /email                # Email templates
-/prisma                 # Database schema & migrations
-/docs                   # Documentation
-```
-
-## 📊 Available Scripts
+### Available Scripts
 
 ```bash
 npm run dev          # Start development server
@@ -144,7 +101,34 @@ npm run lint         # Run ESLint
 npm run db:seed      # Seed database with initial data
 ```
 
-## 🔍 Quality Assurance
+## 🚢 Production Deployment
+
+See [DEPLOYMENT.md](./docs/DEPLOYMENT.md) for comprehensive deployment instructions covering:
+- Vercel (recommended quick start)
+- Docker/Self-hosted
+- AWS (enterprise grade)
+
+### Quick Production Deployment (Vercel)
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel --prod
+
+# Configure environment variables via Vercel dashboard
+```
+
+## 📖 Documentation
+
+- **[Architecture Specification](./architecture/architecture.md)** - System design and components
+- **[Deployment Guide](./docs/DEPLOYMENT.md)** - Production deployment instructions
+- **[Operations Manual](./docs/OPERATIONS.md)** - Day-to-day operations and maintenance
+- **[Secret Rotation](./docs/SECRET_ROTATION.md)** - Security credential rotation procedures
+- **[Rules & Specifications](./rules.md)** - Detailed app requirements
+
+## 🔍 QA System
 
 Run automated QA validation:
 
@@ -174,7 +158,61 @@ See [Deployment Guide](./docs/DEPLOYMENT.md) for detailed instructions.
 
 ## 🔧 Configuration
 
-### Environment Variables
+**Target:** 100% compliance with architecture specification
+
+## 🔐 Security
+
+This application implements comprehensive security controls:
+
+### Security Features
+- **Authentication:** NextAuth.js with secure JWT sessions
+- **Authorization:** Role-based access control (RBAC)
+- **Rate Limiting:** Protects against brute force attacks
+- **CSRF Protection:** Token-based validation for mutations
+- **Security Headers:** HSTS, X-Frame-Options, CSP, etc.
+- **Input Sanitization:** XSS prevention on all user inputs
+- **Secure Cookies:** HttpOnly, Secure, SameSite attributes
+- **Session Timeout:** 8-hour timeout for security
+- **Audit Logging:** Complete audit trail for compliance
+
+### Security Scanning
+
+```bash
+# Run ESLint security rules
+npm run lint
+
+# Run dependency security audit
+npm audit
+
+# CodeQL scanning (via GitHub Actions)
+```
+
+### Reporting Security Issues
+
+Please report security vulnerabilities to: security@example.com
+
+**Do NOT create public GitHub issues for security vulnerabilities.**
+
+## 📊 Performance
+
+Performance optimizations implemented:
+
+- **Response Time:** Target < 200ms average, < 500ms p95
+- **Caching:** In-memory cache for reports and expensive queries
+- **Database:** Optimized queries with proper indexing
+- **CDN Ready:** Static assets optimized for CDN delivery
+- **Bundle Size:** Optimized production builds
+
+### Performance Monitoring
+
+```bash
+# Build and analyze bundle
+npm run build
+
+# Monitor in production via Vercel Analytics or similar
+```
+
+## 📁 Project Structure
 
 Required:
 ```bash
@@ -198,38 +236,20 @@ STORAGE_S3_SECRET_ACCESS_KEY="xxx"
 
 See `.env.example` for complete list.
 
-## 📈 Monitoring
+**Primary Color**: #FF2B00 (Trane Red)
 
-### Health Checks
-- Application: `/api/health`
-- Database: `/api/health/db`
+The application uses a mobile-first responsive design with Tailwind CSS and follows Trane's brand guidelines.
 
-### Logging
-- System logs: Settings > Admin > System Logs
-- Audit trail: Complete tracking of all actions
-- Error monitoring: Integrated logging
+## 🛠️ Technology Stack
 
-### Performance Metrics
-- API response time: <200ms (target)
-- Database queries: <50ms (target)
-- Page load time: <2.5s (target)
-
-## 🔄 Updates & Maintenance
-
-### Weekly
-- Review error logs
-- Monitor performance metrics
-- Check security advisories
-
-### Monthly
-- Update dependencies
-- Review audit logs
-- Test backup/restore
-
-### Quarterly
-- Security audit
-- Performance optimization
-- Capacity planning
+- **Frontend:** Next.js 16 (App Router), React 19, TypeScript
+- **Styling:** Tailwind CSS 4
+- **Authentication:** NextAuth.js v5
+- **Database:** Prisma ORM with PostgreSQL/SQLite
+- **PDF Generation:** Custom template engine
+- **Email:** Resend/SendGrid/AWS SES compatible
+- **Storage:** Local filesystem or S3-compatible storage
+- **Security:** Rate limiting, CSRF protection, security headers
 
 ## 🛡️ Security Best Practices
 
@@ -239,6 +259,12 @@ See `.env.example` for complete list.
 4. **Regular backups** - Automated daily backups
 5. **Monitor logs** - Review security events weekly
 6. **Keep updated** - Regular dependency updates
+
+## 🤝 Support
+
+- **Documentation:** See `/docs` folder for comprehensive guides
+- **Email:** support@example.com
+- **Emergency:** [Emergency contact information]
 
 ## 📝 License
 
@@ -252,4 +278,8 @@ For deployment help, see [Deployment Guide](./docs/DEPLOYMENT.md).
 
 ---
 
-**Built with**: Next.js 16, React 19, TypeScript, Tailwind CSS, NextAuth.js, Prisma
+**Built with**: Next.js 16, React 19, TypeScript, Tailwind CSS, Prisma, NextAuth.js
+
+**Security**: Rate limiting, CSRF protection, secure headers, input sanitization
+
+**Ready for**: Production deployment with comprehensive operational documentation

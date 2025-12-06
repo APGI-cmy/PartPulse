@@ -15,6 +15,7 @@ const navItems: NavItem[] = [
   { name: "Internal Transfer", href: "/internal-transfer", icon: "→" },
   { name: "Warranty Claims", href: "/warranty-claims", icon: "⚠" },
   { name: "Employees", href: "/employees", icon: "👥" },
+  { name: "Invite", href: "/users/invite", icon: "✉", adminOnly: true },
   { name: "Reports", href: "/reports", icon: "📊" },
   { name: "Settings", href: "/settings", icon: "⚙", adminOnly: true },
   { name: "Admin Dashboard", href: "/settings/admin", icon: "🔧", adminOnly: true },

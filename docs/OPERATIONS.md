@@ -1,370 +1,494 @@
 # PartPulse Operations Manual
 
-## Overview
+This manual provides guidance for day-to-day operations and maintenance of the PartPulse application.
 
-This manual provides operational guidelines for managing and maintaining the PartPulse application in production.
+## Table of Contents
 
-## Daily Operations
+1. [User Management](#user-management)
+2. [System Monitoring](#system-monitoring)
+3. [Data Management](#data-management)
+4. [Troubleshooting](#troubleshooting)
+5. [Maintenance Tasks](#maintenance-tasks)
+6. [Security Operations](#security-operations)
 
-### User Management
+## User Management
 
-#### Creating New Users
+### Creating New Users
 
-1. Navigate to `/users/invite`
-2. Enter user email and select role (Admin or Technician)
-3. System generates temporary password
-4. User receives invitation email
+**Admin users can invite new technicians and admins:**
+
+1. Navigate to **Settings** → **Users** → **Invite User**
+2. Enter user email and select role (Technician or Admin)
+3. Click **Send Invitation**
+4. User receives invitation email with setup link
+5. User clicks link and sets password
+6. Account is activated
+
+**Via API:**
+```bash
+curl -X POST https://yourdomain.com/api/users/invite \
+  -H "Content-Type: application/json" \
+  -H "x-csrf-token: YOUR_TOKEN" \
+  -d '{
+    "email": "user@example.com",
+    "role": "technician"
+  }'
+```
+
+### Resetting Passwords
+
+**Admin password reset:**
+
+1. Navigate to **Settings** → **Admin** → **Users**
+2. Find user and click **Reset Password**
+3. Temporary password is generated
+4. Admin provides password to user securely
 5. User must change password on first login
 
-#### Resetting User Passwords
+**Self-service password reset (if enabled):**
+- User clicks "Forgot Password" on login page
+- Receives reset email
+- Follows link to set new password
 
-1. Navigate to Settings > Admin > User Management
-2. Find user in list
-3. Click "Reset Password"
-4. System generates new temporary password
-5. Provide password to user securely (do not email)
+### Deactivating Users
 
-### Form Submissions
+1. Navigate to **Settings** → **Admin** → **Users**
+2. Find user and click **Deactivate**
+3. Confirm deactivation
+4. User loses access immediately
+5. User data is retained for audit purposes
 
-#### Internal Transfer Workflow
+### Role Changes
 
-1. Technician fills out Internal Transfer form
-2. System validates and sanitizes input
-3. PDF receipt generated automatically
-4. Email confirmation sent (if configured)
-5. Transfer appears in reports dashboard
+To change a user's role:
 
-#### Warranty Claim Workflow
+1. Navigate to **Settings** → **Admin** → **Users**
+2. Click **Edit** on user
+3. Select new role
+4. Save changes
+5. User's access updates immediately
 
-1. Technician fills out Warranty Claim form
-2. System validates parts information
-3. PDF generated with Trane branding
-4. Admin reviews and approves/rejects
-5. Updated PDF generated with admin signature
-6. Status updated in system
+## System Monitoring
 
-## Monitoring
+### Health Checks
 
-### System Health Checks
+**Application Health:**
+- URL: `/api/health`
+- Expected: `{"status":"ok"}`
+- Frequency: Every 5 minutes
 
-**Application Status**
-- Check uptime at `/api/health`
-- Monitor response times
-- Review error logs daily
-
-**Database Health**
-- Check connection pool usage
-- Monitor query performance
-- Review slow query logs
-
-**Storage Status**
-- Monitor disk usage (local storage)
-- Check S3 bucket size (if using S3)
-- Verify file permissions
-
-### Performance Monitoring
-
-**Metrics to Track**
-- API response times (target: <200ms)
-- Database query times (target: <50ms)
-- Page load times (target: <2.5s)
-- Error rates (target: <1%)
-
-**Caching**
-- Reports cached for 5 minutes
-- Cache automatically cleared on data changes
-- Manual cache clear: Restart application
-
-## Security Operations
-
-### Access Control
-
-**Role Permissions**
-- **Admin**: Full system access, user management, reports, settings
-- **Technician**: Submit forms, view own submissions, basic reports
-
-**Session Management**
-- Sessions expire after 24 hours of inactivity
-- Tokens refresh every hour
-- Force logout: Admin can reset user password
-
-### Security Monitoring
-
-**Failed Login Attempts**
-- View in Settings > Admin > System Logs
-- Automatic lockout after 5 failed attempts (per rate limiting)
-- Monitor for suspicious patterns
-
-**Audit Logging**
-- All actions logged with user ID and timestamp
-- Logs stored in database
-- Review logs weekly for anomalies
-
-## Maintenance
-
-### Regular Updates
-
-**Weekly Tasks**
+**Database Health:**
+- Check connection count
+- Monitor slow queries
 - Review error logs
-- Check system performance metrics
-- Verify backup integrity
 
-**Monthly Tasks**
-- Update dependencies: `npm update`
-- Review security advisories
-- Test disaster recovery procedures
-- Clean up old logs (>90 days)
+**Storage Health:**
+- Monitor disk usage (local)
+- Check S3 bucket size and costs (cloud)
+- Verify file accessibility
 
-**Quarterly Tasks**
-- Security audit
-- Performance optimization review
-- Capacity planning review
-- Update documentation
+### Performance Metrics
 
-### Database Maintenance
+**Key Metrics to Monitor:**
 
-**Backups**
-- Automated daily backups at 2 AM UTC
-- Retention: 30 days
-- Test restore monthly
+| Metric | Target | Alert Threshold |
+|--------|--------|-----------------|
+| Response Time (avg) | < 200ms | > 500ms |
+| Response Time (p95) | < 500ms | > 1000ms |
+| Error Rate | < 0.1% | > 1% |
+| CPU Usage | < 70% | > 85% |
+| Memory Usage | < 80% | > 90% |
+| Database Connections | < 80% pool | > 90% pool |
 
-**Migrations**
-- Run migrations during low-traffic windows
-- Always backup before migration
-- Test migrations in staging first
+### Log Review
 
-**Cleanup**
-- Archive old records (>1 year) quarterly
-- Vacuum database monthly (PostgreSQL)
-
-### Storage Maintenance
-
-**Local Storage**
-- Monitor disk usage
-- Clean up orphaned files monthly
-- Maximum storage: 100GB recommended
-
-**S3 Storage**
-- Enable lifecycle policies
-- Archive old PDFs to Glacier after 1 year
-- Monitor costs
-
-## Backup and Recovery
-
-### Backup Procedures
-
-**Database Backup**
+**Daily log review:**
 ```bash
-# Manual backup
-pg_dump partpulse > backup_$(date +%Y%m%d).sql
+# View application logs
+tail -f /var/log/partpulse/app.log
 
-# Restore
-psql partpulse < backup_20240101.sql
+# Search for errors
+grep ERROR /var/log/partpulse/app.log | tail -20
+
+# Check authentication failures
+grep "AUTH_FAILED" /var/log/partpulse/app.log
 ```
 
-**File Storage Backup**
-```bash
-# Local storage
-tar -czf storage_backup_$(date +%Y%m%d).tar.gz storage/
+**Log locations:**
+- Application: `/var/log/partpulse/app.log`
+- Database: `/var/log/postgresql/`
+- Nginx: `/var/log/nginx/`
+- Vercel: Integrated dashboard
 
-# S3 storage - enable versioning and cross-region replication
+### Alerts Configuration
+
+Set up alerts for:
+- Application errors (> 10 per hour)
+- Failed login attempts (> 5 per user per hour)
+- High response times (p95 > 1s)
+- Database connection pool exhaustion
+- Storage quota (> 90% used)
+- Email delivery failures
+
+## Data Management
+
+### Backup Schedule
+
+**Automated Backups:**
+- Database: Daily at 2:00 AM UTC
+- Files (S3): Continuous replication
+- Configuration: Weekly
+
+**Retention Policy:**
+- Daily backups: 7 days
+- Weekly backups: 4 weeks
+- Monthly backups: 12 months
+
+### Backup Verification
+
+**Monthly verification (first Monday):**
+1. Download latest backup
+2. Restore to test environment
+3. Verify data integrity
+4. Test critical workflows
+5. Document results
+
+### Data Export
+
+**Export Internal Transfers:**
+```bash
+# Via Admin Dashboard
+Settings → Admin → Reports → Export Transfers
+
+# Via API
+curl https://yourdomain.com/api/reports/transfers?format=csv \
+  -H "Authorization: Bearer TOKEN"
 ```
 
-### Disaster Recovery
+**Export Warranty Claims:**
+```bash
+# Via Admin Dashboard
+Settings → Admin → Reports → Export Claims
 
-**Recovery Time Objective (RTO)**: 4 hours  
-**Recovery Point Objective (RPO)**: 24 hours
+# Via API
+curl https://yourdomain.com/api/reports/claims?format=csv \
+  -H "Authorization: Bearer TOKEN"
+```
 
-**Recovery Steps**
-1. Restore database from latest backup
-2. Restore file storage
-3. Update environment variables
-4. Test application functionality
-5. Verify data integrity
-6. Resume normal operations
+### Data Retention
+
+**Retention Periods:**
+- Internal Transfers: 7 years
+- Warranty Claims: 10 years (regulatory requirement)
+- Audit Logs: 3 years
+- System Logs: 90 days
+
+**Archival Process:**
+1. Export data older than retention period
+2. Store in cold storage (S3 Glacier)
+3. Delete from production database
+4. Document archival in audit log
 
 ## Troubleshooting
 
 ### Common Issues
 
-**Issue: Users cannot login**
-- Check AUTH_SECRET is set correctly
-- Verify database connectivity
-- Check rate limiting logs
-- Ensure HTTPS is enabled
+#### 1. Users Cannot Login
 
-**Issue: PDFs not generating**
-- Check storage provider configuration
-- Verify file permissions (local storage)
-- Check S3 credentials (S3 storage)
-- Review error logs
+**Symptoms:** Login fails with "Invalid credentials"
 
-**Issue: Slow performance**
-- Check database query performance
-- Verify caching is enabled
-- Review server resources (CPU, memory)
-- Check for long-running queries
-
-**Issue: Email not sending**
-- Verify email service credentials
-- Check email domain configuration
-- Review email logs
-- Test with different recipient
-
-### Log Analysis
-
-**Access Logs**
+**Diagnosis:**
 ```bash
-# View recent activity
-tail -f logs/access.log
+# Check user exists
+npx prisma studio
+# Query: SELECT * FROM User WHERE email = 'user@example.com'
 
-# Search for errors
-grep "ERROR" logs/application.log
-
-# Count requests per hour
-cat logs/access.log | grep "$(date +%Y-%m-%d-%H)" | wc -l
+# Check authentication logs
+grep "user@example.com" /var/log/partpulse/auth.log
 ```
 
-**Error Logs**
-- Located in Settings > Admin > System Logs
-- Filter by event type, user, date range
-- Export logs for analysis
+**Resolution:**
+- Verify email is correct (case-sensitive)
+- Reset password for user
+- Check account is not locked/disabled
+- Verify AUTH_SECRET is configured
 
-## Contact and Escalation
+#### 2. Email Not Sending
+
+**Symptoms:** Users not receiving emails
+
+**Diagnosis:**
+```bash
+# Check email service status
+curl -X POST https://api.resend.com/emails/test \
+  -H "Authorization: Bearer $RESEND_API_KEY"
+
+# Check application logs
+grep "EMAIL" /var/log/partpulse/app.log | tail -20
+```
+
+**Resolution:**
+- Verify RESEND_API_KEY is valid
+- Check email service quota/limits
+- Verify sender domain is verified
+- Check spam folder
+- Review email service dashboard
+
+#### 3. PDF Generation Fails
+
+**Symptoms:** Downloads fail or return errors
+
+**Diagnosis:**
+```bash
+# Check storage configuration
+echo $STORAGE_PROVIDER
+echo $STORAGE_LOCAL_PATH
+
+# Verify write permissions
+ls -la storage/pdfs/
+
+# Check storage space
+df -h
+```
+
+**Resolution:**
+- Verify storage configuration
+- Check file system permissions
+- Ensure adequate disk space
+- Review PDF template syntax
+- Check S3 credentials (if using S3)
+
+#### 4. Slow Performance
+
+**Symptoms:** Pages load slowly
+
+**Diagnosis:**
+```bash
+# Check database query performance
+# Run EXPLAIN on slow queries
+
+# Monitor resource usage
+top
+htop
+
+# Check database connections
+# Query: SELECT count(*) FROM pg_stat_activity
+```
+
+**Resolution:**
+- Optimize database queries
+- Add database indexes
+- Increase server resources
+- Enable caching
+- Review application code for N+1 queries
+
+### Error Codes
+
+| Code | Meaning | Action |
+|------|---------|--------|
+| 401 | Unauthorized | User needs to login |
+| 403 | Forbidden | User lacks permissions |
+| 404 | Not Found | Resource doesn't exist |
+| 429 | Rate Limited | Wait and retry |
+| 500 | Server Error | Check logs, contact support |
+
+## Maintenance Tasks
+
+### Daily Tasks
+
+- [ ] Review error logs
+- [ ] Check system health dashboard
+- [ ] Verify backup completion
+- [ ] Monitor performance metrics
+
+### Weekly Tasks
+
+- [ ] Review user activity reports
+- [ ] Check security alerts
+- [ ] Review failed login attempts
+- [ ] Update system documentation
+- [ ] Check storage usage
+
+### Monthly Tasks
+
+- [ ] Test backup restore
+- [ ] Review and optimize database
+- [ ] Update dependencies (security patches)
+- [ ] Review and rotate logs
+- [ ] Audit user accounts
+- [ ] Generate monthly reports
+
+### Quarterly Tasks
+
+- [ ] Rotate secrets (see SECRET_ROTATION.md)
+- [ ] Security audit
+- [ ] Performance review
+- [ ] Capacity planning review
+- [ ] Disaster recovery test
+- [ ] Update documentation
+
+## Security Operations
+
+### Security Monitoring
+
+**Monitor for:**
+- Unusual login patterns
+- Failed authentication attempts
+- Permission escalation attempts
+- Unusual data access patterns
+- Suspicious API usage
+
+**Review daily:**
+```bash
+# Failed logins
+grep "AUTH_FAILED" /var/log/partpulse/auth.log | tail -50
+
+# Admin actions
+grep "ADMIN_ACTION" /var/log/partpulse/audit.log | tail -20
+
+# Rate limit violations
+grep "RATE_LIMIT" /var/log/partpulse/app.log
+```
+
+### Incident Response
+
+**If security incident detected:**
+
+1. **Contain:**
+   - Disable affected user accounts
+   - Rotate compromised credentials
+   - Block suspicious IP addresses
+
+2. **Investigate:**
+   - Review audit logs
+   - Identify scope of breach
+   - Document timeline
+
+3. **Remediate:**
+   - Patch vulnerabilities
+   - Update security controls
+   - Restore from backup if needed
+
+4. **Report:**
+   - Notify management
+   - Document incident
+   - Update security procedures
+
+### Access Review
+
+**Monthly access review:**
+1. List all active users
+2. Verify role assignments
+3. Deactivate unnecessary accounts
+4. Review admin access
+5. Document findings
+
+### Security Updates
+
+**Apply security updates promptly:**
+
+```bash
+# Check for updates
+npm outdated
+
+# Update dependencies
+npm update
+
+# Run security audit
+npm audit
+
+# Fix vulnerabilities
+npm audit fix
+```
+
+## Performance Optimization
+
+### Database Optimization
+
+**Monthly optimization:**
+```sql
+-- Analyze tables
+ANALYZE;
+
+-- Vacuum database
+VACUUM;
+
+-- Reindex
+REINDEX DATABASE partpulse;
+```
+
+### Cache Management
+
+**Clear cache if issues:**
+```bash
+# Application cache
+curl -X POST https://yourdomain.com/api/cache/clear \
+  -H "Authorization: Bearer ADMIN_TOKEN"
+
+# CDN cache (if using CloudFront)
+aws cloudfront create-invalidation --distribution-id ID --paths "/*"
+```
+
+### Query Optimization
+
+Monitor slow queries and optimize:
+1. Add appropriate indexes
+2. Optimize query structure
+3. Use database query plan analysis
+4. Consider caching frequently accessed data
+
+## Support Escalation
 
 ### Support Levels
 
-**Level 1**: Standard user issues
-- Users unable to login
-- Form submission errors
-- General questions
-- Response time: 4 hours
+**Level 1: User Support**
+- Password resets
+- Basic troubleshooting
+- How-to questions
 
-**Level 2**: System issues
-- Performance degradation
-- Database connectivity
-- Storage issues
-- Response time: 2 hours
+**Level 2: Technical Support**
+- Application errors
+- Performance issues
+- Integration problems
 
-**Level 3**: Critical outages
-- Complete system failure
-- Data loss
+**Level 3: Engineering**
+- System outages
 - Security incidents
-- Response time: 30 minutes
+- Critical bugs
 
-### Emergency Contacts
+### Contact Information
 
-**System Administrator**: [Contact Info]
-**Database Administrator**: [Contact Info]
-**Security Team**: [Contact Info]
-**DevOps Team**: [Contact Info]
-
-## Best Practices
-
-### User Support
-
-1. Always verify user identity before resetting passwords
-2. Document all administrative actions
-3. Provide clear instructions to users
-4. Follow up on reported issues
-
-### Data Management
-
-1. Never delete data without backup
-2. Archive old records instead of deleting
-3. Verify data integrity after migrations
-4. Document all manual data changes
-
-### Security
-
-1. Use strong passwords (minimum 16 characters)
-2. Enable 2FA for admin accounts (when available)
-3. Review access logs weekly
-4. Report security incidents immediately
-
-### Performance
-
-1. Monitor cache hit rates
-2. Optimize slow queries
-3. Scale resources proactively
-4. Document performance baselines
-
-## Change Management
-
-### Making Changes
-
-1. Test changes in staging environment
-2. Document changes in change log
-3. Schedule changes during maintenance windows
-4. Notify users of planned downtime
-5. Have rollback plan ready
-6. Monitor system after changes
-
-### Maintenance Windows
-
-**Scheduled Maintenance**: 
-- Sunday 2 AM - 4 AM UTC (weekly)
-- Notify users 48 hours in advance
-
-**Emergency Maintenance**:
-- As needed for critical issues
-- Notify users immediately
-
-## Reporting
-
-### Daily Reports
-- System uptime
-- Error count
-- Active users
-- Form submissions
-
-### Weekly Reports
-- Performance metrics
-- Security incidents
-- User growth
-- Storage usage
-
-### Monthly Reports
-- System health summary
-- Security audit
-- Capacity planning
-- Cost analysis
+- Level 1 Support: support@example.com
+- Level 2 Support: tech-support@example.com
+- Level 3 Emergency: [Emergency hotline]
+- Security Issues: security@example.com
 
 ## Appendix
 
 ### Useful Commands
 
 ```bash
-# Check application status
-pm2 status partpulse
+# Check application version
+curl https://yourdomain.com/api/version
 
-# Restart application
-pm2 restart partpulse
+# View active sessions
+npx prisma studio
+# Query: SELECT count(*) FROM Session WHERE expires > NOW()
 
-# View logs
-pm2 logs partpulse
-
-# Database migrations
-npx prisma migrate deploy
-
-# Seed database
-npm run db:seed
-
-# Clear cache
-# (Restart application)
-pm2 restart partpulse
+# Generate system report
+node scripts/system-report.js > report.txt
 ```
 
-### Configuration Files
+### Environment Variables
 
-- Environment: `.env.production`
-- Database: `prisma/schema.prisma`
-- Security: `lib/security/`
-- Storage: `lib/storage/`
+See `.env.example` for complete list of configuration options.
 
-### Important URLs
+### API Documentation
 
-- Application: `https://your-domain.com`
-- Admin Panel: `https://your-domain.com/settings/admin`
-- Reports: `https://your-domain.com/reports`
-- System Logs: `https://your-domain.com/settings/admin` (System Logs tab)
+Full API documentation available at: `https://yourdomain.com/api/docs`
+
+---
+
+**Last Updated:** 2024-01-01
+**Document Owner:** Operations Team
+**Review Schedule:** Quarterly

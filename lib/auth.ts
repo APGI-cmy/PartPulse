@@ -44,8 +44,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // 24 hours
-    updateAge: 60 * 60, // Update every hour
+    maxAge: 8 * 60 * 60, // 8 hours session timeout for security
   },
   pages: {
     signIn: "/auth/signin",
@@ -56,7 +55,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) {
         token.role = user.role
         token.id = user.id
-        token.iat = Math.floor(Date.now() / 1000)
+        token.iat = Math.floor(Date.now() / 1000) // Issue time
       }
       return token
     },
@@ -68,19 +67,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return session
     }
   },
-  // Security hardening
   cookies: {
     sessionToken: {
-      name: `__Secure-next-auth.session-token`,
+      name: process.env.NODE_ENV === 'production' 
+        ? '__Secure-next-auth.session-token'
+        : 'next-auth.session-token',
       options: {
         httpOnly: true,
         sameSite: 'lax',
         path: '/',
         secure: process.env.NODE_ENV === 'production',
-      },
-    },
+      }
+    }
   },
   useSecureCookies: process.env.NODE_ENV === 'production',
-  debug: process.env.NODE_ENV === 'development',
 })
 
