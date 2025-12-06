@@ -67,5 +67,3 @@ export function Textarea({
     </div>
   );
 }
-
-export { Input };
