@@ -4,8 +4,8 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
-import { Card, CardBody } from "@/components/ui/Card";
-import Button from "@/components/ui/Button";
+import { Card, CardBody } from "@/components/ui/card";
+import Button from "@/components/ui/button";
 
 function SuccessContent() {
   const searchParams = useSearchParams();

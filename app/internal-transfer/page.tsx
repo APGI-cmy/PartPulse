@@ -1,5 +1,5 @@
 import Header from "@/components/layout/Header";
-import { Card, CardBody } from "@/components/ui/Card";
+import { Card, CardBody } from "@/components/ui/card";
 import InternalTransferForm from "./InternalTransferForm";
 
 export default function InternalTransferPage() {
