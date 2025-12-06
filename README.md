@@ -1,4 +1,4 @@
-# PartPulse - Part Distribution App
+# PartPulse - Part Distribution & Warranty Management
 
 A modern, secure, production-ready web application for managing internal part transfers and warranty claims.
 
@@ -76,7 +76,12 @@ npx prisma db seed
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the application.
+Open [http://localhost:3000](http://localhost:3000)
+
+### Default Admin Credentials (Development)
+- Email: admin@example.com
+- Password: See output from `npm run db:seed`
+- **⚠️ Change immediately after first login**
 
 ### Default Credentials (Development)
 
@@ -125,16 +130,33 @@ vercel --prod
 
 ## 🔍 QA System
 
-The project includes an automated QA system that validates the codebase against architecture requirements:
+Run automated QA validation:
 
 ```bash
-# Run QA validation
 python3 qa/run-qa.py
 ```
 
-Reports are generated in:
-- `qa/QA_REPORT.md` - Human-readable markdown report
-- `qa/QA_RESULTS.json` - Machine-readable JSON results
+Reports generated:
+- `qa/QA_REPORT.md` - Human-readable report
+- `qa/QA_RESULTS.json` - Machine-readable results
+
+## 🚢 Deployment
+
+### Vercel (Recommended)
+```bash
+npm install -g vercel
+vercel --prod
+```
+
+### Docker
+```bash
+docker-compose up -d
+```
+
+### Traditional Hosting
+See [Deployment Guide](./docs/DEPLOYMENT.md) for detailed instructions.
+
+## 🔧 Configuration
 
 **Target:** 100% compliance with architecture specification
 
@@ -192,21 +214,27 @@ npm run build
 
 ## 📁 Project Structure
 
-```
-/app                    # Next.js app directory
-  /internal-transfer    # Transfer management pages
-  /warranty            # Warranty claims pages
-  /users/invite        # User invitation page
-  /reports             # Reports dashboard
-  /settings            # Settings page
-/components
-  /ui                  # Reusable UI components
-/architecture          # Architecture documentation
-/qa                    # QA validation system
-/rules.md             # App rules and specifications
+Required:
+```bash
+DATABASE_URL="postgresql://..."
+AUTH_SECRET="min-32-char-random-string"
+NEXTAUTH_URL="https://your-domain.com"
 ```
 
-## 🎨 Design System
+Optional:
+```bash
+# Email
+EMAIL_DOMAIN="your-domain.com"
+RESEND_API_KEY="re_xxx"
+
+# Storage (S3)
+STORAGE_PROVIDER="s3"
+STORAGE_S3_BUCKET="your-bucket"
+STORAGE_S3_ACCESS_KEY_ID="xxx"
+STORAGE_S3_SECRET_ACCESS_KEY="xxx"
+```
+
+See `.env.example` for complete list.
 
 **Primary Color**: #FF2B00 (Trane Red)
 
@@ -223,15 +251,14 @@ The application uses a mobile-first responsive design with Tailwind CSS and foll
 - **Storage:** Local filesystem or S3-compatible storage
 - **Security:** Rate limiting, CSRF protection, security headers
 
-## 📊 Next Steps (Wave 1)
+## 🛡️ Security Best Practices
 
-1. Implement Prisma database schema
-2. Set up NextAuth.js authentication
-3. Create API routes for transfers and claims
-4. Build form components
-5. Implement PDF generation
-6. Set up email notifications
-7. Continue until QA reaches 100%
+1. **Never commit secrets** - Use environment variables
+2. **Use strong passwords** - Minimum 16 characters
+3. **Enable HTTPS** - Required for production
+4. **Regular backups** - Automated daily backups
+5. **Monitor logs** - Review security events weekly
+6. **Keep updated** - Regular dependency updates
 
 ## 🤝 Support
 
@@ -242,6 +269,12 @@ The application uses a mobile-first responsive design with Tailwind CSS and foll
 ## 📝 License
 
 Proprietary - All rights reserved
+
+## 🤝 Support
+
+For operational issues, consult the [Operations Manual](./docs/OPERATIONS.md).
+
+For deployment help, see [Deployment Guide](./docs/DEPLOYMENT.md).
 
 ---
 

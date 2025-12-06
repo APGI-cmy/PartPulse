@@ -32,21 +32,15 @@ export async function savePDF(
     const storage = getStorage();
     const storagePath = `pdfs/warranty-claims/${filename}`;
     
-    const result = await storage.save(storagePath, content, 'application/pdf');
+    const path = await storage.save(storagePath, content, 'application/pdf');
+    const url = storage.getUrl(path);
     
-    if (result.success) {
-      console.log(`[PDF] Saved warranty claim PDF using storage provider: ${result.path}`);
-      return {
-        success: true,
-        path: result.path,
-        url: result.url,
-      };
-    } else {
-      console.error('[PDF] Storage provider returned error:', result.error);
-      return {
-        success: false,
-      };
-    }
+    console.log(`[PDF] Saved warranty claim PDF using storage provider: ${path}`);
+    return {
+      success: true,
+      path,
+      url,
+    };
   } catch (error) {
     console.error('[PDF] Error saving warranty claim PDF:', error);
     return {

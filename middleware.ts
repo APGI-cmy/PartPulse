@@ -1,9 +1,18 @@
 import { auth } from "@/lib/auth"
 import { NextResponse } from "next/server"
+import { SECURITY_HEADERS } from "@/lib/security/utils"
 
 export default auth((req) => {
   const token = req.auth
   const path = req.nextUrl.pathname
+  
+  // Create response
+  const response = NextResponse.next()
+
+  // Add security headers to all responses
+  Object.entries(SECURITY_HEADERS).forEach(([key, value]) => {
+    response.headers.set(key, value)
+  })
 
   // Require authentication for protected routes
   if (!token) {
@@ -17,7 +26,7 @@ export default auth((req) => {
     }
   }
 
-  return NextResponse.next()
+  return response
 })
 
 export const config = {
