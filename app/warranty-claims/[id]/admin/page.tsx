@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Header from "@/components/layout/Header";
-import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/Card";
-import Button from "@/components/ui/Button";
+import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
+import Button from "@/components/ui/button";
 import type { SerializedWarrantyClaim } from "@/types";
 
 export default function WarrantyClaimAdminPage() {

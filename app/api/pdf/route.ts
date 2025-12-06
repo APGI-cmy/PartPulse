@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { generateInternalTransferPDF } from '@/lib/pdf/internalTransferPdf';
 import { generateWarrantyClaimPDF } from '@/lib/pdf/warrantyClaimPdf';
-import { getInternalTransferById, getWarrantyClaimById } from '@/lib/db/schema';
+import { getInternalTransfer, getWarrantyClaim } from '@/lib/db/schema';
 
 export async function POST(request: NextRequest) {
   try {
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     let pdfPath: string;
 
     if (type === 'transfer') {
-      const transfer = getInternalTransferById(id);
+      const transfer = await getInternalTransfer(id);
       if (!transfer) {
         return NextResponse.json(
           { success: false, error: { code: 'NOT_FOUND', message: 'Transfer not found' } },
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       }
       pdfPath = await generateInternalTransferPDF(transfer);
     } else if (type === 'claim') {
-      const claim = getWarrantyClaimById(id);
+      const claim = await getWarrantyClaim(id);
       if (!claim) {
         return NextResponse.json(
           { success: false, error: { code: 'NOT_FOUND', message: 'Claim not found' } },

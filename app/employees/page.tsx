@@ -1,6 +1,6 @@
 import Header from "@/components/layout/Header";
-import { Card, CardBody } from "@/components/ui/Card";
-import Button from "@/components/ui/Button";
+import { Card, CardBody } from "@/components/ui/card";
+import Button from "@/components/ui/button";
 
 export default function EmployeesPage() {
   return (

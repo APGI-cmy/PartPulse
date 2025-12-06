@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Input, { Textarea } from "@/components/ui/Input";
-import Button from "@/components/ui/Button";
-import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/Card";
+import Input, { Textarea } from "@/components/ui/input";
+import Button from "@/components/ui/button";
+import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
 import type { WarrantyItem } from "@/lib/db/schema";
 
 interface FormWarrantyItem {
