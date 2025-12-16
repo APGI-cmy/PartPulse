@@ -21,13 +21,16 @@ const PROJECT_ROOT = path.resolve(__dirname, '..');
 const SYMBOLS = {
   GREEN: '✅',
   RED: '🔴',
-  SEPARATOR: '='.repeat(70)
+  SEPARATOR_LENGTH: 70
 };
 
 const FORMATTING = {
   CATEGORY_PRECISION: 1,  // Decimal places for category percentages
   OVERALL_PRECISION: 1    // Decimal places for overall percentage
 };
+
+// Helper to create separator line
+const separator = () => '='.repeat(SYMBOLS.SEPARATOR_LENGTH);
 
 // Define required test files per QA_PLAN.md
 const REQUIRED_TEST_FILES = {
@@ -102,9 +105,9 @@ function checkFileExists(filePath) {
 }
 
 function checkQAPlanCompliance() {
-  console.log('\n' + SYMBOLS.SEPARATOR);
+  console.log('\n' + separator());
   console.log('QA Plan Compliance Check - Gap Analysis');
-  console.log(SYMBOLS.SEPARATOR);
+  console.log(separator());
   console.log('\nChecking test file requirements from QA_PLAN.md...\n');
 
   let totalFiles = 0;
@@ -139,7 +142,9 @@ function checkQAPlanCompliance() {
   // Print results by category
   for (const [category, result] of Object.entries(results)) {
     const status = result.missing === 0 ? `${SYMBOLS.GREEN} GREEN` : `${SYMBOLS.RED} RED`;
-    const percentage = ((result.existing / result.total) * 100).toFixed(FORMATTING.CATEGORY_PRECISION);
+    const percentage = result.total > 0
+      ? ((result.existing / result.total) * 100).toFixed(FORMATTING.CATEGORY_PRECISION)
+      : (0).toFixed(FORMATTING.CATEGORY_PRECISION);
     
     console.log(`${status} ${category}`);
     console.log(`   ${result.existing}/${result.total} files exist (${percentage}%)`);
@@ -154,18 +159,18 @@ function checkQAPlanCompliance() {
   }
 
   // Print summary
-  console.log(SYMBOLS.SEPARATOR);
+  console.log(separator());
   console.log('Summary');
-  console.log(SYMBOLS.SEPARATOR);
+  console.log(separator());
   console.log(`Total Test Files Required: ${totalFiles}`);
   console.log(`Existing: ${existingFiles} ${SYMBOLS.GREEN}`);
   console.log(`Missing: ${missingFiles} ${SYMBOLS.RED}`);
   
   const overallPercentage = totalFiles > 0 
     ? ((existingFiles / totalFiles) * 100).toFixed(FORMATTING.OVERALL_PRECISION)
-    : '0.0';
+    : (0).toFixed(FORMATTING.OVERALL_PRECISION);
   console.log(`Completion: ${overallPercentage}%`);
-  console.log(SYMBOLS.SEPARATOR);
+  console.log(separator());
 
   if (missingFiles > 0) {
     console.log(`\n${SYMBOLS.RED} STATUS: RED`);
