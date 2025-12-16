@@ -108,55 +108,67 @@ jobs:
           node-version: '20'
 
       # --------------------------------------------------
-      # 3. Prove execution context
+      # 3. Assert execution root invariants
       # --------------------------------------------------
-      - name: Prove execution context
+      - name: Assert execution root invariants
         run: |
-          echo "=== Working directory ==="
+          echo "=== INVARIANT 1: Working directory ==="
           pwd
-          echo "=== Directory listing ==="
-          ls
-          echo "=== Active package.json ==="
-          cat package.json
+          
+          echo "=== INVARIANT 2: Repository files exist ==="
+          ls -la
+          test -f package.json || (echo "❌ package.json missing" && exit 1)
+          test -f package-lock.json || (echo "❌ package-lock.json missing" && exit 1)
+          echo "✅ Both package.json and package-lock.json exist"
+          
+          echo "=== INVARIANT 3: Jest declared in devDependencies ==="
+          node -e "const pkg = require('./package.json'); if (!pkg.devDependencies || !pkg.devDependencies.jest) { console.error('❌ jest not in devDependencies'); process.exit(1); } console.log('✅ jest declared:', pkg.devDependencies.jest);"
 
       # --------------------------------------------------
-      # 4. Deterministic dependency install
+      # 4. Install with full visibility (no cache, verbose)
       # --------------------------------------------------
-      - name: Install dependencies (deterministic)
+      - name: Install dependencies with full tracing
         env:
           DATABASE_URL: 'file:./.ci-test-db.sqlite'
           CI: 'true'
         run: |
-          echo "=== npm version ==="
+          echo "=== npm version and config ==="
           npm --version
-
-          echo "=== npm config BEFORE install ==="
           npm config list
-          cat .npmrc || echo "no .npmrc"
-
-          echo "=== Checking lockfile for jest ==="
-          grep '"jest"' package-lock.json || echo "jest NOT in package-lock.json"
-
-          echo "=== Installing dependencies (FORCE dev) ==="
-          npm ci --include=dev
-
-          echo "=== Verifying install ==="
-          test -d node_modules || (echo "❌ node_modules missing" && exit 1)
           
-          echo "=== Diagnostics: package.json devDependencies ==="
-          node -e "console.log(require('./package.json').devDependencies)"
+          echo "=== .npmrc (if exists) ==="
+          cat .npmrc 2>/dev/null || echo "No .npmrc file"
           
-          echo "=== Diagnostics: npm ls jest ==="
-          npm ls jest || true
+          echo "=== Running: npm ci --include=dev --loglevel=verbose ==="
+          npm ci --include=dev --loglevel=verbose
           
-          echo "=== Diagnostics: jest module directory ==="
-          ls node_modules/jest || echo "node_modules/jest NOT present"
+          echo "=== Post-install: Verify node_modules ==="
+          test -d node_modules || (echo "❌ node_modules directory missing" && exit 1)
+          echo "✅ node_modules exists"
           
-          echo "=== Attempting require.resolve ==="
-          node -e "require.resolve('jest')" || (echo "❌ jest not found" && exit 1)
-          echo "✅ jest installed successfully"
-          echo "=== Jest location ==="
-          node -e "console.log(require.resolve('jest'))"
+          echo "=== Post-install: Show dependency tree for jest ==="
+          npm ls jest || echo "⚠️ npm ls jest failed (expected if jest not installed)"
+          
+          echo "=== Post-install: Check physical jest installation ==="
+          if [ -d node_modules/jest ]; then
+            echo "✅ node_modules/jest EXISTS"
+            ls -la node_modules/jest | head -20
+          else
+            echo "❌ node_modules/jest DOES NOT EXIST"
+            echo "Listing node_modules root (first 50 entries):"
+            ls node_modules | head -50
+          fi
+          
+          echo "=== Post-install: Test jest resolution ==="
+          if npx jest --version 2>/dev/null; then
+            echo "✅ npx jest works"
+          else
+            echo "❌ npx jest fails"
+          fi
+          
+          echo "=== FINAL ASSERTION: jest must be resolvable ==="
+          node -e "require.resolve('jest')" || (echo "❌ CRITICAL: jest cannot be resolved despite npm ci completing" && exit 1)
+          echo "✅ jest is resolvable at: $(node -e "console.log(require.resolve('jest'))")"
 
       # --------------------------------------------------
       # 5. Run tests
