@@ -37,7 +37,7 @@ describe('QA Parking', () => {
     const registry = JSON.parse(fs.readFileSync(registryPath, 'utf-8'));
     
     const now = new Date();
-    const expired = registry.parkedItems.filter((entry: any) => {
+    const expired = registry.parkedItems.filter((entry: { expiryDate?: string }) => {
       if (entry.expiryDate) {
         return new Date(entry.expiryDate) < now;
       }
