@@ -3,6 +3,10 @@ name: Minimum Build-to-Red Gate
 # CI scaffolding that enforces basic hygiene while the full RED QA suite is being implemented.
 # This is NON-SEMANTIC enforcement only - it does NOT relax BUILD-TO-GREEN requirements.
 # Blocks merges on hygiene violations. Full governance remains mandatory and unaltered.
+#
+# LIFECYCLE AWARENESS: This workflow respects .governance/BUILD_TO_GREEN_COMPLETE
+# When BUILD-TO-GREEN is complete, this workflow becomes advisory (passes automatically)
+# and full enforcement shifts to qa-enforcement.yml
 
 on:
   pull_request:
@@ -12,15 +16,45 @@ permissions:
   contents: read
 
 jobs:
-  lockfile-check:
-    name: Dependency Lockfile Verification
+  lifecycle-check:
+    name: Build-to-Green Lifecycle Check
     runs-on: ubuntu-latest
+    outputs:
+      build_to_green_complete: ${{ steps.check.outputs.complete }}
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
       
+      - name: Check BUILD_TO_GREEN_COMPLETE marker
+        id: check
+        run: |
+          if [ -f ".governance/BUILD_TO_GREEN_COMPLETE" ]; then
+            echo "✅ BUILD-TO-GREEN COMPLETE marker found"
+            echo "complete=true" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️  BUILD-TO-GREEN in progress (marker not found)"
+            echo "complete=false" >> $GITHUB_OUTPUT
+          fi
+
+  lockfile-check:
+    name: Dependency Lockfile Verification
+    runs-on: ubuntu-latest
+    needs: lifecycle-check
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Skip if BUILD-TO-GREEN complete
+        if: needs.lifecycle-check.outputs.build_to_green_complete == 'true'
+        run: |
+          echo "✅ SKIPPED - BUILD-TO-GREEN complete"
+          echo "This check is only enforced during BUILD-TO-GREEN phase"
+          exit 0
+      
       - name: Verify package-lock.json exists
+        if: needs.lifecycle-check.outputs.build_to_green_complete != 'true'
         run: |
           if [ ! -f "package-lock.json" ]; then
             echo "❌ FAILED - package-lock.json not found"
@@ -34,21 +68,32 @@ jobs:
   test-dodging-check:
     name: Test Dodging Detection
     runs-on: ubuntu-latest
+    needs: lifecycle-check
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
       
+      - name: Skip if BUILD-TO-GREEN complete
+        if: needs.lifecycle-check.outputs.build_to_green_complete == 'true'
+        run: |
+          echo "✅ SKIPPED - BUILD-TO-GREEN complete"
+          echo "Test dodging is enforced by qa-enforcement.yml"
+          exit 0
+      
       - name: Setup Node.js
+        if: needs.lifecycle-check.outputs.build_to_green_complete != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
       
       - name: Install dependencies
+        if: needs.lifecycle-check.outputs.build_to_green_complete != 'true'
         run: npm ci
       
       - name: Run Test Dodging Detector
+        if: needs.lifecycle-check.outputs.build_to_green_complete != 'true'
         run: |
           echo "Checking for forbidden test-dodging patterns..."
           node qa/detect-test-dodging.js
@@ -62,21 +107,32 @@ jobs:
   lint-check:
     name: Lint Check
     runs-on: ubuntu-latest
+    needs: lifecycle-check
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
       
+      - name: Skip if BUILD-TO-GREEN complete
+        if: needs.lifecycle-check.outputs.build_to_green_complete == 'true'
+        run: |
+          echo "✅ SKIPPED - BUILD-TO-GREEN complete"
+          echo "Linting is enforced by qa-enforcement.yml or other gates"
+          exit 0
+      
       - name: Setup Node.js
+        if: needs.lifecycle-check.outputs.build_to_green_complete != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
       
       - name: Install dependencies
+        if: needs.lifecycle-check.outputs.build_to_green_complete != 'true'
         run: npm ci
       
       - name: Run ESLint
+        if: needs.lifecycle-check.outputs.build_to_green_complete != 'true'
         run: |
           echo "Running ESLint..."
           npx eslint . --max-warnings 0
@@ -90,21 +146,32 @@ jobs:
   typecheck:
     name: TypeScript Type Check
     runs-on: ubuntu-latest
+    needs: lifecycle-check
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
       
+      - name: Skip if BUILD-TO-GREEN complete
+        if: needs.lifecycle-check.outputs.build_to_green_complete == 'true'
+        run: |
+          echo "✅ SKIPPED - BUILD-TO-GREEN complete"
+          echo "Type checking is enforced by qa-enforcement.yml or other gates"
+          exit 0
+      
       - name: Setup Node.js
+        if: needs.lifecycle-check.outputs.build_to_green_complete != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
       
       - name: Install dependencies
+        if: needs.lifecycle-check.outputs.build_to_green_complete != 'true'
         run: npm ci
       
       - name: Run TypeScript Compiler
+        if: needs.lifecycle-check.outputs.build_to_green_complete != 'true'
         run: |
           echo "Running TypeScript type checking..."
           npx tsc --noEmit
@@ -118,21 +185,32 @@ jobs:
   build-check:
     name: Build Check
     runs-on: ubuntu-latest
+    needs: lifecycle-check
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
       
+      - name: Skip if BUILD-TO-GREEN complete
+        if: needs.lifecycle-check.outputs.build_to_green_complete == 'true'
+        run: |
+          echo "✅ SKIPPED - BUILD-TO-GREEN complete"
+          echo "Build validation is enforced by qa-enforcement.yml or other gates"
+          exit 0
+      
       - name: Setup Node.js
+        if: needs.lifecycle-check.outputs.build_to_green_complete != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
       
       - name: Install dependencies
+        if: needs.lifecycle-check.outputs.build_to_green_complete != 'true'
         run: npm ci
       
       - name: Build Application
+        if: needs.lifecycle-check.outputs.build_to_green_complete != 'true'
         run: |
           echo "Building Next.js application..."
           npm run build
@@ -146,14 +224,41 @@ jobs:
   minimum-gate:
     name: Hygiene Gate
     runs-on: ubuntu-latest
-    needs: [lockfile-check, test-dodging-check, lint-check, typecheck, build-check]
+    needs: [lifecycle-check, lockfile-check, test-dodging-check, lint-check, typecheck, build-check]
     if: always()
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
       
+      - name: Check Lifecycle State
+        id: lifecycle
+        run: |
+          if [ "${{ needs.lifecycle-check.outputs.build_to_green_complete }}" == "true" ]; then
+            echo "lifecycle_complete=true" >> $GITHUB_OUTPUT
+          else
+            echo "lifecycle_complete=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Lifecycle Complete - Skip Hygiene Checks
+        if: steps.lifecycle.outputs.lifecycle_complete == 'true'
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Minimum Build-to-Red Gate - LIFECYCLE COMPLETE"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "✅ BUILD-TO-GREEN phase complete"
+          echo "✅ This workflow is now advisory only"
+          echo "✅ Full enforcement via qa-enforcement.yml"
+          echo ""
+          echo "Marker file: .governance/BUILD_TO_GREEN_COMPLETE"
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✅ HYGIENE GATE PASSED (advisory mode)"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      
       - name: Check All Hygiene Gates
+        if: steps.lifecycle.outputs.lifecycle_complete != 'true'
         run: |
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo "Minimum Build-to-Red Gate - Hygiene Enforcement"
