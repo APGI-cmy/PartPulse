@@ -276,13 +276,6 @@ Use when:
 - Impact assessment
 
 **Approval**: Repo owner must approve before DP-RED
-- Type of parking
-- Detailed justification
-- Location/path
-- Expiry condition
-- Impact assessment
-
-**Approval**: Repo owner must approve before parking
 
 ---
 

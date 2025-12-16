@@ -167,7 +167,7 @@ class QAParkingWatcher {
       if (item.status === 'active') {
         activeItems.push(item);
         
-        // Categorize by parking type (default to 'parking' for backward compatibility)
+        // Categorize by category type (default to 'parking' for backward compatibility)
         const category = item.category || 'parking';
         if (category === 'dp-red') {
           dpRedItems.push(item);
