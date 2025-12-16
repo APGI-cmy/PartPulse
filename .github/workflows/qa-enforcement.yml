@@ -92,12 +92,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    env:
-      # CI Runtime Configuration - Complete declaration of all runtime requirements
-      # Database configuration for Prisma (REQUIRED)
-      DATABASE_URL: 'file:./.ci-test-db.sqlite'
-      # CI environment markers
-      CI: 'true'
     steps:
       - uses: actions/checkout@v4
       
@@ -105,11 +99,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          # cache: 'npm' - REMOVED: Must not restore cached dependencies before our explicit install step
       
       - name: Install dependencies (prove env)
         env:
           NODE_ENV: development
+          DATABASE_URL: 'file:./.ci-test-db.sqlite'
+          CI: 'true'
         run: |
           echo "NODE_ENV before install=$NODE_ENV"
           npm ci
@@ -118,6 +114,8 @@ jobs:
       - name: Run Tests
         env:
           NODE_ENV: 'test'
+          DATABASE_URL: 'file:./.ci-test-db.sqlite'
+          CI: 'true'
         run: npm run test:ci
       
       - name: Evidence Capture on Failure
