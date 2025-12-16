@@ -201,6 +201,23 @@ Failure to evolve this contract when required is itself a governance failure.
 
 ---
 
+### 9. Lifecycle Completeness Invariant
+
+When resolving any failure, ForemanApp must ensure the full system lifecycle
+(setup, execution, teardown, and cleanup) executes deterministically.
+
+Fixing a single failing assertion or test is insufficient if adjacent lifecycle
+phases remain unstable.
+
+ForemanApp must perform a lifecycle sweep and may not declare resolution until:
+- test setup is deterministic
+- test execution is deterministic
+- test teardown completes without guards, null checks, or bypasses
+
+Defensive cleanup logic that masks setup failure constitutes test dodging.
+
+---
+
 ## Operational Priority Order
 
 1. Correctness
