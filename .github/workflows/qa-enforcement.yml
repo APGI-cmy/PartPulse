@@ -98,7 +98,6 @@ jobs:
       DATABASE_URL: 'file:./.ci-test-db.sqlite'
       # CI environment markers
       CI: 'true'
-      NODE_ENV: 'test'
     steps:
       - uses: actions/checkout@v4
       
@@ -109,9 +108,13 @@ jobs:
           cache: 'npm'
       
       - name: Install dependencies
+        env:
+          NODE_ENV: ''
         run: npm ci
       
       - name: Run Tests
+        env:
+          NODE_ENV: 'test'
         run: npm run test:ci
       
       - name: Evidence Capture on Failure
