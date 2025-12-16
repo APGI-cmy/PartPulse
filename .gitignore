@@ -47,7 +47,7 @@ next-env.d.ts
 *.db-journal
 *.sqlite
 *.sqlite-journal
-.tmp-test-db.sqlite
+.ci-test-db.sqlite
 prisma/migrations
 /storage/
 

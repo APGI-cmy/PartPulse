@@ -83,6 +83,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      # Explicit CI runtime configuration for Prisma
+      # Tests must not compensate for missing DATABASE_URL
+      DATABASE_URL: 'file:./.ci-test-db.sqlite'
     steps:
       - uses: actions/checkout@v4
       
