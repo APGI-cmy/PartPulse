@@ -107,22 +107,13 @@ jobs:
           node-version: '20'
           cache: 'npm'
       
-      - name: Debug environment before npm ci
-        run: |
-          echo "=== Environment check before npm ci ==="
-          env | grep NODE_ENV || echo "NODE_ENV not set"
-          echo "=== End environment check ==="
-      
-      - name: Install dependencies
+      - name: Install dependencies (prove env)
         env:
           NODE_ENV: development
-        run: npm ci
-      
-      - name: Debug jest installation after npm ci
         run: |
-          echo "=== Checking jest installation ==="
-          ls node_modules/.bin | grep jest || echo "jest not found in node_modules/.bin"
-          echo "=== End jest check ==="
+          echo "NODE_ENV before install=$NODE_ENV"
+          npm ci
+          ls node_modules/.bin | grep jest || echo "jest NOT installed"
       
       - name: Run Tests
         env:
