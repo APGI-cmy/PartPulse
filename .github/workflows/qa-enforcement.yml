@@ -134,6 +134,9 @@ jobs:
           npm config list
           cat .npmrc || echo "no .npmrc"
 
+          echo "=== Checking lockfile for jest ==="
+          grep '"jest"' package-lock.json || echo "jest NOT in package-lock.json"
+
           echo "=== Installing dependencies (FORCE dev) ==="
           npm ci --include=dev
 
