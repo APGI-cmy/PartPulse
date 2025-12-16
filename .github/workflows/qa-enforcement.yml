@@ -142,10 +142,10 @@ jobs:
 
           echo "=== Verifying install ==="
           test -d node_modules || (echo "❌ node_modules missing" && exit 1)
-          [ -x node_modules/.bin/jest ] || (echo "❌ jest not found" && exit 1)
+          node -e "require.resolve('jest')" || (echo "❌ jest not found" && exit 1)
           echo "✅ jest installed successfully"
-          echo "=== Installed binaries (first 20) ==="
-          ls -la node_modules/.bin/ | head -20
+          echo "=== Jest location ==="
+          node -e "console.log(require.resolve('jest'))"
 
       # --------------------------------------------------
       # 5. Run tests
