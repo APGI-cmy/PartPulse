@@ -201,8 +201,12 @@ PartPulse has completed the mandatory True North execution sequence:
 
 #### Minimum Build-to-Red Gate
 **Workflow**: `.github/workflows/minimum-build-to-red.yml`  
-**Purpose**: CI hygiene scaffolding  
-**Status**: ✅ ACTIVE
+**Purpose**: CI hygiene scaffolding (lifecycle-aware)  
+**Status**: ✅ ACTIVE (advisory mode post-BUILD-TO-GREEN)
+
+**Lifecycle Behavior**:
+- **Pre-BUILD-TO-GREEN**: Enforces hygiene checks (lockfile, test dodging, lint, typecheck, build)
+- **Post-BUILD-TO-GREEN**: Advisory only (automatically passes)
 
 **Checks**:
 - Dependency lockfile exists
@@ -211,23 +215,29 @@ PartPulse has completed the mandatory True North execution sequence:
 - TypeScript type checking passes
 - Next.js build succeeds
 
-**Nature**: Non-semantic hygiene enforcement  
-**Note**: Does NOT relax BUILD-TO-GREEN requirements
+**Nature**: Temporary scaffolding during BUILD-TO-GREEN phase
+**Lifecycle Marker**: `.governance/BUILD_TO_GREEN_COMPLETE`  
+**Current State**: Advisory mode (BUILD-TO-GREEN complete)
 
 #### QA Enforcement Gate
 **Workflow**: `.github/workflows/qa-enforcement.yml`  
 **Purpose**: Full BUILD-TO-GREEN enforcement  
-**Status**: ✅ ACTIVE
+**Status**: ✅ ACTIVE (always enforced)
 
 **Checks**:
-- Test dodging detection
-- QA parking validation
-- Governance policy sync
-- Full test suite execution (0/37 currently)
-- Merge gate aggregation
+- Test dodging detection (always enforced)
+- QA parking validation (always enforced)
+- Governance policy sync (always enforced)
+- Full test suite execution (37+ tests, always enforced)
+- Merge gate aggregation (always enforced)
 
-**Nature**: Mandatory governance enforcement  
-**Blocks**: Merge on any RED state
+**Nature**: Mandatory governance enforcement (lifecycle-independent)  
+**Blocks**: Merge on any RED state (regardless of lifecycle)
+
+#### CI Lifecycle Documentation
+**Document**: [CI_LIFECYCLE_GATES.md](docs/governance/CI_LIFECYCLE_GATES.md)  
+**Purpose**: Defines CI gate behavior across BUILD-TO-GREEN lifecycle  
+**Status**: ✅ ACTIVE
 
 #### Model Scaling Check
 **Workflow**: `.github/workflows/model-scaling-check.yml`  
@@ -241,8 +251,9 @@ PartPulse has completed the mandatory True North execution sequence:
 ### Core Governance
 1. [QA_GOVERNANCE_GUIDE.md](docs/governance/QA_GOVERNANCE_GUIDE.md) - Complete compliance guide
 2. [POLICY_VERSION.md](docs/governance/POLICY_VERSION.md) - Current policy version (1.1.0)
-3. [ARCHITECTURE_DESIGN_CHECKLIST.md](governance/architecture/ARCHITECTURE_DESIGN_CHECKLIST.md) - Architecture compliance checklist
-4. [IMPLEMENTATION_SUMMARY.md](docs/governance/IMPLEMENTATION_SUMMARY.md) - Implementation governance summary
+3. [CI_LIFECYCLE_GATES.md](docs/governance/CI_LIFECYCLE_GATES.md) - CI gate lifecycle behavior
+4. [ARCHITECTURE_DESIGN_CHECKLIST.md](governance/architecture/ARCHITECTURE_DESIGN_CHECKLIST.md) - Architecture compliance checklist
+5. [IMPLEMENTATION_SUMMARY.md](docs/governance/IMPLEMENTATION_SUMMARY.md) - Implementation governance summary
 
 ### Issue Templates
 1. [catastrophic-failure.yml](.github/ISSUE_TEMPLATE/catastrophic-failure.yml) - Report critical failures
@@ -350,6 +361,8 @@ Partial fixes, explanations, or improvements do NOT constitute completion.
 | 2025-12-16 | True North Phase 3 | RED QA defined (37 tests, 13 categories) |
 | 2025-12-16 | True North Phase 4 | BUILD-TO-GREEN plan created |
 | 2025-12-16 | Status Document | GOVERNANCE_STATUS.md created (this document) |
+| 2025-12-16 | CI Lifecycle | Implemented lifecycle-aware CI gates |
+| 2025-12-16 | CI Documentation | CI_LIFECYCLE_GATES.md created |
 
 ---
 
