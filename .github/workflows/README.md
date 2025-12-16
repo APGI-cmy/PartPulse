@@ -4,11 +4,11 @@ This directory contains all CI/CD workflows for PartPulse.
 
 ## Active Workflows
 
-### 1. Minimum Build-to-Red Gate (Bootstrap)
+### 1. Minimum Build-to-Red Gate
 
 **File**: `minimum-build-to-red.yml`
 
-**Purpose**: Temporary bootstrap gate enforcing basic PR hygiene while the full QA suite is being built.
+**Purpose**: CI scaffolding enforcing basic hygiene while the full RED QA suite (37 tests per QA_PLAN.md) is being implemented.
 
 **Trigger**: Pull requests to `main` and `develop` branches
 
@@ -19,13 +19,14 @@ This directory contains all CI/CD workflows for PartPulse.
 - ✅ TypeScript type checking passes
 - ✅ Next.js build succeeds
 
-**Status**: BOOTSTRAP ONLY - Will be replaced by full Build-to-Green governance
+**Status**: ACTIVE - Non-semantic hygiene enforcement
 
 **Notes**:
-- Does NOT replace full QA enforcement
-- Provides minimum viable gate during bootstrap phase
-- Clearly labeled as temporary in all output
-- Blocks PR merge if any check fails
+- This is CI scaffolding ONLY - enforces basic hygiene
+- Does NOT relax BUILD-TO-GREEN requirements
+- Full governance remains mandatory and unaltered
+- Blocks PR merge on hygiene violations (fail closed)
+- Full QA enforcement remains in qa-enforcement.yml
 
 ---
 
@@ -66,39 +67,37 @@ This directory contains all CI/CD workflows for PartPulse.
 
 ---
 
-## Relationship Between Workflows
+## Workflow Relationship
 
 ```
 Pull Request Created
         |
-        |── minimum-build-to-red.yml (Bootstrap gate - basic hygiene)
-        |   └── BLOCKS: Merge if hygiene fails
+        |── minimum-build-to-red.yml (Hygiene scaffolding)
+        |   ├── Enforces: Lockfile, no test dodging, lint, typecheck, build
+        |   └── BLOCKS: Merge on hygiene violations
         |
-        |── qa-enforcement.yml (Full governance - when ready)
-        |   └── BLOCKS: Merge if any RED state
+        |── qa-enforcement.yml (Full governance)
+        |   ├── Enforces: Full BUILD-TO-GREEN requirements
+        |   └── BLOCKS: Merge on any RED state
         |
         └── model-scaling-check.yml (Policy compliance)
             └── VALIDATES: Model usage patterns
 ```
 
-## Future Evolution
+## Execution Order & Governance
 
-As the QA test suite reaches completion (per `qa/QA_PLAN.md`):
+PartPulse follows True North execution order:
+1. ✅ APP_DESCRIPTION (complete)
+2. ✅ ARCHITECTURE (11 docs, complete)
+3. 🔴 RED QA (0/37 tests exist - being implemented)
+4. ❌ BUILD-TO-GREEN (mandatory, not yet achieved)
+5. ❌ MERGE (blocked until BUILD-TO-GREEN)
 
-1. **Bootstrap Phase** (Current)
-   - `minimum-build-to-red.yml` provides basic hygiene
-   - Full test suite under construction
-   - Gap analysis approach intentionally starts RED
+**Hygiene vs. Governance:**
+- `minimum-build-to-red.yml` = Non-semantic hygiene (lockfile, no dodging, builds)
+- `qa-enforcement.yml` = Full BUILD-TO-GREEN governance (37 tests + parking + sync)
 
-2. **Transition Phase** (When test suite >80% complete)
-   - Both workflows run in parallel
-   - `minimum-build-to-red.yml` marked for deprecation
-   - Migration to full governance
-
-3. **Governance Phase** (When test suite complete)
-   - `minimum-build-to-red.yml` removed
-   - `qa-enforcement.yml` becomes sole merge gate
-   - Full Build-to-Green enforcement
+Both must pass. Neither relaxes requirements.
 
 ## Governance Compliance
 
