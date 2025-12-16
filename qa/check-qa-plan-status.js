@@ -6,12 +6,20 @@
  * Expected to be RED on first run (gap analysis approach).
  * 
  * This script checks for the existence of test files required by QA_PLAN.md.
+ * 
+ * Exit codes:
+ *   0 - All test files exist (GREEN)
+ *   1 - Test files missing (expected RED for gap analysis)
  */
 
 const fs = require('fs');
 const path = require('path');
 
 const PROJECT_ROOT = path.resolve(__dirname, '..');
+
+// Constants for consistent symbols
+const GREEN_EMOJI = '✅';
+const RED_EMOJI = '🔴';
 
 // Define required test files per QA_PLAN.md
 const REQUIRED_TEST_FILES = {
@@ -122,7 +130,7 @@ function checkQAPlanCompliance() {
 
   // Print results by category
   for (const [category, result] of Object.entries(results)) {
-    const status = result.missing === 0 ? '✅ GREEN' : '🔴 RED';
+    const status = result.missing === 0 ? `${GREEN_EMOJI} GREEN` : `${RED_EMOJI} RED`;
     const percentage = ((result.existing / result.total) * 100).toFixed(0);
     
     console.log(`${status} ${category}`);
@@ -142,23 +150,23 @@ function checkQAPlanCompliance() {
   console.log('Summary');
   console.log('='.repeat(70));
   console.log(`Total Test Files Required: ${totalFiles}`);
-  console.log(`Existing: ${existingFiles} ✅`);
-  console.log(`Missing: ${missingFiles} 🔴`);
+  console.log(`Existing: ${existingFiles} ${GREEN_EMOJI}`);
+  console.log(`Missing: ${missingFiles} ${RED_EMOJI}`);
   
   const overallPercentage = ((existingFiles / totalFiles) * 100).toFixed(1);
   console.log(`Completion: ${overallPercentage}%`);
   console.log('='.repeat(70));
 
   if (missingFiles > 0) {
-    console.log('\n🔴 STATUS: RED');
+    console.log(`\n${RED_EMOJI} STATUS: RED`);
     console.log('\nThis is expected behavior for gap analysis approach.');
     console.log('The QA Plan reveals gaps between architecture and implementation.');
     console.log('Next step: Build-to-GREEN by systematically implementing missing tests.\n');
-    return 1; // Exit with error code
+    return 1; // Exit code 1 indicates expected RED (gap analysis result)
   } else {
-    console.log('\n✅ STATUS: GREEN');
+    console.log(`\n${GREEN_EMOJI} STATUS: GREEN`);
     console.log('\nAll required test files exist per QA_PLAN.md.\n');
-    return 0; // Exit with success
+    return 0; // Exit code 0 indicates success
   }
 }
 
