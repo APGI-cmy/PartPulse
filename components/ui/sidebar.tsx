@@ -3,23 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-
-interface NavItem {
-  name: string;
-  href: string;
-  icon: string;
-  adminOnly?: boolean;
-}
-
-const navItems: NavItem[] = [
-  { name: "Internal Transfer", href: "/internal-transfer", icon: "→" },
-  { name: "Warranty Claims", href: "/warranty-claims", icon: "⚠" },
-  { name: "Employees", href: "/employees", icon: "👥" },
-  { name: "Invite", href: "/users/invite", icon: "✉", adminOnly: true },
-  { name: "Reports", href: "/reports", icon: "📊" },
-  { name: "Settings", href: "/settings", icon: "⚙", adminOnly: true },
-  { name: "Admin Dashboard", href: "/settings/admin", icon: "🔧", adminOnly: true },
-];
+import { navItems } from "@/lib/routes";
 
 export default function Sidebar() {
   const pathname = usePathname();
