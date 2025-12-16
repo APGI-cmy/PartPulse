@@ -1,0 +1,72 @@
+name: QA Enforcement v2 (Clean Rewrite)
+
+on:
+  pull_request:
+
+jobs:
+  test-execution:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Assert invariants and install
+        run: |
+          set -e
+          
+          echo "=== INVARIANT 1: Prove execution root ==="
+          pwd
+          ls -la
+          
+          echo "=== INVARIANT 2: Assert single package.json ==="
+          PACKAGE_COUNT=$(find . -name package.json -not -path "./node_modules/*" | wc -l)
+          echo "Found $PACKAGE_COUNT package.json files"
+          find . -name package.json -not -path "./node_modules/*"
+          test "$PACKAGE_COUNT" -eq 1 || exit 1
+          
+          echo "=== INVARIANT 3: Assert files exist ==="
+          test -f package.json || exit 1
+          test -f package-lock.json || exit 1
+          
+          echo "=== INVARIANT 4: Show npm configuration ==="
+          npm --version
+          npm prefix
+          npm config get workspace || true
+          
+          echo "=== INVARIANT 5: Show jest in package.json ==="
+          node -e "const pkg = require('./package.json'); console.log('devDependencies:', JSON.stringify(pkg.devDependencies, null, 2));"
+          
+          echo "=== INVARIANT 6: Install dependencies ==="
+          npm ci --include=dev --loglevel=verbose
+          
+          echo "=== INVARIANT 7: Verify node_modules exists ==="
+          test -d node_modules || exit 1
+          
+          echo "=== INVARIANT 8: Prove jest physical installation ==="
+          ls -la node_modules/ | head -20
+          test -d node_modules/jest || (echo "FAIL: node_modules/jest NOT present" && exit 1)
+          
+          echo "=== INVARIANT 9: Prove jest in dependency tree ==="
+          npm ls jest || (echo "WARNING: jest not in dependency tree" && exit 1)
+          
+          echo "=== INVARIANT 10: Prove npx can find jest ==="
+          npx jest --version || (echo "FAIL: npx jest failed" && exit 1)
+          
+          echo "=== INVARIANT 11: Prove require.resolve works ==="
+          node -e "console.log('jest resolved to:', require.resolve('jest'));" || (echo "FAIL: require.resolve('jest') failed" && exit 1)
+          
+          echo "=== ALL INVARIANTS PASSED ==="
+      
+      - name: Run test suite
+        env:
+          NODE_ENV: test
+          DATABASE_URL: 'file:./.ci-test-db.sqlite'
+          CI: 'true'
+        run: |
+          npm run test:ci
