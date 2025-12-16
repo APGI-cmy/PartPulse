@@ -46,6 +46,7 @@ describe('Warranty Claims API Endpoints', () => {
         ssidJobNumber: 'SSID-API-001',
         siteName: 'API Test Site',
         technicianName: 'Test Technician',
+        technicianId: testUser.id,
         coveredByWarranty: true,
         items: [
           {
@@ -95,6 +96,7 @@ describe('Warranty Claims API Endpoints', () => {
         ssidJobNumber: 'SSID-UPDATE-001',
         siteName: 'Update Test Site',
         technicianName: 'Test Technician',
+        technicianId: testUser.id,
         coveredByWarranty: true,
         items: [
           {

@@ -41,6 +41,7 @@ describe('Transfer API Endpoints', () => {
     it('should create a new transfer with valid data', async () => {
       const transferData = {
         technician: 'API Test Technician',
+        technicianId: testUser.id,
         department: 'Maintenance',
         transferType: 'internal',
         serial: 'SN-API-001',
