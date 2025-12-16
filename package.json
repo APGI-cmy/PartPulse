@@ -12,6 +12,7 @@
     "test:coverage": "jest --coverage",
     "test:ci": "jest --ci --coverage --maxWorkers=2",
     "qa:check": "node qa/detect-test-dodging.js && node qa/parking/watcher.js && node qa/governance/sync-checker.js && npm run test:ci",
+    "postinstall": "prisma generate",
     "db:seed": "tsx prisma/seed.ts"
   },
   "prisma": {
