@@ -66,12 +66,13 @@ No remediation required. Governance lineage is clean and properly delegated.
 
 #### Evidence:
 1. **ARCHITECTURE.md exists**: ✅ YES
-   - Location: `architecture/ARCHITECTURE.md`
+   - Primary: `architecture/architecture.md` (master specification)
+   - Secondary: `architecture/ARCHITECTURE.md` (high-level overview)
    - Status: Complete master architecture document
-   - References: 11 domain-specific architecture documents totaling 280 KB
+   - References: 11 domain-specific architecture documents (12 files total, 280+ KB)
 
 2. **Architecture documentation suite**: ✅ COMPLETE
-   - ARCHITECTURE.md (master) - 45,345 bytes
+   - architecture.md (master) - 45,345 bytes
    - DATABASE_SCHEMA.md - 16,415 bytes
    - FRONTEND_COMPONENTS.md - 19,277 bytes
    - COMPONENT_BOUNDARIES.md - 19,143 bytes
@@ -82,6 +83,8 @@ No remediation required. Governance lineage is clean and properly delegated.
    - EXTERNAL_DEPENDENCIES.md - 13,485 bytes
    - DEPLOYMENT_GUIDE.md - 9,523 bytes
    - IMPLEMENTATION_GUIDE.md - 16,649 bytes
+   - Plus ARCHITECTURE.md (high-level overview) - 22,184 bytes
+   - **Total**: 12 files, 280+ KB of comprehensive architecture documentation
 
 3. **Architecture checklist**: ✅ PRESENT
    - Location: `governance/architecture/ARCHITECTURE_DESIGN_CHECKLIST.md`
