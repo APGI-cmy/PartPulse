@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-require-imports */
 /**
  * Test Dodging Detection Script
  * 
@@ -15,7 +16,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
 
 // ANSI color codes
 const RED = '\x1b[31m';

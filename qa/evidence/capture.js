@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-require-imports */
 /**
  * Catastrophic Failure Evidence Capture
  * 
@@ -16,8 +17,10 @@ class EvidenceCapture {
     this.failureMessage = failureMessage || 'No message provided';
     this.timestamp = new Date().toISOString();
     this.failureId = this.generateFailureId();
+    // Use __dirname to find project root reliably
+    this.projectRoot = path.resolve(__dirname, '../..');
     this.evidenceDir = path.join(
-      process.cwd(),
+      this.projectRoot,
       'qa/evidence',
       `${this.getDateString()}_${this.failureId}`
     );
@@ -29,7 +32,7 @@ class EvidenceCapture {
   }
 
   getFailureCount() {
-    const evidenceRoot = path.join(process.cwd(), 'qa/evidence');
+    const evidenceRoot = path.join(this.projectRoot, 'qa/evidence');
     if (!fs.existsSync(evidenceRoot)) {
       return 0;
     }
@@ -50,12 +53,13 @@ class EvidenceCapture {
 
   captureGitContext() {
     try {
+      const gitOpts = { encoding: 'utf-8', cwd: this.projectRoot };
       return {
-        commit: execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim(),
-        branch: execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf-8' }).trim(),
-        author: execSync('git log -1 --pretty=format:"%an <%ae>"', { encoding: 'utf-8' }).trim(),
-        message: execSync('git log -1 --pretty=format:"%s"', { encoding: 'utf-8' }).trim(),
-        dirty: execSync('git status --porcelain', { encoding: 'utf-8' }).trim() !== ''
+        commit: execSync('git rev-parse HEAD', gitOpts).trim(),
+        branch: execSync('git rev-parse --abbrev-ref HEAD', gitOpts).trim(),
+        author: execSync('git log -1 --pretty=format:"%an <%ae>"', gitOpts).trim(),
+        message: execSync('git log -1 --pretty=format:"%s"', gitOpts).trim(),
+        dirty: execSync('git status --porcelain', gitOpts).trim() !== ''
       };
     } catch (error) {
       return {
@@ -75,7 +79,7 @@ class EvidenceCapture {
         node: process.version,
         platform: process.platform,
         arch: process.arch,
-        cwd: process.cwd()
+        cwd: this.projectRoot
       },
       ci: {
         isCI: process.env.CI === 'true',

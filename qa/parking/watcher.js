@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-require-imports */
 /**
  * QA Parking Watcher
  * 
@@ -23,8 +24,10 @@ const RESET = '\x1b[0m';
 
 class QAParkingWatcher {
   constructor() {
-    this.registryPath = path.join(process.cwd(), 'qa/parking/registry.json');
-    this.schemaPath = path.join(process.cwd(), 'qa/parking/registry-schema.json');
+    // Use __dirname to find project root reliably
+    const projectRoot = path.resolve(__dirname, '../..');
+    this.registryPath = path.join(projectRoot, 'qa/parking/registry.json');
+    this.schemaPath = path.join(projectRoot, 'qa/parking/registry-schema.json');
     this.warnings = [];
     this.errors = [];
   }

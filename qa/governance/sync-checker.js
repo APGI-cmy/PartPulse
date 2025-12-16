@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-require-imports */
 /**
  * Governance Policy Sync Checker
  * 
@@ -17,6 +18,8 @@ const RESET = '\x1b[0m';
 
 class GovernanceSyncChecker {
   constructor() {
+    // Use __dirname to find project root reliably
+    this.projectRoot = path.resolve(__dirname, '../..');
     this.errors = [];
     this.warnings = [];
     this.checks = [];
@@ -85,7 +88,7 @@ class GovernanceSyncChecker {
    * Check if artifact exists
    */
   checkArtifact(artifact) {
-    const fullPath = path.join(process.cwd(), artifact.path);
+    const fullPath = path.join(this.projectRoot, artifact.path);
     const exists = fs.existsSync(fullPath);
     
     if (artifact.isDirectory) {
@@ -108,7 +111,7 @@ class GovernanceSyncChecker {
    * Check package.json scripts
    */
   checkPackageScripts() {
-    const packagePath = path.join(process.cwd(), 'package.json');
+    const packagePath = path.join(this.projectRoot, 'package.json');
     
     if (!fs.existsSync(packagePath)) {
       this.errors.push('package.json not found');
@@ -129,7 +132,7 @@ class GovernanceSyncChecker {
    * Validate policy version file
    */
   validatePolicyVersion() {
-    const policyPath = path.join(process.cwd(), 'docs/governance/POLICY_VERSION.md');
+    const policyPath = path.join(this.projectRoot, 'docs/governance/POLICY_VERSION.md');
     
     if (!fs.existsSync(policyPath)) {
       this.errors.push('Policy version file missing');
