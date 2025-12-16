@@ -142,6 +142,17 @@ jobs:
 
           echo "=== Verifying install ==="
           test -d node_modules || (echo "❌ node_modules missing" && exit 1)
+          
+          echo "=== Diagnostics: package.json devDependencies ==="
+          node -e "console.log(require('./package.json').devDependencies)"
+          
+          echo "=== Diagnostics: npm ls jest ==="
+          npm ls jest || true
+          
+          echo "=== Diagnostics: jest module directory ==="
+          ls node_modules/jest || echo "node_modules/jest NOT present"
+          
+          echo "=== Attempting require.resolve ==="
           node -e "require.resolve('jest')" || (echo "❌ jest not found" && exit 1)
           echo "✅ jest installed successfully"
           echo "=== Jest location ==="
