@@ -79,7 +79,7 @@ jobs:
       - name: Run ESLint
         run: |
           echo "Running ESLint..."
-          npm run lint -- . --max-warnings 0
+          npx eslint . --max-warnings 0
       
       - name: Evidence Capture on Failure
         if: failure()
