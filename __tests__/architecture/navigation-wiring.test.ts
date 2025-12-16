@@ -27,7 +27,12 @@ describe('ARCH-FAIL-01: Runtime Navigation Wiring', () => {
       'lib'
     ];
     
-    const deploymentUrlPattern = /https?:\/\/[a-zA-Z0-9-]+\.vercel\.app[^\s"')]*|https?:\/\/[a-zA-Z0-9-]+\.netlify\.app[^\s"')]*|https?:\/\/preview-[a-zA-Z0-9-]+\.[^\s"')]+/gi;
+    // Separate patterns for better maintainability
+    const vercelPattern = /https?:\/\/[a-zA-Z0-9-]+\.vercel\.app[^\s"')`]*/gi;
+    const netlifyPattern = /https?:\/\/[a-zA-Z0-9-]+\.netlify\.app[^\s"')`]*/gi;
+    const previewPattern = /https?:\/\/preview-[a-zA-Z0-9-]+\.[^\s"')`]+/gi;
+    
+    const deploymentUrlPatterns = [vercelPattern, netlifyPattern, previewPattern];
     
     uiDirectories.forEach(dir => {
       it(`should not contain hard-coded deployment URLs in ${dir}/`, () => {
@@ -57,13 +62,17 @@ describe('ARCH-FAIL-01: Runtime Navigation Wiring', () => {
               }
               
               const content = fs.readFileSync(fullPath, 'utf-8');
-              const matches = content.match(deploymentUrlPattern);
               
-              if (matches) {
-                const relativePath = path.relative(projectRoot, fullPath);
-                violations.push(
-                  `${relativePath}: Found hard-coded deployment URL(s): ${matches.join(', ')}`
-                );
+              // Check each pattern separately
+              for (const pattern of deploymentUrlPatterns) {
+                const matches = content.match(pattern);
+                if (matches) {
+                  const relativePath = path.relative(projectRoot, fullPath);
+                  violations.push(
+                    `${relativePath}: Found hard-coded deployment URL(s): ${matches.join(', ')}`
+                  );
+                  break; // Only report once per file
+                }
               }
             }
           }
@@ -107,20 +116,26 @@ describe('ARCH-FAIL-01: Runtime Navigation Wiring', () => {
             const content = fs.readFileSync(fullPath, 'utf-8');
             
             // Match Link components with href attributes
-            // Look for suspicious patterns: Link href="http..." or Link href="https..."
-            const suspiciousLinkPattern = /<Link[^>]+href=["'](https?:\/\/[^"']+)["']/g;
-            let match;
+            // Covers: href="...", href='...', href={`...`}, href={'...'}
+            const linkPatterns = [
+              /<Link[^>]+href=["'](https?:\/\/[^"']+)["']/g,  // href="https://..." or href='https://...'
+              /<Link[^>]+href=\{`(https?:\/\/[^`]+)`\}/g,      // href={`https://...`}
+              /<Link[^>]+href=\{'(https?:\/\/[^']+)'\}/g,      // href={'https://...'}
+            ];
             
-            while ((match = suspiciousLinkPattern.exec(content)) !== null) {
-              const url = match[1];
-              
-              // Allow external links to legitimate external services
-              // But flag internal deployment URLs
-              if (url.includes('.vercel.app') || url.includes('.netlify.app') || url.includes('preview-')) {
-                const relativePath = path.relative(projectRoot, fullPath);
-                violations.push(
-                  `${relativePath}: Link component with hard-coded deployment URL: ${url}`
-                );
+            for (const pattern of linkPatterns) {
+              let match;
+              while ((match = pattern.exec(content)) !== null) {
+                const url = match[1];
+                
+                // Allow external links to legitimate external services
+                // But flag internal deployment URLs
+                if (url.includes('.vercel.app') || url.includes('.netlify.app') || url.includes('preview-')) {
+                  const relativePath = path.relative(projectRoot, fullPath);
+                  violations.push(
+                    `${relativePath}: Link component with hard-coded deployment URL: ${url}`
+                  );
+                }
               }
             }
           }
@@ -166,19 +181,27 @@ describe('ARCH-FAIL-01: Runtime Navigation Wiring', () => {
             const content = fs.readFileSync(fullPath, 'utf-8');
             
             // Match router.push() or router.replace() with absolute URLs
-            const routerPushPattern = /router\.(push|replace)\s*\(\s*["'`](https?:\/\/[^"'`]+)["'`]/g;
-            let match;
+            // Covers: router.push("..."), router.push('...'), router.push(`...`)
+            const routerPatterns = [
+              /router\.(push|replace)\s*\(\s*["'](https?:\/\/[^"']+)["']/g,    // String literals
+              /router\.(push|replace)\s*\(\s*`(https?:\/\/[^`]+)`/g,            // Template literals
+            ];
             
-            while ((match = routerPushPattern.exec(content)) !== null) {
-              const method = match[1];
-              const url = match[2];
-              
-              // Flag internal deployment URLs
-              if (url.includes('.vercel.app') || url.includes('.netlify.app') || url.includes('preview-')) {
-                const relativePath = path.relative(projectRoot, fullPath);
-                violations.push(
-                  `${relativePath}: router.${method}() with hard-coded deployment URL: ${url}`
-                );
+            for (const pattern of routerPatterns) {
+              let match;
+              while ((match = pattern.exec(content)) !== null) {
+                const method = match[1];
+                const url = match[2];
+                
+                // Flag internal deployment URLs
+                // Note: Dynamic URLs like router.push(`https://${domain}`) are harder to detect statically
+                // but should be caught by the general URL scan
+                if (url.includes('.vercel.app') || url.includes('.netlify.app') || url.includes('preview-')) {
+                  const relativePath = path.relative(projectRoot, fullPath);
+                  violations.push(
+                    `${relativePath}: router.${method}() with hard-coded deployment URL: ${url}`
+                  );
+                }
               }
             }
           }
@@ -224,18 +247,27 @@ describe('ARCH-FAIL-01: Runtime Navigation Wiring', () => {
             const content = fs.readFileSync(fullPath, 'utf-8');
             
             // Match window.location assignments with absolute URLs
-            const windowLocationPattern = /window\.location(?:\.(href|assign|replace))?\s*=\s*["'`](https?:\/\/[^"'`]+)["'`]/g;
-            let match;
+            // Covers: window.location = "...", window.location.href = "...", template literals
+            const windowLocationPatterns = [
+              /window\.location(?:\.(href|assign|replace))?\s*=\s*["'](https?:\/\/[^"']+)["']/g,  // String literals
+              /window\.location(?:\.(href|assign|replace))?\s*=\s*`(https?:\/\/[^`]+)`/g,          // Template literals
+            ];
             
-            while ((match = windowLocationPattern.exec(content)) !== null) {
-              const url = match[2];
-              
-              // Flag internal deployment URLs
-              if (url.includes('.vercel.app') || url.includes('.netlify.app') || url.includes('preview-')) {
-                const relativePath = path.relative(projectRoot, fullPath);
-                violations.push(
-                  `${relativePath}: window.location assignment with hard-coded deployment URL: ${url}`
-                );
+            for (const pattern of windowLocationPatterns) {
+              let match;
+              while ((match = pattern.exec(content)) !== null) {
+                // URL is in group 2 for the first pattern, group 2 for the second
+                const url = match[2] || match[1];
+                
+                // Flag internal deployment URLs
+                // Note: Dynamic URLs like window.location = `https://${var}` are harder to detect
+                // but should be caught by the general URL scan
+                if (url && (url.includes('.vercel.app') || url.includes('.netlify.app') || url.includes('preview-'))) {
+                  const relativePath = path.relative(projectRoot, fullPath);
+                  violations.push(
+                    `${relativePath}: window.location assignment with hard-coded deployment URL: ${url}`
+                  );
+                }
               }
             }
           }
