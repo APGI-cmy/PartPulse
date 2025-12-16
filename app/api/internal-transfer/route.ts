@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
  * GET /api/internal-transfer
  * List all internal transfers
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // In production, filter by user role and organization
     // const session = await getServerSession(authOptions);

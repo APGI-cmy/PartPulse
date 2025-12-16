@@ -44,7 +44,6 @@ export default function AdminDashboardPage() {
   const [inviteRole, setInviteRole] = useState("technician");
   const [inviting, setInviting] = useState(false);
   const [resetingPassword, setResetingPassword] = useState(false);
-  const [tempPassword, setTempPassword] = useState("");
 
   useEffect(() => {
     fetchUsers();
@@ -99,7 +98,6 @@ export default function AdminDashboardPage() {
     }
 
     setInviting(true);
-    setTempPassword("");
 
     try {
       const response = await fetch("/api/users/invite", {
@@ -118,7 +116,6 @@ export default function AdminDashboardPage() {
 
       if (response.ok && result.success) {
         alert(`User invited successfully!\n\nTemporary Password: ${result.temporaryPassword}\n\n(In production, this would be sent via email)`);
-        setTempPassword(result.temporaryPassword);
         setInviteName("");
         setInviteEmail("");
         setInviteRole("technician");
@@ -143,7 +140,6 @@ export default function AdminDashboardPage() {
     }
 
     setResetingPassword(true);
-    setTempPassword("");
 
     try {
       const response = await fetch("/api/admin/password-reset", {
@@ -160,7 +156,6 @@ export default function AdminDashboardPage() {
 
       if (response.ok && result.success) {
         alert(`Password reset successfully!\n\nTemporary Password: ${result.temporaryPassword}\n\n(In production, this would be sent via email)`);
-        setTempPassword(result.temporaryPassword);
         setShowPasswordResetModal(false);
         setSelectedUser(null);
       } else {
