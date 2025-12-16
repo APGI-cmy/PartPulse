@@ -925,6 +925,17 @@ describe('QA Parking', () => {
 
 **Authority**: Only this GREEN allows merge
 
+**Special Case - Intended RED QA Plans**:
+
+When creating QA Plans or architecture documentation that **intentionally defines RED states** (like this QA_PLAN.md):
+
+- The **QA Plan document itself** must be GREEN (complete, accurate, approved)
+- The **tests defined by the plan** are expected to be RED initially (gap analysis)
+- This is a **governed exception** for design-phase documentation work
+- The merge gate checks the **documentation quality**, not the implementation gaps the documentation reveals
+
+**Rationale**: A QA Plan that defines what RED means cannot itself be blocked for being RED. The plan is the roadmap from RED to GREEN. Blocking the roadmap would prevent the journey.
+
 ---
 
 ## Handling RED States

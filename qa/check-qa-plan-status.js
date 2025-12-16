@@ -17,9 +17,17 @@ const path = require('path');
 
 const PROJECT_ROOT = path.resolve(__dirname, '..');
 
-// Constants for consistent symbols
-const GREEN_EMOJI = '✅';
-const RED_EMOJI = '🔴';
+// Constants for consistent display symbols and formatting
+const SYMBOLS = {
+  GREEN: '✅',
+  RED: '🔴',
+  SEPARATOR: '='.repeat(70)
+};
+
+const FORMATTING = {
+  CATEGORY_PRECISION: 1,  // Decimal places for category percentages
+  OVERALL_PRECISION: 1    // Decimal places for overall percentage
+};
 
 // Define required test files per QA_PLAN.md
 const REQUIRED_TEST_FILES = {
@@ -94,9 +102,9 @@ function checkFileExists(filePath) {
 }
 
 function checkQAPlanCompliance() {
-  console.log('\n' + '='.repeat(70));
+  console.log('\n' + SYMBOLS.SEPARATOR);
   console.log('QA Plan Compliance Check - Gap Analysis');
-  console.log('='.repeat(70));
+  console.log(SYMBOLS.SEPARATOR);
   console.log('\nChecking test file requirements from QA_PLAN.md...\n');
 
   let totalFiles = 0;
@@ -130,8 +138,8 @@ function checkQAPlanCompliance() {
 
   // Print results by category
   for (const [category, result] of Object.entries(results)) {
-    const status = result.missing === 0 ? `${GREEN_EMOJI} GREEN` : `${RED_EMOJI} RED`;
-    const percentage = ((result.existing / result.total) * 100).toFixed(0);
+    const status = result.missing === 0 ? `${SYMBOLS.GREEN} GREEN` : `${SYMBOLS.RED} RED`;
+    const percentage = ((result.existing / result.total) * 100).toFixed(FORMATTING.CATEGORY_PRECISION);
     
     console.log(`${status} ${category}`);
     console.log(`   ${result.existing}/${result.total} files exist (${percentage}%)`);
@@ -146,25 +154,25 @@ function checkQAPlanCompliance() {
   }
 
   // Print summary
-  console.log('='.repeat(70));
+  console.log(SYMBOLS.SEPARATOR);
   console.log('Summary');
-  console.log('='.repeat(70));
+  console.log(SYMBOLS.SEPARATOR);
   console.log(`Total Test Files Required: ${totalFiles}`);
-  console.log(`Existing: ${existingFiles} ${GREEN_EMOJI}`);
-  console.log(`Missing: ${missingFiles} ${RED_EMOJI}`);
+  console.log(`Existing: ${existingFiles} ${SYMBOLS.GREEN}`);
+  console.log(`Missing: ${missingFiles} ${SYMBOLS.RED}`);
   
-  const overallPercentage = ((existingFiles / totalFiles) * 100).toFixed(1);
+  const overallPercentage = ((existingFiles / totalFiles) * 100).toFixed(FORMATTING.OVERALL_PRECISION);
   console.log(`Completion: ${overallPercentage}%`);
-  console.log('='.repeat(70));
+  console.log(SYMBOLS.SEPARATOR);
 
   if (missingFiles > 0) {
-    console.log(`\n${RED_EMOJI} STATUS: RED`);
+    console.log(`\n${SYMBOLS.RED} STATUS: RED`);
     console.log('\nThis is expected behavior for gap analysis approach.');
     console.log('The QA Plan reveals gaps between architecture and implementation.');
     console.log('Next step: Build-to-GREEN by systematically implementing missing tests.\n');
     return 1; // Exit code 1 indicates expected RED (gap analysis result)
   } else {
-    console.log(`\n${GREEN_EMOJI} STATUS: GREEN`);
+    console.log(`\n${SYMBOLS.GREEN} STATUS: GREEN`);
     console.log('\nAll required test files exist per QA_PLAN.md.\n');
     return 0; // Exit code 0 indicates success
   }
