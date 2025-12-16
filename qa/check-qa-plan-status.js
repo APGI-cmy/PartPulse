@@ -161,7 +161,9 @@ function checkQAPlanCompliance() {
   console.log(`Existing: ${existingFiles} ${SYMBOLS.GREEN}`);
   console.log(`Missing: ${missingFiles} ${SYMBOLS.RED}`);
   
-  const overallPercentage = ((existingFiles / totalFiles) * 100).toFixed(FORMATTING.OVERALL_PRECISION);
+  const overallPercentage = totalFiles > 0 
+    ? ((existingFiles / totalFiles) * 100).toFixed(FORMATTING.OVERALL_PRECISION)
+    : '0.0';
   console.log(`Completion: ${overallPercentage}%`);
   console.log(SYMBOLS.SEPARATOR);
 
