@@ -1,0 +1,219 @@
+name: Minimum Build-to-Red Gate
+
+# CI scaffolding that enforces basic hygiene while the full RED QA suite is being implemented.
+# This is NON-SEMANTIC enforcement only - it does NOT relax BUILD-TO-GREEN requirements.
+# Blocks merges on hygiene violations. Full governance remains mandatory and unaltered.
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+permissions:
+  contents: read
+
+jobs:
+  lockfile-check:
+    name: Dependency Lockfile Verification
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Verify package-lock.json exists
+        run: |
+          if [ ! -f "package-lock.json" ]; then
+            echo "❌ FAILED - package-lock.json not found"
+            echo ""
+            echo "A dependency lockfile is required for deterministic builds."
+            echo "Run 'npm install' to generate package-lock.json and commit it."
+            exit 1
+          fi
+          echo "✅ PASSED - package-lock.json exists"
+
+  test-dodging-check:
+    name: Test Dodging Detection
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run Test Dodging Detector
+        run: |
+          echo "Checking for forbidden test-dodging patterns..."
+          node qa/detect-test-dodging.js
+      
+      - name: Evidence Capture on Failure
+        if: failure()
+        run: |
+          echo "❌ Test dodging detected - this is a governance violation"
+          echo "See qa/detect-test-dodging.js output above for details"
+
+  lint-check:
+    name: Lint Check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run ESLint
+        run: |
+          echo "Running ESLint..."
+          npx eslint . --max-warnings 0
+      
+      - name: Evidence Capture on Failure
+        if: failure()
+        run: |
+          echo "❌ Lint check failed"
+          echo "Fix linting errors before merging"
+
+  typecheck:
+    name: TypeScript Type Check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run TypeScript Compiler
+        run: |
+          echo "Running TypeScript type checking..."
+          npx tsc --noEmit
+      
+      - name: Evidence Capture on Failure
+        if: failure()
+        run: |
+          echo "❌ Type checking failed"
+          echo "Fix TypeScript errors before merging"
+
+  build-check:
+    name: Build Check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build Application
+        run: |
+          echo "Building Next.js application..."
+          npm run build
+      
+      - name: Evidence Capture on Failure
+        if: failure()
+        run: |
+          echo "❌ Build failed"
+          echo "Fix build errors before merging"
+
+  minimum-gate:
+    name: Hygiene Gate
+    runs-on: ubuntu-latest
+    needs: [lockfile-check, test-dodging-check, lint-check, typecheck, build-check]
+    if: always()
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check All Hygiene Gates
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Minimum Build-to-Red Gate - Hygiene Enforcement"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          
+          FAILED=0
+          
+          if [ "${{ needs.lockfile-check.result }}" != "success" ]; then
+            echo "❌ Dependency lockfile check failed"
+            FAILED=1
+          else
+            echo "✅ Dependency lockfile check passed"
+          fi
+          
+          if [ "${{ needs.test-dodging-check.result }}" != "success" ]; then
+            echo "❌ Test dodging check failed"
+            FAILED=1
+          else
+            echo "✅ Test dodging check passed"
+          fi
+          
+          if [ "${{ needs.lint-check.result }}" != "success" ]; then
+            echo "❌ Lint check failed"
+            FAILED=1
+          else
+            echo "✅ Lint check passed"
+          fi
+          
+          if [ "${{ needs.typecheck.result }}" != "success" ]; then
+            echo "❌ TypeScript type check failed"
+            FAILED=1
+          else
+            echo "✅ TypeScript type check passed"
+          fi
+          
+          if [ "${{ needs.build-check.result }}" != "success" ]; then
+            echo "❌ Build check failed"
+            FAILED=1
+          else
+            echo "✅ Build check passed"
+          fi
+          
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          
+          if [ $FAILED -eq 1 ]; then
+            echo "❌ HYGIENE GATE BLOCKED - Fix issues above"
+            echo ""
+            echo "This CI scaffolding enforces basic hygiene only."
+            echo "BUILD-TO-GREEN remains mandatory and unaltered."
+            echo "Full QA enforcement: qa-enforcement.yml"
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            exit 1
+          fi
+          
+          echo "✅ HYGIENE GATE PASSED - Basic checks complete"
+          echo ""
+          echo "⚠️  NOTE: This is hygiene scaffolding only."
+          echo "⚠️  BUILD-TO-GREEN governance is mandatory and unaltered."
+          echo "⚠️  Full enforcement: qa-enforcement.yml"
+          echo "⚠️  QA Plan status: npm run qa:plan-status"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

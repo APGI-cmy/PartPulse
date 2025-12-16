@@ -200,6 +200,30 @@ node qa/governance/sync-checker.js
 
 ## CI Workflows
 
+### Minimum Build-to-Red Gate
+
+**File**: `.github/workflows/minimum-build-to-red.yml`
+
+**Purpose**: CI scaffolding enforcing basic hygiene while RED QA suite (37 tests) is being implemented.
+
+**Jobs**:
+1. **Lockfile Check**: Verifies package-lock.json exists for deterministic builds
+2. **Test Dodging Check**: Detects test dodging patterns
+3. **Lint Check**: Runs ESLint with zero warnings allowed
+4. **TypeScript Type Check**: Validates TypeScript compilation with tsc --noEmit
+5. **Build Check**: Ensures Next.js application builds successfully
+6. **Hygiene Gate**: Aggregates all checks and blocks merge if any fail
+
+**Trigger**: All PRs to main/develop
+
+**Non-Semantic Nature**: 
+- This is CI scaffolding ONLY - enforces basic hygiene
+- Does NOT relax BUILD-TO-GREEN requirements
+- Full governance remains mandatory and unaltered (qa-enforcement.yml)
+- Blocks merges on hygiene violations (fail closed)
+
+**Failure Handling**: Clear error messages directing to fix issues
+
 ### QA Enforcement Workflow
 
 **File**: `.github/workflows/qa-enforcement.yml`
