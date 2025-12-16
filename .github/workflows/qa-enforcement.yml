@@ -109,6 +109,8 @@ jobs:
         run: |
           echo "NODE_ENV before install=$NODE_ENV"
           npm ci
+          npm config list
+          cat .npmrc || echo "no .npmrc"
           ls node_modules/.bin | grep jest || echo "jest NOT installed"
       
       - name: Run Tests
