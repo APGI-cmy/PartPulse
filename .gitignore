@@ -46,3 +46,10 @@ next-env.d.ts
 *.db-journal
 prisma/migrations
 /storage/
+
+# QA evidence - track structure but not all evidence files
+# Individual catastrophic failures should be committed for audit
+# But we keep the directory structure
+qa/evidence/*
+!qa/evidence/README.md
+!qa/evidence/capture.js

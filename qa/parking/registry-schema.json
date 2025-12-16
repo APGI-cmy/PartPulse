@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QA Parking Registry Schema",
+  "description": "Schema for QA parking registry - governs intentional RED states",
+  "type": "object",
+  "required": ["version", "parkedItems"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Registry schema version"
+    },
+    "parkedItems": {
+      "type": "array",
+      "description": "List of parked QA items (governed RED states)",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "reason", "parkedBy", "parkedDate", "expiryCondition", "approvedBy", "status"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for parked item (e.g., PARK-001)"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["test", "build", "lint", "security", "other"],
+            "description": "Type of parked item"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Detailed justification for parking"
+          },
+          "location": {
+            "type": "string",
+            "description": "File path or component affected"
+          },
+          "parkedBy": {
+            "type": "string",
+            "description": "GitHub username who requested parking"
+          },
+          "parkedDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When item was parked (ISO 8601)"
+          },
+          "expiryCondition": {
+            "type": "string",
+            "description": "Condition that must be met to unpark (e.g., 'After Wave 5 completion', 'External API fix')"
+          },
+          "expiryDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Optional hard deadline for resolution (YYYY-MM-DD)"
+          },
+          "approvedBy": {
+            "type": "string",
+            "description": "GitHub username who approved parking (must be repo owner or admin)"
+          },
+          "approvalDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When parking was approved"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "resolved", "expired"],
+            "description": "Current status of parked item"
+          },
+          "issueUrl": {
+            "type": "string",
+            "description": "GitHub issue URL tracking this parking"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Additional notes or context"
+          }
+        }
+      }
+    }
+  }
+}
