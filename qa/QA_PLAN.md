@@ -513,7 +513,7 @@ describe('Warranty Claim Workflow', () => {
 #### 6.3 User Invitation Workflow Evidence
 - 🔴 Invitation creation works
 - 🔴 Email sent with invitation link
-- �4 Invitation acceptance works
+- 🔴 Invitation acceptance works
 - 🔴 Invitation expiry enforced
 
 **Test File**: `__tests__/workflows/user-invitation.test.ts`
@@ -697,7 +697,7 @@ describe('Storage Service', () => {
 #### 10.1 Build Evidence
 - 🔴 `npm run build` succeeds
 - 🔴 No build warnings (critical)
-- �4 No TypeScript errors
+- 🔴 No TypeScript errors
 - 🔴 No ESLint errors (critical)
 
 **Test File**: `__tests__/deployment/build.test.ts`
