@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-12-05T15:01:15.733659",
+  "timestamp": "2025-12-16T15:23:07.319346",
   "total_requirements": 73,
-  "passed": 73,
-  "failed": 0,
-  "pass_rate": 100.0,
+  "passed": 71,
+  "failed": 2,
+  "pass_rate": 97.26027397260275,
   "categories": {
     "Configuration": {
       "total": 7,
@@ -49,9 +49,9 @@
     },
     "Wave 2 - Internal Transfer": {
       "total": 7,
-      "passed": 7,
-      "failed": 0,
-      "pass_rate": 100.0
+      "passed": 5,
+      "failed": 2,
+      "pass_rate": 71.42857142857143
     },
     "Wave 3 - Warranty Claims": {
       "total": 6,
@@ -422,15 +422,15 @@
       "category": "Wave 2 - Internal Transfer",
       "name": "components/ui/input.tsx",
       "description": "Input component",
-      "status": "GREEN",
-      "details": "File exists: components/ui/Input.tsx"
+      "status": "RED",
+      "details": "File missing: components/ui/Input.tsx"
     },
     {
       "category": "Wave 2 - Internal Transfer",
       "name": "components/ui/select.tsx",
       "description": "Select component",
-      "status": "GREEN",
-      "details": "File exists: components/ui/Select.tsx"
+      "status": "RED",
+      "details": "File missing: components/ui/Select.tsx"
     },
     {
       "category": "Wave 3 - Warranty Claims",

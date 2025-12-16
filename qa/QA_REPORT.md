@@ -1,13 +1,13 @@
 # PartPulse QA Report
 
-**Generated**: 2025-12-05T15:01:15.733659
+**Generated**: 2025-12-16T15:23:07.319346
 
 ## Summary
 
 - **Total Requirements**: 73
-- **Passed**: 73 ✅
-- **Failed**: 0 ❌
-- **Pass Rate**: 100.0%
+- **Passed**: 71 ✅
+- **Failed**: 2 ❌
+- **Pass Rate**: 97.3%
 
 ## Results by Category
 
@@ -27,7 +27,7 @@
 | Types | 2 | 2 ✅ | 0 ❌ | 100.0% |
 | UI Components | 8 | 8 ✅ | 0 ❌ | 100.0% |
 | Utilities | 5 | 5 ✅ | 0 ❌ | 100.0% |
-| Wave 2 - Internal Transfer | 7 | 7 ✅ | 0 ❌ | 100.0% |
+| Wave 2 - Internal Transfer | 7 | 5 ✅ | 2 ❌ | 71.4% |
 | Wave 3 - Warranty Claims | 6 | 6 ✅ | 0 ❌ | 100.0% |
 
 ## Detailed Results
@@ -273,15 +273,15 @@
 - Status: GREEN
 - Details: File exists: lib/pdf/internalTransferPdf.ts
 
-**✅ components/ui/input.tsx**
+**❌ components/ui/input.tsx**
 - Description: Input component
-- Status: GREEN
-- Details: File exists: components/ui/Input.tsx
+- Status: RED
+- Details: File missing: components/ui/Input.tsx
 
-**✅ components/ui/select.tsx**
+**❌ components/ui/select.tsx**
 - Description: Select component
-- Status: GREEN
-- Details: File exists: components/ui/Select.tsx
+- Status: RED
+- Details: File missing: components/ui/Select.tsx
 
 ### Wave 3 - Warranty Claims
 
@@ -480,8 +480,8 @@
 | app/internal-transfer/[id]/page.tsx | Wave 2 - Internal Transfer | ✅ GREEN | File exists: app/internal-transfer/[id]/page.tsx |
 | lib/db/schema.ts | Wave 2 - Internal Transfer | ✅ GREEN | File exists: lib/db/schema.ts |
 | lib/pdf/internalTransferPdf.ts | Wave 2 - Internal Transfer | ✅ GREEN | File exists: lib/pdf/internalTransferPdf.ts |
-| components/ui/input.tsx | Wave 2 - Internal Transfer | ✅ GREEN | File exists: components/ui/Input.tsx |
-| components/ui/select.tsx | Wave 2 - Internal Transfer | ✅ GREEN | File exists: components/ui/Select.tsx |
+| components/ui/input.tsx | Wave 2 - Internal Transfer | ❌ RED | File missing: components/ui/Input.tsx |
+| components/ui/select.tsx | Wave 2 - Internal Transfer | ❌ RED | File missing: components/ui/Select.tsx |
 | app/warranty-claims/WarrantyClaimForm.tsx | Wave 3 - Warranty Claims | ✅ GREEN | File exists: app/warranty-claims/WarrantyClaimForm.tsx |
 | app/warranty-claims/[id]/page.tsx | Wave 3 - Warranty Claims | ✅ GREEN | File exists: app/warranty-claims/[id]/page.tsx |
 | app/api/warranty-claims/route.ts | Wave 3 - Warranty Claims | ✅ GREEN | File exists: app/api/warranty-claims/route.ts |
@@ -509,6 +509,9 @@
 | Warranty Claim Model | Database Schema | ✅ GREEN | WarrantyClaim model found |
 | Audit Log Model | Database Schema | ✅ GREEN | AuditLog model found |
 
-## ✅ All Requirements Met!
+## Next Steps
 
-The codebase is fully compliant with the architecture specification.
+The following items need to be addressed:
+
+- [ ] components/ui/input.tsx: File missing: components/ui/Input.tsx
+- [ ] components/ui/select.tsx: File missing: components/ui/Select.tsx
