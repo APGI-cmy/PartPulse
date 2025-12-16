@@ -12,6 +12,24 @@ PartPulse is a full-stack web application built with Next.js 14+ using the App R
 4. **Audit Everything**: Complete audit trail for compliance
 5. **Scalable Design**: Architecture supports future migration to microservices
 
+## Architecture Governance
+
+All architecture work must follow the **[Architecture Design Checklist](/governance/architecture/ARCHITECTURE_DESIGN_CHECKLIST.md)**.
+
+This checklist ensures:
+- Rigorous architecture design process
+- Compliance with ForemanApp governance standards
+- Complete documentation and review
+- Security and performance validation
+- Build-to-GREEN compliance
+
+**Required for**:
+- New system architecture
+- Major architecture changes
+- Technology stack changes
+- Security model changes
+- Data architecture changes
+
 ## System Components
 
 ### High-Level Architecture

@@ -416,8 +416,17 @@ Governance is non-negotiable. It prevents catastrophic failures. Follow the proc
 
 - **Documentation**: This file
 - **Policy**: `docs/governance/POLICY_VERSION.md`
+- **Architecture Checklist**: `/governance/architecture/ARCHITECTURE_DESIGN_CHECKLIST.md`
 - **Agent Contract**: `.github/agents/PartPulse-agent.md`
 - **Issues**: Use templates for parking/failures
+
+---
+
+## Related Governance Documents
+
+- **[Architecture Design Checklist](/governance/architecture/ARCHITECTURE_DESIGN_CHECKLIST.md)**: Comprehensive checklist for architecture design, validation, and governance
+- **[Architecture Specification](/architecture/architecture.md)**: PartPulse system architecture documentation
+- **[Policy Version](/docs/governance/POLICY_VERSION.md)**: Governance policy version and history
 
 ---
 
