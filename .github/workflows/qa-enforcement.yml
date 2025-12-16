@@ -93,43 +93,65 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
-      
+      # --------------------------------------------------
+      # 1. Checkout
+      # --------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # --------------------------------------------------
+      # 2. Setup Node (NO CACHE, NO MAGIC)
+      # --------------------------------------------------
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          # cache: 'npm' - REMOVED: Must not restore cached dependencies before our explicit install step
-      
-      - name: Install dependencies (prove env)
+
+      # --------------------------------------------------
+      # 3. Prove execution context
+      # --------------------------------------------------
+      - name: Prove execution context
+        run: |
+          echo "=== Working directory ==="
+          pwd
+          echo "=== Directory listing ==="
+          ls
+          echo "=== Active package.json ==="
+          cat package.json
+
+      # --------------------------------------------------
+      # 4. Deterministic dependency install
+      # --------------------------------------------------
+      - name: Install dependencies (deterministic)
         env:
-          NODE_ENV: development
           DATABASE_URL: 'file:./.ci-test-db.sqlite'
           CI: 'true'
         run: |
-          echo "=== Diagnostic: Working Directory ==="
-          pwd
-          echo "=== Diagnostic: package.json Contents ==="
-          cat package.json
-          echo "=== Diagnostic: NODE_ENV before install ==="
-          echo "NODE_ENV=$NODE_ENV"
-          echo "=== Running npm ci ==="
-          npm ci
-          echo "=== Diagnostic: npm config ==="
+          echo "=== npm version ==="
+          npm --version
+
+          echo "=== npm config BEFORE install ==="
           npm config list
-          echo "=== Diagnostic: .npmrc ==="
           cat .npmrc || echo "no .npmrc"
-          echo "=== Diagnostic: node_modules/.bin ==="
-          ls node_modules/.bin || echo "no node_modules/.bin"
-          echo "=== Diagnostic: jest check ==="
-          ls node_modules/.bin | grep jest || echo "jest NOT installed"
-      
-      - name: Run Tests
+
+          echo "=== Installing dependencies (FORCE dev) ==="
+          npm ci --include=dev
+
+          echo "=== Verifying install ==="
+          test -d node_modules || (echo "❌ node_modules missing" && exit 1)
+          ls node_modules/.bin | grep jest
+
+      # --------------------------------------------------
+      # 5. Run tests
+      # --------------------------------------------------
+      - name: Run test suite
         env:
-          NODE_ENV: 'test'
+          NODE_ENV: test
           DATABASE_URL: 'file:./.ci-test-db.sqlite'
           CI: 'true'
-        run: npm run test:ci
+        run: |
+          echo "=== Running tests ==="
+          npm run test:ci
       
       - name: Evidence Capture on Failure
         if: failure()
