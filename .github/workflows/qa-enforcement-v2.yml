@@ -1,0 +1,124 @@
+name: QA Enforcement v2 (Clean Rewrite - Invariant Proof)
+
+on:
+  pull_request:
+
+jobs:
+  test-execution:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js (NO CACHE)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          # Explicitly NO cache - fresh install every time
+      
+      - name: Prove invariants and install
+        run: |
+          set -e
+          
+          echo "=========================================="
+          echo "INVARIANT 1: Prove execution root"
+          echo "=========================================="
+          CURRENT_DIR=$(pwd)
+          echo "Current directory: $CURRENT_DIR"
+          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+          if [ "$CURRENT_DIR" != "$GITHUB_WORKSPACE" ]; then
+            echo "FAIL: pwd != GITHUB_WORKSPACE"
+            exit 1
+          fi
+          echo "✓ Execution root verified"
+          echo ""
+          
+          echo "=========================================="
+          echo "INVARIANT 2: Prove package.json exists"
+          echo "=========================================="
+          if [ ! -f package.json ]; then
+            echo "FAIL: package.json not found"
+            exit 1
+          fi
+          echo "✓ package.json exists"
+          echo ""
+          
+          echo "=========================================="
+          echo "INVARIANT 3: Prove package.json contains jest"
+          echo "=========================================="
+          if ! grep -q '"jest"' package.json; then
+            echo "FAIL: jest not found in package.json"
+            cat package.json
+            exit 1
+          fi
+          echo "jest found in package.json:"
+          node -e "const pkg = require('./package.json'); console.log('jest:', pkg.devDependencies?.jest || 'NOT FOUND');"
+          echo "✓ jest declared in devDependencies"
+          echo ""
+          
+          echo "=========================================="
+          echo "INVARIANT 4: Install dependencies"
+          echo "=========================================="
+          echo "Running: npm ci --include=dev"
+          npm ci --include=dev
+          echo "✓ npm ci completed"
+          echo ""
+          
+          echo "=========================================="
+          echo "INVARIANT 5: Prove node_modules/jest exists"
+          echo "=========================================="
+          if [ ! -d node_modules/jest ]; then
+            echo "FAIL: node_modules/jest does NOT exist"
+            echo ""
+            echo "Diagnostic information:"
+            echo "npm prefix: $(npm prefix)"
+            echo "npm root: $(npm root)"
+            echo ""
+            echo "node_modules contents (first 50 entries):"
+            ls -R node_modules | head -n 50
+            echo ""
+            echo "Searching for jest installation:"
+            find . -name jest -type d -not -path "*/\.*" 2>/dev/null || echo "No jest directory found"
+            exit 1
+          fi
+          ls -la node_modules/jest/package.json
+          echo "✓ node_modules/jest physically installed"
+          echo ""
+          
+          echo "=========================================="
+          echo "INVARIANT 6: Prove require.resolve works"
+          echo "=========================================="
+          if ! node -e "console.log('jest resolved to:', require.resolve('jest'));"; then
+            echo "FAIL: require.resolve('jest') failed"
+            echo ""
+            echo "Diagnostic information:"
+            echo "npm prefix: $(npm prefix)"
+            echo "npm root: $(npm root)"
+            echo "NODE_PATH: ${NODE_PATH:-not set}"
+            exit 1
+          fi
+          echo "✓ require.resolve('jest') works"
+          echo ""
+          
+          echo "=========================================="
+          echo "INVARIANT 7: Prove npx jest works"
+          echo "=========================================="
+          if ! npx jest --version; then
+            echo "FAIL: npx jest --version failed"
+            exit 1
+          fi
+          echo "✓ npx jest works"
+          echo ""
+          
+          echo "=========================================="
+          echo "ALL INVARIANTS PASSED"
+          echo "=========================================="
+      
+      - name: Run test suite
+        env:
+          NODE_ENV: test
+          DATABASE_URL: 'file:./.ci-test-db.sqlite'
+          CI: 'true'
+        run: |
+          npm run test:ci

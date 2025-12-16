@@ -46,6 +46,7 @@ describe('Warranty Claims API Endpoints', () => {
         ssidJobNumber: 'SSID-API-001',
         siteName: 'API Test Site',
         technicianName: 'Test Technician',
+        technicianId: testUser.id,
         coveredByWarranty: true,
         items: [
           {
@@ -95,6 +96,7 @@ describe('Warranty Claims API Endpoints', () => {
         ssidJobNumber: 'SSID-UPDATE-001',
         siteName: 'Update Test Site',
         technicianName: 'Test Technician',
+        technicianId: testUser.id,
         coveredByWarranty: true,
         items: [
           {
@@ -116,11 +118,10 @@ describe('Warranty Claims API Endpoints', () => {
       const createResponse = await POST(createRequest);
       const createData = await createResponse.json();
       
-      // Only proceed if creation was successful
-      if (!createData.data || !createData.data.id) {
-        console.error('Failed to create claim for update test:', createData);
-        return;
-      }
+      // Setup must succeed - fail loudly if it doesn't
+      expect(createResponse.status).toBe(201);
+      expect(createData.success).toBe(true);
+      expect(createData.data).toHaveProperty('id');
       
       const claimId = createData.data.id;
 

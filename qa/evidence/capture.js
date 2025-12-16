@@ -13,12 +13,12 @@ const { execSync } = require('child_process');
 
 class EvidenceCapture {
   constructor(failureType, failureMessage) {
+    // Set project root FIRST - required by generateFailureId() -> getFailureCount()
+    this.projectRoot = path.resolve(__dirname, '../..');
     this.failureType = failureType || 'unknown';
     this.failureMessage = failureMessage || 'No message provided';
     this.timestamp = new Date().toISOString();
     this.failureId = this.generateFailureId();
-    // Use __dirname to find project root reliably
-    this.projectRoot = path.resolve(__dirname, '../..');
     this.evidenceDir = path.join(
       this.projectRoot,
       'qa/evidence',
