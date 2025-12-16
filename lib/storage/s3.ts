@@ -1,5 +1,6 @@
 import type { StorageProvider } from './types';
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export class S3StorageProvider implements StorageProvider {
   private bucket: string;
   private region: string;
