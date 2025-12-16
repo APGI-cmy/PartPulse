@@ -27,7 +27,7 @@ This document provides a comprehensive verification of all preconditions require
 
 #### Evidence:
 1. **APP_DESCRIPTION.md exists**: ✅ YES
-   - Location: `/home/runner/work/PartPulse/PartPulse/APP_DESCRIPTION.md`
+   - Location: `APP_DESCRIPTION.md` (repository root)
    - Size: 49,518 bytes (49 KB)
    - Status: Comprehensive and approved
    - Contains: Purpose, users & roles, workflows, data models, security expectations
@@ -66,7 +66,7 @@ No remediation required. Governance lineage is clean and properly delegated.
 
 #### Evidence:
 1. **ARCHITECTURE.md exists**: ✅ YES
-   - Location: `/home/runner/work/PartPulse/PartPulse/architecture/ARCHITECTURE.md`
+   - Location: `architecture/ARCHITECTURE.md`
    - Status: Complete master architecture document
    - References: 11 domain-specific architecture documents totaling 280 KB
 
@@ -227,7 +227,9 @@ No remediation required. PartPulse has no bootstrap logic or Expected RED depend
    - Size: 400,740 bytes
    - Integrity: Valid
    - 686 packages audited
-   - Note: 1 high severity vulnerability detected (will be addressed in security review during Build-to-Green)
+   - Security: 1 high severity vulnerability detected
+   - Action Required: Security vulnerability must be assessed and resolved in Wave 2 (Security + Authentication) of Build-to-Green execution
+   - Rationale: Security vulnerabilities are part of the implementation gap and will be systematically addressed during Build-to-Green per the defined plan
 
 5. **Current test suite**: ✅ PASSING
    - Test execution: `npm test`
@@ -237,7 +239,7 @@ No remediation required. PartPulse has no bootstrap logic or Expected RED depend
    - No false positives or mocked passes
 
 ### Remediation Notes
-No remediation required for hygiene requirements. One minor note: The security vulnerability detected by `npm audit` should be reviewed during Build-to-Green execution but does not block readiness verification.
+Security vulnerability identified in dependencies requires attention. This is properly classified as an implementation gap to be addressed systematically during Build-to-Green Wave 2 (Security + Authentication). The vulnerability does not block readiness verification but is tracked as a mandatory resolution item for Build-to-Green completion.
 
 ---
 
@@ -345,7 +347,7 @@ This verification was conducted in full compliance with:
 
 **No governance rules were changed, weakened, or bypassed during this verification.**
 
-Any governance concerns identified during Build-to-Green execution must be escalated to the repository owner (Johan) and not solved locally.
+Any governance concerns identified during Build-to-Green execution must be escalated to the repository owner per the defined escalation path and not solved locally. Refer to GOVERNANCE_STATUS.md for the current authority hierarchy.
 
 ---
 
