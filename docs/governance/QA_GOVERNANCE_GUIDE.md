@@ -200,6 +200,30 @@ node qa/governance/sync-checker.js
 
 ## CI Workflows
 
+### Minimum Build-to-Red Gate (Bootstrap)
+
+**File**: `.github/workflows/minimum-build-to-red.yml`
+
+**Purpose**: Temporary bootstrap gate enforcing basic PR hygiene while full QA suite is being built.
+
+**Jobs**:
+1. **Lockfile Check**: Verifies package-lock.json exists for deterministic builds
+2. **Test Dodging Check**: Detects test dodging patterns
+3. **Lint Check**: Runs ESLint with zero warnings allowed
+4. **TypeScript Type Check**: Validates TypeScript compilation with tsc --noEmit
+5. **Build Check**: Ensures Next.js application builds successfully
+6. **Minimum Gate**: Aggregates all checks and blocks merge if any fail
+
+**Trigger**: All PRs to main/develop
+
+**Bootstrap Nature**: 
+- This is NOT full Build-to-Green governance
+- Provides minimum hygiene enforcement during bootstrap phase
+- Will be superseded by complete QA enforcement once test suite is ready
+- Clearly labeled as bootstrap in all output
+
+**Failure Handling**: Clear error messages directing to fix issues
+
 ### QA Enforcement Workflow
 
 **File**: `.github/workflows/qa-enforcement.yml`
