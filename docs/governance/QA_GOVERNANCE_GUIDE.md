@@ -448,9 +448,37 @@ Governance is non-negotiable. It prevents catastrophic failures. Follow the proc
 
 ## Related Governance Documents
 
-- **[Architecture Design Checklist](/governance/architecture/ARCHITECTURE_DESIGN_CHECKLIST.md)**: Comprehensive checklist for architecture design, validation, and governance
-- **[Architecture Specification](/architecture/architecture.md)**: PartPulse system architecture documentation
-- **[Policy Version](/docs/governance/POLICY_VERSION.md)**: Governance policy version and history
+### Core Governance
+- **[GOVERNANCE_STATUS.md](../../GOVERNANCE_STATUS.md)**: Official governed application declaration and True North status
+- **[BUILD_TO_GREEN.md](../../BUILD_TO_GREEN.md)**: Systematic test implementation plan (6 waves, 37 tests)
+- **[QA_PLAN.md](../../qa/QA_PLAN.md)**: Complete QA strategy (13 categories mapped to architecture)
+- **[APP_DESCRIPTION.md](../../APP_DESCRIPTION.md)**: Application definition (True North Phase 1)
+- **[Architecture Specification](../../architecture/architecture.md)**: PartPulse system architecture (True North Phase 2)
+
+### Policy and Compliance
+- **[Policy Version](POLICY_VERSION.md)**: Governance policy version and history (v1.1.0)
+- **[Architecture Design Checklist](../../governance/architecture/ARCHITECTURE_DESIGN_CHECKLIST.md)**: Comprehensive checklist for architecture design
+
+### Workflows and Automation
+- **[qa-enforcement.yml](../../.github/workflows/qa-enforcement.yml)**: Full BUILD-TO-GREEN CI enforcement
+- **[minimum-build-to-red.yml](../../.github/workflows/minimum-build-to-red.yml)**: Hygiene gate (scaffolding)
+- **[workflows/README.md](../../.github/workflows/README.md)**: Workflow documentation
+
+---
+
+## True North Execution Order
+
+PartPulse follows the mandatory True North sequence:
+
+1. ✅ **APP_DESCRIPTION** - Complete (49.5 KB)
+2. ✅ **ARCHITECTURE** - Complete (11 documents, 280 KB)
+3. ✅ **RED QA** - Defined (37 tests, 13 categories)
+4. 🔴 **BUILD-TO-GREEN** - In Progress (0/37 tests passing)
+5. ❌ **MERGE** - Blocked until Gate-Eligible GREEN
+
+No implementation PRs may merge until BUILD-TO-GREEN is complete.
+
+See [GOVERNANCE_STATUS.md](../../GOVERNANCE_STATUS.md) for complete status.
 
 ---
 
