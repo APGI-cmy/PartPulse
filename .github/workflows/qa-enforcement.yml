@@ -139,7 +139,10 @@ jobs:
 
           echo "=== Verifying install ==="
           test -d node_modules || (echo "❌ node_modules missing" && exit 1)
-          ls node_modules/.bin | grep jest
+          [ -x node_modules/.bin/jest ] || (echo "❌ jest not found" && exit 1)
+          echo "✅ jest installed successfully"
+          echo "=== Installed binaries (first 20) ==="
+          ls -la node_modules/.bin/ | head -20
 
       # --------------------------------------------------
       # 5. Run tests
