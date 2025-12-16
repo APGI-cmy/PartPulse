@@ -18,12 +18,17 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Unique identifier for parked item (e.g., PARK-001)"
+            "description": "Unique identifier for parked item (e.g., PARK-001 or DPRED-001)"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["parking", "dp-red"],
+            "description": "Category of governed RED: 'parking' for QA Parking, 'dp-red' for Design-Phase RED"
           },
           "type": {
             "type": "string",
-            "enum": ["test", "build", "lint", "security", "other"],
-            "description": "Type of parked item"
+            "enum": ["test", "build", "lint", "security", "design", "architecture", "other"],
+            "description": "Type of parked item. Use 'design' or 'architecture' for DP-RED items"
           },
           "reason": {
             "type": "string",

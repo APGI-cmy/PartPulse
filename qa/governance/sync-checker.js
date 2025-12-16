@@ -71,6 +71,11 @@ class GovernanceSyncChecker {
         critical: true
       },
       {
+        path: '.github/ISSUE_TEMPLATE/dp-red.yml',
+        name: 'DP-RED Template',
+        critical: true
+      },
+      {
         path: 'jest.config.js',
         name: 'Jest Configuration',
         critical: false

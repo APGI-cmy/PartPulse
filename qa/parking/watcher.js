@@ -62,10 +62,24 @@ class QAParkingWatcher {
       }
     }
 
+    // Validate category (optional field, defaults to 'parking' for backward compatibility)
+    const validCategories = ['parking', 'dp-red'];
+    if (item.category && !validCategories.includes(item.category)) {
+      this.errors.push(`Item ${item.id}: Invalid category '${item.category}'. Must be one of: ${validCategories.join(', ')}`);
+    }
+
     // Validate type
-    const validTypes = ['test', 'build', 'lint', 'security', 'other'];
+    const validTypes = ['test', 'build', 'lint', 'security', 'design', 'architecture', 'other'];
     if (item.type && !validTypes.includes(item.type)) {
       this.errors.push(`Item ${item.id}: Invalid type '${item.type}'. Must be one of: ${validTypes.join(', ')}`);
+    }
+
+    // Validate DP-RED specific rules
+    if (item.category === 'dp-red') {
+      const dpRedTypes = ['design', 'architecture', 'test'];
+      if (item.type && !dpRedTypes.includes(item.type)) {
+        this.warnings.push(`Item ${item.id}: DP-RED items typically use type 'design', 'architecture', or 'test'. Current type: '${item.type}'`);
+      }
     }
 
     // Validate status
@@ -141,6 +155,8 @@ class QAParkingWatcher {
     const activeItems = [];
     const resolvedItems = [];
     const expiredItems = [];
+    const dpRedItems = [];
+    const parkingItems = [];
 
     for (let i = 0; i < parkedItems.length; i++) {
       const item = parkedItems[i];
@@ -150,6 +166,14 @@ class QAParkingWatcher {
 
       if (item.status === 'active') {
         activeItems.push(item);
+        
+        // Categorize by parking type (default to 'parking' for backward compatibility)
+        const category = item.category || 'parking';
+        if (category === 'dp-red') {
+          dpRedItems.push(item);
+        } else {
+          parkingItems.push(item);
+        }
       } else if (item.status === 'resolved') {
         resolvedItems.push(item);
       } else if (item.status === 'expired') {
@@ -157,11 +181,29 @@ class QAParkingWatcher {
       }
     }
 
-    // Report active items
-    if (activeItems.length > 0) {
-      console.log(`${YELLOW}Active Parked Items: ${activeItems.length}${RESET}`);
-      activeItems.forEach(item => {
+    // Report active items by category
+    if (dpRedItems.length > 0) {
+      console.log(`${BLUE}Design-Phase RED (DP-RED) Items: ${dpRedItems.length}${RESET}`);
+      dpRedItems.forEach(item => {
         console.log(`\n  ${BLUE}●${RESET} ${item.id} - ${item.type}`);
+        console.log(`    Reason: ${item.reason}`);
+        console.log(`    Parked by: ${item.parkedBy} on ${item.parkedDate}`);
+        console.log(`    Approved by: ${item.approvedBy}`);
+        console.log(`    Expiry: ${item.expiryCondition}`);
+        if (item.expiryDate) {
+          console.log(`    Hard deadline: ${item.expiryDate}`);
+        }
+        if (item.issueUrl) {
+          console.log(`    Tracking: ${item.issueUrl}`);
+        }
+      });
+      console.log();
+    }
+
+    if (parkingItems.length > 0) {
+      console.log(`${YELLOW}QA Parking Items: ${parkingItems.length}${RESET}`);
+      parkingItems.forEach(item => {
+        console.log(`\n  ${YELLOW}●${RESET} ${item.id} - ${item.type}`);
         console.log(`    Reason: ${item.reason}`);
         console.log(`    Parked by: ${item.parkedBy} on ${item.parkedDate}`);
         console.log(`    Approved by: ${item.approvedBy}`);
