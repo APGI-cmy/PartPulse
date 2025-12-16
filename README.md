@@ -22,7 +22,7 @@ This is a production-ready application built with Next.js 16, featuring comprehe
 
 PartPulse follows the mandatory True North execution sequence:
 
-1. ✅ **APP_DESCRIPTION** - Complete ([APP_DESCRIPTION.md](APP_DESCRIPTION.md) - 49.5 KB)
+1. ✅ **APP_DESCRIPTION** - Complete ([APP_DESCRIPTION.md](APP_DESCRIPTION.md) - 49 KB)
 2. ✅ **ARCHITECTURE** - Complete (11 documents, 280 KB in [architecture/](architecture/))
 3. ✅ **RED QA** - Defined ([QA_PLAN.md](qa/QA_PLAN.md) - 37 tests across 13 categories)
 4. 🔴 **BUILD-TO-GREEN** - In Progress ([BUILD_TO_GREEN.md](BUILD_TO_GREEN.md) - 0/37 tests passing)
