@@ -107,10 +107,21 @@ jobs:
           DATABASE_URL: 'file:./.ci-test-db.sqlite'
           CI: 'true'
         run: |
-          echo "NODE_ENV before install=$NODE_ENV"
+          echo "=== Diagnostic: Working Directory ==="
+          pwd
+          echo "=== Diagnostic: package.json Contents ==="
+          cat package.json
+          echo "=== Diagnostic: NODE_ENV before install ==="
+          echo "NODE_ENV=$NODE_ENV"
+          echo "=== Running npm ci ==="
           npm ci
+          echo "=== Diagnostic: npm config ==="
           npm config list
+          echo "=== Diagnostic: .npmrc ==="
           cat .npmrc || echo "no .npmrc"
+          echo "=== Diagnostic: node_modules/.bin ==="
+          ls node_modules/.bin || echo "no node_modules/.bin"
+          echo "=== Diagnostic: jest check ==="
           ls node_modules/.bin | grep jest || echo "jest NOT installed"
       
       - name: Run Tests
