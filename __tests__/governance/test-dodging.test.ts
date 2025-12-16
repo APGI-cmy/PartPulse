@@ -16,18 +16,19 @@ describe('Test Dodging Detection', () => {
     const violations: string[] = [];
 
     testFiles.forEach(file => {
+      // Skip checking the test-dodging test itself
+      if (file.includes('test-dodging.test.ts')) {
+        return;
+      }
+      
       const content = fs.readFileSync(file, 'utf-8');
-      // Check for actual skip patterns, not in test descriptions
-      const lines = content.split('\n');
-      lines.forEach((line, idx) => {
-        // Skip lines that are in string literals or test descriptions
-        if (line.includes('describe(') || line.includes('it(')) {
-          const hasSkipKeyword = /\b(skip|only)\s*\(/.test(line) || /\.(skip|only)\(/.test(line);
-          if (hasSkipKeyword && file !== '__tests__/governance/test-dodging.test.ts') {
-            violations.push(`${file}:${idx + 1}`);
-          }
-        }
-      });
+      // Check for actual skip patterns - look for method calls not in strings
+      const skipPattern = /\b(it|test|describe)\s*\.\s*skip\s*\(/g;
+      const matches = content.match(skipPattern);
+      
+      if (matches && matches.length > 0) {
+        violations.push(file);
+      }
     });
 
     expect(violations).toEqual([]);
@@ -38,18 +39,19 @@ describe('Test Dodging Detection', () => {
     const violations: string[] = [];
 
     testFiles.forEach(file => {
+      // Skip checking the test-dodging test itself
+      if (file.includes('test-dodging.test.ts')) {
+        return;
+      }
+      
       const content = fs.readFileSync(file, 'utf-8');
-      // Check for actual only patterns, not in test descriptions
-      const lines = content.split('\n');
-      lines.forEach((line, idx) => {
-        // Skip lines that are in string literals or test descriptions  
-        if (line.includes('describe(') || line.includes('it(')) {
-          const hasOnlyPattern = /\.(only)\(/.test(line) || /\bonly\s*\(/.test(line);
-          if (hasOnlyPattern && file !== '__tests__/governance/test-dodging.test.ts') {
-            violations.push(`${file}:${idx + 1}`);
-          }
-        }
-      });
+      // Check for actual only patterns - look for method calls not in strings
+      const onlyPattern = /\b(it|test|describe)\s*\.\s*only\s*\(/g;
+      const matches = content.match(onlyPattern);
+      
+      if (matches && matches.length > 0) {
+        violations.push(file);
+      }
     });
 
     expect(violations).toEqual([]);

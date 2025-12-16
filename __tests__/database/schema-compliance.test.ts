@@ -22,9 +22,6 @@ describe('Database Schema Compliance', () => {
 
   describe('Core Models', () => {
     it('should have User model with all required fields', async () => {
-      // Test that we can access the User model and it has the expected structure
-      const userFields = Object.keys(prisma.user.fields || {});
-      
       // Create a test user to verify the model works
       const testUser = {
         email: `test-${Date.now()}@example.com`,
