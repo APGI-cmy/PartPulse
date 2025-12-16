@@ -1,7 +1,7 @@
 # Governance Policy Version
 
 **Repository**: PartPulse  
-**Policy Version**: 1.0.0  
+**Policy Version**: 1.1.0  
 **Last Updated**: 2025-12-16  
 **Policy Authority**: ForemanApp Agent Contract
 
@@ -19,7 +19,9 @@ This repository is governed by the ForemanApp Agent Contract as defined in `.git
 
 ### 2. Zero Test Dodging Rule
 - No skipped tests, focused tests, suppressed failures, or conditional bypasses
-- Intentional RED only through governed mechanisms (QA Parking)
+- Intentional RED only through governed mechanisms (QA Parking or DP-RED)
+- QA Parking for implementation-phase RED states
+- DP-RED for design-phase RED states
 
 ### 3. One-Time Failure Doctrine
 - Failures may occur once
@@ -57,6 +59,7 @@ This repository is governed by the ForemanApp Agent Contract as defined in `.git
 |-----------|--------|----------|
 | Test Dodging Detection | ✅ Active | `qa/detect-test-dodging.js` |
 | QA Parking Station | ✅ Active | `qa/parking/` |
+| DP-RED Support | ✅ Active | `qa/parking/` |
 | Parking Watcher | ✅ Active | `qa/parking/watcher.js` |
 | Catastrophic Failure Tracking | ✅ Active | `qa/evidence/` |
 | Evidence Capture | ✅ Active | `qa/evidence/capture.js` |
@@ -74,6 +77,13 @@ This repository is governed by the ForemanApp Agent Contract as defined in `.git
 
 ## Version History
 
+### 1.1.0 (2025-12-16)
+- Added Design-Phase RED (DP-RED) support (APPQA-1)
+- Extended parking registry schema with category field
+- Created DP-RED issue template
+- Updated QA Governance Guide with DP-RED documentation
+- Enhanced parking watcher to distinguish DP-RED from QA Parking
+
 ### 1.0.0 (2025-12-16)
 - Initial policy version
 - Implemented QA/Governance compliance bootstrap (PPQA-0)
@@ -85,6 +95,7 @@ This repository is governed by the ForemanApp Agent Contract as defined in `.git
 ## Contact
 
 For policy questions or governance exceptions:
-- Create a QA Parking Request issue
+- Create a QA Parking Request issue (for implementation-phase RED)
+- Create a DP-RED Request issue (for design-phase RED)
 - Reference ForemanApp Agent Contract
 - Await owner approval

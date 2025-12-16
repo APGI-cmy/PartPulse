@@ -27,10 +27,17 @@ PartPulse implements comprehensive QA and governance compliance per the ForemanA
 - Lessons propagated across repos
 
 ### 4. Governed RED States
+
 - QA Parking for intentional RED
 - Must be approved, tracked, time-bound
 - Visible and auditable
 - Cannot be forgotten
+
+**DP-RED (Design-Phase RED)**
+- Special category for design-phase RED states
+- Used during architecture/design exploration
+- Tests written before implementation (TDD)
+- Must be resolved before implementation begins
 
 ---
 
@@ -60,12 +67,27 @@ npm run qa:check
 **Watcher**: `qa/parking/watcher.js`
 
 Tracks governed RED states with:
-- Unique ID (PARK-XXX)
-- Type (test, build, lint, security, other)
+- Unique ID (PARK-XXX for parking, DPRED-XXX for DP-RED)
+- Category (parking or dp-red)
+- Type (test, build, lint, security, design, architecture, other)
 - Justification
 - Expiry condition
 - Approval (repo owner required)
 - Tracking issue
+
+**Two Categories of Governed RED:**
+
+1. **QA Parking (PARK-XXX)** - Implementation-phase RED states
+   - Test failures that cannot be fixed immediately
+   - Build issues requiring external fixes
+   - Lint violations needing refactoring
+   - Security findings requiring time
+
+2. **Design-Phase RED (DPRED-XXX)** - Design-phase RED states
+   - Architecture decisions being validated
+   - Tests written before implementation (TDD)
+   - Requirements exploration
+   - Design alternatives evaluation
 
 **Adding Parking**:
 1. Create QA Parking Request issue
@@ -74,10 +96,11 @@ Tracks governed RED states with:
 4. Link issue in registry
 5. Monitor via watcher
 
-**Registry Entry Example**:
+**Registry Entry Example (QA Parking)**:
 ```json
 {
   "id": "PARK-001",
+  "category": "parking",
   "type": "test",
   "reason": "External API unavailable for testing",
   "location": "lib/external-api.test.ts",
@@ -89,6 +112,25 @@ Tracks governed RED states with:
   "approvalDate": "2025-12-16T10:30:00Z",
   "status": "active",
   "issueUrl": "https://github.com/.../issues/123"
+}
+```
+
+**Registry Entry Example (DP-RED)**:
+```json
+{
+  "id": "DPRED-001",
+  "category": "dp-red",
+  "type": "design",
+  "reason": "Evaluating authentication patterns for new feature",
+  "location": "lib/auth/",
+  "parkedBy": "architect",
+  "parkedDate": "2025-12-16T10:00:00Z",
+  "expiryCondition": "Design decision documented and approved",
+  "expiryDate": "2025-12-20",
+  "approvedBy": "repo-owner",
+  "approvalDate": "2025-12-16T10:30:00Z",
+  "status": "active",
+  "issueUrl": "https://github.com/.../issues/124"
 }
 ```
 
@@ -200,7 +242,7 @@ Use when:
 **File**: `.github/ISSUE_TEMPLATE/qa-parking.yml`
 
 Use when:
-- Test cannot pass immediately
+- Test cannot pass immediately (implementation phase)
 - Build issue requires external fix
 - Lint violation needs refactoring
 - Security finding needs time
@@ -213,6 +255,27 @@ Use when:
 - Impact assessment
 
 **Approval**: Repo owner must approve before parking
+
+### DP-RED Template
+
+**File**: `.github/ISSUE_TEMPLATE/dp-red.yml`
+
+Use when:
+- Exploring design or architecture alternatives
+- Writing tests before implementation (TDD)
+- Validating requirements or design decisions
+- Design-phase experimentation needed
+
+**Required**:
+- Type of design-phase work
+- Design question being explored
+- Detailed justification
+- Location/path
+- Expiry condition (design decision date)
+- Acceptance criteria
+- Impact assessment
+
+**Approval**: Repo owner must approve before DP-RED
 
 ---
 
@@ -235,7 +298,7 @@ Use when:
 3. CI validates
 4. Merge when GREEN
 
-**Option 2: QA Parking** (Governed Exception)
+**Option 2: QA Parking** (Governed Exception - Implementation Phase)
 1. Cannot fix immediately?
 2. Create QA Parking Request issue
 3. Provide detailed justification
@@ -245,6 +308,17 @@ Use when:
 7. Set clear expiry condition
 8. Monitor via watcher
 9. Fix before expiry
+
+**Option 3: DP-RED** (Governed Exception - Design Phase)
+1. Working on design/architecture?
+2. Create DP-RED Request issue
+3. Document design question clearly
+4. Wait for owner approval
+5. Update registry.json with category: "dp-red"
+6. Link issue in registry
+7. Set clear expiry condition (design decision date)
+8. Monitor via watcher
+9. Resolve before starting implementation
 
 ### When CI Fails
 
@@ -299,7 +373,26 @@ python3 qa/run-qa.py
 
 ### Can I skip a failing test temporarily?
 
-No. Test skipping is forbidden per Zero Test Dodging Rule. Use QA Parking with approval instead.
+No. Test skipping is forbidden per Zero Test Dodging Rule. Use QA Parking (for implementation issues) or DP-RED (for design-phase issues) with approval instead.
+
+### What's the difference between QA Parking and DP-RED?
+
+- **QA Parking**: For implementation-phase RED states (test failures, build issues, etc.)
+- **DP-RED**: For design-phase RED states (architecture exploration, TDD test-first, design validation)
+
+### When should I use DP-RED vs QA Parking?
+
+Use **DP-RED** when:
+- You're exploring design alternatives
+- Writing tests before implementation (TDD)
+- Validating architecture decisions
+- Design/requirements are still being defined
+
+Use **QA Parking** when:
+- Implementation exists but tests fail
+- Build issues block progress
+- External dependencies cause failures
+- Implementation-phase problems occur
 
 ### What if the CI is wrong?
 
@@ -309,7 +402,7 @@ CI is never wrong about RED/GREEN. Fix the code or test, or use QA Parking if fi
 
 As short as possible. Set realistic expiry. Items parked > 90 days trigger warnings.
 
-### Who can approve QA Parking?
+### Who can approve QA Parking or DP-RED?
 
 Only repo owner or explicitly authorized admins.
 

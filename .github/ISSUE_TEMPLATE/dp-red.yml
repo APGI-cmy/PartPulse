@@ -1,0 +1,155 @@
+name: 🔴 DP-RED Request (Design-Phase RED)
+description: Request a Design-Phase RED state for intentional RED during design/architecture phase
+title: "[DP-RED] "
+labels: ["dp-red", "governance", "design-phase"]
+assignees:
+  - ""
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Design-Phase RED (DP-RED) Request
+        
+        Per ForemanApp governance, DP-RED allows intentional RED states during the design phase when:
+        - Architecture or design is being validated
+        - Tests are written before implementation (TDD approach)
+        - Requirements are being explored
+        - Design decisions require experimentation
+        
+        **DP-RED is for design-phase work only.** Use QA Parking for implementation-phase RED states.
+        
+        ---
+  
+  - type: input
+    id: dpred-id
+    attributes:
+      label: DP-RED ID
+      description: Unique identifier (will be assigned if approved)
+      placeholder: "DPRED-XXX (leave blank for auto-assignment)"
+    validations:
+      required: false
+  
+  - type: dropdown
+    id: dpred-type
+    attributes:
+      label: Type
+      description: What type of design-phase RED?
+      options:
+        - design
+        - architecture
+        - test
+        - other
+    validations:
+      required: true
+  
+  - type: textarea
+    id: reason
+    attributes:
+      label: Justification
+      description: Why is this design-phase RED necessary?
+      placeholder: |
+        Explain:
+        - What design/architecture question are you exploring?
+        - Why does this require a RED state?
+        - What are you trying to validate?
+    validations:
+      required: true
+  
+  - type: input
+    id: location
+    attributes:
+      label: Location
+      description: File path, component, or module affected
+      placeholder: "lib/new-feature/ or docs/architecture/new-design.md"
+    validations:
+      required: true
+  
+  - type: textarea
+    id: design-question
+    attributes:
+      label: Design Question
+      description: What specific design or architecture question needs resolution?
+      placeholder: "Which authentication pattern should we use for this feature?"
+    validations:
+      required: true
+  
+  - type: textarea
+    id: expiry-condition
+    attributes:
+      label: Expiry Condition
+      description: What must happen for this DP-RED to be resolved?
+      placeholder: "Design decision made and documented / Architecture approved / Implementation started"
+    validations:
+      required: true
+  
+  - type: input
+    id: expiry-date
+    attributes:
+      label: Hard Deadline (Optional)
+      description: Absolute deadline for design decision (YYYY-MM-DD)
+      placeholder: "2025-12-31"
+    validations:
+      required: false
+  
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact
+      description: What is the scope of this design decision?
+      options:
+        - Low - Single component/feature
+        - Medium - Multiple components
+        - High - System-wide architectural change
+        - Critical - Core infrastructure decision
+    validations:
+      required: true
+  
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Design Alternatives
+      description: What design alternatives are being considered?
+      placeholder: |
+        Option 1: ...
+        Option 2: ...
+        Option 3: ...
+    validations:
+      required: false
+  
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: How will you know when the design decision is made?
+      placeholder: |
+        - [ ] Design document completed
+        - [ ] Stakeholders reviewed
+        - [ ] Implementation approach clear
+    validations:
+      required: true
+  
+  - type: checkboxes
+    id: approval-checklist
+    attributes:
+      label: Approval Checklist
+      description: Required for DP-RED approval
+      options:
+        - label: This is a design-phase activity (not implementation)
+          required: true
+        - label: I have documented the design question clearly
+          required: true
+        - label: I have identified clear expiry condition
+          required: true
+        - label: I understand this must be resolved before implementation
+          required: true
+        - label: I will monitor this regularly until resolved
+          required: true
+  
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: Additional Notes
+      description: Any other relevant information
+      placeholder: "Links to design docs, prototypes, spikes..."
+    validations:
+      required: false
