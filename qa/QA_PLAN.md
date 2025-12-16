@@ -627,6 +627,69 @@ describe('Layer Separation', () => {
 
 ---
 
+## QA Category 8.5: Navigation Wiring Compliance (ARCH-FAIL-01)
+
+**Architecture Source**: `/architecture/NAVIGATION_PATTERNS.md`
+
+**QA Objective**: Validate that ALL user-facing navigation uses relative paths and NO hard-coded deployment URLs exist
+
+**Issue Reference**: ARCH-FAIL-01 — Runtime Navigation Wiring Missing
+
+### Evidence Requirements
+
+#### 8.5.1 No Hard-Coded Deployment URLs
+- ✅ No `.vercel.app` URLs in UI code
+- ✅ No `.netlify.app` URLs in UI code
+- ✅ No preview deployment URLs in source files
+- ✅ All navigation uses relative paths
+
+**Test File**: `__tests__/architecture/navigation-wiring.test.ts`
+
+**Tests Required**:
+```typescript
+describe('Navigation Wiring Compliance', () => {
+  it('should not contain hard-coded deployment URLs in app/')
+  it('should not contain hard-coded deployment URLs in components/')
+  it('should not contain hard-coded deployment URLs in lib/')
+  it('should use relative paths in all Link components')
+  it('should use relative paths in all router.push/replace calls')
+  it('should use relative paths in window.location assignments')
+  it('should define NEXTAUTH_URL in .env.example')
+  it('should not have hard-coded preview URLs in .env.example')
+  it('should have documented navigation patterns in architecture')
+})
+```
+
+#### 8.5.2 Link Component Evidence
+- ✅ All `<Link>` components use relative paths (e.g., `/transfers`)
+- ✅ No `<Link>` components with absolute deployment URLs
+- ✅ External links properly identified and allowed
+
+#### 8.5.3 Router Navigation Evidence
+- ✅ All `router.push()` calls use relative paths
+- ✅ All `router.replace()` calls use relative paths
+- ✅ No hard-coded deployment URLs in router calls
+
+#### 8.5.4 Environment Variable Evidence
+- ✅ `NEXTAUTH_URL` defined in `.env.example`
+- ✅ No preview URLs in `.env.example`
+- ✅ Environment variables used correctly for external services only
+
+#### 8.5.5 Documentation Evidence
+- ✅ Navigation patterns documented in `architecture/NAVIGATION_PATTERNS.md`
+- ✅ Examples provided for all navigation methods
+- ✅ Failure prevention strategies documented
+
+**Acceptance Criteria for GREEN**:
+- ✅ All navigation wiring tests pass (COMPLETE)
+- ✅ Zero hard-coded deployment URLs in codebase (VERIFIED)
+- ✅ Navigation patterns documented (COMPLETE)
+- ✅ Automated enforcement in place (COMPLETE)
+
+**Status**: ✅ **GREEN** — All tests passing, all requirements met
+
+---
+
 ## QA Category 9: External Dependencies Compliance
 
 **Architecture Source**: `/architecture/EXTERNAL_DEPENDENCIES.md`
