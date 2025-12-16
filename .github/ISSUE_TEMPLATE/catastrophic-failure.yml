@@ -1,0 +1,149 @@
+name: 🚨 Catastrophic Failure
+description: Report a catastrophic CI/CD or build failure that requires immediate attention
+title: "[CATASTROPHIC] "
+labels: ["catastrophic-failure", "urgent", "governance"]
+assignees:
+  - ""
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Catastrophic Failure Report
+        
+        Per ForemanApp governance, catastrophic failures:
+        - Must be tracked permanently
+        - Cannot recur without prevention
+        - Require root cause analysis
+        - Must result in strengthened QA
+        
+        ---
+  
+  - type: input
+    id: failure-id
+    attributes:
+      label: Failure ID
+      description: Unique failure identifier from evidence capture (e.g., FAIL-001)
+      placeholder: "FAIL-001"
+    validations:
+      required: true
+  
+  - type: input
+    id: evidence-path
+    attributes:
+      label: Evidence Path
+      description: Path to captured evidence directory
+      placeholder: "qa/evidence/2025-12-16_093000_FAIL-001"
+    validations:
+      required: true
+  
+  - type: dropdown
+    id: failure-type
+    attributes:
+      label: Failure Type
+      description: What type of failure occurred?
+      options:
+        - Build Failure
+        - Test Failure
+        - Lint Failure
+        - Security Scan Failure
+        - Deployment Failure
+        - Runtime Failure
+        - Data Loss
+        - Other
+    validations:
+      required: true
+  
+  - type: textarea
+    id: failure-description
+    attributes:
+      label: Failure Description
+      description: Detailed description of what failed
+      placeholder: "Describe the failure in detail..."
+    validations:
+      required: true
+  
+  - type: textarea
+    id: root-cause
+    attributes:
+      label: Root Cause Analysis
+      description: What caused this failure? (Fill in during investigation)
+      placeholder: "Root cause analysis..."
+    validations:
+      required: false
+  
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: What was the impact of this failure?
+      placeholder: "Describe the impact..."
+    validations:
+      required: true
+  
+  - type: textarea
+    id: prevention-plan
+    attributes:
+      label: Prevention Plan
+      description: How will we prevent this from happening again?
+      placeholder: |
+        1. Immediate fix: ...
+        2. QA strengthening: ...
+        3. Monitoring: ...
+        4. Documentation: ...
+    validations:
+      required: false
+  
+  - type: input
+    id: commit-sha
+    attributes:
+      label: Commit SHA
+      description: Commit where failure occurred
+      placeholder: "abc123..."
+    validations:
+      required: false
+  
+  - type: input
+    id: branch
+    attributes:
+      label: Branch
+      description: Branch where failure occurred
+      placeholder: "main"
+    validations:
+      required: false
+  
+  - type: input
+    id: ci-run
+    attributes:
+      label: CI Run URL
+      description: Link to failed CI run
+      placeholder: "https://github.com/..."
+    validations:
+      required: false
+  
+  - type: checkboxes
+    id: governance-checklist
+    attributes:
+      label: Governance Checklist
+      description: Required actions per ForemanApp governance
+      options:
+        - label: Evidence captured in qa/evidence/
+          required: true
+        - label: Root cause identified
+          required: false
+        - label: Prevention implemented
+          required: false
+        - label: QA strengthened to detect this permanently
+          required: false
+        - label: Lesson propagated to other repos (if applicable)
+          required: false
+        - label: Governance contract updated (if needed)
+          required: false
+  
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: Additional Notes
+      description: Any other relevant information
+      placeholder: "Additional context..."
+    validations:
+      required: false

@@ -1,0 +1,160 @@
+name: QA Enforcement
+
+on:
+  push:
+    branches: [ main, develop, 'copilot/**' ]
+  pull_request:
+    branches: [ main, develop ]
+
+permissions:
+  contents: read
+
+jobs:
+  test-dodging-check:
+    name: Test Dodging Detection
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run Test Dodging Detector
+        run: node qa/detect-test-dodging.js
+      
+      - name: Evidence Capture on Failure
+        if: failure()
+        run: |
+          node qa/evidence/capture.js "test-dodging-violation" "Test dodging detected in CI"
+          echo "Evidence captured to qa/evidence/"
+
+  qa-parking-check:
+    name: QA Parking Validation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Run QA Parking Watcher
+        run: node qa/parking/watcher.js
+      
+      - name: Evidence Capture on Failure
+        if: failure()
+        run: |
+          node qa/evidence/capture.js "qa-parking-violation" "QA parking violations detected"
+
+  governance-sync-check:
+    name: Governance Sync Validation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Run Governance Sync Checker
+        run: node qa/governance/sync-checker.js
+      
+      - name: Evidence Capture on Failure
+        if: failure()
+        run: |
+          node qa/evidence/capture.js "governance-sync-failure" "Governance not synchronized"
+
+  test-execution:
+    name: Test Suite Execution
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run Tests
+        run: npm run test:ci
+      
+      - name: Evidence Capture on Failure
+        if: failure()
+        run: |
+          node qa/evidence/capture.js "test-failure" "Test suite failed" "$(cat test-output.log 2>/dev/null || echo 'No logs')"
+      
+      - name: Upload Coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 30
+
+  merge-gate:
+    name: Merge Gate (Build-to-GREEN)
+    runs-on: ubuntu-latest
+    needs: [test-dodging-check, qa-parking-check, governance-sync-check, test-execution]
+    if: always()
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Check All Gates
+        run: |
+          echo "Checking merge gate status..."
+          
+          if [ "${{ needs.test-dodging-check.result }}" != "success" ]; then
+            echo "❌ Test dodging check failed"
+            exit 1
+          fi
+          
+          if [ "${{ needs.qa-parking-check.result }}" != "success" ]; then
+            echo "❌ QA parking check failed"
+            exit 1
+          fi
+          
+          if [ "${{ needs.governance-sync-check.result }}" != "success" ]; then
+            echo "❌ Governance sync check failed"
+            exit 1
+          fi
+          
+          if [ "${{ needs.test-execution.result }}" != "success" ]; then
+            echo "❌ Test execution failed"
+            exit 1
+          fi
+          
+          echo "✅ All merge gates passed - Build-to-GREEN achieved"
+      
+      - name: Evidence Capture on Gate Failure
+        if: failure()
+        run: |
+          node qa/evidence/capture.js "merge-gate-failure" "Merge gate blocked - RED state detected"
+          echo "🚨 CATASTROPHIC FAILURE - Merge gate RED"
+          echo "Evidence captured. Create catastrophic failure issue."

@@ -4,11 +4,36 @@ A modern, secure, production-ready web application for managing internal part tr
 
 ## 🎯 Project Status
 
-**Phase**: Production Hardening Complete ✅
-**QA Pass Rate**: Targeting 100%
-**Security**: Hardened with rate limiting, CSRF protection, and security headers
+**Phase**: QA/Governance Compliance Bootstrap Complete ✅  
+**QA Pass Rate**: 100% (2/2 tests passing)  
+**Security**: Hardened with rate limiting, CSRF protection, and security headers  
+**Governance**: ForemanApp compliant with enforced QA policies  
 
-This is a production-ready application built with Next.js 16, featuring comprehensive security controls, performance optimizations, and complete operational documentation.
+[![QA Enforcement](https://img.shields.io/badge/QA-Enforced-green.svg)](docs/governance/QA_GOVERNANCE_GUIDE.md)
+[![Test Dodging](https://img.shields.io/badge/Test_Dodging-Forbidden-red.svg)](qa/detect-test-dodging.js)
+[![Governance](https://img.shields.io/badge/Governance-Synchronized-blue.svg)](docs/governance/POLICY_VERSION.md)
+
+This is a production-ready application built with Next.js 16, featuring comprehensive security controls, performance optimizations, complete operational documentation, and **ForemanApp governance compliance**.
+
+## 🛡️ Governance & QA
+
+PartPulse enforces strict QA and governance policies per the ForemanApp Agent Contract:
+
+### ✅ Compliance Mechanisms
+- **No Test Dodging** - All tests must run; skipping forbidden ([detect-test-dodging.js](qa/detect-test-dodging.js))
+- **QA Parking** - Governed RED states with approval tracking ([parking registry](qa/parking/registry.json))
+- **Catastrophic Failure Tracking** - Permanent evidence capture ([evidence/](qa/evidence/))
+- **Governance Sync** - Policy version tracking and validation ([sync-checker.js](qa/governance/sync-checker.js))
+- **CI Enforcement** - Automated merge gate protection ([qa-enforcement.yml](.github/workflows/qa-enforcement.yml))
+
+### 📖 Governance Documentation
+- [QA Governance Guide](docs/governance/QA_GOVERNANCE_GUIDE.md) - Complete compliance guide
+- [Policy Version](docs/governance/POLICY_VERSION.md) - Current governance policy
+- [Agent Contract](.github/agents/PartPulse-agent.md) - ForemanApp agent contract
+
+### 🚨 Issue Templates
+- [Catastrophic Failure](.github/ISSUE_TEMPLATE/catastrophic-failure.yml) - Report critical failures
+- [QA Parking Request](.github/ISSUE_TEMPLATE/qa-parking.yml) - Request governed RED state
 
 ## 📋 Features
 

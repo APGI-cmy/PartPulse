@@ -1,0 +1,132 @@
+name: 🅿️ QA Parking Request
+description: Request to park a QA item (governed RED state)
+title: "[QA PARKING] "
+labels: ["qa-parking", "governance"]
+assignees:
+  - ""
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## QA Parking Request
+        
+        Per ForemanApp governance, parking allows intentional RED states only when:
+        - Properly justified
+        - Approved by repo owner
+        - Time-bound with expiry
+        - Tracked and visible
+        
+        **Test dodging is forbidden.** Parking is the governed alternative.
+        
+        ---
+  
+  - type: input
+    id: parking-id
+    attributes:
+      label: Parking ID
+      description: Unique identifier (will be assigned if approved)
+      placeholder: "PARK-XXX (leave blank for auto-assignment)"
+    validations:
+      required: false
+  
+  - type: dropdown
+    id: parking-type
+    attributes:
+      label: Type
+      description: What type of item are you parking?
+      options:
+        - test
+        - build
+        - lint
+        - security
+        - other
+    validations:
+      required: true
+  
+  - type: textarea
+    id: reason
+    attributes:
+      label: Justification
+      description: Detailed reason why this needs to be parked
+      placeholder: |
+        Explain:
+        - Why this cannot be fixed immediately
+        - What is blocking the fix
+        - Why this must be parked vs. fixed
+    validations:
+      required: true
+  
+  - type: input
+    id: location
+    attributes:
+      label: Location
+      description: File path or component affected
+      placeholder: "components/example.tsx"
+    validations:
+      required: true
+  
+  - type: textarea
+    id: expiry-condition
+    attributes:
+      label: Expiry Condition
+      description: What must happen for this to be unparked?
+      placeholder: "After Wave 5 completion / External API fix / Dependency update"
+    validations:
+      required: true
+  
+  - type: input
+    id: expiry-date
+    attributes:
+      label: Hard Deadline (Optional)
+      description: Absolute deadline for resolution (YYYY-MM-DD)
+      placeholder: "2025-12-31"
+    validations:
+      required: false
+  
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact
+      description: What is the impact of parking this?
+      options:
+        - Low - No user impact
+        - Medium - Affects development workflow
+        - High - Affects functionality
+        - Critical - Affects security/compliance
+    validations:
+      required: true
+  
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Workaround
+      description: What workaround is in place while this is parked?
+      placeholder: "Describe temporary solution..."
+    validations:
+      required: false
+  
+  - type: checkboxes
+    id: approval-checklist
+    attributes:
+      label: Approval Checklist
+      description: Required for parking approval
+      options:
+        - label: I have attempted to fix this immediately
+          required: true
+        - label: I have documented why immediate fix is not possible
+          required: true
+        - label: I have identified clear expiry condition
+          required: true
+        - label: I understand this must be resolved, not forgotten
+          required: true
+        - label: I will monitor this regularly until resolved
+          required: true
+  
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: Additional Notes
+      description: Any other relevant information
+      placeholder: "Additional context..."
+    validations:
+      required: false
