@@ -32,7 +32,24 @@ async function main() {
     },
   })
 
-  console.log({ admin, technician })
+  // Create Johan's admin user account
+  // NOTE: This is a development/demo seed. In production, remove this user or use environment variables
+  // for passwords. The temporary password should be changed immediately after first login.
+  // Using a temporary password that will be reset via password reset flow
+  const johanPassword = await bcrypt.hash('TemporaryPassword123!@#', 10)
+  
+  const johan = await prisma.user.upsert({
+    where: { email: 'johan.ras2@outlook.com' },
+    update: {},
+    create: {
+      email: 'johan.ras2@outlook.com',
+      name: 'Johan Ras',
+      password: johanPassword,
+      role: 'admin',
+    },
+  })
+
+  console.log({ admin, technician, johan })
 }
 
 main()
