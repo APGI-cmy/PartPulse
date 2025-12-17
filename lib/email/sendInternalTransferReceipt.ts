@@ -36,12 +36,12 @@ function getTechnicianEmail(technician: string): string {
 /**
  * Send confirmation email to admin with PDF attached
  * @param transfer - The internal transfer data
- * @param pdfContent - Optional PDF content to attach
+ * @param pdfContent - Optional PDF content to attach (Buffer or string)
  * @returns Promise that resolves when email is sent
  */
 export async function sendInternalTransferReceipt(
   transfer: InternalTransfer,
-  pdfContent?: string
+  pdfContent?: Buffer | string
 ): Promise<{ success: boolean; messageId?: string }> {
   console.log('[EMAIL] Sending Internal Transfer Receipt');
   console.log('[EMAIL] Transfer ID:', transfer.id);

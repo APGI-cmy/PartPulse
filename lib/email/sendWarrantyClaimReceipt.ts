@@ -37,12 +37,12 @@ function getTechnicianEmail(technician: string): string {
 /**
  * Send confirmation email to technician and admin with PDF attached
  * @param claim - The warranty claim data
- * @param pdfContent - Optional PDF content to attach
+ * @param pdfContent - Optional PDF content to attach (Buffer or string)
  * @returns Promise that resolves when email is sent
  */
 export async function sendWarrantyClaimReceipt(
   claim: WarrantyClaim,
-  pdfContent?: string
+  pdfContent?: Buffer | string
 ): Promise<{ success: boolean; messageId?: string }> {
   console.log('[EMAIL] Sending Warranty Claim Receipt');
   console.log('[EMAIL] Claim ID:', claim.id);

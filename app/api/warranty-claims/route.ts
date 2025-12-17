@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Generate and save PDF
-    let pdfContent: string | undefined;
+    let pdfContent: Buffer | undefined;
     try {
       pdfContent = await generateWarrantyClaimPDF(warrantyClaim);
       const pdfResult = await savePDF(pdfContent, `warranty-claim-${warrantyClaim.id}.pdf`);
