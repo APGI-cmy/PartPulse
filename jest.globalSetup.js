@@ -23,14 +23,28 @@ module.exports = async () => {
   console.log(`✓ Using DATABASE_URL: ${process.env.DATABASE_URL.replace(/:[^:@]+@/, ':****@')}`);
 
   try {
-    // Push Prisma schema to create fresh database
-    console.log('✓ Creating fresh test database...');
-    execSync('npx prisma db push --force-reset --skip-generate --accept-data-loss', {
-      cwd: process.cwd(),
-      stdio: 'pipe',
-      env: process.env,
-    });
-    console.log('✓ Test database schema applied successfully\n');
+    // Deploy migrations to test database using migrate deploy
+    // This ensures migration history is tracked in _prisma_migrations table
+    // Critical for build tests that run "prisma migrate deploy"
+    console.log('✓ Deploying migrations to test database...');
+    
+    try {
+      execSync('npx prisma migrate deploy', {
+        cwd: process.cwd(),
+        stdio: 'pipe',
+        env: process.env,
+      });
+      console.log('✓ Test database migrations deployed successfully\n');
+    } catch (deployError) {
+      // If deploy fails due to schema drift, reset and deploy
+      console.log('✓ Schema drift detected, resetting database...');
+      execSync('npx prisma migrate reset --force --skip-seed --skip-generate', {
+        cwd: process.cwd(),
+        stdio: 'pipe',
+        env: process.env,
+      });
+      console.log('✓ Test database reset complete\n');
+    }
   } catch (error) {
     console.error('❌ Failed to setup test database:', error.message);
     if (error.stdout) console.error('stdout:', error.stdout.toString());
