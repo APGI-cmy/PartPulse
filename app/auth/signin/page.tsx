@@ -13,16 +13,32 @@ function SignInForm() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const [successMessage, setSuccessMessage] = useState("")
+  const [canCreateFirstAdmin, setCanCreateFirstAdmin] = useState(false)
+  const [checkingFirstAdmin, setCheckingFirstAdmin] = useState(true)
 
   useEffect(() => {
     const setup = searchParams.get("setup")
     const signup = searchParams.get("signup")
+    const reset = searchParams.get("reset")
     
     if (setup === "success") {
       setSuccessMessage("Admin account created successfully! You can now sign in.")
     } else if (signup === "success") {
       setSuccessMessage("Account created successfully! You can now sign in.")
+    } else if (reset === "success") {
+      setSuccessMessage("Password reset successfully! You can now sign in with your new password.")
     }
+
+    // Check if first admin can be created
+    fetch("/api/auth/can-create-first-admin")
+      .then((res) => res.json())
+      .then((data) => {
+        setCanCreateFirstAdmin(data.canCreate)
+        setCheckingFirstAdmin(false)
+      })
+      .catch(() => {
+        setCheckingFirstAdmin(false)
+      })
   }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -121,18 +137,37 @@ function SignInForm() {
               {loading ? "Signing in..." : "Sign in"}
             </button>
           </div>
-          
-          <div className="text-center text-sm text-gray-600">
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              <p className="mb-2">Don&apos;t have an account?</p>
-              <Link
-                href="/auth/first-admin"
-                className="text-[#FF2B00] hover:underline font-medium"
-              >
-                Create First Admin Account
-              </Link>
-            </div>
+
+          <div className="flex items-center justify-center mt-4">
+            <Link
+              href="/auth/forgot-password"
+              className="text-sm text-[#FF2B00] hover:underline font-medium"
+            >
+              Forgot password?
+            </Link>
           </div>
+          
+          {!checkingFirstAdmin && canCreateFirstAdmin && (
+            <div className="text-center text-sm text-gray-600">
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <p className="mb-2">Don&apos;t have an account?</p>
+                <Link
+                  href="/auth/first-admin"
+                  className="text-[#FF2B00] hover:underline font-medium"
+                >
+                  Create First Admin Account
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {!checkingFirstAdmin && !canCreateFirstAdmin && (
+            <div className="text-center text-sm text-gray-600">
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <p>If you need an account, please contact your administrator.</p>
+              </div>
+            </div>
+          )}
         </form>
       </div>
     </div>
