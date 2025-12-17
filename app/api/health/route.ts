@@ -20,6 +20,7 @@ export async function GET() {
       appUrl: process.env.NEXT_PUBLIC_APP_URL || 'NOT_SET',
     },
     status: 'ok',
+    missingVars: [] as string[],
   };
 
   // Check if critical variables are missing
