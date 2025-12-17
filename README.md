@@ -152,6 +152,8 @@ Open [http://localhost:3000](http://localhost:3000)
 
 ### First-Time Production Setup
 
+**⚠️ IMPORTANT: The first-admin setup is ONLY available on fresh installations where NO admin exists yet.**
+
 **For production deployments**, create the first admin account by visiting `/auth/first-admin`:
 
 1. Navigate to `https://your-domain.com/auth/first-admin`
@@ -160,6 +162,8 @@ Open [http://localhost:3000](http://localhost:3000)
 4. Sign in with your new credentials
 
 After the first admin is created, this page will no longer be accessible (security measure).
+
+**If you see "Setup Already Complete"**: This means an admin already exists. Contact your administrator for an invitation. See [docs/USER_MANAGEMENT.md](docs/USER_MANAGEMENT.md) for complete details.
 
 **To add more users:** Use the "Invite" feature in the admin dashboard (see [docs/USER_MANAGEMENT.md](docs/USER_MANAGEMENT.md) for details).
 
