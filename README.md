@@ -89,6 +89,7 @@ PartPulse enforces strict QA and governance policies per the ForemanApp Agent Co
 - `architecture/architecture.md` - Complete system architecture
 - `docs/DEPLOYMENT.md` - Deployment guide for multiple platforms
 - `docs/OPERATIONS.md` - Daily operations and maintenance manual
+- `docs/USER_MANAGEMENT.md` - User signup and invitation workflow guide
 - `docs/SECRET_ROTATION.md` - Security credential rotation procedures
 - `rules.md` - Application rules and specifications
 - QA system for automated compliance validation
@@ -130,12 +131,20 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000)
 
-### Default Admin Credentials (Development)
-- Email: admin@example.com
-- Password: See output from `npm run db:seed`
-- **⚠️ Change immediately after first login**
+### First-Time Production Setup
 
-### Default Credentials (Development)
+**For production deployments**, create the first admin account by visiting `/auth/first-admin`:
+
+1. Navigate to `https://your-domain.com/auth/first-admin`
+2. Fill in admin details (name, email, password)
+3. Click "Create Admin Account"
+4. Sign in with your new credentials
+
+After the first admin is created, this page will no longer be accessible (security measure).
+
+**To add more users:** Use the "Invite" feature in the admin dashboard (see [docs/USER_MANAGEMENT.md](docs/USER_MANAGEMENT.md) for details).
+
+### Default Credentials (Development Only)
 
 After seeding, use these credentials to login:
 - **Admin:** admin@example.com / password123

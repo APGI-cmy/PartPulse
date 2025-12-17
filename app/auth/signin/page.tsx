@@ -124,7 +124,7 @@ function SignInForm() {
           
           <div className="text-center text-sm text-gray-600">
             <div className="mt-4 pt-4 border-t border-gray-200">
-              <p className="mb-2">Don't have an account?</p>
+              <p className="mb-2">Don&apos;t have an account?</p>
               <Link
                 href="/auth/first-admin"
                 className="text-[#FF2B00] hover:underline font-medium"
