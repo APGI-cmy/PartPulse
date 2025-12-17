@@ -83,9 +83,7 @@ describe('Page Routing - Route Configuration', () => {
       // Check if the href matches any defined route
       const isValidRoute = validRoutes.includes(item.href);
       
-      if (!isValidRoute) {
-        fail(`Navigation item "${item.name}" has href "${item.href}" which is not in centralized routes config`);
-      }
+      expect(isValidRoute).toBe(true);
     });
   });
   

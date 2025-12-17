@@ -47,9 +47,11 @@ npx prisma db push
 npm run db:seed
 ```
 
-This creates two test accounts:
+This creates two test accounts **for local development only**:
 - **Admin**: `admin@partpulse.com` / `admin123`
 - **Technician**: `tech@partpulse.com` / `tech123`
+
+**⚠️ SECURITY WARNING**: These are test credentials for local development only. Never use these credentials in production environments. Production systems should use secure, randomly-generated passwords and proper user onboarding procedures.
 
 ### 4. Start Development Server
 
