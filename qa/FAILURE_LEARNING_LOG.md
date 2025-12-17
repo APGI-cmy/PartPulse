@@ -11,6 +11,120 @@ This makes our QA suite progressively better, eliminating entire classes of erro
 
 ---
 
+## Failure #2: Vercel Deployment 404 - DEPLOYMENT_NOT_FOUND Error
+
+**Date**: 2025-12-17  
+**Issue**: App deploying to 404 page
+**PR**: #88 (copilot/fix-signup-page-404-error)  
+**Symptom**: After successful merge and deployment, accessing `https://partpulse.vercel.app/auth/signin` showed:
+```
+404: NOT_FOUND
+Code: DEPLOYMENT_NOT_FOUND
+ID: cpt1::dnb86-1765950603785-464a17bf92bf
+```
+
+### What Went Wrong
+
+**Root Cause**: Missing `output: 'standalone'` configuration in `next.config.ts`
+
+**Technical Details**:
+- Next.js 16.x requires explicit output mode configuration for Vercel serverless deployments
+- Without `output: 'standalone'`, Next.js doesn't create the `.next/standalone` directory
+- Vercel cannot locate the deployment entry point (server.js) without this structure
+- The build succeeds locally and in CI, but Vercel returns DEPLOYMENT_NOT_FOUND when accessed
+
+**Impact**:
+- Complete production outage - app inaccessible
+- Users see Vercel error page instead of application
+- All functionality blocked despite successful build and deployment
+- Critical severity - blocks all business value
+
+### Why It Happened
+
+1. **Next.js 16 Breaking Change**: Prior versions auto-detected Vercel deployment mode; v16+ requires explicit configuration
+2. **Silent Failure**: Build succeeds without the config - error only appears at runtime on Vercel
+3. **No Validation**: No test checked for required deployment configuration
+4. **Documentation Gap**: Deployment docs existed but didn't mandate this setting
+5. **Knowledge Gap**: Common deployment pattern not captured in QA suite
+
+### How We Fixed It
+
+1. **Immediate Fix**:
+   - Added `output: 'standalone'` to `next.config.ts`
+   - Verified `.next/standalone` directory is created during build
+   - Confirmed structure includes `server.js`, `package.json`, and required dependencies
+
+2. **FL/CI Implementation**:
+   - ✅ **Registered**: This entry documents the failure
+   - ✅ **Incorporated**: Added tests in `__tests__/deployment/build.test.ts`:
+     - Test validates `output: 'standalone'` exists in next.config.ts
+     - Test validates `.next/standalone` directory is created
+     - Test validates standalone structure has required files (server.js, package.json)
+   - ✅ **Prevented**: Tests will fail immediately if output config is removed or misconfigured
+
+3. **Documentation Updated**:
+   - Created `DEPLOYMENT_FIX_404.md` - detailed root cause analysis
+   - Updated `VERCEL_DEPLOYMENT_FIX.md` - marked primary fix
+   - Synchronized deployment documentation with actual requirements
+
+### Files Changed
+
+**Fix:**
+- `next.config.ts` - Added `output: 'standalone'` configuration
+
+**FL/CI Prevention:**
+- `__tests__/deployment/build.test.ts` - Added 2 tests to prevent recurrence
+  - `should have Next.js output configuration for deployment`
+  - `should create standalone build output for Vercel deployment`
+
+**Documentation:**
+- `DEPLOYMENT_FIX_404.md` - Created comprehensive fix documentation
+- `VERCEL_DEPLOYMENT_FIX.md` - Updated with primary root cause
+
+### Prevention Mechanism
+
+**Tests Added**:
+1. **Output Configuration Test**: Validates `output: 'standalone'` exists in next.config.ts
+2. **Standalone Structure Test**: Validates `.next/standalone` directory and required files exist after build
+
+These tests:
+- Run in CI on every build
+- Fail immediately if configuration is missing or incorrect
+- Verify both the configuration AND its effect (standalone output creation)
+- Catch the issue before deployment, not after
+
+**Result**: This exact deployment failure can never happen again undetected.
+
+### Lessons Learned
+
+1. **Framework Version Awareness**: Major version upgrades require deployment configuration review
+2. **Build vs. Runtime Validation**: Successful build doesn't guarantee successful deployment
+3. **Test the Platform**: Deployment configuration must be tested, not just application code
+4. **Detect Early**: Configuration issues should fail in CI, not in production
+5. **Document Deployment Requirements**: Platform-specific requirements must be explicit and tested
+6. **Standalone Output Critical**: For serverless platforms (Vercel, AWS Lambda), output mode determines deployment viability
+7. **Silent Failures Are Deadly**: Errors that only appear in production are the most dangerous
+
+### Governance Alignment
+
+**One-Time Failure Doctrine**: ✅
+- First occurrence: Identified and fixed
+- Prevention: Tests added to detect permanently
+- Propagation: Documented for team knowledge
+
+**Zero Test Dodging**: ✅
+- Tests run on every build
+- No conditional logic or bypasses
+- Clear failure messages guide remediation
+
+**Evidence & Audit**: ✅
+- Complete failure documentation
+- Root cause analysis captured
+- Fix and prevention mechanism documented
+- Traceable to issue and deployment ID
+
+---
+
 ## Failure #1: Prisma DATABASE_URL Validation Failure in CI
 
 **Date**: 2025-12-17  
