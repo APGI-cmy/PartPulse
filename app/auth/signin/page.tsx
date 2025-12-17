@@ -1,19 +1,34 @@
 "use client"
 
 import { signIn } from "next-auth/react"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import Link from "next/link"
 
 export default function SignInPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [successMessage, setSuccessMessage] = useState("")
+
+  useEffect(() => {
+    const setup = searchParams.get("setup")
+    const signup = searchParams.get("signup")
+    
+    if (setup === "success") {
+      setSuccessMessage("Admin account created successfully! You can now sign in.")
+    } else if (signup === "success") {
+      setSuccessMessage("Account created successfully! You can now sign in.")
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
+    setSuccessMessage("")
     setLoading(true)
 
     try {
@@ -49,6 +64,12 @@ export default function SignInPage() {
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          {successMessage && (
+            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded">
+              {successMessage}
+            </div>
+          )}
+          
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
               {error}
@@ -102,9 +123,15 @@ export default function SignInPage() {
           </div>
           
           <div className="text-center text-sm text-gray-600">
-            <p>Demo credentials:</p>
-            <p className="mt-1">Admin: admin@partpulse.com / admin123</p>
-            <p>Tech: tech@partpulse.com / tech123</p>
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <p className="mb-2">Don't have an account?</p>
+              <Link
+                href="/auth/first-admin"
+                className="text-[#FF2B00] hover:underline font-medium"
+              >
+                Create First Admin Account
+              </Link>
+            </div>
           </div>
         </form>
       </div>

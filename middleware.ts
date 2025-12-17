@@ -14,6 +14,11 @@ export default auth((req) => {
     response.headers.set(key, value)
   })
 
+  // Allow access to auth pages (signup, first-admin) without authentication
+  if (path.startsWith("/auth/")) {
+    return response
+  }
+
   // Require authentication for protected routes
   if (!token) {
     return NextResponse.redirect(new URL("/auth/signin", req.url))
