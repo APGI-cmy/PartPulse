@@ -113,9 +113,11 @@ When someone receives an invitation:
 
 **A:** Click "Forgot password?" on the sign-in page. Enter your email address, and you'll receive a password reset link. The link is valid for 1 hour for security reasons.
 
+**Note:** In the current implementation, password reset links are logged to the server console. In production, these should be sent via email. Contact your administrator if you need to retrieve a reset link.
+
 ### Q: What if I don't receive the password reset email?
 
-**A:** First, check your spam folder. If you still don't see it, the email address may not be registered in the system. Contact your administrator for assistance.
+**A:** Currently, password reset links are logged to the server console rather than sent via email. Contact your administrator to retrieve the reset link. In production, this will be sent via email automatically.
 
 ### Q: I received a password reset link but it says it's expired. What do I do?
 

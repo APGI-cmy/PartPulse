@@ -53,8 +53,7 @@ export default function ForgotPasswordPage() {
               </p>
               <Link
                 href="/auth/signin"
-                className="inline-block bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors"
-                style={{ backgroundColor: "#FF2B00" }}
+                className="inline-block bg-[#FF2B00] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#E02700] transition-colors"
               >
                 Return to Sign In
               </Link>

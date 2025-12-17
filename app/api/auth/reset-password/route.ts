@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
     console.error("Error resetting password:", error)
     
     await logUserManagement({
-      action: "password_reset_completed",
+      action: "password_reset_failed",
       success: false,
       errorMessage: error instanceof Error ? error.message : "Unknown error",
       request: req,

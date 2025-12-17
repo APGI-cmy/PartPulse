@@ -51,13 +51,12 @@ export async function POST(req: NextRequest) {
         request: req,
       })
 
-      // In production, send email with reset link
-      // For now, we'll construct the URL
+      // Construct the reset URL
       const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/auth/reset-password?token=${resetToken}`
       
-      // TODO: Send email with reset link
-      // await sendPasswordResetEmail(user.email, resetUrl)
-      
+      // TODO: In production, send email with reset link using emailService
+      // For now, the reset URL is logged to the console for development
+      // Production implementation should use: await sendPasswordResetEmail(user.email, resetUrl)
       console.log(`Password reset requested for ${user.email}. Reset URL: ${resetUrl}`)
     }
 
