@@ -1,14 +1,37 @@
 # User Management Guide
 
+## ⚠️ IMPORTANT: Two Different Scenarios
+
+**Before you continue, determine which scenario applies to you:**
+
+### Scenario 1: Fresh Installation (No Admin Exists Yet)
+- ✅ You are setting up PartPulse for the **very first time**
+- ✅ **No one** has created an admin account yet
+- ✅ You need to create the **first administrator**
+- → **Go to Section**: [Initial Setup: Creating the First Admin](#initial-setup-creating-the-first-admin)
+
+### Scenario 2: System Already Set Up (Admin Exists)
+- ✅ PartPulse is **already set up** and running
+- ✅ An admin account **already exists**
+- ✅ You need to **create a new user account**
+- ❌ You see "**Setup Already Complete**" when visiting `/auth/first-admin`
+- → **Go to Section**: [I See "Setup Already Complete" - What Now?](#i-see-setup-already-complete---what-now)
+
+---
+
 ## Overview
 
 PartPulse uses a secure, invitation-based user management system. This guide explains how to create accounts and invite users to the system.
 
+---
+
 ## Initial Setup: Creating the First Admin
 
-### When is this available?
+### ⚠️ When is this available?
 
-The first-time admin setup is **only available when no admin accounts exist** in the system. This is a one-time setup process.
+The first-time admin setup is **ONLY available when NO admin accounts exist** in the system. This is a **one-time, first-ever setup process**.
+
+**If you see "Setup Already Complete"**, this means an admin has already been created. [Skip to this section](#i-see-setup-already-complete---what-now) for next steps.
 
 ### How to create the first admin:
 
@@ -25,9 +48,45 @@ The first-time admin setup is **only available when no admin accounts exist** in
 
 ![First Admin Setup](https://github.com/user-attachments/assets/0f2d534c-cb3b-46e5-9062-6a3b66a2d301)
 
-### What if I see "Setup Already Complete"?
+---
 
-If you see this message, it means an admin account has already been created. This is normal and expected after the initial setup is complete.
+## I See "Setup Already Complete" - What Now?
+
+### Why am I seeing this message?
+
+The `/auth/first-admin` page shows "Setup Already Complete" because **an admin account has already been created**. This is a **security feature** - the first-admin setup page is permanently disabled after the first admin is created to prevent unauthorized admin account creation.
+
+### This is normal! Here's what to do:
+
+#### ✅ If you need an account:
+
+**You cannot create your own account.** PartPulse does NOT have public signup. All users must be invited by an existing administrator.
+
+**Next Steps:**
+1. **Contact your system administrator** and request an invitation
+2. Your administrator will use the "Invite" feature to send you an invitation link
+3. When you receive the invitation link (via email or direct share), click it to create your account
+4. Follow the signup process to set your password
+5. Sign in at `/auth/signin` with your new credentials
+
+#### ❓ If you ARE the administrator but lost access:
+
+1. Contact your IT department or system owner
+2. They may need to reset your password using the admin dashboard
+3. Or use the "Forgot password?" link on the sign-in page
+
+#### ❓ If you're not sure who the administrator is:
+
+1. Ask your IT department or system owner
+2. Check with whoever deployed PartPulse for your organization
+
+### Setup Already Complete Page Screenshot
+
+![Setup Already Complete](https://github.com/user-attachments/assets/e8b82d3e-e6d0-4fea-8439-2a9e2e7627aa)
+
+**This is what you'll see** when visiting `/auth/first-admin` after the first admin has been created. This is expected behavior.
+
+---
 
 ## Adding Additional Users
 
@@ -97,9 +156,9 @@ When someone receives an invitation:
 
 **A:** You cannot create a user account directly. An administrator must invite you. If you're an admin, use the "Invite" feature in the sidebar.
 
-### Q: Why can't I access the first-admin setup page?
+### Q: Why can't I access the first-admin setup page? / Why do I see "Setup Already Complete"?
 
-**A:** This page is only available when no admin accounts exist. Once an admin has been created, this page is permanently disabled for security reasons.
+**A:** This page is only available when NO admin accounts exist. Once an admin has been created, this page is permanently disabled for security reasons. **This is expected behavior.** If you need an account, contact your administrator to send you an invitation.
 
 ### Q: I received an invitation link but it says it's expired. What do I do?
 
