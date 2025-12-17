@@ -223,11 +223,7 @@ export default function InternalTransferFormNew() {
             {/* Date and Technician Name */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
-                label={
-                  <>
-                    Date <span className="text-red-600">*</span>
-                  </>
-                }
+                label="Date"
                 type="date"
                 name="date"
                 value={formData.date}
@@ -236,11 +232,7 @@ export default function InternalTransferFormNew() {
                 required
               />
               <Input
-                label={
-                  <>
-                    Technician Name <span className="text-red-600">*</span>
-                  </>
-                }
+                label="Technician Name"
                 name="technicianName"
                 value={formData.technicianName}
                 onChange={handleChange}
@@ -253,7 +245,7 @@ export default function InternalTransferFormNew() {
             {/* SSID / PSID Radio Selector */}
             <div className="space-y-3">
               <label className="block text-sm font-medium text-gray-700">
-                Select ID Type <span className="text-red-600">*</span>
+                Select ID Type <span className="text-red-500 ml-1">*</span>
               </label>
               <div className="flex gap-6">
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -288,11 +280,7 @@ export default function InternalTransferFormNew() {
               {/* ID Number Input - Only show when type selected */}
               {formData.idType && (
                 <Input
-                  label={
-                    <>
-                      {formData.idType} Number <span className="text-red-600">*</span>
-                    </>
-                  }
+                  label={`${formData.idType} Number`}
                   name="idNumber"
                   value={formData.idNumber}
                   onChange={handleChange}
@@ -324,11 +312,7 @@ export default function InternalTransferFormNew() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <Input
-                      label={
-                        <>
-                          Quantity <span className="text-red-600">*</span>
-                        </>
-                      }
+                      label="Quantity"
                       type="number"
                       min="1"
                       value={item.qty}
@@ -338,11 +322,7 @@ export default function InternalTransferFormNew() {
                       required
                     />
                     <Input
-                      label={
-                        <>
-                          Part Number <span className="text-red-600">*</span>
-                        </>
-                      }
+                      label="Part Number"
                       value={item.partNo}
                       onChange={(e) => handleItemChange(index, 'partNo', e.target.value)}
                       error={errors[`items.${index}.partNo`]}
@@ -350,11 +330,7 @@ export default function InternalTransferFormNew() {
                       required
                     />
                     <Input
-                      label={
-                        <>
-                          Description <span className="text-red-600">*</span>
-                        </>
-                      }
+                      label="Description"
                       value={item.description}
                       onChange={(e) => handleItemChange(index, 'description', e.target.value)}
                       error={errors[`items.${index}.description`]}
