@@ -101,6 +101,8 @@ When someone receives an invitation:
 
 **A:** This page is only available when no admin accounts exist. Once an admin has been created, this page is permanently disabled for security reasons.
 
+**If you need to add yourself to the database:** See [USER_CREATION_RECOVERY.md](./USER_CREATION_RECOVERY.md) for instructions on using the database seed script or manual user creation tool.
+
 ### Q: I received an invitation link but it says it's expired. What do I do?
 
 **A:** Contact your administrator to send you a new invitation. Invitation links are only valid for 7 days for security reasons.
