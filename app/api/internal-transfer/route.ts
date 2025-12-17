@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     });
     
     // Generate and save PDF
-    let pdfContent: string | undefined;
+    let pdfContent: Buffer | undefined;
     try {
       pdfContent = await generateInternalTransferPDF(transfer);
       const pdfResult = await savePDF(pdfContent, `transfer-${transfer.id}.pdf`);

@@ -1,6 +1,6 @@
 /**
  * PDF Generation for Warranty Claims
- * Now using JSON-driven template engine with storage abstraction
+ * Uses JSON-driven template engine with PDFKit for proper PDF generation
  */
 
 import type { WarrantyClaim } from '../db/schema';
@@ -9,30 +9,34 @@ import { getStorage } from '../storage';
 
 /**
  * Generate a PDF representation of the Trane Warranty Parts Claims Form
- * Uses the JSON template engine for consistent, configurable output
+ * Uses the template engine to render the PDF with PDFKit
  */
 export async function generateWarrantyClaimPDF(
   claim: WarrantyClaim
-): Promise<string> {
+): Promise<Buffer> {
   // Use the template engine to render the PDF
   return await renderPdfFromTemplate('warranty', claim);
 }
 
 /**
  * Save PDF using configured storage provider
- * @param content - The PDF content (text for MVP, will be actual PDF buffer in production)
+ * @param content - The PDF content as a Buffer
  * @param filename - The filename to save as
  * @returns Promise with success status and path
  */
 export async function savePDF(
-  content: string,
+  content: Buffer,
   filename: string
 ): Promise<{ success: boolean; path?: string; url?: string }> {
   try {
     const storage = getStorage();
     const storagePath = `pdfs/warranty-claims/${filename}`;
     
-    const path = await storage.save(storagePath, content, 'application/pdf');
+    // Convert Buffer to base64 string for storage
+    const base64Content = content.toString('base64');
+    const dataUrl = `data:application/pdf;base64,${base64Content}`;
+    
+    const path = await storage.save(storagePath, dataUrl, 'application/pdf');
     const url = storage.getUrl(path);
     
     console.log(`[PDF] Saved warranty claim PDF using storage provider: ${path}`);

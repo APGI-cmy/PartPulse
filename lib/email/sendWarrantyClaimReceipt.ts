@@ -1,7 +1,7 @@
 /**
  * Email notification for Warranty Claim Receipt
  * Uses branded HTML template system for professional emails
- * In production, this would integrate with an email service like SendGrid, AWS SES, or Resend
+ * Sends emails via SMTP to configured Gmail address
  */
 
 import type { WarrantyClaim } from '../db/schema';
@@ -14,18 +14,7 @@ import {
   createTable,
   createDivider,
 } from './templates';
-
-export interface EmailOptions {
-  to: string;
-  subject: string;
-  html?: string;
-  text?: string;
-  attachments?: Array<{
-    filename: string;
-    content: string;
-    contentType?: string;
-  }>;
-}
+import { sendEmail, type EmailOptions } from './emailService';
 
 /**
  * Generate email address for technician
@@ -46,26 +35,35 @@ function getTechnicianEmail(technician: string): string {
 }
 
 /**
- * Send confirmation email to technician with PDF attached
+ * Send confirmation email to technician and admin with PDF attached
  * @param claim - The warranty claim data
- * @param pdfContent - Optional PDF content to attach
+ * @param pdfContent - Optional PDF content to attach (Buffer or string)
  * @returns Promise that resolves when email is sent
  */
 export async function sendWarrantyClaimReceipt(
   claim: WarrantyClaim,
-  pdfContent?: string
+  pdfContent?: Buffer | string
 ): Promise<{ success: boolean; messageId?: string }> {
-  // Stub implementation - in production, integrate with email service
+  console.log('[EMAIL] Sending Warranty Claim Receipt');
+  console.log('[EMAIL] Claim ID:', claim.id);
+  console.log('[EMAIL] Technician:', claim.technicianName);
+  console.log('[EMAIL] Site:', claim.siteName);
   
-  console.log('[EMAIL STUB] Sending Warranty Claim Receipt');
-  console.log('[EMAIL STUB] Claim ID:', claim.id);
-  console.log('[EMAIL STUB] Technician:', claim.technicianName);
-  console.log('[EMAIL STUB] Site:', claim.siteName);
+  // Get admin email from environment (PartPulse Gmail)
+  const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_USER;
   
-  // Build email content
+  if (!adminEmail) {
+    console.error('[EMAIL] Admin email not configured');
+    return {
+      success: false,
+      messageId: `error-no-admin-email-${Date.now()}`,
+    };
+  }
+  
+  // Build email options
   const emailOptions: EmailOptions = {
-    to: getTechnicianEmail(claim.technicianName),
-    subject: `Warranty Claim Confirmation - ${claim.id}`,
+    to: adminEmail, // Send to PartPulse Gmail address
+    subject: `Warranty Claim Submitted - ${claim.id}`,
     html: generateEmailHTML(claim),
     text: generateEmailText(claim),
   };
@@ -79,21 +77,15 @@ export async function sendWarrantyClaimReceipt(
         contentType: 'application/pdf',
       },
     ];
-    console.log('[EMAIL STUB] PDF attachment included');
+    console.log('[EMAIL] PDF attachment included');
   }
   
-  // In production, send via email service:
-  // const result = await emailService.send(emailOptions);
-  // return { success: true, messageId: result.messageId };
+  // Send email via SMTP
+  const result = await sendEmail(emailOptions);
   
-  console.log('[EMAIL STUB] Email would be sent to:', emailOptions.to);
-  console.log('[EMAIL STUB] Subject:', emailOptions.subject);
-  console.log('[EMAIL STUB] Email sending simulated successfully');
+  console.log('[EMAIL] Warranty claim email sent:', result.success ? 'SUCCESS' : 'FAILED');
   
-  return {
-    success: true,
-    messageId: `stub-${Date.now()}`,
-  };
+  return result;
 }
 
 /**
@@ -112,13 +104,13 @@ function generateEmailHTML(claim: WarrantyClaim): string {
   ]);
   
   const content = `
-    <p style="font-size: 16px; margin-bottom: 20px;">Dear ${claim.technicianName},</p>
-    <p style="margin-bottom: 20px;">Your warranty claim has been successfully submitted and is now being processed.</p>
+    <p style="font-size: 16px; margin-bottom: 20px;">A new warranty claim has been submitted by ${claim.technicianName}.</p>
     
     <h2 style="color: #111827; font-size: 18px; margin: 25px 0 15px 0;">Claim Details</h2>
     <div class="info-box">
       ${createInfoRow('Claim ID', claim.id)}
       ${createInfoRow('Date', new Date(claim.date).toLocaleDateString())}
+      ${createInfoRow('Technician', claim.technicianName)}
       ${createInfoRow('Chiller Model', claim.chillerModel)}
       ${createInfoRow('Chiller Serial', claim.chillerSerial)}
       ${createInfoRow('SSID/Job Number', claim.ssidJobNumber)}
@@ -144,10 +136,10 @@ function generateEmailHTML(claim: WarrantyClaim): string {
     
     ${createButton('View Claim Details', `${appUrl}/warranty-claims/${claim.id}`)}
     
-    ${createInfoBox('📎 <strong>Note:</strong> A PDF copy of this warranty claim is attached to this email for your records.')}
+    ${createInfoBox('📎 <strong>Note:</strong> A PDF copy of this warranty claim is attached to this email.')}
   `;
   
-  return createEmailTemplate('Warranty Claim Confirmed', content);
+  return createEmailTemplate('Warranty Claim Submitted', content);
 }
 
 /**
@@ -159,15 +151,14 @@ function generateEmailText(claim: WarrantyClaim): string {
   ).join('\n');
   
   return `
-Warranty Claim Confirmation
+Warranty Claim Submitted
 
-Dear ${claim.technicianName},
-
-Your warranty claim has been successfully submitted and is now being processed.
+A new warranty claim has been submitted by ${claim.technicianName}.
 
 Claim Details:
 - Claim ID: ${claim.id}
 - Date: ${new Date(claim.date).toLocaleDateString()}
+- Technician: ${claim.technicianName}
 - Chiller Model: ${claim.chillerModel}
 - Chiller Serial Number: ${claim.chillerSerial}
 - Job Number / SSID #: ${claim.ssidJobNumber}
@@ -181,13 +172,12 @@ ${partsText}
 
 ${claim.comments ? `Comments:\n${claim.comments}\n` : ''}
 
-View your claim at: ${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/warranty-claims/${claim.id}
+View claim at: ${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/warranty-claims/${claim.id}
 
-Note: A PDF copy of this warranty claim is attached to this email for your records.
+Note: A PDF copy of this warranty claim is attached to this email.
 
 ---
 This is an automated message from PartPulse Warranty Claims System.
-Please do not reply to this email.
   `;
 }
 

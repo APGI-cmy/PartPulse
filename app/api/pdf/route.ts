@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let pdfPath: string;
+    let pdfBuffer: Buffer;
 
     if (type === 'transfer') {
       const transfer = await getInternalTransfer(id);
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
           { status: 404 }
         );
       }
-      pdfPath = await generateInternalTransferPDF(transfer);
+      pdfBuffer = await generateInternalTransferPDF(transfer);
     } else if (type === 'claim') {
       const claim = await getWarrantyClaim(id);
       if (!claim) {
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
           { status: 404 }
         );
       }
-      pdfPath = await generateWarrantyClaimPDF(claim);
+      pdfBuffer = await generateWarrantyClaimPDF(claim);
     } else {
       return NextResponse.json(
         { success: false, error: { code: 'VALIDATION_ERROR', message: 'Invalid type. Use "transfer" or "claim"' } },
@@ -56,9 +56,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Return the PDF buffer as base64 for client download
+    const base64Pdf = pdfBuffer.toString('base64');
+
     return NextResponse.json({
       success: true,
-      data: { pdfPath },
+      data: { 
+        pdf: base64Pdf,
+        contentType: 'application/pdf'
+      },
       message: 'PDF generated successfully',
     });
   } catch (error) {
