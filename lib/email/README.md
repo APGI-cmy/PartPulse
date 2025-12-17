@@ -12,18 +12,18 @@ The PartPulse application includes a professional, branded HTML email template s
 
 ## Email Types
 
-### 1. Transfer Submission Confirmation
-Sent to technicians when they submit an internal transfer request.
+### 1. Internal Transfer Submission
+Sent to admin when an internal transfer is submitted.
 
 **Trigger**: Internal transfer form submission  
-**Recipients**: Submitting technician  
+**Recipients**: Admin email (PartPulse2025@gmail.com)  
 **Attachments**: PDF copy of transfer form
 
-### 2. Warranty Claim Submission Confirmation
-Sent to technicians when they submit a warranty claim.
+### 2. Warranty Claim Submission
+Sent to admin when a warranty claim is submitted.
 
 **Trigger**: Warranty claim form submission  
-**Recipients**: Submitting technician  
+**Recipients**: Admin email (PartPulse2025@gmail.com)  
 **Attachments**: PDF copy of warranty claim form
 
 ### 3. Admin Notification - New Submission
@@ -163,45 +163,60 @@ await sendApprovalNotification(transfer, 'John Admin', pdfContent);
 
 ## Email Service Integration
 
-The current implementation is a stub that logs emails to the console. For production, integrate with an email service provider:
+The application uses **nodemailer** with Gmail SMTP for sending transactional emails.
 
-### Recommended Providers
+### Current Implementation
 
-1. **Resend** - Modern, developer-friendly
-2. **SendGrid** - Established, feature-rich
-3. **AWS SES** - Cost-effective for high volume
-4. **Postmark** - Focused on transactional emails
+- **Email Service**: `lib/email/emailService.ts`
+- **Provider**: Gmail SMTP (smtp.gmail.com)
+- **Functionality**: 
+  - Sends warranty claim notifications with PDF attachments
+  - Sends internal transfer notifications with PDF attachments
+  - Graceful fallback when SMTP is not configured (useful for testing)
 
-### Integration Steps
+### Configuration
 
-1. Install email service SDK:
-   ```bash
-   npm install resend  # or sendgrid, @aws-sdk/client-ses, etc.
-   ```
+Email service is configured via environment variables:
 
-2. Update email functions to use the service:
-   ```typescript
-   import { Resend } from 'resend';
-   
-   const resend = new Resend(process.env.RESEND_API_KEY);
-   
-   await resend.emails.send({
-     from: 'noreply@example.com',
-     to: emailOptions.to,
-     subject: emailOptions.subject,
-     html: emailOptions.html,
-     text: emailOptions.text,
-     attachments: emailOptions.attachments
-   });
-   ```
+```env
+# Email Configuration
+EMAIL_PROVIDER="smtp"
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_USER="PartPulse2025@gmail.com"
+SMTP_PASS="your_app_password"
+EMAIL_FROM="PartPulse2025@gmail.com"
+ADMIN_EMAIL="PartPulse2025@gmail.com"
+```
 
-3. Configure environment variables:
-   ```env
-   EMAIL_DOMAIN=example.com
-   EMAIL_FROM=noreply@example.com
-   ADMIN_EMAIL=admin@example.com
-   RESEND_API_KEY=your_api_key
-   ```
+### Gmail App Password Setup
+
+For Gmail SMTP, you need to create an App Password:
+
+1. Go to Google Account settings
+2. Navigate to Security > 2-Step Verification
+3. Scroll to "App passwords"
+4. Generate a new app password for "Mail"
+5. Use this password in `SMTP_PASS` environment variable
+
+### Email Flow
+
+When a user submits a form:
+1. Form data is validated and saved to database
+2. PDF is generated using the template engine
+3. PDF is saved to configured storage (Supabase)
+4. Email is sent to admin email with PDF attachment
+5. Email includes form details in HTML and plain text format
+
+### Graceful Degradation
+
+If SMTP configuration is missing or invalid:
+- Email sending falls back to stub mode
+- Logs email details to console
+- Returns success: false with error message
+- Does not block form submission
+
+This ensures the application continues working even if email service is unavailable.
 
 ## Testing Emails
 
