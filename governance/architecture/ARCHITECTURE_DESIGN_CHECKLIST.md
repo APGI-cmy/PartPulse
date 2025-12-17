@@ -82,6 +82,11 @@ This checklist ensures architectural decisions are made with rigor, clarity, and
 - [ ] **Migration files committed to repository (NOT gitignored)**
 - [ ] **Build script includes automated migration deployment**
 - [ ] **Zero manual database access required for deployments**
+- [ ] **Dual-URL pattern configured: DATABASE_URL (migrations) and DATABASE_POOL_URL (runtime)**
+- [ ] **DATABASE_URL uses Session Mode pooling (port 5432) for migrations**
+- [ ] **DATABASE_POOL_URL uses Transaction Mode pooling (port 6543) for runtime queries**
+- [ ] **PrismaClient instantiated with DATABASE_POOL_URL fallback to DATABASE_URL**
+- [ ] **Both URLs documented in .env.example with clear purpose explanations**
 
 ### Security Architecture
 - [ ] Threat model completed
@@ -198,6 +203,11 @@ This checklist ensures architectural decisions are made with rigor, clarity, and
 - [ ] **Migration deployment tested in preview environment**
 - [ ] **Migration rollback procedures documented**
 - [ ] **Database deployment verification in CI/CD pipeline**
+- [ ] **Dual-URL pattern deployed: DATABASE_URL (Session/Direct) and DATABASE_POOL_URL (Transaction)**
+- [ ] **Both DATABASE_URL and DATABASE_POOL_URL set in all environments (Production, Preview, Development)**
+- [ ] **Vercel environment variables configured before first deployment**
+- [ ] **Build-time migrations use DATABASE_URL (port 5432 - Session Mode)**
+- [ ] **Runtime PrismaClient uses DATABASE_POOL_URL (port 6543 - Transaction Mode) with fallback**
 
 ### Documentation Plan
 - [ ] Technical documentation structure defined
@@ -233,6 +243,10 @@ This checklist ensures architectural decisions are made with rigor, clarity, and
 - [ ] **Build script migration deployment validated in tests**
 - [ ] **End-to-end deployment workflow covered by QA**
 - [ ] **100% one-time build philosophy enforced**
+- [ ] **Dual-URL pattern validated: PrismaClient uses DATABASE_POOL_URL with fallback**
+- [ ] **Tests verify runtime connection pooling configuration**
+- [ ] **Tests verify migration uses direct/session connection**
+- [ ] **Documentation completeness validated for dual-URL pattern**
 
 ### Build-to-GREEN Compliance
 - [ ] All tests must pass before merge

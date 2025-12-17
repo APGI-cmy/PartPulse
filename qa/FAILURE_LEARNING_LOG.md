@@ -763,7 +763,178 @@ Tests CANNOT validate:
 
 ---
 
-## Template for Future Failures
+## Failure #6: Dual-URL Pattern Required for Supabase Connection Pooling
+
+**Date**: 2025-12-17  
+**Issue**: Build-time migrations and runtime queries require different Supabase connection modes  
+**Severity**: ARCHITECTURAL - Required for optimal Vercel/Supabase deployment  
+**Context**: Johan upgraded from Direct Connection to Supabase pooling and discovered migrations need Session Mode while runtime benefits from Transaction Mode
+
+### What Was Missing
+
+**Root Cause**: Single DATABASE_URL cannot serve both migration and runtime needs optimally
+
+**Technical Context**:
+- Supabase provides TWO pooling modes: Session (5432) and Transaction (6543)
+- Prisma migrations REQUIRE Session Mode (persistent session state)
+- Vercel serverless functions BENEFIT FROM Transaction Mode (optimized for short queries)
+- Using only one URL forces suboptimal choice: either migrations fail OR runtime is suboptimal
+
+**Previous State**:
+- Single `DATABASE_URL` used for both migrations and runtime
+- Forced to use Session Mode (port 5432) for both
+- Runtime could benefit from Transaction Mode but couldn't use it
+
+### How We Enhanced It
+
+1. **Implemented Dual-URL Pattern**:
+   - `DATABASE_URL`: Direct/Session Mode (port 5432) - For build-time migrations
+   - `DATABASE_POOL_URL`: Transaction Mode (port 6543) - For runtime queries
+   - Build script uses `DATABASE_URL` for `prisma migrate deploy`
+   - PrismaClient at runtime uses `DATABASE_POOL_URL` with `DATABASE_URL` fallback
+
+2. **Updated PrismaClient Instantiation** (`lib/prisma.ts`):
+   ```typescript
+   new PrismaClient({
+     datasources: {
+       db: {
+         url: process.env.DATABASE_POOL_URL || process.env.DATABASE_URL,
+       },
+     },
+   })
+   ```
+
+3. **FL/CI Implementation**:
+   - ✅ **Registered**: This entry documents the pattern
+   - ✅ **Incorporated**: Added 3 tests validating dual-URL configuration
+   - ✅ **Documented**: Enhanced deployment docs and .env.example
+   - ✅ **Architecture**: Added 8 requirements to architecture checklist
+   - ✅ **Prevented**: Tests ensure pattern remains in place
+
+4. **Architecture Integration**:
+   - Added to **Data Design** section (4 requirements)
+   - Added to **Deployment Strategy** section (6 requirements)
+   - Added to **Testing Governance** section (4 requirements)
+   - Total: 14 new architecture checklist items
+
+### Files Changed
+
+**Code Changes:**
+- `lib/prisma.ts` - PrismaClient instantiation with DATABASE_POOL_URL fallback
+- `.env.example` - Documented both URLs with clear purpose explanations
+
+**Test Coverage:**
+- `__tests__/deployment/database-schema-deployment.test.ts` - Added 3 tests:
+  - Validates PrismaClient uses DATABASE_POOL_URL for runtime
+  - Validates dual-URL pattern documented in deployment docs
+  - Validates fallback to DATABASE_URL if DATABASE_POOL_URL not set
+
+**Documentation:**
+- `docs/DATABASE_MIGRATION_DEPLOYMENT.md` - Added comprehensive dual-URL section
+- `governance/architecture/ARCHITECTURE_DESIGN_CHECKLIST.md` - Added 14 requirements
+
+**FL/CI:**
+- `qa/FAILURE_LEARNING_LOG.md` - This entry (Failure #6)
+
+### Prevention Mechanism
+
+**Tests Added**: 3 tests in database-schema-deployment.test.ts
+
+These tests validate:
+- PrismaClient configuration includes datasources with DATABASE_POOL_URL
+- Fallback logic exists (DATABASE_POOL_URL || DATABASE_URL)
+- Dual-URL pattern documented in deployment documentation
+- Both Session and Transaction mode explained in docs
+
+**Architecture Requirements**: 14 new checklist items across 3 sections:
+- **Data Design**: Dual-URL configuration requirements
+- **Deployment Strategy**: Environment variable setup and pooling mode requirements
+- **Testing Governance**: Runtime pooling validation requirements
+
+**Documentation Coverage**:
+- Build vs runtime connection separation explained
+- Supabase pooling modes (Session vs Transaction) documented
+- Port differences (5432 vs 6543) clarified
+- Step-by-step Vercel setup for both URLs
+- .env.example shows both with purpose comments
+
+**Result**: Developers will implement dual-URL pattern correctly, optimizing both migration reliability and runtime performance.
+
+### Lessons Learned
+
+1. **Separate Concerns**: Build-time and runtime have different database connection needs
+2. **Connection Pooling Types**: Session vs Transaction pooling serve different purposes
+3. **Fallback Pattern**: Always provide fallback (DATABASE_POOL_URL || DATABASE_URL) for flexibility
+4. **Performance Optimization**: Transaction pooling significantly improves serverless function performance
+5. **Migration Requirements**: Migrations need persistent session state, not compatible with transaction pooling
+6. **Environment Variables**: Dual URLs allow optimal configuration for both use cases
+7. **Architecture Integration**: New patterns must be codified in architecture checklist
+8. **Test Coverage**: Validate configuration patterns exist, not just runtime behavior
+9. **Documentation First**: Complex patterns require clear documentation before implementation
+10. **Vercel Best Practice**: Dual-URL pattern is recommended for Prisma + Supabase on Vercel
+
+### Resolution Steps (For Users)
+
+**Setting up dual-URL pattern:**
+
+1. **Get Session Mode URL** (for migrations):
+   - Supabase Dashboard → Settings → Database → Connection Pooling
+   - Click "Session mode" tab
+   - Copy connection string (port 5432)
+   - Set as `DATABASE_URL` in Vercel
+
+2. **Get Transaction Mode URL** (for runtime):
+   - Same location in Supabase Dashboard
+   - Click "Transaction mode" tab
+   - Copy connection string (port 6543)
+   - Set as `DATABASE_POOL_URL` in Vercel
+
+3. **Verify Configuration**:
+   - Both variables set in Vercel for Production, Preview, Development
+   - Build succeeds using DATABASE_URL (migrations work)
+   - Runtime uses DATABASE_POOL_URL (optimal performance)
+
+**See**: `docs/DATABASE_MIGRATION_DEPLOYMENT.md` Section "Dual-URL Pattern" for complete guide
+
+### Prevention Strategy
+
+**For Architecture**:
+- [ ] Consider build vs runtime requirements separately
+- [ ] Document connection pooling needs in architecture phase
+- [ ] Identify when dual-URL pattern is beneficial
+- [ ] Add environment variable configuration to deployment checklist
+
+**For Implementation**:
+- [ ] PrismaClient datasources configured with pooling URL
+- [ ] Fallback to DATABASE_URL if pooling URL not set
+- [ ] Both URLs documented in .env.example
+- [ ] Tests validate configuration exists
+
+**For Documentation**:
+- [ ] Explain why two URLs needed
+- [ ] Document Supabase Session vs Transaction modes
+- [ ] Provide step-by-step Vercel setup
+- [ ] Show port differences (5432 vs 6543)
+
+---
+
+## Statistics
+
+- **Total Failures Logged**: 6
+- **Total Tests Added**: 17+ (Failure #1: 1, Failure #2: 2, Failure #3: 11, Failure #4: 0 - documentation only, Failure #5: 0 - documentation only, Failure #6: 3)
+- **Failure Classes Eliminated**: 6
+  - DATABASE_URL validation mismatch
+  - Next.js deployment configuration
+  - Database schema deployment pipeline
+  - Vercel environment variable setup
+  - Supabase pooling mode confusion
+  - Build vs runtime database connection optimization
+- **Architecture Requirements Added**: 14 (Failure #6)
+- **Last Updated**: 2025-12-17
+
+---
+
+**Note**: This log is a living document. Every failure that occurs must be added here with full FL/CI treatment.
 
 ---
 

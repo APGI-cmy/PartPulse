@@ -613,6 +613,48 @@ describe('CATASTROPHIC FAILURE PREVENTION: Database Schema Deployment', () => {
     });
   });
 
+  describe('DUAL-URL PATTERN: Runtime Pooling Support', () => {
+    it('should configure PrismaClient to use DATABASE_POOL_URL for runtime', () => {
+      const prismaClientPath = path.join(process.cwd(), 'lib', 'prisma.ts');
+      
+      expect(fs.existsSync(prismaClientPath)).toBe(true);
+      
+      const content = fs.readFileSync(prismaClientPath, 'utf8');
+      
+      // Should instantiate PrismaClient with datasources configuration
+      expect(content).toContain('new PrismaClient');
+      expect(content).toContain('datasources');
+      expect(content).toContain('DATABASE_POOL_URL');
+      expect(content).toContain('DATABASE_URL');
+    });
+
+    it('should document dual-URL pattern in deployment docs', () => {
+      const docsPath = path.join(process.cwd(), 'docs', 'DATABASE_MIGRATION_DEPLOYMENT.md');
+      
+      expect(fs.existsSync(docsPath)).toBe(true);
+      
+      const content = fs.readFileSync(docsPath, 'utf8');
+      
+      // Should document both URLs
+      expect(content).toContain('DATABASE_URL');
+      expect(content).toContain('DATABASE_POOL_URL');
+      expect(content).toContain('Session mode');
+      expect(content).toContain('Transaction mode');
+      
+      // Should explain why two URLs are needed
+      expect(content).toMatch(/migration.*session/i);
+      expect(content).toMatch(/runtime.*pool/i);
+    });
+
+    it('should fallback to DATABASE_URL if DATABASE_POOL_URL not set', () => {
+      const prismaClientPath = path.join(process.cwd(), 'lib', 'prisma.ts');
+      const content = fs.readFileSync(prismaClientPath, 'utf8');
+      
+      // Should have fallback logic
+      expect(content).toMatch(/DATABASE_POOL_URL.*\|\|.*DATABASE_URL/);
+    });
+  });
+
   describe('GOVERNANCE: Complete Audit Trail', () => {
     it('should validate all changes are tracked in git', () => {
       const criticalFiles = [

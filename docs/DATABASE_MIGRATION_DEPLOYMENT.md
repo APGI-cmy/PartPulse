@@ -45,21 +45,45 @@
 
 **Critical**: These files MUST be in git. Never add to `.gitignore`.
 
-#### 3. Vercel Environment Variables
+#### 3. Vercel Environment Variables (Dual-URL Pattern)
 
-**Required Variable**:
+**Required Variables**:
+
+1. **DATABASE_URL** - For build-time migrations (Direct/Session Mode)
 ```
 DATABASE_URL=postgresql://user:password@host:5432/database
 ```
+- **Purpose**: Used by `prisma migrate deploy` during build
+- **Requirement**: Must be Direct Connection or Session Mode pooling (port 5432)
+- **Why**: Transaction pooling (port 6543) does NOT support migrations
+
+2. **DATABASE_POOL_URL** - For runtime queries (Transaction Pooling - Optional)
+```
+DATABASE_POOL_URL=postgresql://user:password@host:6543/database
+```
+- **Purpose**: Used by PrismaClient at runtime for better performance
+- **Benefit**: Transaction pooling optimizes connection usage on serverless
+- **Fallback**: If not set, runtime will use DATABASE_URL
 
 **Where to Set**:
 - Vercel Dashboard → Project → Settings → Environment Variables
-- Set for: Production, Preview, Development
+- Set BOTH variables for: Production, Preview, Development
+
+**Supabase Configuration**:
+- **DATABASE_URL**: Get from "Connection Pooling" → "Session mode" tab (port 5432)
+- **DATABASE_POOL_URL**: Get from "Connection Pooling" → "Transaction mode" tab (port 6543)
+
+**Why Two URLs**:
+- Migrations need persistent session state (Session Mode)
+- Runtime queries benefit from transaction pooling (Transaction Mode)
+- Supabase supports both simultaneously
+- `lib/prisma.ts` automatically uses DATABASE_POOL_URL if available, DATABASE_URL as fallback
 
 **Verification**:
 ```bash
 vercel env pull .env.vercel.local
 grep DATABASE_URL .env.vercel.local
+# Should show both DATABASE_URL and DATABASE_POOL_URL
 ```
 
 ### How It Works
