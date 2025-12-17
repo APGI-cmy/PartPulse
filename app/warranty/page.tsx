@@ -124,7 +124,7 @@ export default function WarrantyPage() {
                   <div className="ml-4">
                     <h3 className="font-semibold text-gray-900">Resolution</h3>
                     <p className="text-sm text-gray-600">
-                      Approved claims are processed for parts replacement. You'll receive email notifications at each step.
+                      Approved claims are processed for parts replacement. You&apos;ll receive email notifications at each step.
                     </p>
                   </div>
                 </div>
