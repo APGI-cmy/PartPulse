@@ -38,4 +38,36 @@ describe('Environment Configuration', () => {
     
     expect(fs.existsSync(nextConfigPath)).toBe(true);
   });
+
+  // FL/CI: Test added to prevent DATABASE_URL validation failures
+  // Issue: CI failed because DATABASE_URL didn't match Prisma schema provider
+  // This test ensures DATABASE_URL format matches the schema provider requirement
+  it('should have DATABASE_URL that matches Prisma schema provider', () => {
+    const schemaPath = path.join(process.cwd(), 'prisma/schema.prisma');
+    const schemaContent = fs.readFileSync(schemaPath, 'utf-8');
+    
+    // Extract provider from schema
+    const providerMatch = schemaContent.match(/provider\s*=\s*"(\w+)"/);
+    expect(providerMatch).not.toBeNull();
+    
+    const provider = providerMatch![1];
+    
+    // DATABASE_URL must be set in tests
+    expect(process.env.DATABASE_URL).toBeDefined();
+    const dbUrl = process.env.DATABASE_URL!;
+    
+    // Validate URL format matches provider
+    // This is a basic format check - Prisma will do full validation
+    if (provider === 'postgresql') {
+      expect(dbUrl).toMatch(/^(postgresql|postgres):\/\/[^/]+\/\w+/);
+    } else if (provider === 'sqlite') {
+      expect(dbUrl).toMatch(/^file:/);
+    } else if (provider === 'mysql') {
+      expect(dbUrl).toMatch(/^mysql:\/\/[^/]+\/\w+/);
+    }
+    
+    // This test prevents: "the URL must start with the protocol postgresql:// or postgres://"
+    // Ensures CI workflows set DATABASE_URL correctly for the schema provider
+    // Note: Full validation (credentials, connectivity) is handled by Prisma
+  });
 });

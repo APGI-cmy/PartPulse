@@ -44,6 +44,25 @@ PartPulse enforces strict QA and governance policies per the ForemanApp Agent Co
 - **Catastrophic Failure Tracking** - Permanent evidence capture ([evidence/](qa/evidence/))
 - **Governance Sync** - Policy version tracking and validation ([sync-checker.js](qa/governance/sync-checker.js))
 - **CI Enforcement** - Automated merge gate protection ([qa-enforcement.yml](.github/workflows/qa-enforcement.yml))
+- **FL/CI Policy** - Failure Learning & Continuous Improvement ([FAILURE_LEARNING_LOG.md](qa/FAILURE_LEARNING_LOG.md))
+
+### 🎓 FL/CI: Failure Learning & Continuous Improvement
+
+**Every failure makes us better.** When any error occurs:
+
+1. **Register** - Document what went wrong and why ([log-failure.js](qa/log-failure.js))
+2. **Incorporate** - Add tests to the QA suite to detect it forever
+3. **Prevent** - Implement permanent safeguards
+
+Commands:
+```bash
+npm run fl:log   # Log a new failure (interactive)
+npm run fl:view  # View failure learning log
+```
+
+**Result**: Our QA suite becomes progressively stronger. Error classes are eliminated permanently. We build better software over time with fewer mistakes.
+
+See: [Failure Learning Log](qa/FAILURE_LEARNING_LOG.md) for all logged failures and lessons learned.
 
 ### 📖 Governance Documentation
 - [Governance Status](GOVERNANCE_STATUS.md) - Official governed application declaration
