@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Explicitly set output for Vercel serverless deployment
+  output: 'standalone',
+  
   // Security headers for production hardening
   async headers() {
     return [
