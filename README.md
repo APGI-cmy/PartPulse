@@ -98,9 +98,11 @@ PartPulse enforces strict QA and governance policies per the ForemanApp Agent Co
 ### Prerequisites
 - Node.js 18+ 
 - npm or yarn
-- PostgreSQL or SQLite database
+- PostgreSQL (production) or SQLite (development) database
 
-### Installation
+### Quick Start for Local Development
+
+**Important**: Follow the complete setup guide in [docs/LOCAL_SETUP.md](docs/LOCAL_SETUP.md) to avoid 404 navigation errors.
 
 ```bash
 # Clone repository
@@ -112,12 +114,15 @@ npm install
 
 # Set up environment variables
 cp .env.example .env
-# Edit .env with your configuration
+
+# For local development, update DATABASE_URL in .env:
+# DATABASE_URL="file:./dev.db"
 
 # Initialize database
-npx prisma generate
-npx prisma migrate deploy
-npx prisma db seed
+npx prisma db push
+
+# Seed test users (admin@partpulse.com/admin123, tech@partpulse.com/tech123)
+npm run db:seed
 
 # Run development server
 npm run dev

@@ -124,7 +124,7 @@ export default function Home() {
             </li>
             <li className="flex items-start">
               <span className="mr-2" style={{ color: '#FF2B00' }}>•</span>
-              <span>You can add multiple parts to each form using the <strong>"+"</strong> button</span>
+              <span>You can add multiple parts to each form using the <strong>&quot;+&quot;</strong> button</span>
             </li>
           </ul>
         </div>
