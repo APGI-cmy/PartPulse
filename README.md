@@ -183,12 +183,23 @@ npm run db:seed      # Seed database with initial data
 
 ## 🚢 Production Deployment
 
+⚠️ **IMPORTANT**: Before deploying, you MUST configure environment variables in Vercel dashboard to avoid 404 errors.
+
+See [VERCEL_DEPLOYMENT_FIX.md](./VERCEL_DEPLOYMENT_FIX.md) for required environment variables and troubleshooting.
+
 See [DEPLOYMENT.md](./docs/DEPLOYMENT.md) for comprehensive deployment instructions covering:
 - Vercel (recommended quick start)
 - Docker/Self-hosted
 - AWS (enterprise grade)
 
 ### Quick Production Deployment (Vercel)
+
+**Before deploying:**
+1. Go to Vercel Dashboard → Your Project → Settings → Environment Variables
+2. Add ALL required variables from `.env.example`
+3. **Critical:** Set `NEXTAUTH_URL` to your Vercel domain (e.g., `https://partpulse.vercel.app`)
+4. **Critical:** Set `DATABASE_URL` to your production database
+5. Generate new `AUTH_SECRET` with: `openssl rand -base64 32`
 
 ```bash
 # Install Vercel CLI
@@ -197,8 +208,11 @@ npm i -g vercel
 # Deploy
 vercel --prod
 
-# Configure environment variables via Vercel dashboard
+# Verify deployment health
+curl https://your-domain.vercel.app/api/health
 ```
+
+**If you get 404 errors after deployment**, see [VERCEL_DEPLOYMENT_FIX.md](./VERCEL_DEPLOYMENT_FIX.md) for detailed troubleshooting.
 
 ## 📖 Documentation
 
