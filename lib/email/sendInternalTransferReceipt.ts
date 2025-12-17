@@ -1,7 +1,7 @@
 /**
  * Email notification for Internal Transfer Receipt
  * Uses branded HTML template system for professional emails
- * In production, this would integrate with an email service like SendGrid, AWS SES, or Resend
+ * Sends emails via SMTP to configured Gmail address
  */
 
 import type { InternalTransfer } from '../db/schema';
@@ -13,18 +13,7 @@ import {
   createInfoBox,
   createDivider,
 } from './templates';
-
-export interface EmailOptions {
-  to: string;
-  subject: string;
-  html?: string;
-  text?: string;
-  attachments?: Array<{
-    filename: string;
-    content: string;
-    contentType?: string;
-  }>;
-}
+import { sendEmail, type EmailOptions } from './emailService';
 
 /**
  * Generate email address for technician
@@ -45,7 +34,7 @@ function getTechnicianEmail(technician: string): string {
 }
 
 /**
- * Send confirmation email to technician with PDF attached
+ * Send confirmation email to admin with PDF attached
  * @param transfer - The internal transfer data
  * @param pdfContent - Optional PDF content to attach
  * @returns Promise that resolves when email is sent
@@ -54,17 +43,26 @@ export async function sendInternalTransferReceipt(
   transfer: InternalTransfer,
   pdfContent?: string
 ): Promise<{ success: boolean; messageId?: string }> {
-  // Stub implementation - in production, integrate with email service
+  console.log('[EMAIL] Sending Internal Transfer Receipt');
+  console.log('[EMAIL] Transfer ID:', transfer.id);
+  console.log('[EMAIL] Technician:', transfer.technician);
+  console.log('[EMAIL] Department:', transfer.department);
   
-  console.log('[EMAIL STUB] Sending Internal Transfer Receipt');
-  console.log('[EMAIL STUB] Transfer ID:', transfer.id);
-  console.log('[EMAIL STUB] Technician:', transfer.technician);
-  console.log('[EMAIL STUB] Department:', transfer.department);
+  // Get admin email from environment (PartPulse Gmail)
+  const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_USER;
   
-  // Build email content
+  if (!adminEmail) {
+    console.error('[EMAIL] Admin email not configured');
+    return {
+      success: false,
+      messageId: `error-no-admin-email-${Date.now()}`,
+    };
+  }
+  
+  // Build email options
   const emailOptions: EmailOptions = {
-    to: getTechnicianEmail(transfer.technician),
-    subject: `Internal Transfer Confirmation - ${transfer.id}`,
+    to: adminEmail, // Send to PartPulse Gmail address
+    subject: `Internal Transfer Submitted - ${transfer.id}`,
     html: generateEmailHTML(transfer),
     text: generateEmailText(transfer),
   };
@@ -78,21 +76,15 @@ export async function sendInternalTransferReceipt(
         contentType: 'application/pdf',
       },
     ];
-    console.log('[EMAIL STUB] PDF attachment included');
+    console.log('[EMAIL] PDF attachment included');
   }
   
-  // In production, send via email service:
-  // const result = await emailService.send(emailOptions);
-  // return { success: true, messageId: result.messageId };
+  // Send email via SMTP
+  const result = await sendEmail(emailOptions);
   
-  console.log('[EMAIL STUB] Email would be sent to:', emailOptions.to);
-  console.log('[EMAIL STUB] Subject:', emailOptions.subject);
-  console.log('[EMAIL STUB] Email sending simulated successfully');
+  console.log('[EMAIL] Internal transfer email sent:', result.success ? 'SUCCESS' : 'FAILED');
   
-  return {
-    success: true,
-    messageId: `stub-${Date.now()}`,
-  };
+  return result;
 }
 
 /**
@@ -102,12 +94,12 @@ function generateEmailHTML(transfer: InternalTransfer): string {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   
   const content = `
-    <p style="font-size: 16px; margin-bottom: 20px;">Dear ${transfer.technician},</p>
-    <p style="margin-bottom: 20px;">Your internal transfer request has been successfully submitted and is now being processed.</p>
+    <p style="font-size: 16px; margin-bottom: 20px;">A new internal transfer has been submitted by ${transfer.technician}.</p>
     
     <h2 style="color: #111827; font-size: 18px; margin: 25px 0 15px 0;">Transfer Details</h2>
     <div class="info-box">
       ${createInfoRow('Transfer ID', transfer.id)}
+      ${createInfoRow('Technician', transfer.technician)}
       ${createInfoRow('Department', transfer.department)}
       ${createInfoRow('Transfer Type', transfer.transferType)}
       ${createInfoRow('Serial Number', transfer.serial)}
@@ -127,10 +119,10 @@ function generateEmailHTML(transfer: InternalTransfer): string {
     
     ${createButton('View Transfer Details', `${appUrl}/internal-transfer/${transfer.id}`)}
     
-    ${createInfoBox('📎 <strong>Note:</strong> A PDF copy of this transfer is attached to this email for your records.')}
+    ${createInfoBox('📎 <strong>Note:</strong> A PDF copy of this transfer is attached to this email.')}
   `;
   
-  return createEmailTemplate('Internal Transfer Confirmed', content);
+  return createEmailTemplate('Internal Transfer Submitted', content);
 }
 
 /**
@@ -138,14 +130,13 @@ function generateEmailHTML(transfer: InternalTransfer): string {
  */
 function generateEmailText(transfer: InternalTransfer): string {
   return `
-Internal Transfer Confirmation
+Internal Transfer Submitted
 
-Dear ${transfer.technician},
-
-Your internal transfer request has been successfully submitted and is now being processed.
+A new internal transfer has been submitted by ${transfer.technician}.
 
 Transfer Details:
 - Transfer ID: ${transfer.id}
+- Technician: ${transfer.technician}
 - Department: ${transfer.department}
 - Transfer Type: ${transfer.transferType}
 - Serial Number: ${transfer.serial}
@@ -156,13 +147,12 @@ Transfer Details:
 
 ${transfer.comments ? `Comments:\n${transfer.comments}\n` : ''}
 
-View your transfer at: ${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/internal-transfer/${transfer.id}
+View transfer at: ${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/internal-transfer/${transfer.id}
 
-Note: A PDF copy of this transfer is attached to this email for your records.
+Note: A PDF copy of this transfer is attached to this email.
 
 ---
 This is an automated message from PartPulse Internal Transfer System.
-Please do not reply to this email.
   `;
 }
 
