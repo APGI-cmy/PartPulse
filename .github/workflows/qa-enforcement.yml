@@ -196,6 +196,26 @@ jobs:
           NODE_ENV: test
           DATABASE_URL: 'postgresql://testuser:testpass@localhost:5432/testdb'
           CI: 'true'
+          # Email configuration (production Gmail credentials)
+          EMAIL_PROVIDER: 'smtp'
+          ADMIN_EMAIL: 'PartPulse2025@gmail.com'
+          EMAIL_FROM: 'PartPulse2025@gmail.com'
+          SMTP_HOST: 'smtp.gmail.com'
+          SMTP_PORT: '587'
+          SMTP_USER: 'PartPulse2025@gmail.com'
+          SMTP_PASS: 'purntgtitomgninx'
+          # Application configuration
+          NEXT_PUBLIC_APP_URL: 'http://localhost:3000'
+          NEXTAUTH_URL: 'http://localhost:3000'
+          AUTH_SECRET: '5JAY98Nnv05gnSaI4iZg3Uv3TkyRtMQCRYuJ1B2qxxM='
+          # Storage configuration (use local for tests)
+          STORAGE_PROVIDER: 'local'
+          # Supabase configuration (for production/integration tests)
+          SUPABASE_URL: 'https://csfbqbumimomonkxlmoa.supabase.co'
+          SUPABASE_SERVICE_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzZmJxYnVtaW1vbW9ua3hsbW9hIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NTAxNjc3MCwiZXhwIjoyMDgwNTkyNzcwfQ.5MffcvMGSjFdfoz_-G7EPGWmtFPjv5UJQuaPehPD4OM'
+          SUPABASE_BUCKET: 'partpulse-files'
+          # Branding
+          PRIMARY_COLOR: '#FF2B00'
         run: |
           echo "=== Running tests ==="
           npm run test:ci

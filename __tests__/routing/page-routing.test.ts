@@ -167,26 +167,31 @@ describe('Page Routing - Middleware Protection', () => {
   const projectRoot = path.join(__dirname, '../..');
   
   /**
-   * Test 9: Verify protected routes are configured in middleware
+   * Test 9: Verify protected routes are configured in proxy (Next.js 16+)
    * 
-   * Ensures that authentication middleware is properly configured
-   * to protect sensitive routes.
+   * Ensures that authentication proxy is properly configured
+   * to protect sensitive routes. Next.js 16 uses proxy.ts instead of middleware.ts.
    */
   it('should have middleware configuration for protected routes', () => {
+    // Next.js 16+ uses proxy.ts instead of middleware.ts
+    const proxyPath = path.join(projectRoot, 'proxy.ts');
     const middlewarePath = path.join(projectRoot, 'middleware.ts');
-    expect(fs.existsSync(middlewarePath)).toBe(true);
     
-    const middlewareContent = fs.readFileSync(middlewarePath, 'utf-8');
+    // Check for proxy.ts (Next.js 16+) or middleware.ts (legacy)
+    const configPath = fs.existsSync(proxyPath) ? proxyPath : middlewarePath;
+    expect(fs.existsSync(configPath)).toBe(true);
     
-    // Check that middleware exports a config with matchers
-    expect(middlewareContent).toContain('export const config');
-    expect(middlewareContent).toContain('matcher');
+    const configContent = fs.readFileSync(configPath, 'utf-8');
+    
+    // Check that proxy/middleware exports a config with matchers
+    expect(configContent).toContain('export const config');
+    expect(configContent).toContain('matcher');
     
     // Check that key routes are protected
-    expect(middlewareContent).toContain('/internal-transfer');
-    expect(middlewareContent).toContain('/warranty-claims');
-    expect(middlewareContent).toContain('/reports');
-    expect(middlewareContent).toContain('/settings');
+    expect(configContent).toContain('/internal-transfer');
+    expect(configContent).toContain('/warranty-claims');
+    expect(configContent).toContain('/reports');
+    expect(configContent).toContain('/settings');
   });
 });
 
