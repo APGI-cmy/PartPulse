@@ -17,6 +17,14 @@ This guide covers deploying PartPulse to production environments.
 
 Vercel provides the fastest deployment path with automatic SSL, CDN, and scaling.
 
+#### ⚠️ Critical Configuration Requirement
+
+**IMPORTANT**: PartPulse requires Next.js 16+ `output: 'standalone'` configuration for successful Vercel deployment. This is already configured in `next.config.ts`.
+
+**Without this, the app will build successfully but return 404 DEPLOYMENT_NOT_FOUND errors when accessed.**
+
+For details, see: `docs/VERCEL_OUTPUT_CONFIG.md`
+
 #### Steps:
 
 1. **Connect Repository:**
@@ -73,6 +81,7 @@ Vercel provides the fastest deployment path with automatic SSL, CDN, and scaling
 
 5. **Verify Deployment:**
    - Visit your domain
+   - Check `/api/health` endpoint for configuration status
    - Test login with seeded admin user
    - Create a test transfer
    - Verify email delivery
