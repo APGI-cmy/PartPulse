@@ -1,11 +1,21 @@
 # ⚠️ Vercel Build Failure: Database Connection Error
 
-## Error Message
+## Error Messages
+
+### Connection Error
 ```
 Error: P1001: Can't reach database server at `db.csfbqbumimomonkxlmoa.supabase.co:5432`
-Please make sure your database server is running at `db.csfbqbumimomonkxlmoa.supabase.co:5432`.
+Please make sure your database server is running.
 Error: Command "npm run build" exited with 1
 ```
+
+### Authentication Error (Wrong Pooling Mode)
+```
+Error: SASL authentication failed
+Datasource "db": PostgreSQL database "postgres" at "db.csfbqbumimomonkxlmoa.supabase.co:6543"
+Error: Command "npm run build" exited with 1
+```
+**This error indicates you're using Transaction Pooling (port 6543). See Cause #2 below.**
 
 ## Most Likely Causes (In Order)
 
@@ -24,26 +34,71 @@ Error: Command "npm run build" exited with 1
 
 ---
 
-### 2️⃣  Wrong Connection String Port
+### 2️⃣  Wrong Supabase Connection Pooling Mode ⚠️ **VERY COMMON**
 
-Supabase provides two connection URLs:
-- **Connection Pooling** (port 5432) - Recommended for Vercel
-- **Direct Connection** (port 6543) - Alternative
+**Prisma migrations require Session Mode (port 5432), NOT Transaction Mode (port 6543).**
 
-**Solution**:
-1. Go to Supabase Dashboard → Settings → Database
-2. Find **Connection string** section
-3. Copy the **Connection pooling** URL (port 5432)
-4. Update DATABASE_URL in Vercel with this URL
-5. Redeploy
+**If you upgraded from Direct Connection to Transaction Pooler in Supabase, you must use Session Mode for migrations.**
+
+Supabase provides THREE connection modes:
+- ✅ **Session Mode Pooling** (port 5432) - **REQUIRED FOR MIGRATIONS**
+- ❌ **Transaction Mode Pooling** (port 6543) - **DOES NOT WORK** with `prisma migrate deploy`
+- ⚠️ **Direct Connection** (port 5432) - Works for migrations but less efficient
+
+**Error if using Transaction Mode (port 6543)**:
+```
+Error: SASL authentication failed
+Datasource "db": PostgreSQL database "postgres" at "db.xxx.supabase.co:6543"
+```
+
+**Why Transaction Mode fails**:
+- Transaction pooling is designed for short-lived queries
+- Prisma migrations need persistent session state
+- SASL authentication requires full session support
+- Transaction mode doesn't maintain the required connection state
+
+**Solution - Get Session Mode Connection String**:
+1. Go to Supabase Dashboard → Project Settings → Database
+2. Scroll to **Connection Pooling** section
+3. **Important**: You'll see TWO tabs:
+   - **"Session mode"** - This is what you need ✅
+   - **"Transaction mode"** - This is port 6543 ❌
+4. Click the **"Session mode"** tab
+5. Copy the connection string (will show port **5432**)
+6. Update `DATABASE_URL` in Vercel with this Session Mode URL
+7. **Verify the URL shows port 5432**, not 6543
+8. Redeploy
+
+**You can use BOTH modes simultaneously**:
+- `DATABASE_URL` = Session Mode (port 5432) for migrations during build
+- Optionally, use Transaction Mode (port 6543) for application queries at runtime (if needed)
+- Set different env vars: `DATABASE_URL` vs `DATABASE_URL_POOLED` if you want both
 
 **Example URLs**:
 ```bash
-# Connection Pooling (use this)
+# ✅ Session Mode Pooling (USE THIS for DATABASE_URL)
 postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres
 
-# Direct Connection (alternative)
+# ❌ Transaction Mode Pooling (port 6543 - DO NOT use for migrations)
 postgresql://postgres.[project-ref]:[password]@db.[project-ref].supabase.co:6543/postgres
+
+# ⚠️ Direct Connection (works for migrations but not recommended)
+postgresql://postgres.[project-ref]:[password]@db.[project-ref].supabase.co:5432/postgres
+```
+
+**Visual Guide**:
+```
+Supabase Dashboard → Settings → Database
+
+Look for section: "Connection Pooling"
+
+You'll see two tabs:
+┌─────────────────┬──────────────────┐
+│  Session mode   │ Transaction mode │  ← Click "Session mode"
+└─────────────────┴──────────────────┘
+
+The URL shown will be port 5432 (Session)
+NOT port 6543 (Transaction)
 ```
 
 ---

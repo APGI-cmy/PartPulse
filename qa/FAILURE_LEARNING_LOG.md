@@ -600,6 +600,173 @@ Error: Command "npm run build" exited with 1
 
 ---
 
+## Failure #5: Vercel Build Failure - Wrong Supabase Pooling Mode (Transaction vs Session)
+
+**Date**: 2025-12-17  
+**Issue**: Vercel deployment failed with SASL authentication error  
+**Severity**: CRITICAL - Blocks deployments after Supabase pooling upgrade  
+**Symptom**: 
+```
+Error: SASL authentication failed
+Datasource "db": PostgreSQL database "postgres" at "db.xxx.supabase.co:6543"
+Error: Command "npm run build" exited with 1
+```
+
+### What Went Wrong
+
+**Root Cause**: Using Supabase Transaction Pooling (port 6543) instead of Session Mode (port 5432) for DATABASE_URL
+
+**Technical Details**:
+- User upgraded from Direct Connection to Transaction Pooler in Supabase
+- Transaction Pooling uses port 6543
+- Supabase provides TWO pooling modes: Session (5432) and Transaction (6543)
+- `prisma migrate deploy` requires Session Mode pooling (port 5432)
+- Transaction Mode pooling (port 6543) does NOT support Prisma migrations
+- SASL authentication in Transaction Mode lacks the session state required by migrations
+
+**Impact**:
+- **CRITICAL**: Build fails, no deployment possible
+- Blocks all deployments after Supabase pooling configuration change
+- Confusing error message (SASL authentication) doesn't explain the pooling mode issue
+- Affects all projects upgrading from Direct Connection to Pooling
+
+### Why It Happened
+
+1. **Supabase Pooling Upgrade**: User upgraded from Direct Connection to Transaction Pooler
+2. **Port Changed**: Port changed from 5432 to 6543 during upgrade
+3. **Mode Confusion**: Supabase shows Transaction Mode more prominently in some UIs
+4. **Documentation Gap**: Migration requirements didn't explicitly distinguish pooling modes
+5. **Unclear Error**: "SASL authentication failed" doesn't indicate it's a pooling mode issue
+6. **Valid Configuration**: Transaction pooling IS correct for app queries, just not for migrations
+
+### How We Fixed It
+
+1. **Root Cause Identification**:
+   - Analyzed error logs showing port 6543 (Transaction Mode)
+   - Identified that Prisma migrations require Session Mode (port 5432)
+   - Confirmed Supabase supports BOTH modes simultaneously
+
+2. **Solution Documented**:
+   - Updated `docs/VERCEL_BUILD_FAILURE_DATABASE.md` with explicit pooling mode guidance
+   - Added visual guide showing Session vs Transaction tabs in Supabase dashboard
+   - Explained that BOTH modes can be used: Session for migrations, Transaction for app (optional)
+   - Clarified port 6543 = Transaction Mode (not supported for migrations)
+   - Clarified port 5432 = Session Mode (required for migrations)
+
+3. **FL/CI Implementation**:
+   - ✅ **Registered**: This entry documents the failure
+   - ✅ **Incorporated**: Enhanced documentation with pooling mode distinction
+   - ✅ **Prevented**: Clear instructions prevent future confusion
+   - ⚠️ **QA Limitation**: Cannot test in CI (environment-specific Supabase configuration)
+
+### Files Changed
+
+**Documentation:**
+- `docs/VERCEL_BUILD_FAILURE_DATABASE.md` - Enhanced Cause #2 with:
+  - Explicit Transaction vs Session pooling mode distinction
+  - Visual guide showing Supabase dashboard tabs
+  - Port 6543 vs 5432 explanation
+  - Instructions to use BOTH modes if needed (separate env vars)
+  - Clear examples of correct and incorrect connection strings
+
+**FL/CI:**
+- `qa/FAILURE_LEARNING_LOG.md` - This entry (Failure #5)
+
+### Prevention Mechanism
+
+**Enhanced Documentation**:
+- Prominently documents that Transaction Pooling (port 6543) does NOT work
+- Explains Session Mode (port 5432) is REQUIRED for migrations
+- Shows visual guide to find Session Mode in Supabase dashboard
+- Provides clear error signature (SASL + port 6543) for diagnosis
+- Documents that users can use BOTH modes simultaneously if desired
+
+**QA Limitation - Why Tests Can't Catch This**:
+This failure mode **cannot** be caught by automated tests because:
+1. **Environment-Specific**: Depends on which Supabase connection string user chooses
+2. **Configuration External**: DATABASE_URL is set in Vercel, not in code
+3. **Runtime Issue**: Only manifests when actual Supabase production database is used
+4. **Multiple Valid Options**: Both pooling modes are valid for different purposes
+
+Tests CAN validate:
+- ✅ Build script includes `prisma migrate deploy`
+- ✅ Migration files exist and are tracked
+- ✅ Migration SQL is valid
+
+Tests CANNOT validate:
+- ❌ Which Supabase connection string user chooses in Vercel
+- ❌ Whether user selected Session vs Transaction pooling
+- ❌ Whether Supabase database allows the connection
+- ❌ Whether user's Supabase plan supports pooling
+
+**Result**: Clear documentation prevents this issue, but automated tests cannot catch it.
+
+### Lessons Learned
+
+1. **Connection String Modes Matter**: Not all connection strings with port 5432 are equal
+2. **Pooling Mode Selection**: Transaction vs Session pooling serve different purposes
+3. **Migration Requirements**: Migrations need persistent session state (Session Mode)
+4. **Supabase UI Clarity**: Transaction Mode may appear as default in some Supabase UIs
+5. **Both Modes Valid**: Transaction pooling is great for app queries, just not for migrations
+6. **Simultaneous Use**: Can use Session Mode for migrations AND Transaction Mode for app
+7. **Error Message Clarity**: "SASL authentication failed" + port 6543 = wrong pooling mode
+8. **Documentation Critical**: Some issues can only be prevented through clear documentation
+9. **QA Boundaries**: Understand what automated tests CAN and CANNOT validate
+10. **User Configuration**: Environment-specific configuration requires user education, not just tests
+
+### Resolution Steps (For Users)
+
+**When you see "SASL authentication failed" error:**
+
+1. **Check Your Port**:
+   - If DATABASE_URL shows port **6543** → You're using Transaction Mode (wrong)
+   - Need port **5432** → Session Mode (correct)
+
+2. **Get Session Mode Connection String**:
+   - Go to Supabase Dashboard → Settings → Database
+   - Find "Connection Pooling" section
+   - Click **"Session mode"** tab (NOT "Transaction mode")
+   - Copy the connection string (port 5432)
+
+3. **Update DATABASE_URL in Vercel**:
+   - Use the Session Mode connection string
+   - Verify it shows port 5432
+   - Save and redeploy
+
+4. **Optional - Use Both Modes**:
+   - `DATABASE_URL` = Session Mode (port 5432) for migrations
+   - `DATABASE_URL_POOLED` = Transaction Mode (port 6543) for app queries (if desired)
+   - Prisma will use `DATABASE_URL` for migrations
+
+**See**: `docs/VERCEL_BUILD_FAILURE_DATABASE.md` Section #2 for complete visual guide
+
+### Prevention Strategy
+
+**For Documentation**:
+- [ ] Clearly distinguish Transaction vs Session pooling modes
+- [ ] Show visual examples from Supabase dashboard
+- [ ] Explain port 6543 = Transaction (wrong), port 5432 = Session (right)
+- [ ] Document that both modes can be used together
+- [ ] Add error signatures for quick diagnosis
+
+**For Users Upgrading Pooling**:
+- [ ] When upgrading to pooling in Supabase, get BOTH connection strings
+- [ ] Use Session Mode (port 5432) for DATABASE_URL in Vercel
+- [ ] Optionally use Transaction Mode (port 6543) for app runtime (separate env var)
+- [ ] Verify build succeeds before considering deployment complete
+
+**For QA Understanding**:
+- [ ] Document limitations of automated testing
+- [ ] Identify environment-specific issues that require user configuration
+- [ ] Focus tests on what CAN be validated (code, migrations, build script)
+- [ ] Use documentation to guide users on what tests CANNOT validate
+
+---
+
+## Template for Future Failures
+
+---
+
 ## Statistics
 
 - **Total Failures Logged**: 4
