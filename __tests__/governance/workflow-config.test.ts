@@ -11,12 +11,11 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { glob } from 'glob';
 
 describe('Workflow DATABASE_URL Configuration', () => {
   // FL/CI: Test added after incomplete fix in commit d4abe6f missed qa-enforcement-v1-frozen.yml
   // This test ensures ALL workflow files are checked for DATABASE_URL consistency
-  it('should have DATABASE_URL matching Prisma provider in ALL workflow files', async () => {
+  it('should have DATABASE_URL matching Prisma provider in ALL workflow files', () => {
     // Read Prisma schema to get required provider
     const schemaPath = path.join(process.cwd(), 'prisma/schema.prisma');
     const schemaContent = fs.readFileSync(schemaPath, 'utf-8');
@@ -25,9 +24,12 @@ describe('Workflow DATABASE_URL Configuration', () => {
     expect(providerMatch).not.toBeNull();
     const provider = providerMatch![1];
     
-    // Find all workflow files
-    const workflowPattern = path.join(process.cwd(), '.github/workflows/*.yml');
-    const workflowFiles = await glob(workflowPattern);
+    // Find all workflow files using Node.js built-ins
+    const workflowsDir = path.join(process.cwd(), '.github/workflows');
+    const files = fs.readdirSync(workflowsDir);
+    const workflowFiles = files
+      .filter(f => f.endsWith('.yml') || f.endsWith('.yaml'))
+      .map(f => path.join(workflowsDir, f));
     
     expect(workflowFiles.length).toBeGreaterThan(0);
     
@@ -36,6 +38,9 @@ describe('Workflow DATABASE_URL Configuration', () => {
     // Check each workflow file
     for (const workflowFile of workflowFiles) {
       const content = fs.readFileSync(workflowFile, 'utf-8');
+      
+      // Skip empty or minimal files (like placeholders)
+      if (content.trim().length < 10) continue;
       
       // Find all DATABASE_URL declarations
       const urlMatches = content.matchAll(/DATABASE_URL:\s*['"](.*?)['"]/g);
@@ -77,9 +82,12 @@ describe('Workflow DATABASE_URL Configuration', () => {
   });
 
   // FL/CI: Validate that workflow files with npm ci have DATABASE_URL set
-  it('should have DATABASE_URL set in all jobs that run npm ci', async () => {
-    const workflowPattern = path.join(process.cwd(), '.github/workflows/*.yml');
-    const workflowFiles = await glob(workflowPattern);
+  it('should have DATABASE_URL set in steps that run npm ci', () => {
+    const workflowsDir = path.join(process.cwd(), '.github/workflows');
+    const files = fs.readdirSync(workflowsDir);
+    const workflowFiles = files
+      .filter(f => f.endsWith('.yml') || f.endsWith('.yaml'))
+      .map(f => path.join(workflowsDir, f));
     
     const violations: string[] = [];
     
@@ -90,32 +98,23 @@ describe('Workflow DATABASE_URL Configuration', () => {
       // Skip empty or template files
       if (content.trim().length < 10) continue;
       
-      // Find all jobs
-      const jobMatches = content.matchAll(/^\s{2}[\w-]+:\s*$/gm);
+      // Find all steps that run npm ci
+      const stepMatches = content.matchAll(/- name:([^\n]+)\n([\s\S]*?)(?=\n\s{0,4}- name:|\n\s{0,4}jobs:|\n\s{0,4}$)/g);
       
-      for (const jobMatch of jobMatches) {
-        const jobStartIndex = jobMatch.index!;
-        const jobName = jobMatch[0].trim().replace(':', '');
+      for (const stepMatch of stepMatches) {
+        const stepName = stepMatch[1].trim();
+        const stepContent = stepMatch[2];
         
-        // Find the next job or end of file
-        const remainingContent = content.substring(jobStartIndex);
-        const nextJobMatch = remainingContent.substring(1).match(/^\s{2}[\w-]+:\s*$/m);
-        const jobEndIndex = nextJobMatch 
-          ? jobStartIndex + nextJobMatch.index! + 1
-          : content.length;
-        
-        const jobContent = content.substring(jobStartIndex, jobEndIndex);
-        
-        // Check if this job runs npm ci
-        if (/npm\s+ci/m.test(jobContent)) {
-          // Check if DATABASE_URL is set in this job's context
-          // (either in env section or in the step that runs npm ci)
-          const hasDbUrl = /DATABASE_URL:/m.test(jobContent);
+        // Check if this step runs npm ci
+        if (/npm\s+ci\b/m.test(stepContent)) {
+          // Check if DATABASE_URL is set in this step's env section
+          // Look for env: followed by DATABASE_URL within the same step
+          const hasEnvSection = /env:\s*\n[\s\S]*?DATABASE_URL:/m.test(stepContent);
           
-          if (!hasDbUrl) {
-            const lineNumber = content.substring(0, jobStartIndex).split('\n').length;
+          if (!hasEnvSection) {
+            const lineNumber = content.substring(0, stepMatch.index).split('\n').length;
             violations.push(
-              `${fileName}:${lineNumber} - Job "${jobName}" runs npm ci but DATABASE_URL is not set`
+              `${fileName}:${lineNumber} - Step "${stepName}" runs npm ci but DATABASE_URL is not set in env`
             );
           }
         }
@@ -123,7 +122,7 @@ describe('Workflow DATABASE_URL Configuration', () => {
     }
     
     if (violations.length > 0) {
-      const message = `Jobs running npm ci without DATABASE_URL:\n` +
+      const message = `Steps running npm ci without DATABASE_URL in env:\n` +
         violations.map(v => `  - ${v}`).join('\n') +
         `\n\nPrisma postinstall hook requires DATABASE_URL to be set during npm ci`;
       
