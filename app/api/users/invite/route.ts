@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import prisma from "@/lib/prisma"
-import bcrypt from "bcryptjs"
 import { sanitizeObject } from "@/lib/validators"
 import { logUserManagement } from "@/lib/logging/systemLog"
 import crypto from "crypto"
@@ -49,44 +48,73 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Generate secure temporary password (in production, send via email)
-    const temporaryPassword = crypto.randomBytes(4).toString('hex') // 8 characters
-    const hashedPassword = await bcrypt.hash(temporaryPassword, 10)
-
-    // Create user
-    const user = await prisma.user.create({
-      data: {
+    // Check if there's already a pending invitation for this email
+    const existingInvitation = await prisma.invitation.findFirst({
+      where: {
         email: sanitized.email,
-        name: sanitized.name,
-        password: hashedPassword,
-        role: sanitized.role || "technician",
+        accepted: false,
+        expires: {
+          gt: new Date(),
+        },
       },
     })
 
-    // Log the user creation
+    if (existingInvitation) {
+      return NextResponse.json(
+        { error: "An invitation for this email is already pending" },
+        { status: 400 }
+      )
+    }
+
+    // Generate secure invitation token
+    const invitationToken = crypto.randomBytes(32).toString('hex')
+    
+    // Token expires in 7 days
+    const expiresAt = new Date()
+    expiresAt.setDate(expiresAt.getDate() + 7)
+
+    // Create invitation record
+    const invitation = await prisma.invitation.create({
+      data: {
+        email: sanitized.email,
+        name: sanitized.name,
+        role: sanitized.role || "technician",
+        token: invitationToken,
+        expires: expiresAt,
+        createdBy: session.user.id,
+      },
+    })
+
+    // Log the invitation
     await logUserManagement({
       action: "user_invited",
-      targetUserId: user.id,
-      targetUserEmail: user.email,
+      targetUserEmail: invitation.email,
       adminUserId: session.user.id,
       adminUserName: session.user.name || undefined,
       success: true,
       request: req,
     })
 
-    // In production, send email with invitation link
-    // For now, return the temporary password (NOT SECURE - for development only)
+    // Build invitation URL
+    const baseUrl = process.env.NEXTAUTH_URL;
+    if (!baseUrl) {
+      throw new Error('NEXTAUTH_URL environment variable is not configured');
+    }
+    const invitationUrl = `${baseUrl}/auth/signup?token=${invitationToken}`
+
+    // TODO: Send email with invitation link
+    // For now, return the invitation URL in the response
     return NextResponse.json({
       success: true,
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
+      invitation: {
+        id: invitation.id,
+        email: invitation.email,
+        name: invitation.name,
+        role: invitation.role,
+        expiresAt: invitation.expires,
       },
-      // Remove this in production and send via email instead
-      temporaryPassword,
-      message: "User invited successfully. In production, an email would be sent.",
+      invitationUrl,
+      message: "User invited successfully. In production, an email would be sent with the invitation link.",
     })
   } catch (error) {
     console.error("Error inviting user:", error)

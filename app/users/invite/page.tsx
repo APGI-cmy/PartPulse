@@ -53,19 +53,14 @@ export default function InviteUserPage() {
       const result = await response.json();
 
       if (response.ok && result.success) {
-        setSuccess(`User invited successfully! Temporary password: ${result.temporaryPassword}`);
-        // Reset form
+        setSuccess(`User invited successfully!`);
+        // Store invitation URL for display
         setFormData({
           name: "",
           email: "",
           role: "technician",
-          message: "",
+          message: result.invitationUrl || "",
         });
-        
-        // Redirect to employees page after 3 seconds
-        setTimeout(() => {
-          router.push('/employees');
-        }, 3000);
       } else {
         setError(result.error || "Failed to invite user");
       }
@@ -99,9 +94,30 @@ export default function InviteUserPage() {
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                 </div>
-                <div className="ml-3">
+                <div className="ml-3 flex-1">
                   <p className="text-sm font-medium text-green-800">{success}</p>
-                  <p className="text-sm text-green-700 mt-1">Redirecting to employees page...</p>
+                  {formData.message && (
+                    <div className="mt-3">
+                      <p className="text-sm text-green-700 mb-2">Share this invitation link with the user:</p>
+                      <div className="bg-white border border-green-300 rounded p-3">
+                        <code className="text-xs text-gray-800 break-all">{formData.message}</code>
+                      </div>
+                      <button
+                        onClick={async () => {
+                          try {
+                            await navigator.clipboard.writeText(formData.message);
+                            // Successfully copied - could show a toast notification here
+                          } catch (error) {
+                            console.error('Failed to copy to clipboard:', error);
+                            // Fallback: select the text for manual copy
+                          }
+                        }}
+                        className="mt-2 text-sm text-green-700 hover:text-green-900 underline"
+                      >
+                        📋 Copy to Clipboard
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -229,15 +245,15 @@ export default function InviteUserPage() {
               <ul className="space-y-3 text-sm text-gray-600">
                 <li className="flex items-start">
                   <span className="text-primary mr-2">•</span>
-                  <span>The user will receive an email with their login credentials</span>
+                  <span>The user will receive an invitation link (or you can share it manually)</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-primary mr-2">•</span>
-                  <span>They can log in immediately using the temporary password</span>
+                  <span>The invitation link is valid for 7 days</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-primary mr-2">•</span>
-                  <span>The user will be prompted to change their password on first login</span>
+                  <span>The user will create their own password when they accept the invitation</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-primary mr-2">•</span>

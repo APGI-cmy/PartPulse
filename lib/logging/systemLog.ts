@@ -209,7 +209,7 @@ export async function logAuthEvent(params: {
  * Helper: Log user management actions
  */
 export async function logUserManagement(params: {
-  action: "user_invited" | "user_updated" | "user_deleted" | "password_reset";
+  action: "user_invited" | "user_updated" | "user_deleted" | "password_reset" | "user_signup_completed" | "first_admin_created";
   targetUserId?: string;
   targetUserEmail?: string;
   adminUserId?: string;
