@@ -1,8 +1,23 @@
 # ✅ COMPLETE: Database Migration Deployment to Supabase
 
+## ⚠️ CRITICAL: Set DATABASE_URL in Vercel FIRST
+
+**BEFORE deploying, you MUST set DATABASE_URL in Vercel:**
+
+1. Go to: **Vercel Dashboard → Your Project → Settings → Environment Variables**
+2. Add: **DATABASE_URL** = Your Supabase connection string
+3. Set for: **Production, Preview, Development** (all three)
+4. Then deploy
+
+**If you don't set DATABASE_URL first, the build will fail!**
+
+See: `docs/VERCEL_BUILD_FAILURE_DATABASE.md` if build fails with database connection error.
+
+---
+
 ## Status: PRODUCTION-READY
 
-All requirements met. Database migrations will deploy automatically to Supabase on next Vercel build.
+All requirements met. Database migrations will deploy automatically to Supabase on next Vercel build **after DATABASE_URL is set**.
 
 ---
 

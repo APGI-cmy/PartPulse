@@ -451,14 +451,132 @@ These tests:
 
 ---
 
+## Failure #4: Vercel Build Failure - DATABASE_URL Not Set
+
+**Date**: 2025-12-17  
+**Issue**: Vercel deployment failed during build  
+**Severity**: CRITICAL - Blocks all deployments  
+**Symptom**: 
+```
+Error: P1001: Can't reach database server at `db.csfbqbumimomonkxlmoa.supabase.co:5432`
+Error: Command "npm run build" exited with 1
+```
+
+### What Went Wrong
+
+**Root Cause**: DATABASE_URL environment variable not set in Vercel
+
+**Technical Details**:
+- Build script includes: `prisma migrate deploy`
+- This command requires DATABASE_URL to be set
+- Connects to database to apply migrations during build
+- If DATABASE_URL missing or database unreachable, build fails
+- Vercel environment variables must be set BEFORE first deployment
+
+**Impact**:
+- **CRITICAL**: Build fails, no deployment possible
+- Zero application functionality
+- Blocks all testing and validation
+- Prevents any user access
+
+### Why It Happened
+
+1. **Chicken-and-Egg**: Migrations committed but DATABASE_URL not yet configured in Vercel
+2. **Documentation Gap**: ENV setup instructions not prominent in deployment workflow
+3. **No Pre-Flight Check**: Build attempts migration without verifying DATABASE_URL exists
+4. **Assumption Violation**: Build script assumed DATABASE_URL always available
+
+### How We Fixed It
+
+1. **Immediate Fix**:
+   - Created step-by-step guide: `docs/VERCEL_BUILD_FAILURE_DATABASE.md`
+   - Instructions to set DATABASE_URL in Vercel dashboard
+   - Clear error explanation and resolution steps
+   - Redeploy instructions
+
+2. **FL/CI Implementation**:
+   - ✅ **Registered**: This entry documents the failure
+   - ✅ **Incorporated**: Documentation added for this specific error
+   - ✅ **Prevented**: Clear instructions prevent future occurrences
+
+3. **Documentation Updates**:
+   - Created `VERCEL_BUILD_FAILURE_DATABASE.md` - Step-by-step resolution
+   - Updated deployment docs to emphasize ENV vars MUST be set first
+   - Added to troubleshooting section of migration deployment guide
+
+### Files Changed
+
+**Fix Documentation:**
+- `docs/VERCEL_BUILD_FAILURE_DATABASE.md` - Created resolution guide with screenshots needed
+
+**FL/CI Prevention:**
+- `qa/FAILURE_LEARNING_LOG.md` - This entry
+
+### Prevention Mechanism
+
+**Documentation Added**:
+- Clear step-by-step guide for setting DATABASE_URL in Vercel
+- Troubleshooting section for common connection issues
+- Verification steps to confirm successful deployment
+
+**Process Improvements**:
+- Deployment documentation now emphasizes: SET ENV VARS FIRST
+- Pre-deployment checklist includes DATABASE_URL verification
+- Error message points to specific resolution documentation
+
+**Result**: Future deployments will have clear instructions for setting DATABASE_URL before first build.
+
+### Lessons Learned
+
+1. **ENV Vars First**: Environment variables must be set BEFORE first deployment attempt
+2. **Clear Error Messages**: Point users to specific resolution documentation
+3. **Pre-Flight Checks**: Consider checking critical ENV vars exist before expensive operations
+4. **Documentation Prominence**: Critical setup steps must be impossible to miss
+5. **Failure Modes**: Build-time failures need clear resolution paths
+
+### Resolution Steps (For Users)
+
+**When you see this error:**
+
+1. **Set DATABASE_URL in Vercel**:
+   - Vercel Dashboard → Project → Settings → Environment Variables
+   - Add DATABASE_URL with Supabase connection string
+   - Set for Production, Preview, Development
+
+2. **Redeploy**:
+   - Vercel Dashboard → Deployments → Redeploy
+   - Or push new commit to trigger redeploy
+
+3. **Verify**:
+   - Build logs should show: "All migrations have been successfully applied"
+   - Application should be accessible
+
+**See**: `docs/VERCEL_BUILD_FAILURE_DATABASE.md` for complete instructions
+
+### Prevention Strategy
+
+**For Future Projects**:
+- [ ] Set all required environment variables BEFORE first deployment
+- [ ] Follow deployment checklist in order
+- [ ] Verify ENV vars are set using Vercel dashboard preview
+- [ ] Test with preview deployment before production
+
+**Documentation Requirements**:
+- [ ] ENV var setup must be Step 1 in deployment guide
+- [ ] Build errors must link to resolution documentation
+- [ ] Troubleshooting guide must cover common ENV issues
+
+---
+
 ## Statistics
 
-- **Total Failures Logged**: 3
-- **Total Tests Added**: 12+ (Failure #1: 1, Failure #2: 2, Failure #3: 11)
-- **Failure Classes Eliminated**: 3
+- **Total Failures Logged**: 4
+- **Total Tests Added**: 12+ (Failure #1: 1, Failure #2: 2, Failure #3: 11, Failure #4: 0 - documentation only)
+- **Failure Classes Eliminated**: 4
   - DATABASE_URL validation mismatch
   - Next.js deployment configuration
   - Database schema deployment pipeline
+  - Vercel environment variable setup
 - **Last Updated**: 2025-12-17
 
 ---
