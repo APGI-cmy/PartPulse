@@ -43,26 +43,38 @@ Error validating datasource db: the URL must start with the protocol postgresql:
 2. **Validation Timing**: Prisma validates DATABASE_URL during `npm ci` (postinstall), not just during test execution
 3. **Inadequate Testing**: No test validated that DATABASE_URL format matches schema provider
 4. **Documentation Gap**: No clear guidance on database requirements for CI
+5. **Incomplete Fix**: Initial fix missed `qa-enforcement-v1-frozen.yml` workflow file
 
 ### How We Fixed It
 
-1. **Immediate Fix**: 
-   - Added PostgreSQL service containers to all CI workflows
+1. **Immediate Fix (Commit d4abe6f)**: 
+   - Added PostgreSQL service containers to main CI workflows
    - Updated DATABASE_URL in workflows to use PostgreSQL: `postgresql://testuser:testpass@localhost:5432/testdb`
    - Modified `jest.globalSetup.js` to work with PostgreSQL instead of SQLite
 
-2. **FL/CI Implementation**:
-   - ✅ **Registered**: This entry documents the failure
+2. **Follow-up Fix (Commit 93ef1d7) - FL/CI Lesson**:
+   - **Issue**: Merge still failed - `qa-enforcement-v1-frozen.yml` still had SQLite URLs
+   - **Root Cause**: Incomplete audit of all workflow files during initial fix
+   - **Fix**: Added PostgreSQL service container to frozen workflow
+   - **Updated**: All 3 DATABASE_URL occurrences in the frozen workflow
+   - **Lesson**: Must audit ALL workflow files when fixing environment configuration
+
+3. **FL/CI Implementation**:
+   - ✅ **Registered**: This entry documents the failure AND the incomplete fix
    - ✅ **Incorporated**: Added test in `__tests__/deployment/environment.test.ts` that validates DATABASE_URL matches schema provider
    - ✅ **Prevented**: New test will fail immediately if DATABASE_URL doesn't match schema
 
 ### Files Changed
 
+**Initial Fix:**
 - `.github/workflows/qa-enforcement.yml` - Added PostgreSQL service, updated DATABASE_URL
 - `.github/workflows/qa-enforcement-v2.yml` - Added PostgreSQL service, updated DATABASE_URL  
 - `.github/workflows/minimum-build-to-red.yml` - Updated DATABASE_URL for all install steps
 - `jest.globalSetup.js` - Removed SQLite-specific logic, made provider-agnostic
 - `__tests__/deployment/environment.test.ts` - Added test to validate DATABASE_URL matches provider
+
+**Follow-up Fix (FL/CI in action):**
+- `.github/workflows/qa-enforcement-v1-frozen.yml` - Added PostgreSQL service, updated DATABASE_URL (3 occurrences)
 
 ### Prevention Mechanism
 
@@ -83,6 +95,20 @@ This test:
 3. **Test the Tests**: Even test infrastructure needs tests (meta-testing)
 4. **Document Assumptions**: Make database requirements explicit in README and CI
 5. **Provider Consistency**: If schema requires PostgreSQL, all environments (dev, test, CI) should use it
+6. **Complete Audit**: When fixing environment issues, check ALL workflow files systematically (use `find` or `grep -r`)
+7. **FL/CI Validation**: Incomplete fixes can cause repeat failures - this is a **catastrophic pattern** that must be avoided
+
+**CRITICAL FL/CI INSIGHT**: This failure occurred TWICE:
+- First failure: SQLite URLs in main workflows
+- Second failure: Incomplete fix missed frozen workflow
+
+**Prevention for future environment fixes:**
+```bash
+# Always audit ALL files when fixing environment configuration
+find .github/workflows -name "*.yml" -exec grep -l "DATABASE_URL" {} \;
+# Verify each file is updated
+grep -r "DATABASE_URL.*file:" .github/workflows/
+```
 
 ### Related Documentation
 
