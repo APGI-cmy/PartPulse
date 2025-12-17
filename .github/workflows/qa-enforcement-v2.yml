@@ -7,6 +7,22 @@ jobs:
   test-execution:
     runs-on: ubuntu-latest
     
+    # PostgreSQL service for tests
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: testdb
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -18,6 +34,10 @@ jobs:
           # Explicitly NO cache - fresh install every time
       
       - name: Prove invariants and install
+        env:
+          # Use PostgreSQL service for tests
+          DATABASE_URL: 'postgresql://testuser:testpass@localhost:5432/testdb'
+          CI: 'true'
         run: |
           set -e
           
@@ -118,7 +138,7 @@ jobs:
       - name: Run test suite
         env:
           NODE_ENV: test
-          DATABASE_URL: 'file:./.ci-test-db.sqlite'
+          DATABASE_URL: 'postgresql://testuser:testpass@localhost:5432/testdb'
           CI: 'true'
         run: |
           npm run test:ci

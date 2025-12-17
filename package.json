@@ -10,7 +10,9 @@
     "test": "jest",
     "test:ci": "jest --runInBand --ci",
     "db:seed": "tsx prisma/seed.ts",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "fl:log": "node qa/log-failure.js",
+    "fl:view": "cat qa/FAILURE_LEARNING_LOG.md"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

@@ -90,6 +90,9 @@ jobs:
       
       - name: Install dependencies
         if: needs.lifecycle-check.outputs.build_to_green_complete != 'true'
+        env:
+          # Use dummy PostgreSQL URL for prisma generate validation during postinstall
+          DATABASE_URL: 'postgresql://user:pass@localhost:5432/testdb'
         run: npm ci
       
       - name: Run Test Dodging Detector
@@ -129,6 +132,9 @@ jobs:
       
       - name: Install dependencies
         if: needs.lifecycle-check.outputs.build_to_green_complete != 'true'
+        env:
+          # Use dummy PostgreSQL URL for prisma generate validation during postinstall
+          DATABASE_URL: 'postgresql://user:pass@localhost:5432/testdb'
         run: npm ci
       
       - name: Run ESLint
@@ -168,6 +174,9 @@ jobs:
       
       - name: Install dependencies
         if: needs.lifecycle-check.outputs.build_to_green_complete != 'true'
+        env:
+          # Use dummy PostgreSQL URL for prisma generate validation during postinstall
+          DATABASE_URL: 'postgresql://user:pass@localhost:5432/testdb'
         run: npm ci
       
       - name: Run TypeScript Compiler
@@ -207,6 +216,9 @@ jobs:
       
       - name: Install dependencies
         if: needs.lifecycle-check.outputs.build_to_green_complete != 'true'
+        env:
+          # Use dummy PostgreSQL URL for prisma generate validation during postinstall
+          DATABASE_URL: 'postgresql://user:pass@localhost:5432/testdb'
         run: npm ci
       
       - name: Build Application

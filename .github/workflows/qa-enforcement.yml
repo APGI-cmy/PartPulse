@@ -92,6 +92,23 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    
+    # PostgreSQL service for tests
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: testdb
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
     steps:
       # --------------------------------------------------
       # 1. Checkout
@@ -129,7 +146,8 @@ jobs:
       # --------------------------------------------------
       - name: Install dependencies with full tracing
         env:
-          DATABASE_URL: 'file:./.ci-test-db.sqlite'
+          # Use PostgreSQL service for tests
+          DATABASE_URL: 'postgresql://testuser:testpass@localhost:5432/testdb'
           CI: 'true'
         run: |
           echo "=== npm version and config ==="
@@ -176,7 +194,7 @@ jobs:
       - name: Run test suite
         env:
           NODE_ENV: test
-          DATABASE_URL: 'file:./.ci-test-db.sqlite'
+          DATABASE_URL: 'postgresql://testuser:testpass@localhost:5432/testdb'
           CI: 'true'
         run: |
           echo "=== Running tests ==="
@@ -186,6 +204,20 @@ jobs:
         if: failure()
         run: |
           node qa/evidence/capture.js "test-failure" "Test suite failed" "$(cat test-output.log 2>/dev/null || echo 'No logs')"
+          echo ""
+          echo "╔═════════════════════════════════════════════════════════════╗"
+          echo "║  FL/CI REMINDER: Failure Learning & Continuous Improvement ║"
+          echo "╚═════════════════════════════════════════════════════════════╝"
+          echo ""
+          echo "✅ This failure is an opportunity to improve permanently!"
+          echo ""
+          echo "Required actions:"
+          echo "1. Document the failure: npm run fl:log"
+          echo "2. Add test(s) to prevent it forever"
+          echo "3. Verify the failure class is eliminated"
+          echo ""
+          echo "See: qa/FAILURE_LEARNING_LOG.md"
+          echo ""
       
       - name: Upload Coverage
         if: always()
