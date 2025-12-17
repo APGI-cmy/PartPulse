@@ -9,6 +9,8 @@
  */
 
 import { routes, navItems } from '@/lib/routes';
+import fs from 'fs';
+import path from 'path';
 
 describe('Page Routing - Route Configuration', () => {
   /**
@@ -93,7 +95,7 @@ describe('Page Routing - Route Configuration', () => {
    * Ensures consistent route formatting without trailing slashes.
    */
   it('should not have trailing slashes in routes', () => {
-    Object.entries(routes).forEach(([key, value]) => {
+    Object.entries(routes).forEach(([_key, value]) => {
       if (typeof value === 'string' && value !== '/') {
         expect(value).not.toMatch(/\/$/);
       }
@@ -102,6 +104,8 @@ describe('Page Routing - Route Configuration', () => {
 });
 
 describe('Page Routing - File System Routes', () => {
+  const projectRoot = path.join(__dirname, '../..');
+  
   /**
    * Test 6: Verify all route files exist
    * 
@@ -109,22 +113,18 @@ describe('Page Routing - File System Routes', () => {
    * in the app directory structure.
    */
   it('should have page files for all static routes', () => {
-    const fs = require('fs');
-    const path = require('path');
-    const projectRoot = path.join(__dirname, '../..');
-    
     const staticRoutes = [
-      { route: routes.dashboard, file: 'app/page.tsx' },
-      { route: routes.internalTransfer, file: 'app/internal-transfer/page.tsx' },
-      { route: routes.warrantyClaims, file: 'app/warranty-claims/page.tsx' },
-      { route: routes.reports, file: 'app/reports/page.tsx' },
-      { route: routes.settings, file: 'app/settings/page.tsx' },
-      { route: routes.settingsAdmin, file: 'app/settings/admin/page.tsx' },
-      { route: routes.userInvite, file: 'app/users/invite/page.tsx' },
-      { route: routes.signIn, file: 'app/auth/signin/page.tsx' },
+      { file: 'app/page.tsx' },
+      { file: 'app/internal-transfer/page.tsx' },
+      { file: 'app/warranty-claims/page.tsx' },
+      { file: 'app/reports/page.tsx' },
+      { file: 'app/settings/page.tsx' },
+      { file: 'app/settings/admin/page.tsx' },
+      { file: 'app/users/invite/page.tsx' },
+      { file: 'app/auth/signin/page.tsx' },
     ];
     
-    staticRoutes.forEach(({ route, file }) => {
+    staticRoutes.forEach(({ file }) => {
       const filePath = path.join(projectRoot, file);
       expect(fs.existsSync(filePath)).toBe(true);
     });
@@ -136,17 +136,13 @@ describe('Page Routing - File System Routes', () => {
    * Checks that dynamic route handlers exist.
    */
   it('should have page files for all dynamic routes', () => {
-    const fs = require('fs');
-    const path = require('path');
-    const projectRoot = path.join(__dirname, '../..');
-    
     const dynamicRoutes = [
-      { name: 'warranty claim detail', file: 'app/warranty-claims/[id]/page.tsx' },
-      { name: 'warranty claim admin', file: 'app/warranty-claims/[id]/admin/page.tsx' },
-      { name: 'internal transfer detail', file: 'app/internal-transfer/[id]/page.tsx' },
+      { file: 'app/warranty-claims/[id]/page.tsx' },
+      { file: 'app/warranty-claims/[id]/admin/page.tsx' },
+      { file: 'app/internal-transfer/[id]/page.tsx' },
     ];
     
-    dynamicRoutes.forEach(({ name, file }) => {
+    dynamicRoutes.forEach(({ file }) => {
       const filePath = path.join(projectRoot, file);
       expect(fs.existsSync(filePath)).toBe(true);
     });
@@ -158,15 +154,11 @@ describe('Page Routing - File System Routes', () => {
    * Ensures that success pages are implemented.
    */
   it('should have success/confirmation pages', () => {
-    const fs = require('fs');
-    const path = require('path');
-    const projectRoot = path.join(__dirname, '../..');
-    
     const successPages = [
-      { route: routes.internalTransferSuccess, file: 'app/internal-transfer/success/page.tsx' },
+      { file: 'app/internal-transfer/success/page.tsx' },
     ];
     
-    successPages.forEach(({ route, file }) => {
+    successPages.forEach(({ file }) => {
       const filePath = path.join(projectRoot, file);
       expect(fs.existsSync(filePath)).toBe(true);
     });
@@ -174,6 +166,8 @@ describe('Page Routing - File System Routes', () => {
 });
 
 describe('Page Routing - Middleware Protection', () => {
+  const projectRoot = path.join(__dirname, '../..');
+  
   /**
    * Test 9: Verify protected routes are configured in middleware
    * 
@@ -181,10 +175,6 @@ describe('Page Routing - Middleware Protection', () => {
    * to protect sensitive routes.
    */
   it('should have middleware configuration for protected routes', () => {
-    const fs = require('fs');
-    const path = require('path');
-    const projectRoot = path.join(__dirname, '../..');
-    
     const middlewarePath = path.join(projectRoot, 'middleware.ts');
     expect(fs.existsSync(middlewarePath)).toBe(true);
     
@@ -203,16 +193,14 @@ describe('Page Routing - Middleware Protection', () => {
 });
 
 describe('Page Routing - Component Integration', () => {
+  const projectRoot = path.join(__dirname, '../..');
+  
   /**
    * Test 10: Verify sidebar component exists and uses routes
    * 
    * Ensures the sidebar component is properly implemented.
    */
   it('should have a sidebar component that uses centralized routes', () => {
-    const fs = require('fs');
-    const path = require('path');
-    const projectRoot = path.join(__dirname, '../..');
-    
     const sidebarPath = path.join(projectRoot, 'components/ui/sidebar.tsx');
     expect(fs.existsSync(sidebarPath)).toBe(true);
     
@@ -230,10 +218,6 @@ describe('Page Routing - Component Integration', () => {
    * Ensures Next.js Link components are used for navigation.
    */
   it('should use Next.js Link components in sidebar', () => {
-    const fs = require('fs');
-    const path = require('path');
-    const projectRoot = path.join(__dirname, '../..');
-    
     const sidebarPath = path.join(projectRoot, 'components/ui/sidebar.tsx');
     const sidebarContent = fs.readFileSync(sidebarPath, 'utf-8');
     
@@ -245,16 +229,14 @@ describe('Page Routing - Component Integration', () => {
 });
 
 describe('Page Routing - Documentation', () => {
+  const projectRoot = path.join(__dirname, '../..');
+  
   /**
    * Test 12: Verify routes are documented
    * 
    * Ensures that the routes configuration file has proper documentation.
    */
   it('should have documentation for route configuration', () => {
-    const fs = require('fs');
-    const path = require('path');
-    const projectRoot = path.join(__dirname, '../..');
-    
     const routesPath = path.join(projectRoot, 'lib/routes.ts');
     const routesContent = fs.readFileSync(routesPath, 'utf-8');
     
