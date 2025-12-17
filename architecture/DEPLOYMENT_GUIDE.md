@@ -116,6 +116,14 @@ Access at: `http://localhost:3000`
 
 ## Production Deployment - Vercel (Recommended)
 
+### Critical Configuration Requirement
+
+**IMPORTANT**: PartPulse uses Next.js 16+ which requires explicit `output: 'standalone'` configuration in `next.config.ts` for Vercel deployment. This is already configured in the repository.
+
+**Without this configuration, the app will deploy successfully but return 404 DEPLOYMENT_NOT_FOUND errors.**
+
+See: `docs/VERCEL_OUTPUT_CONFIG.md` for details.
+
 ### 1. Prepare Repository
 
 Ensure all code is committed and pushed to GitHub:
