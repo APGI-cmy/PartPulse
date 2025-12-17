@@ -33,6 +33,8 @@ async function main() {
   })
 
   // Create Johan's admin user account
+  // NOTE: This is a development/demo seed. In production, remove this user or use environment variables
+  // for passwords. The temporary password should be changed immediately after first login.
   // Using a temporary password that will be reset via password reset flow
   const johanPassword = await bcrypt.hash('TemporaryPassword123!@#', 10)
   

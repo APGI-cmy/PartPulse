@@ -16,8 +16,12 @@ const rl = readline.createInterface({
 })
 
 function question(query: string): Promise<string> {
-  return new Promise(resolve => {
-    rl.question(query, resolve)
+  return new Promise((resolve, reject) => {
+    try {
+      rl.question(query, resolve)
+    } catch (error) {
+      reject(error)
+    }
   })
 }
 
@@ -32,18 +36,22 @@ async function main() {
   const password = await question('Temporary password (min 16 chars): ')
 
   // Validate inputs
-  if (!email || !email.includes('@')) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!email || !emailRegex.test(email)) {
     console.error('❌ Error: Invalid email address')
+    rl.close()
     process.exit(1)
   }
 
   if (!name || name.trim().length === 0) {
     console.error('❌ Error: Name is required')
+    rl.close()
     process.exit(1)
   }
 
   if (password.length < 16) {
     console.error('❌ Error: Password must be at least 16 characters')
+    rl.close()
     process.exit(1)
   }
 
@@ -105,7 +113,8 @@ main()
     process.exit(0)
   })
   .catch(async (e) => {
-    console.error('❌ Error:', e.message)
+    console.error('❌ Error:', e instanceof Error ? e.message : String(e))
     await prisma.$disconnect()
+    rl.close()
     process.exit(1)
   })
