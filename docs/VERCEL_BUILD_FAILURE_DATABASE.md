@@ -7,23 +7,50 @@ Please make sure your database server is running at `db.csfbqbumimomonkxlmoa.sup
 Error: Command "npm run build" exited with 1
 ```
 
-## Root Cause
+## Most Likely Causes (In Order)
 
-The Vercel build is failing during the `prisma migrate deploy` step because:
+### 1️⃣  Supabase Database Is Paused ⭐ **MOST COMMON**
 
-**DATABASE_URL environment variable is NOT set in Vercel** or the database is not reachable.
+**Supabase databases automatically pause after ~1 week of inactivity.**
 
-## Solution: Set DATABASE_URL in Vercel
+**Solution**:
+1. Go to [Supabase Dashboard](https://app.supabase.com/)
+2. Select your project
+3. If you see "Database is paused" - click **Resume** or **Restore**
+4. Wait for database to become active (30-60 seconds)
+5. Redeploy in Vercel
 
-### Step 1: Get Your Supabase Connection String
+**Prevention**: Keep database active by querying it regularly, or upgrade to paid plan.
 
-1. Go to your Supabase project dashboard
-2. Navigate to: **Settings** → **Database**
-3. Find the **Connection string** section
-4. Copy the **Connection pooling** string (or Direct connection)
-5. It should look like: `postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres`
+---
 
-### Step 2: Add DATABASE_URL to Vercel
+### 2️⃣  Wrong Connection String Port
+
+Supabase provides two connection URLs:
+- **Connection Pooling** (port 5432) - Recommended for Vercel
+- **Direct Connection** (port 6543) - Alternative
+
+**Solution**:
+1. Go to Supabase Dashboard → Settings → Database
+2. Find **Connection string** section
+3. Copy the **Connection pooling** URL (port 5432)
+4. Update DATABASE_URL in Vercel with this URL
+5. Redeploy
+
+**Example URLs**:
+```bash
+# Connection Pooling (use this)
+postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres
+
+# Direct Connection (alternative)
+postgresql://postgres.[project-ref]:[password]@db.[project-ref].supabase.co:6543/postgres
+```
+
+---
+
+### 3️⃣  DATABASE_URL Not Set in Vercel
+
+**Solution**: Set DATABASE_URL in Vercel environment variables
 
 1. Go to: [Vercel Dashboard](https://vercel.com/dashboard)
 2. Select your project: **PartPulse**
@@ -31,52 +58,126 @@ The Vercel build is failing during the `prisma migrate deploy` step because:
 4. Click: **Add New**
 5. Set:
    - **Name**: `DATABASE_URL`
-   - **Value**: Your Supabase connection string from Step 1
+   - **Value**: Your Supabase connection string (from #2 above)
    - **Environments**: Check all three: ✅ Production, ✅ Preview, ✅ Development
 6. Click: **Save**
+7. Redeploy
 
-### Step 3: Redeploy
+---
 
-After adding DATABASE_URL:
+### 4️⃣  IP Whitelisting Required
 
-**Option A: Redeploy from Vercel Dashboard**
+Some Supabase projects require IP whitelisting.
+
+**Check**:
+1. Supabase Dashboard → Settings → Database
+2. Look for "Network Restrictions" or "IP Allow List"
+
+**Solution if enabled**:
+- Vercel uses dynamic IPs
+- Add `0.0.0.0/0` to allow all IPs (required for Vercel)
+- OR disable IP restrictions if not needed
+
+---
+
+### 5️⃣  Password Contains Special Characters
+
+If your database password has special characters, they must be URL-encoded.
+
+**Special characters that need encoding**:
+- `@` → `%40`
+- `#` → `%23`
+- `$` → `%24`
+- `%` → `%25`
+- `&` → `%26`
+
+**Solution**:
+1. Find your password in Supabase Dashboard → Settings → Database
+2. URL-encode special characters
+3. Update DATABASE_URL in Vercel with encoded password
+
+---
+
+## Step-by-Step Resolution
+
+### Step 1: Check Database Status
+
+1. Go to [Supabase Dashboard](https://app.supabase.com/)
+2. Select your project
+3. **Is database paused?**
+   - If YES: Click **Resume/Restore**
+   - If NO: Continue to Step 2
+
+### Step 2: Verify DATABASE_URL
+
+1. Go to Supabase Dashboard → Settings → Database
+2. Copy the **Connection pooling** URL (port 5432)
+3. Go to Vercel Dashboard → Your Project → Settings → Environment Variables
+4. Check if DATABASE_URL exists
+   - If NO: Add it (see #3 above)
+   - If YES: Verify it matches the Supabase URL
+
+### Step 3: Test Connection Format
+
+The DATABASE_URL should look like:
+```
+postgresql://postgres.[REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres
+```
+
+**Key parts**:
+- Protocol: `postgresql://`
+- Port: `:5432` (connection pooling) or `:6543` (direct)
+- Database: `/postgres` at the end
+
+### Step 4: Redeploy
+
+After making changes:
+
+**Option A: From Vercel Dashboard**
 1. Go to: **Deployments** tab
 2. Find the failed deployment
-3. Click the **⋯** menu button
+3. Click the **⋯** menu
 4. Select: **Redeploy**
 
-**Option B: Push a new commit**
+**Option B: Push new commit**
 ```bash
-git commit --allow-empty -m "Trigger redeploy after setting DATABASE_URL"
+git commit --allow-empty -m "Trigger redeploy after fixing DATABASE_URL"
 git push
 ```
 
-The build will succeed once DATABASE_URL is set.
+### Step 5: Check Build Logs
 
-## Why This Happens
-
-The build script includes:
-```bash
-"build": "prisma generate && prisma migrate deploy && next build"
+The new build will show detailed diagnostics:
+```
+🔄 Deploying Prisma migrations...
+✅ DATABASE_URL is set
+📍 Connection: postgresql://***:***@aws-0-us-east-1.pooler.supabase.com:5432/postgres
+🔍 Diagnostics:
+   Host: aws-0-us-east-1.pooler.supabase.com
+   Port: 5432
+   Environment: production
 ```
 
-The `prisma migrate deploy` command:
-1. Reads `DATABASE_URL` from environment variables
-2. Connects to the database
-3. Applies pending migrations
+If it still fails, the error message will indicate which of the 5 causes above is the issue.
 
-**If DATABASE_URL is not set or database is unreachable, the build fails.**
+---
 
-This is **intentional** - we want builds to fail if migrations can't be applied, preventing deployment of a broken application.
-
-## Verification
-
-After setting DATABASE_URL and redeploying, you should see in Vercel build logs:
+## Successful Build Looks Like
 
 ```
-> prisma migrate deploy
+🔄 Deploying Prisma migrations...
+✅ DATABASE_URL is set
+📍 Connection: postgresql://***:***@aws-0-us-east-1.pooler.supabase.com:5432/postgres
+
+🔍 Diagnostics:
+   Host: aws-0-us-east-1.pooler.supabase.com
+   Port: 5432
+   Environment: production
+
+🔌 Connecting to database and deploying migrations...
+
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": PostgreSQL database "postgres" at "db.xxx.supabase.co:5432"
+Datasource "db": PostgreSQL database "postgres" at "aws-0-us-east-1.pooler.supabase.com:5432"
 
 1 migration found in prisma/migrations
 
@@ -89,51 +190,72 @@ migrations/
     └─ migration.sql
 
 All migrations have been successfully applied.
-✔ Build Completed
+
+✅ SUCCESS: Migrations deployed successfully!
 ```
 
-## Common Issues
+---
 
-### Issue: "Still can't connect after setting DATABASE_URL"
+## Quick Troubleshooting Checklist
 
-**Check:**
-1. DATABASE_URL format is correct: `postgresql://...`
-2. Password doesn't contain special characters that need URL encoding
-3. Supabase project is running (check Supabase dashboard)
-4. You saved the environment variable in Vercel
-5. You redeployed after saving
+Work through this checklist in order:
 
-### Issue: "Which Supabase connection string should I use?"
+- [ ] **Is Supabase database running?** (Check Supabase dashboard)
+- [ ] **Is DATABASE_URL set in Vercel?** (Check environment variables)
+- [ ] **Using Connection Pooling URL?** (Port 5432, not 6543)
+- [ ] **Password URL-encoded?** (If it has special characters)
+- [ ] **IP restrictions disabled?** (Or 0.0.0.0/0 whitelisted)
 
-**Recommendation**: Use **Connection pooling** (port 5432) for better reliability.
+---
 
-If you have issues, try the **Direct connection** string.
+## Still Failing?
 
-### Issue: "Do I need to set other environment variables?"
+If you've checked all 5 causes and it's still failing:
 
-Yes, for full functionality you'll need:
+1. **Check Supabase Status**: [status.supabase.com](https://status.supabase.com)
+2. **Test connection locally**: 
+   ```bash
+   psql "$DATABASE_URL"
+   ```
+3. **Contact Supabase Support** with your project ref
+4. **Check Vercel region**: Ensure it matches Supabase region
 
-**Required:**
-- `DATABASE_URL` - Database connection
-- `AUTH_SECRET` - NextAuth secret (generate with: `openssl rand -base64 32`)
-- `NEXTAUTH_URL` - Your Vercel deployment URL
+---
 
-**For Email (optional):**
-- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `EMAIL_FROM`, `ADMIN_EMAIL`
+## Root Cause
 
-**For Storage (optional):**
-- `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `SUPABASE_BUCKET`
+The Vercel build is failing during the `prisma migrate deploy` step because it cannot establish a connection to the Supabase database.
 
-See `.env.example` for complete list.
+## Why This Happens
+
+The build script includes:
+```bash
+"build": "prisma generate && node scripts/deploy-migrations.js && next build"
+```
+
+The `deploy-migrations.js` script:
+1. Reads `DATABASE_URL` from environment variables
+2. Connects to the database
+3. Applies pending migrations
+
+**If the database is unreachable, the build fails.**
+
+This is **intentional** - we want builds to fail if migrations can't be applied, preventing deployment of a broken application.
+
+---
 
 ## Prevention
 
-This error is now documented as **FL/CI Failure #4** in `qa/FAILURE_LEARNING_LOG.md`.
+This error is documented as **FL/CI Failure #4** in `qa/FAILURE_LEARNING_LOG.md`.
 
-**To prevent this in future projects:**
-1. Set environment variables BEFORE first deployment
-2. Use Vercel's environment variable preview during setup
-3. Follow deployment checklist in `docs/DATABASE_MIGRATION_DEPLOYMENT.md`
+**To prevent this in future:**
+1. Ensure DATABASE_URL is set BEFORE first deployment
+2. Use Connection Pooling URL (port 5432)
+3. Keep Supabase database active (or use paid plan)
+4. Monitor Supabase dashboard for pause warnings
+5. Test DATABASE_URL format before deploying
+
+---
 
 ## Related Documentation
 
@@ -144,6 +266,4 @@ This error is now documented as **FL/CI Failure #4** in `qa/FAILURE_LEARNING_LOG
 
 ---
 
-**Next Action**: Set DATABASE_URL in Vercel (Step 2 above) and redeploy.
-
-Once DATABASE_URL is set, migrations will deploy automatically and the application will be fully functional.
+**Most Likely Fix**: Resume your paused Supabase database and redeploy.

@@ -488,36 +488,58 @@ Error: Command "npm run build" exited with 1
 
 ### How We Fixed It
 
-1. **Immediate Fix**:
+1. **Immediate Fix (v1)**:
    - Created step-by-step guide: `docs/VERCEL_BUILD_FAILURE_DATABASE.md`
    - Instructions to set DATABASE_URL in Vercel dashboard
    - Clear error explanation and resolution steps
    - Redeploy instructions
 
-2. **FL/CI Implementation**:
-   - ✅ **Registered**: This entry documents the failure
-   - ✅ **Incorporated**: Documentation added for this specific error
-   - ✅ **Prevented**: Clear instructions prevent future occurrences
+2. **Enhanced Fix (v2)** - After Continued Failure:
+   - Created `scripts/deploy-migrations.js` with enhanced diagnostics
+   - Updated build script to use diagnostic script
+   - Script now shows:
+     - Masked DATABASE_URL to confirm it's set
+     - Host and port being connected to
+     - Detailed error analysis with 5 common causes
+     - Step-by-step resolution for each cause
+   - Updated documentation with **most likely cause: Paused Supabase database**
 
-3. **Documentation Updates**:
+3. **FL/CI Implementation**:
+   - ✅ **Registered**: This entry documents the failure
+   - ✅ **Incorporated**: Enhanced diagnostics script + comprehensive docs
+   - ✅ **Prevented**: Script guides user through exact resolution
+
+4. **Documentation Updates**:
    - Created `VERCEL_BUILD_FAILURE_DATABASE.md` - Step-by-step resolution
-   - Updated deployment docs to emphasize ENV vars MUST be set first
-   - Added to troubleshooting section of migration deployment guide
+   - Enhanced with 5 most common causes in priority order
+   - Added diagnostic output examples
+   - Updated deployment docs to emphasize ENV vars AND database status
 
 ### Files Changed
 
+**Fix Implementation:**
+- `scripts/deploy-migrations.js` - Enhanced migration deployment with diagnostics
+- `package.json` - Updated build script to use diagnostic deploy script
+
 **Fix Documentation:**
-- `docs/VERCEL_BUILD_FAILURE_DATABASE.md` - Created resolution guide with screenshots needed
+- `docs/VERCEL_BUILD_FAILURE_DATABASE.md` - Comprehensive resolution guide with 5 common causes
 
 **FL/CI Prevention:**
 - `qa/FAILURE_LEARNING_LOG.md` - This entry
 
 ### Prevention Mechanism
 
-**Documentation Added**:
-- Clear step-by-step guide for setting DATABASE_URL in Vercel
-- Troubleshooting section for common connection issues
-- Verification steps to confirm successful deployment
+**Enhanced Diagnostics**:
+- Migration script shows exact connection details
+- Identifies 5 most common failure causes
+- Provides step-by-step fix for each cause
+- Prevents cryptic error messages
+
+**Documentation Enhanced**:
+- Prioritized causes: #1 Paused database (most common)
+- Clear step-by-step guide for each cause
+- Connection string format examples
+- Troubleshooting checklist
 
 **Process Improvements**:
 - Deployment documentation now emphasizes: SET ENV VARS FIRST
@@ -533,6 +555,9 @@ Error: Command "npm run build" exited with 1
 3. **Pre-Flight Checks**: Consider checking critical ENV vars exist before expensive operations
 4. **Documentation Prominence**: Critical setup steps must be impossible to miss
 5. **Failure Modes**: Build-time failures need clear resolution paths
+6. **Enhanced Diagnostics**: Cryptic errors must be enhanced with actionable guidance
+7. **Prioritize Causes**: Most common causes first (Supabase auto-pauses databases)
+8. **Connection Details**: Show what the script is connecting to (masked) for debugging
 
 ### Resolution Steps (For Users)
 
