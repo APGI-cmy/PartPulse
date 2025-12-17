@@ -80,7 +80,6 @@ describe('Password Reset Flow', () => {
     it('should store token expiry (1 hour from now)', () => {
       const now = Date.now();
       const oneHourLater = new Date(now + 60 * 60 * 1000);
-      const oneHourAndOneMinuteLater = new Date(now + 61 * 60 * 1000);
 
       // Expiry should be approximately 1 hour from now
       const timeDiff = oneHourLater.getTime() - now;
@@ -197,8 +196,8 @@ describe('Password Reset Flow', () => {
       });
     });
 
-    it('should validate token is 64 hex characters', () => {
-      const crypto = require('crypto');
+    it('should validate token is 64 hex characters', async () => {
+      const crypto = await import('crypto');
       const validToken = crypto.randomBytes(32).toString('hex');
 
       const isValid = /^[a-f0-9]{64}$/.test(validToken);

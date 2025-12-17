@@ -1,27 +1,21 @@
 "use client"
 
-import { useState, useEffect, Suspense } from "react"
+import { useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 
 function ResetPasswordForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [token, setToken] = useState("")
+  const tokenParam = searchParams.get("token") || ""
+  const [token] = useState(tokenParam)
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
+  const [error, setError] = useState(
+    tokenParam ? "" : "Invalid reset link. Please request a new password reset."
+  )
   const [passwordErrors, setPasswordErrors] = useState<string[]>([])
-
-  useEffect(() => {
-    const tokenParam = searchParams.get("token")
-    if (tokenParam) {
-      setToken(tokenParam)
-    } else {
-      setError("Invalid reset link. Please request a new password reset.")
-    }
-  }, [searchParams])
 
   const validatePassword = (pwd: string): string[] => {
     const errors: string[] = []
