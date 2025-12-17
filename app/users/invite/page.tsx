@@ -103,9 +103,14 @@ export default function InviteUserPage() {
                         <code className="text-xs text-gray-800 break-all">{formData.message}</code>
                       </div>
                       <button
-                        onClick={() => {
-                          navigator.clipboard.writeText(formData.message);
-                          // You could add a toast notification here instead of alert
+                        onClick={async () => {
+                          try {
+                            await navigator.clipboard.writeText(formData.message);
+                            // Successfully copied - could show a toast notification here
+                          } catch (error) {
+                            console.error('Failed to copy to clipboard:', error);
+                            // Fallback: select the text for manual copy
+                          }
                         }}
                         className="mt-2 text-sm text-green-700 hover:text-green-900 underline"
                       >

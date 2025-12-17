@@ -96,7 +96,11 @@ export async function POST(req: NextRequest) {
     })
 
     // Build invitation URL
-    const invitationUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/auth/signup?token=${invitationToken}`
+    const baseUrl = process.env.NEXTAUTH_URL;
+    if (!baseUrl) {
+      throw new Error('NEXTAUTH_URL environment variable is not configured');
+    }
+    const invitationUrl = `${baseUrl}/auth/signup?token=${invitationToken}`
 
     // TODO: Send email with invitation link
     // For now, return the invitation URL in the response
