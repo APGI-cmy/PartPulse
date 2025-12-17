@@ -88,6 +88,8 @@ When someone receives an invitation:
 - **Strong password requirements** enforce security best practices
 - **Session timeout after 8 hours** of inactivity
 - **No public registration** prevents unauthorized access
+- **Self-service password reset** with time-limited tokens (1 hour expiry)
+- **Email enumeration protection** - reset requests always return success
 
 ## Frequently Asked Questions
 
@@ -109,7 +111,17 @@ When someone receives an invitation:
 
 ### Q: How do I reset my password?
 
-**A:** Currently, password reset functionality is handled by administrators. Contact your administrator for assistance.
+**A:** Click "Forgot password?" on the sign-in page. Enter your email address, and you'll receive a password reset link. The link is valid for 1 hour for security reasons.
+
+**Note:** In the current implementation, password reset links are logged to the server console. In production, these should be sent via email. Contact your administrator if you need to retrieve a reset link.
+
+### Q: What if I don't receive the password reset email?
+
+**A:** Currently, password reset links are logged to the server console rather than sent via email. Contact your administrator to retrieve the reset link. In production, this will be sent via email automatically.
+
+### Q: I received a password reset link but it says it's expired. What do I do?
+
+**A:** Password reset links expire after 1 hour for security reasons. Simply request a new password reset link from the sign-in page.
 
 ## Dashboard After Sign In
 
@@ -128,6 +140,7 @@ Once signed in, you'll see the main dashboard with access to:
 - **First admin:** One-time setup via `/auth/first-admin`
 - **Additional users:** Must be invited by an admin via the "Invite" feature
 - **No public signup:** All user creation is controlled and audited
+- **Password reset:** Self-service via "Forgot password?" link on sign-in page
 - **Secure by design:** Invitation-based system ensures only authorized users can access the application
 
 For technical details about deployment and operations, see [OPERATIONS.md](./OPERATIONS.md).
