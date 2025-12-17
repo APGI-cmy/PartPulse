@@ -3,8 +3,14 @@
 ## Issue
 Vercel deployment failing with `404: DEPLOYMENT_NOT_FOUND` error when accessing `https://partpulse.vercel.app/auth/signin`
 
-## Root Cause
+## Root Cause (Application Code)
 Next.js 16 deprecated the `middleware.ts` file convention in favor of `proxy.ts`. Vercel's deployment infrastructure expects the new convention for proper deployment detection and configuration.
+
+**Important:** The DEPLOYMENT_NOT_FOUND error can have two causes:
+1. ✅ **Application Code Issue** (Fixed by this PR): Missing `proxy.ts` or deprecated `middleware.ts`
+2. ⚠️ **Vercel Configuration Issue** (Requires Dashboard Action): Production deployment not promoted or domain aliasing misconfigured
+
+See `VERCEL_DEPLOYMENT_NOT_FOUND_GUIDE.md` for details on Vercel configuration troubleshooting.
 
 ## Evidence
 1. Build warning: `⚠ The "middleware" file convention is deprecated. Please use "proxy" instead`
