@@ -9,22 +9,14 @@ export const routes = {
   // Main dashboard (home page)
   dashboard: '/',
   
-  // Parts management routes
-  parts: '/parts',
+  // Internal Transfer routes
+  internalTransfer: '/internal-transfer',
+  internalTransferSuccess: '/internal-transfer/success',
   
-  // Transfer routes
-  transfers: '/transfers',
-  transferDetail: (id: string | number) => `/transfers/${id}`,
-  transferSuccess: '/transfers/success',
-  
-  // Warranty routes
-  warranty: '/warranty',
+  // Warranty Claim routes
   warrantyClaims: '/warranty-claims',
   warrantyClaimDetail: (id: string | number) => `/warranty-claims/${id}`,
   warrantyClaimAdmin: (id: string | number) => `/warranty-claims/${id}/admin`,
-  
-  // Employee routes
-  employees: '/employees',
   
   // User management routes
   userInvite: '/users/invite',
