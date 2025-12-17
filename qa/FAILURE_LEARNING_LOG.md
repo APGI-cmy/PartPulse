@@ -496,36 +496,42 @@ Error: Command "npm run build" exited with 1
 
 2. **Enhanced Fix (v2)** - After Continued Failure:
    - Created `scripts/deploy-migrations.js` with enhanced diagnostics
-   - Updated build script to use diagnostic script
-   - Script now shows:
-     - Masked DATABASE_URL to confirm it's set
-     - Host and port being connected to
-     - Detailed error analysis with 5 common causes
-     - Step-by-step resolution for each cause
-   - Updated documentation with **most likely cause: Paused Supabase database**
+   - Attempted to use diagnostic script in build
+   - **REVERTED**: Violated governance - documentation mandates `prisma migrate deploy`
+   - Enhanced documentation with 5 most common causes instead
+   - Most likely cause identified: **Paused Supabase database**
 
-3. **FL/CI Implementation**:
+3. **Final Fix (v3)** - Governance Compliance:
+   - Reverted build script to: `prisma generate && prisma migrate deploy && next build`
+   - Matches documented requirement in `docs/DATABASE_MIGRATION_DEPLOYMENT.md`
+   - Enhanced troubleshooting documentation serves as guide
+   - Users can reference docs for diagnostic steps if build fails
+
+4. **FL/CI Implementation**:
    - ✅ **Registered**: This entry documents the failure
-   - ✅ **Incorporated**: Enhanced diagnostics script + comprehensive docs
-   - ✅ **Prevented**: Script guides user through exact resolution
+   - ✅ **Incorporated**: Comprehensive documentation with troubleshooting
+   - ✅ **Prevented**: Clear instructions and governance compliance
+   - ✅ **Corrected**: Fixed governance violation (test dodging false positive)
 
-4. **Documentation Updates**:
+5. **Documentation Updates**:
    - Created `VERCEL_BUILD_FAILURE_DATABASE.md` - Step-by-step resolution
    - Enhanced with 5 most common causes in priority order
-   - Added diagnostic output examples
+   - Added diagnostic guidance for users
    - Updated deployment docs to emphasize ENV vars AND database status
 
 ### Files Changed
 
 **Fix Implementation:**
-- `scripts/deploy-migrations.js` - Enhanced migration deployment with diagnostics
-- `package.json` - Updated build script to use diagnostic deploy script
+- `package.json` - Build script: `prisma generate && prisma migrate deploy && next build` (governance compliant)
+- `__tests__/deployment/database-schema-deployment.test.ts` - Fixed test dodging false positive
 
 **Fix Documentation:**
 - `docs/VERCEL_BUILD_FAILURE_DATABASE.md` - Comprehensive resolution guide with 5 common causes
 
 **FL/CI Prevention:**
 - `qa/FAILURE_LEARNING_LOG.md` - This entry
+
+**Note**: `scripts/deploy-migrations.js` exists but is not used in build. Kept for reference but governance requires standard Prisma CLI.
 
 ### Prevention Mechanism
 
@@ -555,9 +561,10 @@ Error: Command "npm run build" exited with 1
 3. **Pre-Flight Checks**: Consider checking critical ENV vars exist before expensive operations
 4. **Documentation Prominence**: Critical setup steps must be impossible to miss
 5. **Failure Modes**: Build-time failures need clear resolution paths
-6. **Enhanced Diagnostics**: Cryptic errors must be enhanced with actionable guidance
-7. **Prioritize Causes**: Most common causes first (Supabase auto-pauses databases)
-8. **Connection Details**: Show what the script is connecting to (masked) for debugging
+6. **Enhanced Documentation**: Prioritize causes (Supabase auto-pauses databases)
+7. **Governance Compliance**: Build scripts must match documented requirements exactly
+8. **Test Validation**: Anti-dodging tests must not trigger dodging detector (use regex, not string contains)
+9. **Standard Tools**: Prefer standard CLI tools (prisma migrate deploy) over custom wrappers unless explicitly governed
 
 ### Resolution Steps (For Users)
 

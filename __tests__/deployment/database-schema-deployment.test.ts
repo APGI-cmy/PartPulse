@@ -504,11 +504,15 @@ describe('CATASTROPHIC FAILURE PREVENTION: Database Schema Deployment', () => {
       const testFilePath = __filename;
       const content = fs.readFileSync(testFilePath, 'utf8');
       
-      // Check for test dodging patterns
-      expect(content).not.toContain('.skip(');
-      expect(content).not.toContain('.only(');
-      expect(content).not.toContain('xit(');
-      expect(content).not.toContain('xdescribe(');
+      // Check for test dodging patterns (using regex to avoid false positives)
+      const skipPattern = /\.(skip|only)\(/g;
+      const disabledPattern = /\b(xit|xdescribe|xtest)\(/g;
+      
+      const skipMatches = content.match(skipPattern);
+      const disabledMatches = content.match(disabledPattern);
+      
+      expect(skipMatches).toBeNull();
+      expect(disabledMatches).toBeNull();
       
       // Ensure this is comprehensive
       const testCount = (content.match(/\sit\(/g) || []).length;
