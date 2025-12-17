@@ -41,18 +41,9 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email: invitation.email },
-    })
-
-    if (existingUser) {
-      return NextResponse.json(
-        { error: "A user with this email already exists. Please sign in instead." },
-        { status: 400 }
-      )
-    }
-
+    // Note: We don't check if user already exists here to prevent email enumeration
+    // This check will be done during the actual signup process
+    
     // Return invitation details
     return NextResponse.json({
       invitation: {

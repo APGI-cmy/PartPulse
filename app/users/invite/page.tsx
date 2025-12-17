@@ -105,11 +105,11 @@ export default function InviteUserPage() {
                       <button
                         onClick={() => {
                           navigator.clipboard.writeText(formData.message);
-                          alert('Invitation link copied to clipboard!');
+                          // You could add a toast notification here instead of alert
                         }}
                         className="mt-2 text-sm text-green-700 hover:text-green-900 underline"
                       >
-                        Copy to Clipboard
+                        📋 Copy to Clipboard
                       </button>
                     </div>
                   )}
