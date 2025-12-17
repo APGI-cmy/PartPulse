@@ -135,6 +135,14 @@ jobs:
           echo "ALL INVARIANTS PASSED"
           echo "=========================================="
       
+      - name: Verify database deployment configuration
+        run: |
+          echo "=========================================="
+          echo "VERIFYING DATABASE DEPLOYMENT CONFIG"
+          echo "=========================================="
+          npm run verify:db-deployment
+          echo ""
+      
       - name: Run test suite
         env:
           NODE_ENV: test

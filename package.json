@@ -12,6 +12,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:create-user": "tsx scripts/create-user.ts",
     "postinstall": "prisma generate",
+    "verify:db-deployment": "node scripts/verify-db-deployment-config.js",
     "fl:log": "node qa/log-failure.js",
     "fl:view": "cat qa/FAILURE_LEARNING_LOG.md"
   },

@@ -77,6 +77,11 @@ This checklist ensures architectural decisions are made with rigor, clarity, and
 - [ ] Indexing strategy planned
 - [ ] Data privacy requirements addressed
 - [ ] Audit trail requirements defined
+- [ ] **Database migration deployment strategy defined and automated**
+- [ ] **Prisma migrations configured for Vercel/production deployment**
+- [ ] **Migration files committed to repository (NOT gitignored)**
+- [ ] **Build script includes automated migration deployment**
+- [ ] **Zero manual database access required for deployments**
 
 ### Security Architecture
 - [ ] Threat model completed
@@ -188,6 +193,11 @@ This checklist ensures architectural decisions are made with rigor, clarity, and
 - [ ] Configuration management approach planned
 - [ ] Environment promotion process documented
 - [ ] Production readiness checklist created
+- [ ] **Database migration deployment fully automated**
+- [ ] **No manual database operations required**
+- [ ] **Migration deployment tested in preview environment**
+- [ ] **Migration rollback procedures documented**
+- [ ] **Database deployment verification in CI/CD pipeline**
 
 ### Documentation Plan
 - [ ] Technical documentation structure defined
@@ -218,6 +228,11 @@ This checklist ensures architectural decisions are made with rigor, clarity, and
 - [ ] Performance regression testing enabled
 - [ ] Security scanning integrated
 - [ ] No test dodging patterns allowed
+- [ ] **Database migration deployment infrastructure tested**
+- [ ] **Migration files existence validated in tests**
+- [ ] **Build script migration deployment validated in tests**
+- [ ] **End-to-end deployment workflow covered by QA**
+- [ ] **100% one-time build philosophy enforced**
 
 ### Build-to-GREEN Compliance
 - [ ] All tests must pass before merge
@@ -305,6 +320,9 @@ This checklist ensures architectural decisions are made with rigor, clarity, and
 - ⛔ No monitoring or observability plan
 - ⛔ Undocumented external dependencies
 - ⛔ Missing compliance validation
+- ⛔ **Manual database deployment required**
+- ⛔ **Migration files gitignored**
+- ⛔ **No automated migration deployment**
 
 ### Implementation Red Flags
 - ⛔ Test dodging detected (`.skip()`, `.only()`, disabled tests)

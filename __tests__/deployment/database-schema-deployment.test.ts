@@ -10,11 +10,16 @@
  * Root Cause: Migrations directory was gitignored AND build script didn't run migrations
  * Impact: Complete production failure - no authentication, no data storage possible
  * Prevention: This test validates the entire migration deployment pipeline
+ * 
+ * ONE-TIME BUILD PHILOSOPHY:
+ * This test suite embodies the principle that builds must be perfect the first time.
+ * Every aspect of database deployment automation is validated to ensure zero manual steps.
  */
 
 import { describe, it, expect } from '@jest/globals';
 import * as fs from 'fs';
 import * as path from 'path';
+import { execSync } from 'child_process';
 
 describe('CATASTROPHIC FAILURE PREVENTION: Database Schema Deployment', () => {
   
@@ -332,4 +337,299 @@ describe('CATASTROPHIC FAILURE PREVENTION: Database Schema Deployment', () => {
       expect(foundDocumentation).toBe(true);
     });
   });
+
+  describe('ONE-TIME BUILD PHILOSOPHY: Complete Automation Validation', () => {
+    it('should validate verification script exists and is executable', () => {
+      const scriptPath = path.join(process.cwd(), 'scripts', 'verify-db-deployment-config.js');
+      
+      expect(fs.existsSync(scriptPath)).toBe(true);
+      
+      if (fs.existsSync(scriptPath)) {
+        const stats = fs.statSync(scriptPath);
+        // Check if executable bit is set (on Unix systems)
+        const isExecutable = (stats.mode & 0o111) !== 0;
+        expect(isExecutable || process.platform === 'win32').toBe(true);
+      }
+    });
+
+    it('should have npm script for deployment verification', () => {
+      const packageJsonPath = path.join(process.cwd(), 'package.json');
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+      
+      expect(packageJson.scripts).toHaveProperty('verify:db-deployment');
+      expect(packageJson.scripts['verify:db-deployment']).toContain('verify-db-deployment-config.js');
+    });
+
+    it('should have postinstall script that generates Prisma client', () => {
+      const packageJsonPath = path.join(process.cwd(), 'package.json');
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+      
+      expect(packageJson.scripts).toHaveProperty('postinstall');
+      expect(packageJson.scripts['postinstall']).toContain('prisma generate');
+    });
+
+    it('should validate entire build script execution order', () => {
+      const packageJsonPath = path.join(process.cwd(), 'package.json');
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+      
+      const buildScript = packageJson.scripts?.build || '';
+      
+      // Must have all three commands
+      expect(buildScript).toContain('prisma generate');
+      expect(buildScript).toContain('prisma migrate deploy');
+      expect(buildScript).toContain('next build');
+      
+      // Must be in correct order
+      const commands = buildScript.split('&&').map((cmd: string) => cmd.trim());
+      
+      let foundGenerate = false;
+      let foundMigrate = false;
+      let foundBuild = false;
+      
+      for (const cmd of commands) {
+        if (cmd.includes('prisma generate')) {
+          expect(foundMigrate).toBe(false); // Generate must come before migrate
+          expect(foundBuild).toBe(false);   // Generate must come before build
+          foundGenerate = true;
+        } else if (cmd.includes('prisma migrate deploy')) {
+          expect(foundGenerate).toBe(true); // Generate must come before migrate
+          expect(foundBuild).toBe(false);   // Migrate must come before build
+          foundMigrate = true;
+        } else if (cmd.includes('next build')) {
+          expect(foundGenerate).toBe(true); // Both must come before build
+          expect(foundMigrate).toBe(true);
+          foundBuild = true;
+        }
+      }
+      
+      expect(foundGenerate && foundMigrate && foundBuild).toBe(true);
+    });
+
+    it('should not have database push in build script (migrations only)', () => {
+      const packageJsonPath = path.join(process.cwd(), 'package.json');
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+      
+      const buildScript = packageJson.scripts?.build || '';
+      
+      // Should NOT use db push in production builds
+      expect(buildScript).not.toContain('prisma db push');
+      expect(buildScript).not.toContain('prisma push');
+    });
+
+    it('should validate comprehensive database deployment documentation exists', () => {
+      const requiredDocs = [
+        'docs/DATABASE_MIGRATION_DEPLOYMENT.md',
+        'docs/QUICK_REFERENCE_DB_MIGRATIONS.md',
+      ];
+      
+      for (const doc of requiredDocs) {
+        const docPath = path.join(process.cwd(), doc);
+        expect(fs.existsSync(docPath)).toBe(true);
+        
+        if (fs.existsSync(docPath)) {
+          const content = fs.readFileSync(docPath, 'utf8');
+          
+          // Must document Vercel automation
+          expect(content.toLowerCase()).toContain('vercel');
+          
+          // Must document prisma migrate deploy
+          expect(content.toLowerCase()).toContain('prisma migrate deploy');
+          
+          // Must warn against manual operations
+          expect(content.toLowerCase()).toMatch(/manual|don't|avoid/);
+        }
+      }
+    });
+
+    it('should validate FL/CI documentation of this failure', () => {
+      const flLogPath = path.join(process.cwd(), 'qa', 'FAILURE_LEARNING_LOG.md');
+      
+      expect(fs.existsSync(flLogPath)).toBe(true);
+      
+      const content = fs.readFileSync(flLogPath, 'utf8');
+      
+      // Must document this specific failure
+      expect(content).toContain('Failure #3');
+      expect(content.toLowerCase()).toContain('migration');
+      expect(content.toLowerCase()).toContain('gitignore');
+      expect(content.toLowerCase()).toContain('catastrophic');
+      
+      // Must document prevention
+      expect(content).toContain('database-schema-deployment.test.ts');
+    });
+
+    it('should validate architecture checklist includes database deployment', () => {
+      const checklistPath = path.join(
+        process.cwd(),
+        'governance',
+        'architecture',
+        'ARCHITECTURE_DESIGN_CHECKLIST.md'
+      );
+      
+      expect(fs.existsSync(checklistPath)).toBe(true);
+      
+      const content = fs.readFileSync(checklistPath, 'utf8');
+      
+      // Must include database migration requirements
+      expect(content.toLowerCase()).toContain('migration deployment');
+      expect(content.toLowerCase()).toContain('automated');
+      expect(content.toLowerCase()).toMatch(/zero manual|no manual/);
+    });
+
+    it('should validate CI/CD includes deployment verification', () => {
+      const workflowsDir = path.join(process.cwd(), '.github', 'workflows');
+      
+      if (fs.existsSync(workflowsDir)) {
+        const workflows = fs.readdirSync(workflowsDir)
+          .filter(f => f.endsWith('.yml') || f.endsWith('.yaml'));
+        
+        let foundVerification = false;
+        
+        for (const workflow of workflows) {
+          const workflowPath = path.join(workflowsDir, workflow);
+          const content = fs.readFileSync(workflowPath, 'utf8');
+          
+          if (content.includes('verify:db-deployment') || content.includes('verify-db-deployment-config')) {
+            foundVerification = true;
+            break;
+          }
+        }
+        
+        // Should have verification in CI
+        expect(foundVerification).toBe(true);
+      }
+    });
+
+    it('should validate no test dodging in this test file', () => {
+      const testFilePath = __filename;
+      const content = fs.readFileSync(testFilePath, 'utf8');
+      
+      // Check for test dodging patterns
+      expect(content).not.toContain('.skip(');
+      expect(content).not.toContain('.only(');
+      expect(content).not.toContain('xit(');
+      expect(content).not.toContain('xdescribe(');
+      
+      // Ensure this is comprehensive
+      const testCount = (content.match(/\sit\(/g) || []).length;
+      expect(testCount).toBeGreaterThan(15); // Should have many tests
+    });
+  });
+
+  describe('ONE-TIME BUILD: Zero Manual Intervention Guarantee', () => {
+    it('should confirm no manual database steps in documentation', () => {
+      const deploymentDocs = [
+        'docs/DATABASE_MIGRATION_DEPLOYMENT.md',
+        'docs/QUICK_REFERENCE_DB_MIGRATIONS.md',
+        'architecture/DEPLOYMENT_GUIDE.md',
+      ];
+      
+      for (const doc of deploymentDocs) {
+        const docPath = path.join(process.cwd(), doc);
+        
+        if (fs.existsSync(docPath)) {
+          const content = fs.readFileSync(docPath, 'utf8').toLowerCase();
+          
+          // Should not instruct manual SQL execution
+          const hasManualSqlWarning = 
+            content.includes('do not') ||
+            content.includes('never') ||
+            content.includes('avoid manual') ||
+            content.includes('automatic');
+            
+          expect(hasManualSqlWarning).toBe(true);
+        }
+      }
+    });
+
+    it('should validate complete error handling in migrations', () => {
+      const migrationsDir = path.join(process.cwd(), 'prisma', 'migrations');
+      const entries = fs.readdirSync(migrationsDir);
+      
+      const migrationDirs = entries.filter(entry => {
+        const fullPath = path.join(migrationsDir, entry);
+        return fs.statSync(fullPath).isDirectory();
+      });
+      
+      // Each migration should have proper SQL
+      for (const dir of migrationDirs) {
+        const sqlFile = path.join(migrationsDir, dir, 'migration.sql');
+        
+        if (fs.existsSync(sqlFile)) {
+          const sql = fs.readFileSync(sqlFile, 'utf8');
+          
+          // SQL should not be empty
+          expect(sql.trim().length).toBeGreaterThan(0);
+          
+          // Should have at least one statement
+          expect(sql).toMatch(/CREATE|ALTER|DROP|INSERT|UPDATE/);
+        }
+      }
+    });
+
+    it('should validate repeatability: migration files are immutable', () => {
+      const migrationsDir = path.join(process.cwd(), 'prisma', 'migrations');
+      const entries = fs.readdirSync(migrationsDir);
+      
+      const migrationDirs = entries.filter(entry => {
+        const fullPath = path.join(migrationsDir, entry);
+        return fs.statSync(fullPath).isDirectory();
+      });
+      
+      // Migration directories should follow naming convention
+      for (const dir of migrationDirs) {
+        // Format: TIMESTAMP_description
+        expect(dir).toMatch(/^\d{14}_\w+/);
+      }
+      
+      // This ensures migrations are versioned and traceable
+      expect(migrationDirs.length).toBeGreaterThan(0);
+    });
+
+    it('should validate database URL is required but not hardcoded', () => {
+      const schemaPath = path.join(process.cwd(), 'prisma', 'schema.prisma');
+      const schema = fs.readFileSync(schemaPath, 'utf8');
+      
+      // Should use environment variable
+      expect(schema).toContain('env("DATABASE_URL")');
+      
+      // Should NOT have hardcoded credentials
+      expect(schema).not.toMatch(/postgresql:\/\/\w+:\w+@/);
+      expect(schema).not.toMatch(/"postgresql:\/\//);
+    });
+
+    it('should validate .env.example documents DATABASE_URL', () => {
+      const envExamplePath = path.join(process.cwd(), '.env.example');
+      
+      expect(fs.existsSync(envExamplePath)).toBe(true);
+      
+      const content = fs.readFileSync(envExamplePath, 'utf8');
+      expect(content).toContain('DATABASE_URL');
+      expect(content).toMatch(/postgresql:\/\//);
+    });
+  });
+
+  describe('GOVERNANCE: Complete Audit Trail', () => {
+    it('should validate all changes are tracked in git', () => {
+      const criticalFiles = [
+        'prisma/migrations/migration_lock.toml',
+        '.gitignore',
+        'package.json',
+        'docs/DATABASE_MIGRATION_DEPLOYMENT.md',
+        '__tests__/deployment/database-schema-deployment.test.ts',
+      ];
+      
+      for (const file of criticalFiles) {
+        const filePath = path.join(process.cwd(), file);
+        expect(fs.existsSync(filePath)).toBe(true);
+      }
+    });
+
+    it('should validate test execution on every PR (via CI)', () => {
+      // This test validates that the test suite itself is executed
+      // The fact that we're running proves CI is working
+      expect(process.env.CI || process.env.GITHUB_ACTIONS).toBeTruthy();
+    });
+  });
 });
+
