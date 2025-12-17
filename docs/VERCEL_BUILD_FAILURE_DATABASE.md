@@ -9,6 +9,14 @@ Please make sure your database server is running.
 Error: Command "npm run build" exited with 1
 ```
 
+### Authentication Error (Invalid Credentials)
+```
+Error: P1000: Authentication failed against database server at `db.csfbqbumimomonkxlmoa.supabase.co`
+the provided database credentials for `postgres` are not valid.
+Error: Command "npm run build" exited with 1
+```
+**This error indicates wrong password or unencoded special characters. See Cause #5 below.**
+
 ### Authentication Error (Wrong Pooling Mode)
 ```
 Error: SASL authentication failed
@@ -135,9 +143,15 @@ Some Supabase projects require IP whitelisting.
 
 ---
 
-### 5️⃣  Password Contains Special Characters
+### 5️⃣  Password Contains Special Characters or Is Incorrect ⚠️ **COMMON**
 
-If your database password has special characters, they must be URL-encoded.
+**If you see "P1000: Authentication failed" error**, your password is likely wrong or contains unencoded special characters.
+
+**Error if password is incorrect**:
+```
+Error: P1000: Authentication failed against database server
+the provided database credentials for `postgres` are not valid
+```
 
 **Special characters that need encoding**:
 - `@` → `%40`
@@ -145,11 +159,36 @@ If your database password has special characters, they must be URL-encoded.
 - `$` → `%24`
 - `%` → `%25`
 - `&` → `%26`
+- `:` → `%3A` (if in password, not the separator)
+- `/` → `%2F` (if in password, not in path)
 
 **Solution**:
-1. Find your password in Supabase Dashboard → Settings → Database
-2. URL-encode special characters
-3. Update DATABASE_URL in Vercel with encoded password
+1. Go to Supabase Dashboard → Settings → Database
+2. **Find your password** (in the Connection String section)
+3. **Check for special characters** in the password
+4. If special characters exist, **URL-encode them**
+5. Rebuild the connection string:
+   ```
+   postgresql://postgres.[project]:[ENCODED_PASSWORD]@[host]:5432/postgres
+   ```
+6. Update DATABASE_URL in Vercel with the corrected connection string
+7. Redeploy
+
+**Example**:
+```bash
+# Original password: myP@ssw0rd!
+# Encoded password: myP%40ssw0rd!
+# Full URL:
+postgresql://postgres.abc:[URL-ENCODED-PASSWORD]@aws-0-us-east-1.pooler.supabase.com:5432/postgres
+```
+
+**Alternative - Reset Password**:
+If encoding doesn't work:
+1. Go to Supabase Dashboard → Settings → Database
+2. Click "Reset Database Password"
+3. Choose a password WITHOUT special characters
+4. Update DATABASE_URL in Vercel
+5. Redeploy
 
 ---
 
