@@ -80,8 +80,8 @@ describe('Page Routing - Route Configuration', () => {
     const validRoutes = Object.values(routes).filter(r => typeof r === 'string');
     
     navItems.forEach(item => {
-      // Check if the href matches any defined route or is /internal-transfer
-      const isValidRoute = validRoutes.includes(item.href) || item.href === '/internal-transfer';
+      // Check if the href matches any defined route
+      const isValidRoute = validRoutes.includes(item.href);
       
       if (!isValidRoute) {
         fail(`Navigation item "${item.name}" has href "${item.href}" which is not in centralized routes config`);

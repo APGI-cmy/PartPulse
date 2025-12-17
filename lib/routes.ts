@@ -46,7 +46,7 @@ export interface NavItem {
 
 export const navItems: NavItem[] = [
   { name: "Dashboard", href: routes.dashboard, icon: "🏠" },
-  { name: "Internal Transfer", href: '/internal-transfer', icon: "→" },
+  { name: "Internal Transfer", href: routes.internalTransfer, icon: "→" },
   { name: "Warranty Claims", href: routes.warrantyClaims, icon: "⚠" },
   { name: "Invite", href: routes.userInvite, icon: "✉", adminOnly: true },
   { name: "Reports", href: routes.reports, icon: "📊" },
