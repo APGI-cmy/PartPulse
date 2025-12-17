@@ -1,7 +1,7 @@
 # Next.js 16 Proxy Migration Summary
 
 ## Issue
-Vercel deployment failing with `404: DEPLOYMENT_NOT_FOUND` error when accessing `https://partpulse.vercel.app/auth/signin`
+Vercel deployment failing with `404: DEPLOYMENT_NOT_FOUND` error when accessing `https://part-pulse.vercel.app/auth/signin`
 
 ## Root Cause (Application Code)
 Next.js 16 deprecated the `middleware.ts` file convention in favor of `proxy.ts`. Vercel's deployment infrastructure expects the new convention for proper deployment detection and configuration.
@@ -103,7 +103,7 @@ SUPABASE_BUCKET="partpulse-files"
 
 # Authentication
 AUTH_SECRET="5JAY98Nnv05gnSaI4iZg3Uv3TkyRtMQCRYuJ1B2qxxM="
-NEXTAUTH_URL="https://partpulse.vercel.app"  # ⚠️ Update to match actual Vercel domain
+NEXTAUTH_URL="https://part-pulse.vercel.app"  # ⚠️ Update to match actual Vercel domain
 
 # Email
 EMAIL_PROVIDER="smtp"
@@ -115,7 +115,7 @@ EMAIL_FROM="PartPulse2025@gmail.com"
 ADMIN_EMAIL="PartPulse2025@gmail.com"
 
 # Application
-NEXT_PUBLIC_APP_URL="https://partpulse.vercel.app"  # ⚠️ Update to match actual Vercel domain
+NEXT_PUBLIC_APP_URL="https://part-pulse.vercel.app"  # ⚠️ Update to match actual Vercel domain
 PRIMARY_COLOR="#FF2B00"
 ```
 
@@ -124,7 +124,7 @@ PRIMARY_COLOR="#FF2B00"
 ### Before Migration
 - ❌ Vercel deployment failed with DEPLOYMENT_NOT_FOUND
 - ⚠️ Build showed middleware deprecation warning
-- ❌ App inaccessible at https://partpulse.vercel.app
+- ❌ App inaccessible at https://part-pulse.vercel.app
 
 ### After Migration
 - ✅ Vercel can properly detect Next.js 16 application
@@ -137,7 +137,7 @@ PRIMARY_COLOR="#FF2B00"
 2. Verify environment variables are set in Vercel dashboard
 3. Trigger new deployment (automatic on merge)
 4. Verify deployment succeeds
-5. Test authentication flow at https://partpulse.vercel.app/auth/signin
+5. Test authentication flow at https://part-pulse.vercel.app/auth/signin
 
 ## References
 - [Next.js 16 Proxy Documentation](https://nextjs.org/docs/app/getting-started/proxy)

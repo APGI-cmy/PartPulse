@@ -41,20 +41,20 @@ It occurs when:
 
 1. Go to **Vercel Dashboard** → **PartPulse Project** → **Settings** → **Domains**
 2. Confirm these settings:
-   - Domain: `partpulse.vercel.app`
+   - Domain: `part-pulse.vercel.app`
    - Status: **Active**
    - Branch: Points to `main` (or production branch)
    - Type: **Production**
 3. If the domain isn't configured correctly:
    - Remove any incorrect domain assignments
-   - Add `partpulse.vercel.app` as Production domain
+   - Add `part-pulse.vercel.app` as Production domain
    - Assign it to the `main` branch
 
 ### Step 3: Access Only Production URL
 
 **Always use:**
 ```
-https://partpulse.vercel.app
+https://part-pulse.vercel.app
 ```
 
 **NEVER use:**
@@ -83,10 +83,10 @@ If the above steps don't resolve the issue:
 After following the resolution steps, verify:
 
 - [ ] Latest build shows "Production" label in Vercel Dashboard
-- [ ] Production domain `partpulse.vercel.app` is configured and active
+- [ ] Production domain `part-pulse.vercel.app` is configured and active
 - [ ] Domain points to the correct branch (`main`)
-- [ ] Accessing `https://partpulse.vercel.app` returns the application (not 404)
-- [ ] Accessing `https://partpulse.vercel.app/auth/signin` shows the signin page
+- [ ] Accessing `https://part-pulse.vercel.app` returns the application (not 404)
+- [ ] Accessing `https://part-pulse.vercel.app/auth/signin` shows the signin page
 
 ---
 
@@ -135,8 +135,8 @@ These changes ensure Vercel **can** deploy the application. The DEPLOYMENT_NOT_F
 
 After following this guide and verifying Vercel dashboard configuration:
 
-✅ `https://partpulse.vercel.app` → Shows application home page
-✅ `https://partpulse.vercel.app/auth/signin` → Shows signin page
+✅ `https://part-pulse.vercel.app` → Shows application home page
+✅ `https://part-pulse.vercel.app/auth/signin` → Shows signin page
 ✅ All routes accessible via production alias
 ✅ No more DEPLOYMENT_NOT_FOUND errors
 

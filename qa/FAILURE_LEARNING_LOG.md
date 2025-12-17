@@ -16,7 +16,7 @@ This makes our QA suite progressively better, eliminating entire classes of erro
 **Date**: 2025-12-17  
 **Issue**: App deploying to 404 page
 **PR**: #88 (copilot/fix-signup-page-404-error)  
-**Symptom**: After successful merge and deployment, accessing `https://partpulse.vercel.app/auth/signin` showed:
+**Symptom**: After successful merge and deployment, accessing `https://part-pulse.vercel.app/auth/signin` showed:
 ```
 404: NOT_FOUND
 Code: DEPLOYMENT_NOT_FOUND

@@ -29,7 +29,7 @@ http://localhost:3000/api
 
 ### Production
 ```
-https://partpulse.vercel.app/api
+https://part-pulse.vercel.app/api
 ```
 
 ---
@@ -783,7 +783,7 @@ Access-Control-Allow-Credentials: true
 
 ### Production
 ```
-Access-Control-Allow-Origin: https://partpulse.vercel.app
+Access-Control-Allow-Origin: https://part-pulse.vercel.app
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
 Access-Control-Allow-Headers: Content-Type, Authorization
@@ -797,7 +797,7 @@ Access-Control-Allow-Headers: Content-Type, Authorization
 
 **Request**:
 ```bash
-curl -X POST https://partpulse.vercel.app/api/transfers \
+curl -X POST https://part-pulse.vercel.app/api/transfers \
   -H "Content-Type: application/json" \
   -H "Cookie: next-auth.session-token=..." \
   -d '{

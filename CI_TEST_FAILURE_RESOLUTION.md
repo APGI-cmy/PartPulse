@@ -144,4 +144,4 @@ All environment variables from `.env.example` are now properly configured in the
 2. ⚠️ Verify Vercel deployment configuration (see `VERCEL_DEPLOYMENT_NOT_FOUND_GUIDE.md`)
 3. ⚠️ Ensure production deployment is promoted in Vercel Dashboard
 4. ⚠️ Verify all environment variables are set in Vercel project settings
-5. ⚠️ Access application only via production URL: `https://partpulse.vercel.app`
+5. ⚠️ Access application only via production URL: `https://part-pulse.vercel.app`

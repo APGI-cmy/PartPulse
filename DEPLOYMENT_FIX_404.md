@@ -6,7 +6,7 @@ After deploying the app to Vercel, accessing any URL resulted in a 404 error pag
 - **Code:** DEPLOYMENT_NOT_FOUND
 - **ID:** cpt1::dnb86-1765950603785-464a17bf92bf
 
-The URL `https://partpulse.vercel.app/auth/signin` was showing the Vercel error page instead of the application.
+The URL `https://part-pulse.vercel.app/auth/signin` was showing the Vercel error page instead of the application.
 
 ## Root Cause
 Next.js 16 requires explicit output configuration when deploying to Vercel. Without the `output: 'standalone'` configuration in `next.config.ts`, Vercel cannot properly identify and serve the deployment, resulting in a "DEPLOYMENT_NOT_FOUND" error.

@@ -197,7 +197,7 @@ See [DEPLOYMENT.md](./docs/DEPLOYMENT.md) for comprehensive deployment instructi
 **Before deploying:**
 1. Go to Vercel Dashboard → Your Project → Settings → Environment Variables
 2. Add ALL required variables from `.env.example`
-3. **Critical:** Set `NEXTAUTH_URL` to your Vercel domain (e.g., `https://partpulse.vercel.app`)
+3. **Critical:** Set `NEXTAUTH_URL` to your Vercel domain (e.g., `https://part-pulse.vercel.app`)
 4. **Critical:** Set `DATABASE_URL` to your production database
 5. Generate new `AUTH_SECRET` with: `openssl rand -base64 32`
 
