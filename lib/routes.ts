@@ -9,22 +9,14 @@ export const routes = {
   // Main dashboard (home page)
   dashboard: '/',
   
-  // Parts management routes
-  parts: '/parts',
+  // Internal Transfer routes
+  internalTransfer: '/internal-transfer',
+  internalTransferSuccess: '/internal-transfer/success',
   
-  // Transfer routes
-  transfers: '/transfers',
-  transferDetail: (id: string | number) => `/transfers/${id}`,
-  transferSuccess: '/transfers/success',
-  
-  // Warranty routes
-  warranty: '/warranty',
+  // Warranty Claim routes
   warrantyClaims: '/warranty-claims',
   warrantyClaimDetail: (id: string | number) => `/warranty-claims/${id}`,
   warrantyClaimAdmin: (id: string | number) => `/warranty-claims/${id}/admin`,
-  
-  // Employee routes
-  employees: '/employees',
   
   // User management routes
   userInvite: '/users/invite',
@@ -54,12 +46,9 @@ export interface NavItem {
 
 export const navItems: NavItem[] = [
   { name: "Dashboard", href: routes.dashboard, icon: "🏠" },
-  { name: "Parts", href: routes.parts, icon: "📦" },
-  { name: "Transfers", href: routes.transfers, icon: "→" },
-  { name: "Warranty", href: routes.warranty, icon: "⚠" },
-  { name: "Employees", href: routes.employees, icon: "👥" },
+  { name: "Internal Transfer", href: '/internal-transfer', icon: "→" },
+  { name: "Warranty Claims", href: routes.warrantyClaims, icon: "⚠" },
   { name: "Invite", href: routes.userInvite, icon: "✉", adminOnly: true },
   { name: "Reports", href: routes.reports, icon: "📊" },
-  { name: "Settings", href: routes.settings, icon: "⚙", adminOnly: true },
   { name: "Admin Dashboard", href: routes.settingsAdmin, icon: "🔧", adminOnly: true },
 ];

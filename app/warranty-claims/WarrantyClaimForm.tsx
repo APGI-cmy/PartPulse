@@ -258,12 +258,12 @@ export default function WarrantyClaimForm() {
                   required
                 />
                 <Input
-                  label="Job Number / SSID #"
+                  label="SSID"
                   name="ssidJobNumber"
                   value={formData.ssidJobNumber}
                   onChange={handleChange}
                   error={errors.ssidJobNumber}
-                  placeholder="Enter job/SSID number"
+                  placeholder="Enter SSID number"
                   required
                 />
               </div>
@@ -274,7 +274,8 @@ export default function WarrantyClaimForm() {
                   value={formData.buildingName}
                   onChange={handleChange}
                   error={errors.buildingName}
-                  placeholder="Enter building name (optional)"
+                  placeholder="Enter building name"
+                  required
                 />
                 <Input
                   label="Site Name"
@@ -288,12 +289,12 @@ export default function WarrantyClaimForm() {
               </div>
               <div className="mt-4">
                 <Input
-                  label="Attended By (Technician Name)"
+                  label="Technician Name"
                   name="technicianName"
                   value={formData.technicianName}
                   onChange={handleChange}
                   error={errors.technicianName}
-                  placeholder="Enter technician name"
+                  placeholder="Auto-filled from profile"
                   required
                 />
               </div>
@@ -346,7 +347,7 @@ export default function WarrantyClaimForm() {
                         required
                       />
                       <Input
-                        label="Failed Part Serial"
+                        label="Failed Serial Number"
                         value={item.failedPartSerial}
                         onChange={(e) => handleItemChange(index, 'failedPartSerial', e.target.value)}
                         error={errors[`items.${index}.failedPartSerial`]}
@@ -356,7 +357,7 @@ export default function WarrantyClaimForm() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                       <Input
-                        label="Replaced Part Serial"
+                        label="Repair Serial Number"
                         value={item.replacedPartSerial}
                         onChange={(e) => handleItemChange(index, 'replacedPartSerial', e.target.value)}
                         error={errors[`items.${index}.replacedPartSerial`]}
