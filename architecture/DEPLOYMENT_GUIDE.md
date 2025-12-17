@@ -159,7 +159,7 @@ In Vercel dashboard, go to:
 **Critical Variables**:
 - `DATABASE_URL`
 - `AUTH_SECRET`
-- `NEXTAUTH_URL` (use Vercel domain: `https://partpulse.vercel.app`)
+- `NEXTAUTH_URL` (use Vercel domain: `https://part-pulse.vercel.app`)
 - `SMTP_*` variables
 - `STORAGE_*` variables
 

@@ -8,7 +8,7 @@
 ## Root Cause Analysis
 
 ### Symptom
-After successful merge and deployment to Vercel, accessing `https://partpulse.vercel.app/auth/signin` resulted in:
+After successful merge and deployment to Vercel, accessing `https://part-pulse.vercel.app/auth/signin` resulted in:
 ```
 404: NOT_FOUND
 Code: DEPLOYMENT_NOT_FOUND
@@ -93,7 +93,7 @@ cat next.config.ts | grep "output.*standalone"
 ### Deployment Verification
 After deployment to Vercel:
 ```bash
-curl https://partpulse.vercel.app/api/health
+curl https://part-pulse.vercel.app/api/health
 # ✅ Returns 200 OK with configuration status
 ```
 

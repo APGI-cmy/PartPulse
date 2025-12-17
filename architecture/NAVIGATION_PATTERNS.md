@@ -38,7 +38,7 @@ import Link from 'next/link';
 ```tsx
 // Never hard-code deployment URLs
 <Link href="https://partpulse-preview-123.vercel.app/internal-transfer">View Transfers</Link>
-<Link href="https://partpulse.vercel.app/warranty-claims">View Claims</Link>
+<Link href="https://part-pulse.vercel.app/warranty-claims">View Claims</Link>
 ```
 
 ---

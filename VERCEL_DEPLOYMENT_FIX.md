@@ -4,7 +4,7 @@
 After successful deployment, accessing the app shows:
 - **Error:** 404: NOT_FOUND
 - **Code:** DEPLOYMENT_NOT_FOUND
-- **URL:** `https://partpulse.vercel.app/auth/signin`
+- **URL:** `https://part-pulse.vercel.app/auth/signin`
 
 ## ✅ RESOLVED - Primary Root Cause
 
@@ -52,7 +52,7 @@ DATABASE_URL="postgresql://user:password@host:5432/database"
 #### 2. Authentication (Required)
 ```bash
 AUTH_SECRET="<generate-a-32+-character-random-string>"
-NEXTAUTH_URL="https://partpulse.vercel.app"
+NEXTAUTH_URL="https://part-pulse.vercel.app"
 ```
 
 **Generate AUTH_SECRET:**
@@ -86,7 +86,7 @@ SUPABASE_BUCKET="partpulse-files"
 
 #### 5. Application Settings
 ```bash
-NEXT_PUBLIC_APP_URL="https://partpulse.vercel.app"
+NEXT_PUBLIC_APP_URL="https://part-pulse.vercel.app"
 PRIMARY_COLOR="#FF2B00"
 ```
 
@@ -106,22 +106,22 @@ PRIMARY_COLOR="#FF2B00"
 3. **Test the Deployment**
    ```bash
    # Test root URL
-   curl -I https://partpulse.vercel.app
+   curl -I https://part-pulse.vercel.app
    
    # Should redirect to /auth/signin
-   curl -L https://partpulse.vercel.app
+   curl -L https://part-pulse.vercel.app
    
    # Test signin page directly
-   curl https://partpulse.vercel.app/auth/signin
+   curl https://part-pulse.vercel.app/auth/signin
    ```
 
 4. **Access in Browser**
-   - Visit: `https://partpulse.vercel.app`
-   - Should redirect to: `https://partpulse.vercel.app/auth/signin`
+   - Visit: `https://part-pulse.vercel.app`
+   - Should redirect to: `https://part-pulse.vercel.app/auth/signin`
    - Should see the signin page (not 404)
 
 5. **Create First Admin**
-   - Visit: `https://partpulse.vercel.app/auth/first-admin`
+   - Visit: `https://part-pulse.vercel.app/auth/first-admin`
    - Create your first admin account
    - Sign in and verify app functionality
 
