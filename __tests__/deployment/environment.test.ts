@@ -56,16 +56,18 @@ describe('Environment Configuration', () => {
     expect(process.env.DATABASE_URL).toBeDefined();
     const dbUrl = process.env.DATABASE_URL!;
     
-    // Validate URL matches provider
+    // Validate URL format matches provider
+    // This is a basic format check - Prisma will do full validation
     if (provider === 'postgresql') {
-      expect(dbUrl).toMatch(/^(postgresql|postgres):\/\//);
+      expect(dbUrl).toMatch(/^(postgresql|postgres):\/\/[^/]+\/\w+/);
     } else if (provider === 'sqlite') {
       expect(dbUrl).toMatch(/^file:/);
     } else if (provider === 'mysql') {
-      expect(dbUrl).toMatch(/^mysql:\/\//);
+      expect(dbUrl).toMatch(/^mysql:\/\/[^/]+\/\w+/);
     }
     
     // This test prevents: "the URL must start with the protocol postgresql:// or postgres://"
     // Ensures CI workflows set DATABASE_URL correctly for the schema provider
+    // Note: Full validation (credentials, connectivity) is handled by Prisma
   });
 });

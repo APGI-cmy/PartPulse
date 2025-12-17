@@ -13,7 +13,11 @@ module.exports = async () => {
 
   // Ensure DATABASE_URL is set for tests
   if (!process.env.DATABASE_URL) {
-    throw new Error('DATABASE_URL environment variable must be set for tests');
+    throw new Error(
+      'DATABASE_URL environment variable must be set for tests.\n' +
+      'For PostgreSQL (required by schema): DATABASE_URL="postgresql://user:pass@localhost:5432/dbname"\n' +
+      'Ensure the URL format matches the provider in prisma/schema.prisma'
+    );
   }
 
   console.log(`✓ Using DATABASE_URL: ${process.env.DATABASE_URL.replace(/:[^:@]+@/, ':****@')}`);

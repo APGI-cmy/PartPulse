@@ -44,7 +44,14 @@ async function main() {
   // Read existing log to get next failure number
   const logContent = fs.readFileSync(LOG_PATH, 'utf-8');
   const failureMatches = logContent.match(/## Failure #(\d+):/g) || [];
-  const nextNumber = failureMatches.length + 1;
+  
+  // Extract numbers and find the maximum
+  const failureNumbers = failureMatches.map(match => {
+    const num = match.match(/#(\d+):/);
+    return num ? parseInt(num[1]) : 0;
+  });
+  
+  const nextNumber = failureNumbers.length > 0 ? Math.max(...failureNumbers) + 1 : 1;
 
   console.log(`This will be logged as Failure #${nextNumber}\n`);
 
@@ -108,10 +115,12 @@ ${lessons}
 `;
 
   // Find the insertion point (before the template section)
-  const templateIndex = logContent.indexOf('## Template for Future Failures');
+  const TEMPLATE_MARKER = '## Template for Future Failures';
+  const templateIndex = logContent.indexOf(TEMPLATE_MARKER);
   
   if (templateIndex === -1) {
-    console.error('\n❌ Error: Could not find template section in log file');
+    console.error(`\n❌ Error: Could not find "${TEMPLATE_MARKER}" in log file`);
+    console.error('The log file structure may have changed.');
     rl.close();
     return;
   }
