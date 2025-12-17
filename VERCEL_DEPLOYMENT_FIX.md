@@ -114,6 +114,32 @@ PRIMARY_COLOR="#FF2B00"
 
 ## Common Issues & Solutions
 
+### Issue: "DEPLOYMENT_NOT_FOUND" Error
+**This is the exact error from the issue!**
+
+**Root Cause:** You're accessing an old, deleted, or incorrect deployment URL.
+
+**Solution:** Get the correct deployment URL from Vercel Dashboard
+1. Go to: **Vercel Dashboard → Your Project → Deployments**
+2. Click on the **latest "Production" deployment** (should have a green checkmark)
+3. Copy the **actual deployment URL** shown at the top
+4. Access that URL (it might be different from what you expect!)
+
+**Common scenarios:**
+- Previous deployments get deleted when new ones are created
+- The domain might have changed
+- You might be accessing a preview/branch URL instead of production
+- Custom domain might not be properly connected
+
+**How to verify the correct URL:**
+```bash
+# Check current production deployment
+vercel ls --prod
+
+# Get the domain of your project
+vercel domains ls
+```
+
 ### Issue: Still Getting 404 After Setting Variables
 **Solution:** The deployment might be using a different URL
 - Check Vercel Dashboard for the actual deployment URL
