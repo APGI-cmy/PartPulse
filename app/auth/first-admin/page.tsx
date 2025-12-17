@@ -160,7 +160,7 @@ export default function FirstAdminSetup() {
           <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded">
             <p className="text-sm text-blue-800">
               <strong>Welcome!</strong> This is a one-time setup to create the first administrator account. 
-              After this, you'll be able to invite other users (admins and technicians) from the admin dashboard.
+              After this, you&apos;ll be able to invite other users (admins and technicians) from the admin dashboard.
             </p>
           </div>
 

@@ -36,6 +36,7 @@ export default auth((req) => {
 
 export const config = {
   matcher: [
+    "/",
     "/internal-transfer/:path*",
     "/warranty-claims/:path*",
     "/reports/:path*",

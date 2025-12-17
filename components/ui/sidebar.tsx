@@ -3,15 +3,21 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 import { navItems } from "@/lib/routes";
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  // For MVP, hardcoding user role. Will be replaced with actual auth
-  const userRole = "ADMIN"; // or "TECHNICIAN"
+  const userRole = session?.user?.role?.toUpperCase() || "TECHNICIAN";
+
+  // Hide sidebar on auth pages
+  if (pathname.startsWith("/auth/")) {
+    return null;
+  }
 
   return (
     <>
@@ -99,19 +105,23 @@ export default function Sidebar() {
         <div className="p-4 border-t border-gray-800">
           {!isCollapsed ? (
             <div className="mb-3">
-              <p className="text-sm font-medium text-white">Admin User</p>
-              <p className="text-xs text-gray-400">admin@partpulse.com</p>
+              <p className="text-sm font-medium text-white">
+                {session?.user?.name || "User"}
+              </p>
+              <p className="text-xs text-gray-400">
+                {session?.user?.email || ""}
+              </p>
             </div>
           ) : (
             <div className="mb-3 flex justify-center">
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-sm font-bold">
-                A
+                {session?.user?.name?.charAt(0).toUpperCase() || "U"}
               </div>
             </div>
           )}
           <button
             className="w-full px-3 py-2 text-sm bg-gray-800 hover:bg-gray-700 rounded transition-colors"
-            onClick={() => alert("Logout functionality will be implemented with NextAuth")}
+            onClick={() => signOut({ callbackUrl: "/auth/signin" })}
           >
             {isCollapsed ? "↪" : "Logout"}
           </button>

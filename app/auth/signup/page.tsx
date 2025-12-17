@@ -22,27 +22,31 @@ function SignupForm() {
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!token) {
-      setError("Invalid or missing invitation token");
-      setLoading(false);
-      return;
-    }
+    // Use an async function inside useEffect to properly handle the flow
+    const verifyToken = async () => {
+      if (!token) {
+        setError("Invalid or missing invitation token");
+        setLoading(false);
+        return;
+      }
 
-    // Verify invitation token
-    fetch(`/api/auth/verify-invitation?token=${token}`)
-      .then((res) => res.json())
-      .then((data) => {
+      try {
+        const res = await fetch(`/api/auth/verify-invitation?token=${token}`);
+        const data = await res.json();
+        
         if (data.error) {
           setError(data.error);
         } else {
           setInvitation(data.invitation);
         }
-        setLoading(false);
-      })
-      .catch(() => {
+      } catch {
         setError("Failed to verify invitation");
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    verifyToken();
   }, [token]);
 
   const validatePassword = (pwd: string): string[] => {
