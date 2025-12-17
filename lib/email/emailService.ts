@@ -21,14 +21,9 @@ export interface EmailOptions {
 /**
  * Get or create SMTP transporter
  * Uses Gmail SMTP with credentials from environment variables
+ * Creates a new transporter instance to avoid shared state issues
  */
-let transporterInstance: Transporter | null = null;
-
 function getTransporter(): Transporter {
-  if (transporterInstance) {
-    return transporterInstance;
-  }
-
   const smtpHost = process.env.SMTP_HOST;
   const smtpPort = process.env.SMTP_PORT;
   const smtpUser = process.env.SMTP_USER;
@@ -39,7 +34,7 @@ function getTransporter(): Transporter {
     throw new Error('SMTP configuration incomplete');
   }
 
-  transporterInstance = nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     host: smtpHost,
     port: parseInt(smtpPort, 10),
     secure: false, // Use STARTTLS
@@ -50,7 +45,7 @@ function getTransporter(): Transporter {
   });
 
   console.log('[EMAIL] SMTP transporter configured:', smtpHost);
-  return transporterInstance;
+  return transporter;
 }
 
 /**
