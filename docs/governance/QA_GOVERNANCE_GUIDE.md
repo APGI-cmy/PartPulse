@@ -1,103 +1,32 @@
 # QA/Governance Compliance Guide
 
-## Overview
+## Canonical Governance Document
 
-PartPulse implements comprehensive QA and governance compliance per the ForemanApp Agent Contract. This document explains the mechanisms, workflows, and policies that enforce governance.
+**This document is governed by Foreman Governance. The canonical version is located at:**
 
----
-
-## Core Principles
-
-### 1. No Test Dodging
-- All tests must run, always
-- No `.skip()`, `.only()`, or disabled tests
-- Violations trigger governance failure
-- Use QA Parking for legitimate exceptions
-
-### 2. Build-to-GREEN
-- All CI checks must pass before merge
-- RED states block merge absolutely
-- Fix-to-GREEN or governed exception only
-- No explanations, only elimination
-
-### 3. One-Time Failures
-- Failures occur once, prevention forever
-- Root cause analysis mandatory
-- QA strengthened to detect permanently
-- Lessons propagated across repos
-
-### 4. Governed RED States
-
-- QA Parking for intentional RED
-- Must be approved, tracked, time-bound
-- Visible and auditable
-- Cannot be forgotten
-
-**DP-RED (Design-Phase RED)**
-- Special category for design-phase RED states
-- Used during architecture/design exploration
-- Tests written before implementation (TDD)
-- Must be resolved before implementation begins
+**https://github.com/MaturionISMS/maturion-foreman-governance/blob/main/policies/QA_GOVERNANCE_GUIDE.md**
 
 ---
 
-## Mechanisms
+## Purpose
 
-### Test Dodging Detection
+This pointer redirects to the canonical QA and Governance Compliance Guide maintained in the Foreman Governance repository. All governance policies, principles, and mechanisms are defined centrally to ensure consistency across all governed applications in the Maturion ecosystem.
 
-**Script**: `qa/detect-test-dodging.js`
+## Local Implementation
 
-Detects forbidden patterns:
-- `.skip()` and `.only()` on tests
-- `xdescribe`, `xit`, `xtest` patterns
-- Commented-out tests
-- Conditional test skipping
+For PartPulse-specific implementation details, governance status, and builder-level artifacts, see:
+- [IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md) - PartPulse governance implementation
+- [/GOVERNANCE_STATUS.md](../../GOVERNANCE_STATUS.md) - Current governance status
+- [/.github/agents/PartPulse-agent.md](../../.github/agents/PartPulse-agent.md) - Builder agent contract
 
-**Usage**:
-```bash
-node qa/detect-test-dodging.js
-npm run qa:check
-```
+## Builder-Level Tools
 
-**CI Integration**: Runs on every push/PR
-
-### QA Parking Station
-
-**Registry**: `qa/parking/registry.json`  
-**Watcher**: `qa/parking/watcher.js`
-
-Tracks governed RED states with:
-- Unique ID (PARK-XXX for parking, DPRED-XXX for DP-RED)
-- Category (parking or dp-red)
-- Type (test, build, lint, security, design, architecture, other)
-- Justification
-- Expiry condition
-- Approval (repo owner required)
-- Tracking issue
-
-**Two Categories of Governed RED:**
-
-1. **QA Parking (PARK-XXX)** - Implementation-phase RED states
-   - Test failures that cannot be fixed immediately
-   - Build issues requiring external fixes
-   - Lint violations needing refactoring
-   - Security findings requiring time
-
-2. **Design-Phase RED (DPRED-XXX)** - Design-phase RED states
-   - Architecture decisions being validated
-   - Tests written before implementation (TDD)
-   - Requirements exploration
-   - Design alternatives evaluation
-
-**Adding Parking**:
-1. Create QA Parking Request issue
-2. Owner reviews and approves
-3. Add entry to registry.json
-4. Link issue in registry
-5. Monitor via watcher
-
-**Registry Entry Example (QA Parking)**:
-```json
+PartPulse implements the canonical governance policies using these builder-level tools:
+- `/qa/detect-test-dodging.js` - Test dodging detection
+- `/qa/parking/` - QA parking registry and watcher
+- `/qa/evidence/` - Evidence capture system
+- `/qa/governance/sync-checker.js` - Governance synchronization
+- `/.github/workflows/qa-enforcement.yml` - CI enforcement
 {
   "id": "PARK-001",
   "category": "parking",
