@@ -100,17 +100,31 @@ export async function POST(req: NextRequest) {
       },
     })
   } catch (error) {
+    // Enhanced logging to surface exact Prisma error
     console.error("Error creating first admin:", error)
+    console.error("Error details:", {
+      name: error instanceof Error ? error.name : "Unknown",
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      raw: error,
+    })
+    
+    const errorMessage = error instanceof Error ? error.message : "Unknown error"
     
     await logUserManagement({
       action: "first_admin_created",
       success: false,
-      errorMessage: error instanceof Error ? error.message : "Unknown error",
+      errorMessage,
       request: req,
     })
 
+    // Return detailed error in development, generic in production
+    const isDevelopment = process.env.NODE_ENV === "development"
     return NextResponse.json(
-      { error: "Failed to create admin account" },
+      { 
+        error: "Failed to create admin account",
+        ...(isDevelopment && { details: errorMessage })
+      },
       { status: 500 }
     )
   }
