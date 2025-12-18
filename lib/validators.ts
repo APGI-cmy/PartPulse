@@ -5,31 +5,35 @@ import { z } from 'zod';
 
 /**
  * Internal Transfer Item validation schema
+ * Matches Prisma schema: InternalTransferItem model
  */
 export const InternalTransferItemSchema = z.object({
-  quantity: z.number().min(1, 'Quantity must be at least 1'),
+  qty: z.number().int().min(1, 'Quantity must be at least 1'),
   partNo: z.string().min(1, 'Part number is required'),
   description: z.string().min(1, 'Description is required'),
 });
 
 /**
  * Internal Transfer validation schema
+ * Matches Prisma schema: InternalTransfer model
+ * Frontend submits: date, technicianName, ssid/psid, items
  */
 export const InternalTransferSchema = z.object({
-  technician: z.string().min(1, 'Technician name is required'),
-  department: z.string().min(1, 'Department is required'),
-  transferType: z.string().min(1, 'Transfer type is required'),
-  serial: z.string().min(1, 'Serial number is required'),
-  model: z.string().min(1, 'Model number is required'),
-  part: z.string().min(1, 'Part number is required'),
-  description: z.string().min(1, 'Description is required'),
-  reason: z.string().min(1, 'Reason for removal is required'),
-  newUnit: z.string().optional(),
-  comments: z.string().optional(),
-  images: z.array(z.string()).optional(),
-  signature: z.string().optional(),
-  items: z.array(InternalTransferItemSchema).optional(),
-  createdAt: z.date().optional(),
+  date: z.string().refine((val) => !isNaN(Date.parse(val)), {
+    message: 'Invalid date format',
+  }).transform((val) => new Date(val)),
+  technicianName: z.string().min(1, 'Technician name is required'),
+  ssid: z.string().optional(),
+  psid: z.string().optional(),
+  siteName: z.string().optional(),
+  poNumber: z.string().optional(),
+  clientName: z.string().optional(),
+  clientDate: z.string().optional().transform((val) => val ? new Date(val) : undefined),
+  clientSignature: z.string().optional(),
+  items: z.array(InternalTransferItemSchema).min(1, 'At least one item is required'),
+}).refine((data) => data.ssid || data.psid, {
+  message: 'Either SSID or PSID must be provided',
+  path: ['ssid'],
 });
 
 export type InternalTransferInput = z.infer<typeof InternalTransferSchema>;
