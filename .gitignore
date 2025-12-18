@@ -48,7 +48,8 @@ next-env.d.ts
 *.sqlite
 *.sqlite-journal
 .ci-test-db.sqlite
-prisma/migrations
+# Note: prisma/migrations MUST be committed for production deployments
+# Only ignore local development database files
 /storage/
 
 # QA evidence - track structure but not all evidence files
