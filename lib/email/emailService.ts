@@ -76,7 +76,7 @@ export async function sendEmail(
 ): Promise<{ success: boolean; messageId?: string; error?: string }> {
   // CI Architecture Guard: Never attempt real SMTP in test/CI environments
   if (isEmailDisabled()) {
-    const stubMessageId = `stub-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const stubMessageId = `stub-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
     console.log(`[EMAIL] Email disabled in ${process.env.NODE_ENV || 'test'} mode. Stub message ID: ${stubMessageId}`);
     console.log(`[EMAIL] Would send to: ${Array.isArray(options.to) ? options.to.join(', ') : options.to}`);
     console.log(`[EMAIL] Subject: ${options.subject}`);
