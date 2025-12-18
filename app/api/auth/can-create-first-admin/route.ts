@@ -3,14 +3,20 @@ import prisma from "@/lib/prisma"
 
 export async function GET() {
   try {
+    console.log("[first-admin] Checking if first admin can be created...")
+    
     // Check if any admin users exist
     const adminCount = await prisma.user.count({
       where: { role: "admin" },
     })
+    console.log(`[first-admin] Current admin count: ${adminCount}`)
 
     // Can only create first admin if no admins exist
+    const canCreate = adminCount === 0
+    console.log(`[first-admin] Can create first admin: ${canCreate}`)
+    
     return NextResponse.json({
-      canCreate: adminCount === 0,
+      canCreate,
     })
   } catch (error) {
     // Enhanced logging to surface exact Prisma error
