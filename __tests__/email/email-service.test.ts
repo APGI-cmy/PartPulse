@@ -11,7 +11,7 @@ jest.mock('nodemailer', () => ({
   createTransport: jest.fn(() => ({
     verify: jest.fn().mockResolvedValue(true),
     sendMail: jest.fn().mockResolvedValue({
-      messageId: 'mock-message-id-' + Date.now(),
+      messageId: 'mock-message-id-12345',
       accepted: ['test@example.com'],
       rejected: [],
       response: '250 OK',
