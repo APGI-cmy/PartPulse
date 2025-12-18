@@ -53,16 +53,23 @@ export function sanitizeString(input: string): string {
 /**
  * Sanitize an object with string values
  * Recursively handles nested objects and arrays
+ * Preserves Date objects, null, undefined, and primitive types
  */
 export function sanitizeObject<T extends Record<string, unknown>>(obj: T): T {
   const sanitized: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(obj)) {
     if (typeof value === 'string') {
       sanitized[key] = sanitizeString(value);
+    } else if (value instanceof Date) {
+      // Preserve Date objects - do not recursively sanitize
+      sanitized[key] = value;
     } else if (Array.isArray(value)) {
       sanitized[key] = value.map(item => {
         if (typeof item === 'string') {
           return sanitizeString(item);
+        } else if (item instanceof Date) {
+          // Preserve Date objects in arrays
+          return item;
         } else if (typeof item === 'object' && item !== null) {
           return sanitizeObject(item as Record<string, unknown>);
         }
