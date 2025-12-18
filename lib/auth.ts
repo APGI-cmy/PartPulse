@@ -2,6 +2,7 @@ import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import prisma from "./prisma"
 import bcrypt from "bcryptjs"
+import { logAuthEvent } from "./logging/systemLog"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -56,6 +57,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.role = user.role
         token.id = user.id
         token.iat = Math.floor(Date.now() / 1000) // Issue time
+        
+        // Log successful login
+        logAuthEvent({
+          action: "login",
+          userId: user.id,
+          userName: user.name || undefined,
+          email: user.email || undefined,
+          success: true,
+        }).catch(err => console.error("Failed to log login event:", err));
       }
       return token
     },
