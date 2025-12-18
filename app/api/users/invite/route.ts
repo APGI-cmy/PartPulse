@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import prisma from "@/lib/prisma"
 import { sanitizeObject } from "@/lib/validators"
-import { logUserManagement } from "@/lib/logging/systemLog"
+import { logUserManagement, logEvent } from "@/lib/logging/systemLog"
+import { sendInvitationEmail } from "@/lib/email/sendInvitationEmail"
 import crypto from "crypto"
 
 export async function POST(req: NextRequest) {
@@ -102,20 +103,93 @@ export async function POST(req: NextRequest) {
     }
     const invitationUrl = `${baseUrl}/auth/signup?token=${invitationToken}`
 
-    // TODO: Send email with invitation link
-    // For now, return the invitation URL in the response
-    return NextResponse.json({
-      success: true,
-      invitation: {
-        id: invitation.id,
+    // Log email queued
+    await logEvent({
+      eventType: "user_management",
+      action: "invitation_email_queued",
+      userId: session.user.id,
+      userName: session.user.name || session.user.email,
+      details: {
+        targetEmail: invitation.email,
+        targetName: invitation.name,
+        role: invitation.role,
+      },
+    });
+
+    // Send invitation email
+    try {
+      const emailResult = await sendInvitationEmail({
         email: invitation.email,
         name: invitation.name,
         role: invitation.role,
+        invitationUrl,
         expiresAt: invitation.expires,
-      },
-      invitationUrl,
-      message: "User invited successfully. In production, an email would be sent with the invitation link.",
-    })
+        invitedBy: session.user.name || session.user.email,
+      });
+
+      // Log email sent/failed
+      await logEvent({
+        eventType: "user_management",
+        action: emailResult.success ? "invitation_email_sent" : "invitation_email_failed",
+        userId: session.user.id,
+        userName: session.user.name || session.user.email,
+        details: {
+          targetEmail: invitation.email,
+          targetName: invitation.name,
+          messageId: emailResult.messageId,
+        },
+        success: emailResult.success,
+        errorMessage: emailResult.error,
+      });
+
+      // Return success response
+      return NextResponse.json({
+        success: true,
+        invitation: {
+          id: invitation.id,
+          email: invitation.email,
+          name: invitation.name,
+          role: invitation.role,
+          expiresAt: invitation.expires,
+        },
+        invitationUrl: emailResult.success ? undefined : invitationUrl, // Only return URL if email failed
+        message: emailResult.success 
+          ? "User invited successfully. An invitation email has been sent."
+          : `User invited, but email delivery failed: ${emailResult.error}. Please share this invitation link manually: ${invitationUrl}`,
+        emailSent: emailResult.success,
+      });
+    } catch (emailError) {
+      console.error("Error sending invitation email:", emailError);
+      
+      // Log email error
+      await logEvent({
+        eventType: "user_management",
+        action: "invitation_email_failed",
+        userId: session.user.id,
+        userName: session.user.name || session.user.email,
+        details: {
+          targetEmail: invitation.email,
+          targetName: invitation.name,
+        },
+        success: false,
+        errorMessage: emailError instanceof Error ? emailError.message : "Unknown error",
+      });
+
+      // Return success with warning about email failure
+      return NextResponse.json({
+        success: true,
+        invitation: {
+          id: invitation.id,
+          email: invitation.email,
+          name: invitation.name,
+          role: invitation.role,
+          expiresAt: invitation.expires,
+        },
+        invitationUrl, // Return URL for manual sharing
+        message: `User invited, but email delivery failed. Please share this invitation link manually: ${invitationUrl}`,
+        emailSent: false,
+      });
+    }
   } catch (error) {
     console.error("Error inviting user:", error)
     

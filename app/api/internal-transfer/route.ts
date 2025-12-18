@@ -5,10 +5,44 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { InternalTransferSchema, sanitizeObject } from '@/lib/validators';
-import { saveInternalTransfer, updateInternalTransfer, getAllInternalTransfers } from '@/lib/db/schema';
+import { auth } from '@/lib/auth';
+import prisma from '@/lib/prisma';
 import { generateInternalTransferPDF, savePDF } from '@/lib/pdf/internalTransferPdf';
 import { sendInternalTransferReceipt } from '@/lib/email/sendInternalTransferReceipt';
-import { logInternalTransferSubmission, logPdfGeneration } from '@/lib/logging/systemLog';
+import { logInternalTransferSubmission, logPdfGeneration, logEvent } from '@/lib/logging/systemLog';
+import type { InternalTransfer } from '@/lib/db/schema';
+
+/**
+ * Adapter: Convert Prisma InternalTransfer to legacy format for PDF/Email
+ */
+const DEFAULT_DEPARTMENT = 'Unknown';
+const DEFAULT_TRANSFER_TYPE = 'Internal';
+
+function adaptTransferForPdfEmail(prismaTransfer: any): InternalTransfer {
+  return {
+    id: prismaTransfer.id,
+    technician: prismaTransfer.technician.name || prismaTransfer.technician.email,
+    department: prismaTransfer.siteName || DEFAULT_DEPARTMENT,
+    transferType: DEFAULT_TRANSFER_TYPE,
+    serial: prismaTransfer.ssid || '',
+    model: '',
+    part: prismaTransfer.items[0]?.partNo || '',
+    description: prismaTransfer.items[0]?.description || '',
+    reason: '',
+    newUnit: '',
+    comments: '',
+    images: [],
+    signature: prismaTransfer.clientSignature || undefined,
+    items: prismaTransfer.items.map((item: any) => ({
+      quantity: item.qty,
+      partNo: item.partNo,
+      description: item.description,
+    })),
+    status: 'submitted',
+    pdfPath: prismaTransfer.pdfPath || undefined,
+    createdAt: prismaTransfer.createdAt,
+  };
+}
 
 /**
  * POST /api/internal-transfer
@@ -16,6 +50,36 @@ import { logInternalTransferSubmission, logPdfGeneration } from '@/lib/logging/s
  */
 export async function POST(request: NextRequest) {
   try {
+    // Check authentication
+    const session = await auth();
+    
+    if (!session?.user) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: 'UNAUTHORIZED',
+            message: 'Authentication required',
+          },
+        },
+        { status: 401 }
+      );
+    }
+
+    // Admin and Technician roles can submit transfers
+    if (session.user.role !== 'admin' && session.user.role !== 'technician') {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: 'FORBIDDEN',
+            message: 'Only admins and technicians can submit transfers',
+          },
+        },
+        { status: 403 }
+      );
+    }
+    
     // Parse request body
     const body = await request.json();
     
@@ -23,6 +87,8 @@ export async function POST(request: NextRequest) {
     const validationResult = InternalTransferSchema.safeParse(body);
     
     if (!validationResult.success) {
+      console.error('[INTERNAL_TRANSFER] Validation failed:', validationResult.error.flatten());
+      
       return NextResponse.json(
         {
           success: false,
@@ -39,36 +105,63 @@ export async function POST(request: NextRequest) {
     // Sanitize input to prevent XSS attacks
     const sanitizedData = sanitizeObject(validationResult.data);
     
-    // Security: In production, validate organization_id header
-    // const orgId = request.headers.get('organization_id');
-    // if (!orgId) {
-    //   return NextResponse.json(
-    //     { success: false, error: { code: 'UNAUTHORIZED', message: 'Missing organization ID' } },
-    //     { status: 401 }
-    //   );
-    // }
-    
-    // Save to database (currently in-memory, will be Prisma in production)
-    let transfer = await saveInternalTransfer(sanitizedData);
+    // Save to database using Prisma
+    const transfer = await prisma.internalTransfer.create({
+      data: {
+        date: sanitizedData.date,
+        ssid: sanitizedData.ssid || null,
+        siteName: sanitizedData.siteName || null,
+        poNumber: sanitizedData.poNumber || null,
+        technicianId: session.user.id,
+        clientName: sanitizedData.clientName || null,
+        clientDate: sanitizedData.clientDate || null,
+        clientSignature: sanitizedData.clientSignature || null,
+        items: {
+          create: sanitizedData.items.map((item: any) => ({
+            qty: item.qty,
+            partNo: item.partNo,
+            description: item.description,
+          })),
+        },
+      },
+      include: {
+        items: true,
+        technician: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+          },
+        },
+      },
+    });
     
     // Log submission
     await logInternalTransferSubmission({
       transferId: transfer.id,
+      userId: session.user.id,
+      userName: session.user.name || session.user.email,
       success: true,
       request,
     });
     
     // Generate and save PDF
     let pdfContent: Buffer | undefined;
+    let pdfPath: string | undefined;
     try {
-      pdfContent = await generateInternalTransferPDF(transfer);
+      // Adapt transfer for PDF generation
+      const adaptedTransfer = adaptTransferForPdfEmail(transfer);
+      pdfContent = await generateInternalTransferPDF(adaptedTransfer);
       const pdfResult = await savePDF(pdfContent, `transfer-${transfer.id}.pdf`);
       if (pdfResult.success && pdfResult.path) {
-        // Update transfer with PDF path
-        const updated = await updateInternalTransfer(transfer.id, { pdfPath: pdfResult.path });
-        if (updated) {
-          transfer = updated;
-        }
+        pdfPath = pdfResult.path;
+        
+        // Update transfer with PDF path (no need to reassign, just update DB)
+        await prisma.internalTransfer.update({
+          where: { id: transfer.id },
+          data: { pdfPath: pdfResult.path },
+        });
         
         // Log successful PDF generation
         await logPdfGeneration({
@@ -76,6 +169,19 @@ export async function POST(request: NextRequest) {
           entityType: 'internal_transfer',
           pdfPath: pdfResult.path,
           success: true,
+        });
+        
+        // Log email event (queued)
+        await logEvent({
+          eventType: 'submission',
+          action: 'email_queued',
+          userId: session.user.id,
+          userName: session.user.name || session.user.email,
+          details: {
+            entityType: 'internal_transfer',
+            entityId: transfer.id,
+            emailType: 'transfer_receipt',
+          },
         });
       }
     } catch (pdfError) {
@@ -91,17 +197,52 @@ export async function POST(request: NextRequest) {
     
     // Send email notification
     try {
-      await sendInternalTransferReceipt(transfer, pdfContent);
+      // Adapt transfer for email
+      const adaptedTransfer = adaptTransferForPdfEmail(transfer);
+      const emailResult = await sendInternalTransferReceipt(adaptedTransfer, pdfContent);
+      
+      // Log email sent/failed
+      await logEvent({
+        eventType: 'submission',
+        action: emailResult.success ? 'email_sent' : 'email_failed',
+        userId: session.user.id,
+        userName: session.user.name || session.user.email,
+        details: {
+          entityType: 'internal_transfer',
+          entityId: transfer.id,
+          emailType: 'transfer_receipt',
+          messageId: emailResult.messageId,
+        },
+        success: emailResult.success,
+        errorMessage: emailResult.error,
+      });
     } catch (emailError) {
       // Log email error but don't fail the request
       console.error('Email notification failed:', emailError);
+      
+      await logEvent({
+        eventType: 'submission',
+        action: 'email_failed',
+        userId: session.user.id,
+        userName: session.user.name || session.user.email,
+        details: {
+          entityType: 'internal_transfer',
+          entityId: transfer.id,
+          emailType: 'transfer_receipt',
+        },
+        success: false,
+        errorMessage: emailError instanceof Error ? emailError.message : 'Unknown error',
+      });
     }
     
     // Return success response
     return NextResponse.json(
       {
         success: true,
-        data: transfer,
+        data: {
+          ...transfer,
+          pdfPath,
+        },
         message: 'Internal transfer created successfully',
       },
       { status: 201 }
@@ -110,19 +251,26 @@ export async function POST(request: NextRequest) {
     console.error('Error creating internal transfer:', error);
     
     // Log failed submission
-    await logInternalTransferSubmission({
-      transferId: 'unknown',
-      success: false,
-      errorMessage: error instanceof Error ? error.message : 'Unknown error',
-      request,
-    });
+    try {
+      const session = await auth();
+      await logInternalTransferSubmission({
+        transferId: 'unknown',
+        userId: session?.user?.id,
+        userName: session?.user?.name || session?.user?.email,
+        success: false,
+        errorMessage: error instanceof Error ? error.message : 'Unknown error',
+        request,
+      });
+    } catch (logError) {
+      console.error('Failed to log error:', logError);
+    }
     
     return NextResponse.json(
       {
         success: false,
         error: {
           code: 'INTERNAL_ERROR',
-          message: 'An unexpected error occurred',
+          message: error instanceof Error ? error.message : 'An unexpected error occurred',
         },
       },
       { status: 500 }
@@ -136,16 +284,33 @@ export async function POST(request: NextRequest) {
  */
 export async function GET() {
   try {
-    // In production, filter by user role and organization
-    // const session = await getServerSession(authOptions);
-    // if (!session) {
-    //   return NextResponse.json(
-    //     { success: false, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } },
-    //     { status: 401 }
-    //   );
-    // }
+    // Check authentication
+    const session = await auth();
     
-    const transfers = await getAllInternalTransfers();
+    if (!session?.user) {
+      return NextResponse.json(
+        { success: false, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } },
+        { status: 401 }
+      );
+    }
+    
+    // Fetch transfers from Prisma
+    const transfers = await prisma.internalTransfer.findMany({
+      include: {
+        items: true,
+        technician: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
     
     return NextResponse.json(
       {

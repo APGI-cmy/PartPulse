@@ -42,7 +42,7 @@ function getTechnicianEmail(technician: string): string {
 export async function sendInternalTransferReceipt(
   transfer: InternalTransfer,
   pdfContent?: Buffer | string
-): Promise<{ success: boolean; messageId?: string }> {
+): Promise<{ success: boolean; messageId?: string; error?: string }> {
   console.log('[EMAIL] Sending Internal Transfer Receipt');
   console.log('[EMAIL] Transfer ID:', transfer.id);
   console.log('[EMAIL] Technician:', transfer.technician);
