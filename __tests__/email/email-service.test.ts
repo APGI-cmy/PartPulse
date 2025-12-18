@@ -6,6 +6,19 @@
  * @jest-environment node
  */
 
+// Mock nodemailer to prevent actual SMTP connections during tests
+jest.mock('nodemailer', () => ({
+  createTransport: jest.fn(() => ({
+    verify: jest.fn().mockResolvedValue(true),
+    sendMail: jest.fn().mockResolvedValue({
+      messageId: 'mock-message-id-' + Date.now(),
+      accepted: ['test@example.com'],
+      rejected: [],
+      response: '250 OK',
+    }),
+  })),
+}));
+
 import { sendEmail, verifyEmailConfig } from '@/lib/email/emailService';
 
 describe('Email Service', () => {
