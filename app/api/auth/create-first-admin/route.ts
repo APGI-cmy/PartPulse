@@ -114,7 +114,8 @@ export async function POST(req: NextRequest) {
     })
   } catch (error) {
     // Enhanced logging to surface exact Prisma error
-    console.error("Error creating first admin:", error)
+    // Log structured error details for debugging without exposing sensitive info
+    console.error("[first-admin] Error creating first admin")
     console.error("Error details:", {
       name: error instanceof Error ? error.name : "Unknown",
       message: error instanceof Error ? error.message : String(error),

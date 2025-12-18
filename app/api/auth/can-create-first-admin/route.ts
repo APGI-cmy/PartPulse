@@ -20,7 +20,8 @@ export async function GET() {
     })
   } catch (error) {
     // Enhanced logging to surface exact Prisma error
-    console.error("Error checking first admin status:", error)
+    // Log structured error details for debugging without exposing sensitive info
+    console.error("[first-admin] Error checking first admin status")
     console.error("Error details:", {
       name: error instanceof Error ? error.name : "Unknown",
       message: error instanceof Error ? error.message : String(error),
