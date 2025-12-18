@@ -19,21 +19,24 @@ const DEFAULT_DEPARTMENT = 'Unknown';
 const DEFAULT_TRANSFER_TYPE = 'Internal';
 
 function adaptTransferForPdfEmail(prismaTransfer: any): InternalTransfer {
+  // Safety check: ensure items array exists
+  const items = prismaTransfer.items || [];
+  
   return {
     id: prismaTransfer.id,
-    technician: prismaTransfer.technician.name || prismaTransfer.technician.email,
+    technician: prismaTransfer.technician?.name || prismaTransfer.technician?.email || 'Unknown',
     department: prismaTransfer.siteName || DEFAULT_DEPARTMENT,
     transferType: DEFAULT_TRANSFER_TYPE,
     serial: prismaTransfer.ssid || '',
     model: '',
-    part: prismaTransfer.items[0]?.partNo || '',
-    description: prismaTransfer.items[0]?.description || '',
+    part: items[0]?.partNo || '',
+    description: items[0]?.description || '',
     reason: '',
     newUnit: '',
     comments: '',
     images: [],
     signature: prismaTransfer.clientSignature || undefined,
-    items: prismaTransfer.items.map((item: any) => ({
+    items: items.map((item: any) => ({
       quantity: item.qty,
       partNo: item.partNo,
       description: item.description,
@@ -105,11 +108,14 @@ export async function POST(request: NextRequest) {
     // Sanitize input to prevent XSS attacks
     const sanitizedData = sanitizeObject(validationResult.data);
     
+    // Handle psid → ssid mapping (validator accepts both, Prisma only has ssid)
+    const ssidValue = sanitizedData.ssid || sanitizedData.psid || null;
+    
     // Save to database using Prisma
     const transfer = await prisma.internalTransfer.create({
       data: {
         date: sanitizedData.date,
-        ssid: sanitizedData.ssid || null,
+        ssid: ssidValue,
         siteName: sanitizedData.siteName || null,
         poNumber: sanitizedData.poNumber || null,
         technicianId: session.user.id,
