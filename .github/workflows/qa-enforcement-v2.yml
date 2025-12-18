@@ -2,6 +2,9 @@ name: QA Enforcement v2 (Clean Rewrite - Invariant Proof)
 
 on:
   pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main, develop ]
 
 jobs:
   test-execution:
