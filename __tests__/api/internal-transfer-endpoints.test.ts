@@ -15,6 +15,17 @@ jest.mock('@/lib/auth', () => ({
   auth: jest.fn(),
 }));
 
+// Mock PDF generation
+jest.mock('@/lib/pdf/internalTransferPdf', () => ({
+  generateInternalTransferPDF: jest.fn().mockResolvedValue(Buffer.from('mock-pdf-content')),
+  savePDF: jest.fn().mockResolvedValue({ success: true, path: '/mock/path/to/pdf.pdf' }),
+}));
+
+// Mock email sending
+jest.mock('@/lib/email/sendInternalTransferReceipt', () => ({
+  sendInternalTransferReceipt: jest.fn().mockResolvedValue({ success: true, messageId: 'mock-message-id' }),
+}));
+
 import { auth } from '@/lib/auth';
 
 describe('Internal Transfer API Endpoints', () => {

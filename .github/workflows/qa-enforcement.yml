@@ -189,7 +189,15 @@ jobs:
           echo "✅ jest is resolvable at: $(node -e "console.log(require.resolve('jest'))")"
 
       # --------------------------------------------------
-      # 5. Run tests
+      # 5. Verify database deployment configuration
+      # --------------------------------------------------
+      - name: Verify database deployment configuration
+        run: |
+          echo "=== Verifying database deployment configuration ==="
+          npm run verify:db-deployment
+
+      # --------------------------------------------------
+      # 6. Run tests
       # --------------------------------------------------
       - name: Run test suite
         env:
