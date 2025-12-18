@@ -6,10 +6,14 @@ import { logUserManagement } from "@/lib/logging/systemLog"
 
 export async function POST(req: NextRequest) {
   try {
+    console.log("[first-admin] Starting first admin creation process")
+    
     // Check if any admin users already exist
+    console.log("[first-admin] Checking for existing admin users...")
     const adminCount = await prisma.user.count({
       where: { role: "admin" },
     })
+    console.log(`[first-admin] Admin count: ${adminCount}`)
 
     if (adminCount > 0) {
       return NextResponse.json(
@@ -20,6 +24,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json()
     const sanitized = sanitizeObject(body)
+    console.log("[first-admin] Request body sanitized successfully")
 
     // Validate required fields
     if (!sanitized.email || !sanitized.name || !sanitized.password) {
@@ -56,11 +61,13 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if user with this email already exists
+    console.log("[first-admin] Checking for existing user with provided email")
     const existingUser = await prisma.user.findUnique({
       where: { email: sanitized.email },
     })
 
     if (existingUser) {
+      console.log("[first-admin] User with this email already exists")
       return NextResponse.json(
         { error: "A user with this email already exists" },
         { status: 400 }
@@ -68,9 +75,12 @@ export async function POST(req: NextRequest) {
     }
 
     // Hash password
+    console.log("[first-admin] Hashing password...")
     const hashedPassword = await bcrypt.hash(sanitized.password, 10)
+    console.log("[first-admin] Password hashed successfully")
 
     // Create first admin user
+    console.log("[first-admin] Creating admin user in database...")
     const user = await prisma.user.create({
       data: {
         email: sanitized.email,
@@ -79,8 +89,10 @@ export async function POST(req: NextRequest) {
         role: "admin",
       },
     })
+    console.log("[first-admin] Admin user created successfully, ID:", user.id)
 
     // Log the first admin creation
+    console.log("[first-admin] Logging user management event...")
     await logUserManagement({
       action: "first_admin_created",
       targetUserId: user.id,
@@ -88,6 +100,7 @@ export async function POST(req: NextRequest) {
       success: true,
       request: req,
     })
+    console.log("[first-admin] User management event logged successfully")
 
     return NextResponse.json({
       success: true,
@@ -100,17 +113,31 @@ export async function POST(req: NextRequest) {
       },
     })
   } catch (error) {
-    console.error("Error creating first admin:", error)
+    // Enhanced logging to surface exact Prisma error
+    // Log structured error details for debugging without exposing sensitive info
+    console.error("[first-admin] Error creating first admin")
+    console.error("Error details:", {
+      name: error instanceof Error ? error.name : "Unknown",
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    })
+    
+    const errorMessage = error instanceof Error ? error.message : "Unknown error"
     
     await logUserManagement({
       action: "first_admin_created",
       success: false,
-      errorMessage: error instanceof Error ? error.message : "Unknown error",
+      errorMessage,
       request: req,
     })
 
+    // Return detailed error in development, generic in production
+    const isDevelopment = process.env.NODE_ENV === "development"
     return NextResponse.json(
-      { error: "Failed to create admin account" },
+      { 
+        error: "Failed to create admin account",
+        ...(isDevelopment && { details: errorMessage })
+      },
       { status: 500 }
     )
   }
