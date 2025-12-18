@@ -22,9 +22,13 @@ function adaptTransferForPdfEmail(prismaTransfer: any): InternalTransfer {
   // Safety check: ensure items array exists
   const items = prismaTransfer.items || [];
   
+  // Extract technician info with null-safety
+  const technician = prismaTransfer.technician;
+  const technicianDisplay = technician?.name || technician?.email || 'Unknown';
+  
   return {
     id: prismaTransfer.id,
-    technician: prismaTransfer.technician?.name || prismaTransfer.technician?.email || 'Unknown',
+    technician: technicianDisplay,
     department: prismaTransfer.siteName || DEFAULT_DEPARTMENT,
     transferType: DEFAULT_TRANSFER_TYPE,
     serial: prismaTransfer.ssid || '',
@@ -109,7 +113,12 @@ export async function POST(request: NextRequest) {
     const sanitizedData = sanitizeObject(validationResult.data);
     
     // Handle psid → ssid mapping (validator accepts both, Prisma only has ssid)
-    const ssidValue = sanitizedData.ssid || sanitizedData.psid || null;
+    // Prefer ssid if provided, fall back to psid, then null
+    const ssidValue = sanitizedData.ssid !== undefined && sanitizedData.ssid !== null && sanitizedData.ssid !== ''
+      ? sanitizedData.ssid
+      : (sanitizedData.psid !== undefined && sanitizedData.psid !== null && sanitizedData.psid !== ''
+        ? sanitizedData.psid
+        : null);
     
     // Save to database using Prisma
     const transfer = await prisma.internalTransfer.create({
