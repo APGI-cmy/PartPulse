@@ -15,12 +15,15 @@ import type { InternalTransfer } from '@/lib/db/schema';
 /**
  * Adapter: Convert Prisma InternalTransfer to legacy format for PDF/Email
  */
+const DEFAULT_DEPARTMENT = 'Unknown';
+const DEFAULT_TRANSFER_TYPE = 'Internal';
+
 function adaptTransferForPdfEmail(prismaTransfer: any): InternalTransfer {
   return {
     id: prismaTransfer.id,
     technician: prismaTransfer.technician.name || prismaTransfer.technician.email,
-    department: prismaTransfer.siteName || 'Unknown',
-    transferType: 'Internal',
+    department: prismaTransfer.siteName || DEFAULT_DEPARTMENT,
+    transferType: DEFAULT_TRANSFER_TYPE,
     serial: prismaTransfer.ssid || '',
     model: '',
     part: prismaTransfer.items[0]?.partNo || '',

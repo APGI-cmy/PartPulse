@@ -409,8 +409,8 @@ export default function CommunicationsMonitoringPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {data.users.recentLogins.map((login, index) => (
-                    <tr key={`${login.userId}-${index}`}>
+                  {data.users.recentLogins.map((login) => (
+                    <tr key={`${login.userId}-${login.timestamp}`}>
                       <td className="px-6 py-4 text-sm text-gray-500">
                         {formatDate(login.timestamp)}
                       </td>
