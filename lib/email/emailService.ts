@@ -19,6 +19,24 @@ export interface EmailOptions {
 }
 
 /**
+ * Check if email sending should be disabled
+ * Email is disabled in test/CI environments to prevent external service calls
+ */
+function isEmailDisabled(): boolean {
+  // Disable email in test environment
+  if (process.env.NODE_ENV === 'test') {
+    return true;
+  }
+  
+  // Disable email if EMAIL_MODE is explicitly set to 'disabled'
+  if (process.env.EMAIL_MODE === 'disabled') {
+    return true;
+  }
+  
+  return false;
+}
+
+/**
  * Get or create SMTP transporter
  * Uses Gmail SMTP with credentials from environment variables
  * Creates a new transporter instance to avoid shared state issues
@@ -56,6 +74,20 @@ function getTransporter(): Transporter {
 export async function sendEmail(
   options: EmailOptions
 ): Promise<{ success: boolean; messageId?: string; error?: string }> {
+  // CI Architecture Guard: Never attempt real SMTP in test/CI environments
+  if (isEmailDisabled()) {
+    const stubMessageId = `stub-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    console.log(`[EMAIL] Email disabled in ${process.env.NODE_ENV || 'test'} mode. Stub message ID: ${stubMessageId}`);
+    console.log(`[EMAIL] Would send to: ${Array.isArray(options.to) ? options.to.join(', ') : options.to}`);
+    console.log(`[EMAIL] Subject: ${options.subject}`);
+    
+    return {
+      success: false,
+      messageId: stubMessageId,
+      error: 'Email sending disabled in test/CI environment',
+    };
+  }
+
   try {
     // Get configured EMAIL_FROM or use SMTP_USER as fallback
     const emailFrom = process.env.EMAIL_FROM || process.env.SMTP_USER;
@@ -114,6 +146,12 @@ export async function sendEmail(
  * Useful for testing email configuration
  */
 export async function verifyEmailConfig(): Promise<boolean> {
+  // CI Architecture Guard: Never attempt real SMTP in test/CI environments
+  if (isEmailDisabled()) {
+    console.log(`[EMAIL] Email verification skipped in ${process.env.NODE_ENV || 'test'} mode`);
+    return false;
+  }
+
   try {
     const transporter = getTransporter();
     await transporter.verify();

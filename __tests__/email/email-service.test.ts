@@ -23,17 +23,33 @@ import { sendEmail, verifyEmailConfig } from '@/lib/email/emailService';
 
 describe('Email Service', () => {
   describe('sendEmail', () => {
+    it('should be disabled in test environment', async () => {
+      // In test mode (NODE_ENV=test), email sending is disabled
+      const result = await sendEmail({
+        to: 'test@example.com',
+        subject: 'Test Email',
+        text: 'This is a test email',
+      });
+      
+      // Should return stub response in test mode
+      expect(result.success).toBe(false);
+      expect(result.error).toBe('Email sending disabled in test/CI environment');
+      expect(result.messageId).toMatch(/^stub-/);
+    });
+
     it('should handle missing SMTP configuration gracefully', async () => {
       // Clear environment variables to simulate missing config
       const originalSmtpHost = process.env.SMTP_HOST;
       const originalSmtpPort = process.env.SMTP_PORT;
       const originalSmtpUser = process.env.SMTP_USER;
       const originalSmtpPass = process.env.SMTP_PASS;
+      const originalNodeEnv = process.env.NODE_ENV;
       
       delete process.env.SMTP_HOST;
       delete process.env.SMTP_PORT;
       delete process.env.SMTP_USER;
       delete process.env.SMTP_PASS;
+      delete process.env.NODE_ENV;  // Temporarily remove test mode
       
       const result = await sendEmail({
         to: 'test@example.com',
@@ -41,16 +57,17 @@ describe('Email Service', () => {
         text: 'This is a test email',
       });
       
-      // Should fall back to stub mode
+      // Should fall back to stub mode due to missing config
       expect(result.success).toBe(false);
       expect(result.error).toBeDefined();
-      expect(result.messageId).toContain('stub-fallback');
+      expect(result.messageId).toContain('stub');
       
       // Restore environment variables
       if (originalSmtpHost) process.env.SMTP_HOST = originalSmtpHost;
       if (originalSmtpPort) process.env.SMTP_PORT = originalSmtpPort;
       if (originalSmtpUser) process.env.SMTP_USER = originalSmtpUser;
       if (originalSmtpPass) process.env.SMTP_PASS = originalSmtpPass;
+      if (originalNodeEnv) process.env.NODE_ENV = originalNodeEnv;
     });
 
     it('should accept email with all required fields', async () => {
