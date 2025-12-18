@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json()
     const sanitized = sanitizeObject(body)
-    console.log("[first-admin] Request body sanitized, email:", sanitized.email)
+    console.log("[first-admin] Request body sanitized successfully")
 
     // Validate required fields
     if (!sanitized.email || !sanitized.name || !sanitized.password) {
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if user with this email already exists
-    console.log("[first-admin] Checking for existing user with email:", sanitized.email)
+    console.log("[first-admin] Checking for existing user with provided email")
     const existingUser = await prisma.user.findUnique({
       where: { email: sanitized.email },
     })
@@ -119,7 +119,6 @@ export async function POST(req: NextRequest) {
       name: error instanceof Error ? error.name : "Unknown",
       message: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
-      raw: error,
     })
     
     const errorMessage = error instanceof Error ? error.message : "Unknown error"

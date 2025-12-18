@@ -25,7 +25,6 @@ export async function GET() {
       name: error instanceof Error ? error.name : "Unknown",
       message: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
-      raw: error,
     })
     
     const errorMessage = error instanceof Error ? error.message : "Unknown error"
