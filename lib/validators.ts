@@ -51,6 +51,14 @@ export function sanitizeString(input: string): string {
 }
 
 /**
+ * Check if value is a Date object
+ * Uses both instanceof and toString for cross-context compatibility
+ */
+function isDate(value: unknown): value is Date {
+  return value instanceof Date || Object.prototype.toString.call(value) === '[object Date]';
+}
+
+/**
  * Sanitize an object with string values
  * Recursively handles nested objects and arrays
  * Preserves Date objects, null, undefined, and primitive types
@@ -60,14 +68,14 @@ export function sanitizeObject<T extends Record<string, unknown>>(obj: T): T {
   for (const [key, value] of Object.entries(obj)) {
     if (typeof value === 'string') {
       sanitized[key] = sanitizeString(value);
-    } else if (value instanceof Date) {
+    } else if (isDate(value)) {
       // Preserve Date objects - do not recursively sanitize
       sanitized[key] = value;
     } else if (Array.isArray(value)) {
       sanitized[key] = value.map(item => {
         if (typeof item === 'string') {
           return sanitizeString(item);
-        } else if (item instanceof Date) {
+        } else if (isDate(item)) {
           // Preserve Date objects in arrays
           return item;
         } else if (typeof item === 'object' && item !== null) {

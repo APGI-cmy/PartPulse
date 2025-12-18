@@ -95,9 +95,11 @@ export async function POST(request: NextRequest) {
     
     if (!validationResult.success) {
       // Enhanced error logging with full details
+      const flattenedErrors = validationResult.error.flatten();
+      
       console.error(
         '[INTERNAL_TRANSFER] Validation failed:',
-        JSON.stringify(validationResult.error.flatten(), null, 2)
+        JSON.stringify(flattenedErrors, null, 2)
       );
       console.error(
         '[INTERNAL_TRANSFER] Validation errors:',
@@ -110,9 +112,9 @@ export async function POST(request: NextRequest) {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'Invalid input data',
-            details: validationResult.error.flatten(),
-            fieldErrors: validationResult.error.flatten().fieldErrors,
-            formErrors: validationResult.error.flatten().formErrors,
+            details: flattenedErrors,
+            fieldErrors: flattenedErrors.fieldErrors,
+            formErrors: flattenedErrors.formErrors,
           },
         },
         { status: 400 }
