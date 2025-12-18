@@ -2,11 +2,9 @@
 import '@testing-library/jest-dom'
 import { TextEncoder, TextDecoder } from 'util';
 
-// Ensure NODE_ENV is set to 'test' for all tests
-// This prevents any module from attempting external service calls
-if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = 'test';
-}
+// Force NODE_ENV to 'test' for all tests
+// This must happen before any module imports to ensure proper isolation
+process.env.NODE_ENV = 'test';
 
 // Polyfill for TextEncoder/TextDecoder (required by PDFKit)
 if (typeof global.TextEncoder === 'undefined') {
