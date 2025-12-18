@@ -116,7 +116,7 @@ export default function CommunicationsMonitoringPage() {
   if (loading) {
     return (
       <>
-        <Header />
+        <Header title="Communications Monitoring" />
         <main className="container mx-auto p-6">
           <div className="text-center py-12">
             <p>Loading communications data...</p>
@@ -129,7 +129,7 @@ export default function CommunicationsMonitoringPage() {
   if (error) {
     return (
       <>
-        <Header />
+        <Header title="Communications Monitoring" />
         <main className="container mx-auto p-6">
           <div className="text-center py-12 text-red-600">
             <p>Error: {error}</p>
@@ -151,17 +151,8 @@ export default function CommunicationsMonitoringPage() {
 
   return (
     <>
-      <Header />
+      <Header title="Communications Monitoring" description="Track email delivery, invitations, and user activity" />
       <main className="container mx-auto p-6">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Communications Monitoring
-          </h1>
-          <p className="text-gray-600">
-            Track email delivery, invitations, and user activity
-          </p>
-        </div>
-
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>

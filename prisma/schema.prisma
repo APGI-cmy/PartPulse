@@ -91,6 +91,7 @@ model InternalTransfer {
   clientSignature  String?
   adminStamp       Boolean @default(false)
   adminSignature   String?
+  pdfPath          String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
