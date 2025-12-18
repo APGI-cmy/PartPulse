@@ -108,4 +108,21 @@ All workflows follow ForemanApp Agent Contract principles:
 - **One-Time Failures**: Root cause analysis and prevention mandatory
 - **Evidence & Audit**: All failures captured for traceability
 
-See `docs/governance/QA_GOVERNANCE_GUIDE.md` for complete governance documentation.
+**See Also**:
+- **Workflow Governance Policy**: `WORKFLOW_GOVERNANCE.md` (CANONICAL)
+- **QA Governance Guide**: `docs/governance/QA_GOVERNANCE_GUIDE.md`
+- **FL/CI Policy**: `qa/FAILURE_LEARNING_LOG.md`
+
+## Validation
+
+To validate all workflows before committing:
+
+```bash
+npm run workflows:validate
+```
+
+This checks:
+- ✅ All workflows have valid `on:` triggers
+- ✅ No push-only workflows (must include pull_request)
+- ✅ No duplicate workflow files
+- ✅ YAML syntax is valid

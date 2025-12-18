@@ -13,6 +13,7 @@
     "db:create-user": "tsx scripts/create-user.ts",
     "postinstall": "prisma generate",
     "verify:db-deployment": "node scripts/verify-db-deployment-config.js",
+    "workflows:validate": "node scripts/validate-workflows.js",
     "fl:log": "node qa/log-failure.js",
     "fl:view": "cat qa/FAILURE_LEARNING_LOG.md"
   },
@@ -40,6 +41,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",
     "@types/bcryptjs": "^2.4.6",
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -48,6 +50,7 @@
     "eslint-config-next": "16.0.7",
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
+    "js-yaml": "^4.1.1",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5"
