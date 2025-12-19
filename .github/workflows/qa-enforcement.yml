@@ -189,6 +189,17 @@ jobs:
           echo "✅ jest is resolvable at: $(node -e "console.log(require.resolve('jest'))")"
 
       # --------------------------------------------------
+      # 4.5 Apply database migrations before tests
+      # --------------------------------------------------
+      - name: Apply database migrations
+        env:
+          DATABASE_URL: 'postgresql://testuser:testpass@localhost:5432/testdb'
+        run: |
+          echo "=== Applying Prisma migrations to test database ==="
+          npx prisma migrate deploy
+          echo "=== Prisma migrations applied successfully ==="
+
+      # --------------------------------------------------
       # 5. Run tests
       # --------------------------------------------------
       - name: Run test suite

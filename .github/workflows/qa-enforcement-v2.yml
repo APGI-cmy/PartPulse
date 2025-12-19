@@ -145,6 +145,17 @@ jobs:
           echo "=========================================="
           npm run verify:db-deployment
           echo ""
+
+      - name: Apply database migrations
+        env:
+          DATABASE_URL: 'postgresql://testuser:testpass@localhost:5432/testdb'
+        run: |
+          echo "=========================================="
+          echo "APPLYING PRISMA MIGRATIONS TO TEST DB"
+          echo "=========================================="
+          npx prisma migrate deploy
+          echo "✓ Prisma migrations applied"
+          echo ""
       
       - name: Run test suite
         env:
