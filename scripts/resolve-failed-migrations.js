@@ -11,11 +11,29 @@
  * 
  * Strategy: Directly resolve known failed migrations without checking status first,
  * since prisma migrate status may fail if DATABASE_URL is not yet available.
+ * 
+ * IMPORTANT: This script requires DATABASE_URL (direct connection), NOT DATABASE_POOL_URL.
+ * Migrations must use direct database access (typically port 5432), not connection pooling (port 6543).
  */
 
 const { execSync } = require('child_process');
 
 console.log('🔍 Resolving known failed migrations...');
+
+// Verify DATABASE_URL is set (required for migrations)
+if (!process.env.DATABASE_URL) {
+  console.log('⚠️  DATABASE_URL not set - skipping migration resolution');
+  console.log('   (This is expected during some build phases)');
+  process.exit(0);
+}
+
+// Ensure we're using DATABASE_URL, not DATABASE_POOL_URL for migrations
+// Pooled connections don't support migration commands
+if (process.env.DATABASE_URL.includes(':6543')) {
+  console.log('⚠️  Warning: DATABASE_URL appears to be a pooled connection (port 6543)');
+  console.log('   Migrations require direct connection (port 5432)');
+  console.log('   Attempting resolution anyway...');
+}
 
 // List of known failed migrations that need to be resolved
 // These are migrations that failed in production and block new deployments
