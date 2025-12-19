@@ -75,5 +75,67 @@ describe('Input Sanitization', () => {
       expect(sanitized.tags[0]).not.toContain('<script>');
       expect(sanitized.tags[2]).not.toContain('<b>');
     });
+
+    // FL/CI: Regression test for Date object preservation (Issue #117)
+    // Lesson learned: sanitizeObject was treating Date instances as generic objects
+    // and recursively sanitizing them, which converted them to empty objects {}.
+    // This caused Prisma validation errors when Zod-transformed Date objects
+    // were passed through sanitization before reaching Prisma.
+    it('should preserve Date objects without modification', () => {
+      const testDate = new Date('2025-12-19T10:00:00.000Z');
+      const input = {
+        date: testDate,
+        name: '<script>test</script>',
+        count: 42,
+      };
+      
+      const sanitized = sanitizeObject(input);
+      
+      // Date should be preserved as-is
+      expect(sanitized.date).toBeInstanceOf(Date);
+      expect(sanitized.date.getTime()).toBe(testDate.getTime());
+      
+      // Strings should still be sanitized
+      expect(sanitized.name).not.toContain('<script>');
+      
+      // Numbers should be preserved
+      expect(sanitized.count).toBe(42);
+    });
+
+    it('should preserve Date objects in arrays', () => {
+      const testDate1 = new Date('2025-12-19T10:00:00.000Z');
+      const testDate2 = new Date('2025-12-20T15:30:00.000Z');
+      const input = {
+        items: [
+          { date: testDate1, name: '<b>item1</b>' },
+          { date: testDate2, name: 'item2' },
+        ],
+      };
+      
+      const sanitized = sanitizeObject(input);
+      
+      // Dates in arrays should be preserved
+      expect(sanitized.items[0].date).toBeInstanceOf(Date);
+      expect(sanitized.items[0].date.getTime()).toBe(testDate1.getTime());
+      expect(sanitized.items[1].date).toBeInstanceOf(Date);
+      expect(sanitized.items[1].date.getTime()).toBe(testDate2.getTime());
+      
+      // Strings should still be sanitized
+      expect(sanitized.items[0].name).not.toContain('<b>');
+    });
+
+    it('should preserve undefined Date values', () => {
+      const input = {
+        date: new Date('2025-12-19T10:00:00.000Z'),
+        optionalDate: undefined,
+        name: 'test',
+      };
+      
+      const sanitized = sanitizeObject(input);
+      
+      expect(sanitized.date).toBeInstanceOf(Date);
+      expect(sanitized.optionalDate).toBeUndefined();
+      expect(sanitized.name).toBe('test');
+    });
   });
 });
