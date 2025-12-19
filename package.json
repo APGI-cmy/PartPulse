@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma migrate deploy && next build",
+    "build": "node scripts/resolve-failed-migrations.js && prisma generate && prisma migrate deploy && next build",
     "start": "next start",
     "lint": "eslint",
     "test": "jest",
@@ -13,6 +13,7 @@
     "db:create-user": "tsx scripts/create-user.ts",
     "postinstall": "prisma generate",
     "verify:db-deployment": "node scripts/verify-db-deployment-config.js",
+    "migrate:resolve-failed": "node scripts/resolve-failed-migrations.js",
     "fl:log": "node qa/log-failure.js",
     "fl:view": "cat qa/FAILURE_LEARNING_LOG.md"
   },

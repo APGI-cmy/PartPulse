@@ -35,3 +35,24 @@ PartPulse architecture is documented across 11 comprehensive documents (280 KB t
 - IMPLEMENTATION_GUIDE.md - 16 KB
 
 All architecture follows the canonical Architecture Design Checklist guidelines.
+
+## Database Migration Deployment
+
+PartPulse enforces strict database migration deployment requirements to ensure zero manual intervention and maintain True North compliance:
+
+### Migration Deployment Requirements
+
+1. **Automated Migration Deployment**: All database migrations MUST be applied automatically via `npx prisma migrate deploy` in CI/CD pipelines before test execution
+2. **Zero Manual Steps**: Database schema changes require zero manual intervention - all migrations are version-controlled and automatically applied
+3. **CI Integration**: QA Enforcement workflows apply migrations to test databases before running test suites
+4. **Idempotent Migrations**: Migrations use `IF NOT EXISTS` clauses where appropriate to handle partial application scenarios
+5. **No Manual Database Changes**: Direct database modifications are prohibited - all schema changes go through Prisma migrations
+
+### Enforcement
+
+- CI workflows validate that migrations are applied before tests run
+- Tests fail if database schema does not match Prisma schema
+- Failed migrations block deployment until resolved
+- Zero Test Debt policy requires 100% pass rate including migration validation tests
+
+This ensures database schema consistency across all environments (development, CI, staging, production) with no manual steps.

@@ -59,10 +59,15 @@ export function sanitizeObject<T extends Record<string, unknown>>(obj: T): T {
   for (const [key, value] of Object.entries(obj)) {
     if (typeof value === 'string') {
       sanitized[key] = sanitizeString(value);
+    } else if (value instanceof Date) {
+      // Preserve Date objects as-is
+      sanitized[key] = value;
     } else if (Array.isArray(value)) {
       sanitized[key] = value.map(item => {
         if (typeof item === 'string') {
           return sanitizeString(item);
+        } else if (item instanceof Date) {
+          return item;
         } else if (typeof item === 'object' && item !== null) {
           return sanitizeObject(item as Record<string, unknown>);
         }
