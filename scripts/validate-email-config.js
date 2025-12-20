@@ -145,4 +145,3 @@ console.log('   - No legacy email addresses in modified code');
 console.log('\n⚠️  Note: Actual email sending requires valid SMTP credentials');
 console.log('   configured in Supabase Auth SMTP settings and Vercel environment variables.');
 console.log('\n📧 Canonical Sender: PartPulse <partpulse.trane@gmail.com>');
-
