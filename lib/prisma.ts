@@ -1,10 +1,17 @@
 import { PrismaClient } from '@prisma/client'
 
 const prismaClientSingleton = () => {
+  // When using connection pooling (DATABASE_POOL_URL), append pgbouncer=true
+  // This prevents "prepared statement already exists" errors (PostgreSQL error 42P05)
+  const databaseUrl = process.env.DATABASE_POOL_URL || process.env.DATABASE_URL || '';
+  const connectionString = process.env.DATABASE_POOL_URL && databaseUrl
+    ? `${databaseUrl}${databaseUrl.includes('?') ? '&' : '?'}pgbouncer=true`
+    : databaseUrl;
+
   return new PrismaClient({
     datasources: {
       db: {
-        url: process.env.DATABASE_POOL_URL || process.env.DATABASE_URL,
+        url: connectionString,
       },
     },
   })
