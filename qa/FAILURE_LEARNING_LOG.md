@@ -1777,11 +1777,167 @@ These tests validate:
 
 ---
 
+## Failure #11: Test Suite Failures After System Reliability Fixes - Incomplete Cleanup
+
+**Date**: 2025-12-20  
+**Issue**: 9 test failures after Failure #7-10 fixes  
+**PR**: #121 (copilot/fix-system-reliability-failures)  
+**Branch**: copilot/fix-system-reliability-failures  
+
+### What Went Wrong
+
+After successfully fixing Failures #7-10 (system reliability, email types, undefined handling, test infrastructure), the test suite had 9 new failures:
+
+**Test Failures Breakdown**:
+1. **email-reliability.test.ts** (1 failure)
+   - Duplicate logging in warranty claims submission
+   - Test expected ≤2 submission logs, got 3
+   - Email event logged with `eventType: 'submission'` instead of `eventType: 'email'`
+
+2. **email-return-types.test.ts** (2 failures)
+   - `sendAdminNotification` still had stub return with fake `messageId`
+   - `sendApprovalNotification` still had stub return with fake `messageId`
+   - Both functions should use actual `sendEmail()` call
+
+3. **email-service.test.ts** (4 failures)
+   - Tests expected `messageId` to always be defined, even on failure
+   - Tests expected stub-fallback behavior (fake messageId: 'stub-fallback-...')
+   - Should expect: success → messageId defined, failure → error defined, messageId undefined
+
+**Root Cause**: **Incomplete cleanup during Failure #7 fix**
+- Fixed primary email functions (sendWarrantyClaimReceipt, sendPasswordResetEmail)
+- Missed two email notification functions still using stubs
+- Tests incorrectly expected old stub fallback behavior
+- Event logging used wrong eventType for email events
+
+### Why It Happened
+
+1. **Large Scope**: Failure #7 addressed multiple critical issues (Prisma, email, logging)
+2. **Incremental Fixes**: Fixed issues one at a time across multiple failures (#7-10)
+3. **Test Misalignment**: Tests written expecting stub behavior weren't updated when stubs removed
+4. **Partial Migration**: Some email functions migrated to real sendEmail(), others left as stubs
+5. **Logging Convention**: Email events classified as 'submission' instead of dedicated 'email' type
+
+### How We Fixed It
+
+**1. Remove Stub Returns**:
+```typescript
+// Before: lib/email/sendInternalTransferReceipt.ts
+export async function sendAdminNotification(transfer) {
+  console.log('[EMAIL STUB] Sending admin notification');
+  return {
+    success: true,
+    messageId: `stub-admin-${Date.now()}`,
+  };
+}
+
+// After: Call actual email service
+export async function sendAdminNotification(transfer) {
+  const result = await sendEmail(emailOptions);
+  console.log('[EMAIL] Admin notification sent:', result.success ? 'SUCCESS' : 'FAILED');
+  return result;
+}
+```
+
+**2. Fix Event Logging**:
+```typescript
+// Before: app/api/warranty-claims/route.ts
+await logEvent({
+  eventType: 'submission',  // ❌ Email event logged as submission
+  action: 'email_sent',
+  ...
+});
+
+// After: Use dedicated email eventType
+await logEvent({
+  eventType: 'email',  // ✅ Proper classification
+  action: 'email_sent',
+  ...
+});
+```
+
+**3. Fix Test Expectations**:
+```typescript
+// Before: __tests__/email/email-service.test.ts
+expect(result.messageId).toBeDefined();  // ❌ Expected even on failure
+expect(result.messageId).toContain('stub-fallback');  // ❌ Expected stub
+
+// After: Conditional validation
+if (result.success) {
+  expect(result.messageId).toBeDefined();
+} else {
+  expect(result.error).toBeDefined();
+  expect(result.messageId).toBeUndefined();  // ✅ No messageId on failure
+}
+```
+
+### Files Changed
+
+**Code Fixes:**
+1. `lib/email/sendInternalTransferReceipt.ts`:
+   - `sendAdminNotification()` - Removed stub, now calls sendEmail()
+   - `sendApprovalNotification()` - Removed stub, now calls sendEmail()
+   - Both functions now have proper `error?: string` in return type
+
+2. `app/api/warranty-claims/route.ts`:
+   - Changed email log eventType from 'submission' to 'email'
+   - Prevents duplicate counting in submission logs
+
+**Test Fixes:**
+3. `__tests__/email/email-service.test.ts`:
+   - Updated 4 tests to expect conditional behavior (success → messageId, failure → error)
+   - Removed expectation for stub-fallback behavior
+   - Tests now match actual email service behavior
+
+### FL/CI Implementation
+
+**Prevention Tests** (existing tests now pass):
+- `__tests__/system-reliability/email-return-types.test.ts` - Validates no stub returns
+- `__tests__/system-reliability/email-reliability.test.ts` - Validates no duplicate logging
+- `__tests__/email/email-service.test.ts` - Validates correct behavior expectations
+
+**No new tests needed** - existing tests were correct, implementation was incomplete.
+
+### Lessons Learned
+
+1. **Complete Migration**: When removing stubs, check ALL functions in the module, not just primary ones
+2. **Test Alignment**: Tests expecting old behavior must be updated when behavior changes
+3. **Logging Taxonomy**: Use specific eventTypes (email, submission, auth) for accurate metrics
+4. **Multi-File Changes**: Grep for patterns (stub, messageId) to find all instances
+5. **Test RED First**: Run tests immediately after major changes to catch alignment issues
+6. **Incremental Risk**: Fixing multiple failures incrementally can leave partial migrations
+7. **Code Review Scope**: Review should check entire module, not just changed functions
+
+### Pattern: Incomplete Cleanup After Multi-Failure Fix
+
+**Symptom**: Tests fail after supposedly complete fix  
+**Cause**: Large-scope fix addressed primary issues but missed related code  
+**Detection**: Run full test suite after every fix  
+**Prevention**: 
+- Use grep to find all related code patterns
+- Update all functions in a module together
+- Update tests to match new behavior expectations
+- Validate complete module consistency
+
+### Statistics Impact
+
+**Before This Failure**:
+- Total Failures: 10
+- Total Tests: 26+
+- Failure Classes: 10
+
+**After This Failure**:
+- Total Failures: 11
+- Total Tests: 26+ (no new tests - existing tests correct)
+- Failure Classes: 11 (new class: incomplete cleanup after multi-failure fix)
+
+---
+
 ## Statistics
 
-- **Total Failures Logged**: 10
-- **Total Tests Added**: 26+ (Failure #1: 1, Failure #2: 2, Failure #3: 11, Failure #4: 0 - documentation only, Failure #5: 0 - documentation only, Failure #6: 3, Failure #7: 3+, Failure #8: 5, Failure #9: 1, Failure #10: 0 - test fix)
-- **Failure Classes Eliminated**: 10
+- **Total Failures Logged**: 11
+- **Total Tests Added**: 26+ (Failure #1: 1, Failure #2: 2, Failure #3: 11, Failure #4: 0 - documentation only, Failure #5: 0 - documentation only, Failure #6: 3, Failure #7: 3+, Failure #8: 5, Failure #9: 1, Failure #10: 0 - test fix, Failure #11: 0 - existing tests correct)
+- **Failure Classes Eliminated**: 11
   - DATABASE_URL validation mismatch
   - Next.js deployment configuration
   - Database schema deployment pipeline
@@ -1791,11 +1947,13 @@ These tests validate:
   - Critical system reliability & assurance failures (Email, Logs, Prisma pooling)
   - Email function return type inconsistency causing build failures
   - Undefined environment variable handling causing build failures
-  - **Test infrastructure over-correction causing false positives**
+  - Test infrastructure over-correction causing false positives
+  - **Incomplete cleanup after multi-failure fix**
 - **Architecture Requirements Added**: 14 (Failure #6)
 - **Patterns Detected**: 
   - TypeScript type safety validation gap (Failures #8 + #9)
   - Over-correction after consecutive failures (Failure #10)
+  - **Incomplete migration/cleanup leaving partial implementations (Failure #11)**
 - **Last Updated**: 2025-12-20
 
 ---
