@@ -161,9 +161,17 @@ This is an automated message from PartPulse Internal Transfer System.
  */
 export async function sendAdminNotification(
   transfer: InternalTransfer
-): Promise<{ success: boolean; messageId?: string }> {
+): Promise<{ success: boolean; messageId?: string; error?: string }> {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
+  const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_USER;
+  
+  if (!adminEmail) {
+    console.error('[EMAIL] Admin email not configured');
+    return {
+      success: false,
+      error: 'Admin email not configured - please set ADMIN_EMAIL or SMTP_USER environment variable',
+    };
+  }
   
   const content = `
     <p style="font-size: 16px; margin-bottom: 20px;">A new internal transfer has been submitted and requires review.</p>
@@ -183,18 +191,18 @@ export async function sendAdminNotification(
     ${createInfoBox('⚡ <strong>Action Required:</strong> Please review and process this transfer request.')}
   `;
   
-  // Generate email HTML (in production, this would be sent via email service)
-  createEmailTemplate('New Internal Transfer - Action Required', content);
-  
-  console.log('[EMAIL STUB] Sending admin notification');
-  console.log('[EMAIL STUB] Transfer ID:', transfer.id);
-  console.log('[EMAIL STUB] Admin email:', adminEmail);
-  console.log('[EMAIL STUB] Admin notification simulated successfully');
-  
-  return {
-    success: true,
-    messageId: `stub-admin-${Date.now()}`,
+  const emailOptions: EmailOptions = {
+    to: adminEmail,
+    subject: `New Internal Transfer - ${transfer.id}`,
+    html: createEmailTemplate('New Internal Transfer - Action Required', content),
+    text: `A new internal transfer has been submitted by ${transfer.technician}. Transfer ID: ${transfer.id}`,
   };
+  
+  const result = await sendEmail(emailOptions);
+  
+  console.log('[EMAIL] Admin notification sent:', result.success ? 'SUCCESS' : 'FAILED');
+  
+  return result;
 }
 
 /**
@@ -204,7 +212,7 @@ export async function sendApprovalNotification(
   transfer: InternalTransfer,
   adminName: string,
   pdfContent?: string
-): Promise<{ success: boolean; messageId?: string }> {
+): Promise<{ success: boolean; messageId?: string; error?: string }> {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   
   const content = `
@@ -243,12 +251,9 @@ export async function sendApprovalNotification(
     ];
   }
   
-  console.log('[EMAIL STUB] Sending approval notification');
-  console.log('[EMAIL STUB] Transfer ID:', transfer.id);
-  console.log('[EMAIL STUB] Email would be sent to:', emailOptions.to);
+  const result = await sendEmail(emailOptions);
   
-  return {
-    success: true,
-    messageId: `stub-approval-${Date.now()}`,
-  };
+  console.log('[EMAIL] Approval notification sent:', result.success ? 'SUCCESS' : 'FAILED');
+  
+  return result;
 }

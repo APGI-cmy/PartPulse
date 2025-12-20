@@ -28,10 +28,10 @@ describe('Email Service', () => {
         text: 'This is a test email',
       });
       
-      // Should fall back to stub mode
+      // Should fail when SMTP not configured (no stub fallback)
       expect(result.success).toBe(false);
       expect(result.error).toBeDefined();
-      expect(result.messageId).toContain('stub-fallback');
+      expect(result.messageId).toBeUndefined(); // No messageId on failure
       
       // Restore environment variables
       if (originalSmtpHost) process.env.SMTP_HOST = originalSmtpHost;
@@ -52,7 +52,12 @@ describe('Email Service', () => {
       
       // Should return a result (success or failure depending on SMTP config)
       expect(result).toBeDefined();
-      expect(result.messageId).toBeDefined();
+      // messageId only present on success
+      if (result.success) {
+        expect(result.messageId).toBeDefined();
+      } else {
+        expect(result.error).toBeDefined();
+      }
     });
 
     it('should accept email with multiple recipients', async () => {
@@ -66,7 +71,12 @@ describe('Email Service', () => {
       
       // Should return a result
       expect(result).toBeDefined();
-      expect(result.messageId).toBeDefined();
+      // messageId only present on success
+      if (result.success) {
+        expect(result.messageId).toBeDefined();
+      } else {
+        expect(result.error).toBeDefined();
+      }
     });
 
     it('should accept email with PDF attachment', async () => {
@@ -87,7 +97,12 @@ describe('Email Service', () => {
       
       // Should return a result
       expect(result).toBeDefined();
-      expect(result.messageId).toBeDefined();
+      // messageId only present on success
+      if (result.success) {
+        expect(result.messageId).toBeDefined();
+      } else {
+        expect(result.error).toBeDefined();
+      }
     });
   });
 

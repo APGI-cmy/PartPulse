@@ -86,9 +86,9 @@ export async function POST(request: NextRequest) {
     try {
       const emailResult = await sendWarrantyClaimReceipt(warrantyClaim, pdfContent);
       
-      // Log email send result (separate from submission log)
+      // Log email send result (separate from submission log - use 'email' eventType)
       await logEvent({
-        eventType: 'submission',
+        eventType: 'email',
         action: emailResult.success ? 'email_sent' : 'email_failed',
         details: {
           entityType: 'warranty_claim',
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
       console.error('Email notification failed:', emailError);
       
       await logEvent({
-        eventType: 'submission',
+        eventType: 'email',
         action: 'email_failed',
         details: {
           entityType: 'warranty_claim',
