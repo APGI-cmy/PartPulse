@@ -275,16 +275,23 @@ export async function POST(request: NextRequest) {
     let userMessage = 'An unexpected error occurred while creating the transfer';
     let statusCode = 500;
     
-    // Handle specific error types
+    // Handle specific error types using Prisma error codes
     if (error instanceof Error) {
-      // Prisma errors
-      if (error.message.includes('prepared statement')) {
+      const errorMessage = error.message;
+      
+      // Prisma error codes: https://www.prisma.io/docs/reference/api-reference/error-reference
+      if (errorMessage.includes('P2034') || errorMessage.includes('prepared statement')) {
+        // P2034: Transaction failed due to a write conflict or deadlock
         userMessage = 'Database connection issue. Please try again.';
         console.error('[PRISMA] Prepared statement error - check connection pooling configuration');
-      } else if (error.message.includes('Connection')) {
+      } else if (errorMessage.includes('P1001') || errorMessage.includes('P1002') || errorMessage.includes('P1008')) {
+        // P1001: Can't reach database server
+        // P1002: Database server timeout
+        // P1008: Operations timed out
         userMessage = 'Database connection failed. Please try again later.';
         statusCode = 503;
-      } else if (error.message.includes('Unique constraint')) {
+      } else if (errorMessage.includes('P2002')) {
+        // P2002: Unique constraint failed
         userMessage = 'This transfer already exists.';
         statusCode = 409;
       }

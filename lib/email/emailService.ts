@@ -99,8 +99,6 @@ export async function sendEmail(
     };
   } catch (error) {
     console.error('[EMAIL] Failed to send email:', error);
-    console.error('[EMAIL] To:', options.to);
-    console.error('[EMAIL] Subject:', options.subject);
     
     // Return failure status - do NOT simulate success
     return {

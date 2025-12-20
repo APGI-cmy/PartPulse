@@ -8,7 +8,7 @@ import { WarrantyClaimSchema, sanitizeObject } from '@/lib/validators';
 import { saveWarrantyClaim, updateWarrantyClaim, getAllWarrantyClaims, getWarrantyClaim } from '@/lib/db/schema';
 import { generateWarrantyClaimPDF, savePDF } from '@/lib/pdf/warrantyClaimPdf';
 import { sendWarrantyClaimReceipt } from '@/lib/email/sendWarrantyClaimReceipt';
-import { logWarrantyClaimSubmission, logPdfGeneration, logAdminAction } from '@/lib/logging/systemLog';
+import { logWarrantyClaimSubmission, logPdfGeneration, logAdminAction, logEvent } from '@/lib/logging/systemLog';
 
 /**
  * POST /api/warranty-claims
@@ -86,12 +86,18 @@ export async function POST(request: NextRequest) {
     try {
       const emailResult = await sendWarrantyClaimReceipt(warrantyClaim, pdfContent);
       
-      // Log email send result
-      await logWarrantyClaimSubmission({
-        claimId: warrantyClaim.id,
+      // Log email send result (separate from submission log)
+      await logEvent({
+        eventType: 'submission',
+        action: emailResult.success ? 'email_sent' : 'email_failed',
+        details: {
+          entityType: 'warranty_claim',
+          entityId: warrantyClaim.id,
+          emailType: 'claim_receipt',
+          messageId: emailResult.messageId,
+        },
         success: emailResult.success,
         errorMessage: emailResult.error,
-        request,
       });
       
       if (!emailResult.success) {
@@ -100,11 +106,17 @@ export async function POST(request: NextRequest) {
     } catch (emailError) {
       // Log email error but don't fail the request
       console.error('Email notification failed:', emailError);
-      await logWarrantyClaimSubmission({
-        claimId: warrantyClaim.id,
+      
+      await logEvent({
+        eventType: 'submission',
+        action: 'email_failed',
+        details: {
+          entityType: 'warranty_claim',
+          entityId: warrantyClaim.id,
+          emailType: 'claim_receipt',
+        },
         success: false,
         errorMessage: emailError instanceof Error ? emailError.message : 'Unknown error',
-        request,
       });
     }
 
