@@ -11,6 +11,12 @@ import { generateInternalTransferPDF, savePDF } from '@/lib/pdf/internalTransfer
 import { sendInternalTransferReceipt } from '@/lib/email/sendInternalTransferReceipt';
 import { logInternalTransferSubmission, logPdfGeneration, logEvent } from '@/lib/logging/systemLog';
 import type { InternalTransfer } from '@/lib/db/schema';
+import type { InternalTransfer as PrismaInternalTransfer, InternalTransferItem, User } from '@prisma/client';
+
+type PrismaTransferWithRelations = PrismaInternalTransfer & {
+  items: InternalTransferItem[];
+  technician: Pick<User, 'id' | 'name' | 'email' | 'role'>;
+};
 
 /**
  * Adapter: Convert Prisma InternalTransfer to legacy format for PDF/Email
@@ -18,7 +24,7 @@ import type { InternalTransfer } from '@/lib/db/schema';
 const DEFAULT_DEPARTMENT = 'Unknown';
 const DEFAULT_TRANSFER_TYPE = 'Internal';
 
-function adaptTransferForPdfEmail(prismaTransfer: any): InternalTransfer {
+function adaptTransferForPdfEmail(prismaTransfer: PrismaTransferWithRelations): InternalTransfer {
   return {
     id: prismaTransfer.id,
     technician: prismaTransfer.technician.name || prismaTransfer.technician.email,
@@ -33,7 +39,7 @@ function adaptTransferForPdfEmail(prismaTransfer: any): InternalTransfer {
     comments: '',
     images: [],
     signature: prismaTransfer.clientSignature || undefined,
-    items: prismaTransfer.items.map((item: any) => ({
+    items: prismaTransfer.items.map((item) => ({
       quantity: item.qty,
       partNo: item.partNo,
       description: item.description,
@@ -117,7 +123,7 @@ export async function POST(request: NextRequest) {
         clientDate: sanitizedData.clientDate || null,
         clientSignature: sanitizedData.clientSignature || null,
         items: {
-          create: sanitizedData.items.map((item: any) => ({
+          create: sanitizedData.items.map((item) => ({
             qty: item.qty,
             partNo: item.partNo,
             description: item.description,
