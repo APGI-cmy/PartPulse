@@ -43,7 +43,7 @@ function getTechnicianEmail(technician: string): string {
 export async function sendWarrantyClaimReceipt(
   claim: WarrantyClaim,
   pdfContent?: Buffer | string
-): Promise<{ success: boolean; messageId?: string }> {
+): Promise<{ success: boolean; messageId?: string; error?: string }> {
   console.log('[EMAIL] Sending Warranty Claim Receipt');
   console.log('[EMAIL] Claim ID:', claim.id);
   console.log('[EMAIL] Technician:', claim.technicianName);
@@ -56,7 +56,7 @@ export async function sendWarrantyClaimReceipt(
     console.error('[EMAIL] Admin email not configured');
     return {
       success: false,
-      messageId: `error-no-admin-email-${Date.now()}`,
+      error: 'Admin email not configured - please set ADMIN_EMAIL or SMTP_USER environment variable',
     };
   }
   
