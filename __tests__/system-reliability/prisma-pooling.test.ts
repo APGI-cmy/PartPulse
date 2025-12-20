@@ -58,6 +58,17 @@ describe('Prisma Connection Pooling Configuration (FL/CI Failure #7)', () => {
     // This ensures proper parameter appending (? vs &)
     expect(prismaContent).toMatch(/includes\(['"]?\?['"]?\)/);
   });
+
+  it('should handle undefined environment variables safely', () => {
+    const prismaContent = fs.readFileSync(prismaFilePath, 'utf-8');
+
+    // Validate that databaseUrl has a fallback to empty string
+    // This prevents TypeScript error: 'databaseUrl' is possibly 'undefined'
+    expect(prismaContent).toMatch(/DATABASE_POOL_URL.*\|\|.*DATABASE_URL.*\|\|.*['"]/);
+    
+    // Should check both DATABASE_POOL_URL exists AND databaseUrl exists before using it
+    expect(prismaContent).toMatch(/DATABASE_POOL_URL.*&&.*databaseUrl/);
+  });
 });
 
 describe('Prisma Connection Pooling - Prevention Validation', () => {
