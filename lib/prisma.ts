@@ -4,7 +4,7 @@ const prismaClientSingleton = () => {
   // When using connection pooling (DATABASE_POOL_URL), append pgbouncer=true
   // This prevents "prepared statement already exists" errors (Postgres error 42P05)
   const databaseUrl = process.env.DATABASE_POOL_URL || process.env.DATABASE_URL;
-  const connectionString = databaseUrl && process.env.DATABASE_POOL_URL
+  const connectionString = process.env.DATABASE_POOL_URL
     ? `${databaseUrl}${databaseUrl.includes('?') ? '&' : '?'}pgbouncer=true`
     : databaseUrl;
 

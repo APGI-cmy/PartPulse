@@ -275,18 +275,18 @@ export async function POST(request: NextRequest) {
     let userMessage = 'An unexpected error occurred while creating the transfer';
     let statusCode = 500;
     
-    // Handle specific error types using Prisma error codes
+    // Handle specific error types
     if (error instanceof Error) {
       const errorMessage = error.message;
       
-      // Prisma error codes: https://www.prisma.io/docs/reference/api-reference/error-reference
-      if (errorMessage.includes('P2034') || errorMessage.includes('prepared statement')) {
-        // P2034: Transaction failed due to a write conflict or deadlock
+      // Check for common database errors
+      // Note: "prepared statement already exists" is PostgreSQL error 42P05
+      if (errorMessage.includes('42P05') || errorMessage.includes('prepared statement')) {
         userMessage = 'Database connection issue. Please try again.';
-        console.error('[PRISMA] Prepared statement error - check connection pooling configuration');
+        console.error('[PRISMA] Prepared statement error (42P05) - check connection pooling configuration');
       } else if (errorMessage.includes('P1001') || errorMessage.includes('P1002') || errorMessage.includes('P1008')) {
         // P1001: Can't reach database server
-        // P1002: Database server timeout
+        // P1002: Database server timeout  
         // P1008: Operations timed out
         userMessage = 'Database connection failed. Please try again later.';
         statusCode = 503;

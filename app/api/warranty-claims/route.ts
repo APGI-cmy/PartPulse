@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
           entityType: 'warranty_claim',
           entityId: warrantyClaim.id,
           emailType: 'claim_receipt',
-          messageId: emailResult.messageId,
+          ...(emailResult.messageId && { messageId: emailResult.messageId }),
         },
         success: emailResult.success,
         errorMessage: emailResult.error,
