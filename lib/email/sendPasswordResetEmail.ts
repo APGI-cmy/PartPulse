@@ -5,7 +5,6 @@
 
 import {
   createEmailTemplate,
-  createInfoRow,
   createButton,
   createInfoBox,
 } from './templates';
