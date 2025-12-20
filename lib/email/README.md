@@ -16,14 +16,14 @@ The PartPulse application includes a professional, branded HTML email template s
 Sent to admin when an internal transfer is submitted.
 
 **Trigger**: Internal transfer form submission  
-**Recipients**: Admin email (PartPulse2025@gmail.com)  
+**Recipients**: Admin email (configured via ADMIN_EMAIL environment variable)  
 **Attachments**: PDF copy of transfer form
 
 ### 2. Warranty Claim Submission
 Sent to admin when a warranty claim is submitted.
 
 **Trigger**: Warranty claim form submission  
-**Recipients**: Admin email (PartPulse2025@gmail.com)  
+**Recipients**: Admin email (configured via ADMIN_EMAIL environment variable)  
 **Attachments**: PDF copy of warranty claim form
 
 ### 3. Admin Notification - New Submission
@@ -183,10 +183,11 @@ Email service is configured via environment variables:
 EMAIL_PROVIDER="smtp"
 SMTP_HOST="smtp.gmail.com"
 SMTP_PORT="587"
-SMTP_USER="PartPulse2025@gmail.com"
+SMTP_USER="partpulse.trane@gmail.com"
 SMTP_PASS="your_app_password"
-EMAIL_FROM="PartPulse2025@gmail.com"
-ADMIN_EMAIL="PartPulse2025@gmail.com"
+EMAIL_FROM="partpulse.trane@gmail.com"
+EMAIL_FROM_NAME="PartPulse"
+ADMIN_EMAIL="partpulse.trane@gmail.com"
 ```
 
 ### Gmail App Password Setup
