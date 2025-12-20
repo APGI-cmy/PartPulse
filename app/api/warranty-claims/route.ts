@@ -84,10 +84,28 @@ export async function POST(request: NextRequest) {
 
     // Send email notification
     try {
-      await sendWarrantyClaimReceipt(warrantyClaim, pdfContent);
+      const emailResult = await sendWarrantyClaimReceipt(warrantyClaim, pdfContent);
+      
+      // Log email send result
+      await logWarrantyClaimSubmission({
+        claimId: warrantyClaim.id,
+        success: emailResult.success,
+        errorMessage: emailResult.error,
+        request,
+      });
+      
+      if (!emailResult.success) {
+        console.error('Email notification failed:', emailResult.error);
+      }
     } catch (emailError) {
       // Log email error but don't fail the request
       console.error('Email notification failed:', emailError);
+      await logWarrantyClaimSubmission({
+        claimId: warrantyClaim.id,
+        success: false,
+        errorMessage: emailError instanceof Error ? emailError.message : 'Unknown error',
+        request,
+      });
     }
 
     // Return success response

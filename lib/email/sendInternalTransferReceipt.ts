@@ -55,7 +55,7 @@ export async function sendInternalTransferReceipt(
     console.error('[EMAIL] Admin email not configured');
     return {
       success: false,
-      messageId: `error-no-admin-email-${Date.now()}`,
+      error: 'Admin email not configured - please set ADMIN_EMAIL or SMTP_USER environment variable',
     };
   }
   

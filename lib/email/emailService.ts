@@ -99,16 +99,13 @@ export async function sendEmail(
     };
   } catch (error) {
     console.error('[EMAIL] Failed to send email:', error);
+    console.error('[EMAIL] To:', options.to);
+    console.error('[EMAIL] Subject:', options.subject);
     
-    // Fall back to stub mode if SMTP fails
-    console.log('[EMAIL STUB] Simulating email send due to SMTP failure');
-    console.log('[EMAIL STUB] To:', options.to);
-    console.log('[EMAIL STUB] Subject:', options.subject);
-    
+    // Return failure status - do NOT simulate success
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
-      messageId: `stub-fallback-${Date.now()}`,
     };
   }
 }

@@ -63,6 +63,16 @@ export async function POST(req: NextRequest) {
         expiresAt: resetTokenExpiry,
       })
       
+      // Log email send result
+      await logUserManagement({
+        action: emailResult.success ? "password_reset" : "password_reset_failed",
+        targetUserId: user.id,
+        targetUserEmail: user.email,
+        success: emailResult.success,
+        errorMessage: emailResult.error,
+        request: req,
+      })
+      
       if (!emailResult.success) {
         console.error('[PASSWORD_RESET] Failed to send email:', emailResult.error)
         // Still log the URL for debugging in development

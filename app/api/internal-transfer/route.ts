@@ -265,15 +265,34 @@ export async function POST(request: NextRequest) {
       console.error('Failed to log error:', logError);
     }
     
+    // Determine user-safe error message
+    let userMessage = 'An unexpected error occurred while creating the transfer';
+    let statusCode = 500;
+    
+    // Handle specific error types
+    if (error instanceof Error) {
+      // Prisma errors
+      if (error.message.includes('prepared statement')) {
+        userMessage = 'Database connection issue. Please try again.';
+        console.error('[PRISMA] Prepared statement error - check connection pooling configuration');
+      } else if (error.message.includes('Connection')) {
+        userMessage = 'Database connection failed. Please try again later.';
+        statusCode = 503;
+      } else if (error.message.includes('Unique constraint')) {
+        userMessage = 'This transfer already exists.';
+        statusCode = 409;
+      }
+    }
+    
     return NextResponse.json(
       {
         success: false,
         error: {
           code: 'INTERNAL_ERROR',
-          message: error instanceof Error ? error.message : 'An unexpected error occurred',
+          message: userMessage,
         },
       },
-      { status: 500 }
+      { status: statusCode }
     );
   }
 }
