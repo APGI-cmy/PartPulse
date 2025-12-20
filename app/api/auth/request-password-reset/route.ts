@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma"
 import crypto from "crypto"
 import { sanitizeObject } from "@/lib/validators"
 import { logUserManagement } from "@/lib/logging/systemLog"
+import { sendPasswordResetEmail } from "@/lib/email"
 
 /**
  * POST /api/auth/request-password-reset
@@ -54,10 +55,21 @@ export async function POST(req: NextRequest) {
       // Construct the reset URL
       const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/auth/reset-password?token=${resetToken}`
       
-      // TODO: In production, send email with reset link using emailService
-      // For now, the reset URL is logged to the console for development
-      // Production implementation should use: await sendPasswordResetEmail(user.email, resetUrl)
-      console.log(`Password reset requested for ${user.email}. Reset URL: ${resetUrl}`)
+      // Send password reset email
+      const emailResult = await sendPasswordResetEmail({
+        email: user.email,
+        name: user.name || undefined,
+        resetUrl,
+        expiresAt: resetTokenExpiry,
+      })
+      
+      if (!emailResult.success) {
+        console.error('[PASSWORD_RESET] Failed to send email:', emailResult.error)
+        // Still log the URL for debugging in development
+        console.log(`Password reset requested for ${user.email}. Reset URL: ${resetUrl}`)
+      } else {
+        console.log(`[PASSWORD_RESET] Email sent successfully to ${user.email}`)
+      }
     }
 
     // Always return success (prevent email enumeration)

@@ -5,4 +5,5 @@
 
 export { sendInternalTransferReceipt } from './email/sendInternalTransferReceipt';
 export { sendWarrantyClaimReceipt } from './email/sendWarrantyClaimReceipt';
+export { sendPasswordResetEmail } from './email/sendPasswordResetEmail';
 export * from './email/templates';

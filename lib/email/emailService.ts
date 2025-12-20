@@ -59,17 +59,21 @@ export async function sendEmail(
   try {
     // Get configured EMAIL_FROM or use SMTP_USER as fallback
     const emailFrom = process.env.EMAIL_FROM || process.env.SMTP_USER;
+    const emailFromName = process.env.EMAIL_FROM_NAME || 'PartPulse';
     
     if (!emailFrom) {
       throw new Error('EMAIL_FROM not configured');
     }
+
+    // Format sender with name: "Name <email@address.com>"
+    const formattedFrom = `${emailFromName} <${emailFrom}>`;
 
     // Get transporter
     const transporter = getTransporter();
 
     // Prepare email options
     const mailOptions = {
-      from: emailFrom,
+      from: formattedFrom,
       to: Array.isArray(options.to) ? options.to.join(', ') : options.to,
       subject: options.subject,
       text: options.text,
