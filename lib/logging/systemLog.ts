@@ -10,7 +10,8 @@ export type EventType =
   | "pdf_generation" 
   | "admin_approval" 
   | "auth_event" 
-  | "user_management";
+  | "user_management"
+  | "email";
 
 export interface LogEventParams {
   eventType: EventType;

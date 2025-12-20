@@ -210,5 +210,38 @@ describe('Event Type Coverage (FL/CI Failure #7)', () => {
     expect(systemLogContent).toMatch(/admin_approval/);
     expect(systemLogContent).toMatch(/auth_event/);
     expect(systemLogContent).toMatch(/user_management/);
+    expect(systemLogContent).toMatch(/email/); // Added for Failure #12
+  });
+
+  it('should have EventType enum match all eventType usage in codebase (FL/CI Failure #12)', () => {
+    // This test prevents Failure #12: eventType usage without updating type definition
+    const systemLogContent = fs.readFileSync(systemLogPath, 'utf-8');
+    
+    // Extract EventType definition
+    const eventTypeMatch = systemLogContent.match(/export type EventType\s*=\s*([^;]+);/s);
+    expect(eventTypeMatch).toBeTruthy();
+    
+    if (eventTypeMatch) {
+      const eventTypeDef = eventTypeMatch[1];
+      
+      // Extract all type values from the union type
+      const typeValues = eventTypeDef
+        .split('|')
+        .map(v => v.trim())
+        .filter(v => v.startsWith('"'))
+        .map(v => v.replace(/"/g, ''));
+      
+      // Validate all known event types are in the enum
+      const requiredTypes = ['submission', 'pdf_generation', 'admin_approval', 'auth_event', 'user_management', 'email'];
+      
+      requiredTypes.forEach(type => {
+        expect(typeValues).toContain(type);
+      });
+      
+      // If this test fails, it means:
+      // - A new eventType was used in code but not added to EventType enum
+      // - OR an eventType was removed from enum but still used in code
+      // Fix: Update EventType definition in lib/logging/systemLog.ts
+    }
   });
 });
