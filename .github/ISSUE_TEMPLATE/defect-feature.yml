@@ -1,0 +1,126 @@
+name: Defect Report - Missing Feature
+description: Report missing functionality that was specified or reasonably expected
+title: "[FEATURE] "
+labels: ["defect-feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Defect Report - FEATURE
+        Use this template to report missing functionality that was specified or is reasonably expected.
+        
+        **Classification**: FEATURE (Missing Capability)
+        
+        This template follows the Defect Resolution and Maintenance Canon from maturion-foreman-governance.
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this missing functionality?
+      options:
+        - CRITICAL - Blocks critical workflow, no workaround
+        - HIGH - Major functionality missing, difficult workaround
+        - MEDIUM - Important feature missing, workaround available
+        - LOW - Nice-to-have feature missing
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Missing Functionality Description
+      description: What functionality is missing?
+      placeholder: Describe the missing feature...
+    validations:
+      required: true
+
+  - type: textarea
+    id: specification
+    attributes:
+      label: Specification Reference
+      description: Where was this functionality specified or why is it expected?
+      placeholder: |
+        - Reference to requirement document
+        - User story
+        - Design specification
+        - Or explain why this is reasonably expected
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Functionality
+      description: How should this feature work?
+      placeholder: Describe expected behavior in detail...
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: Current State
+      description: What happens now when user tries to use this feature?
+      placeholder: Describe current behavior...
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact Assessment
+      description: Who is affected and how?
+      placeholder: |
+        - Affected users: (all users / specific cohort / admin only)
+        - Blocked workflow: (describe)
+        - Business impact: (revenue / user satisfaction / efficiency)
+        - Frequency of need: (daily / weekly / occasional)
+    validations:
+      required: true
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Current Workaround
+      description: How are users working around this missing feature?
+      placeholder: Describe workaround if any exists...
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: What would constitute this feature being complete?
+      placeholder: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+        - [ ] Criterion 3
+
+  - type: input
+    id: discoverer
+    attributes:
+      label: Reported By
+      description: Who identified this missing functionality?
+      placeholder: Name or username
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional Notes
+      description: Any other relevant information
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Reporter Checklist
+      options:
+        - label: This was specified or is reasonably expected (not a new enhancement)
+          required: true
+        - label: I have documented the impact
+          required: true
+        - label: I have assigned appropriate severity
+          required: true
+        - label: I have described expected functionality
+          required: true

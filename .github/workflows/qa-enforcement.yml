@@ -2,7 +2,7 @@ name: QA Enforcement
 
 on:
   push:
-    branches: [ main, develop, 'copilot/**' ]
+    branches: [ main, develop, 'copilot/**', 'fix/**', 'hotfix/**', 'tech-debt/**' ]
   pull_request:
     branches: [ main, develop ]
 
