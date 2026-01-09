@@ -18,6 +18,19 @@ A modern, secure, production-ready web application for managing internal part tr
 
 This is a production-ready application built with Next.js 16, featuring comprehensive security controls, performance optimizations, complete operational documentation, and **ForemanApp governance compliance**.
 
+## 📊 Project Dashboard
+
+**Project Board**: [PartPulse v0.2.0 - PDF Fix & Governance](https://github.com/APGI-cmy/PartPulse/projects)
+
+The project board tracks all governance-required issues throughout the v0.2.0 wave using a structured workflow:
+- **Columns**: Blocked → Backlog → In Progress → Review → Done
+- **Custom Fields**: Phase, Builder, Dependency, Blocks
+- **Issues Tracked**: #1-#7 (governance and PDF-related issues)
+
+**Update Protocol**: Board must be updated before every issue handover and after every PR submission.
+
+See [PROJECT_BOARD_GUIDELINES.md](docs/PROJECT_BOARD_GUIDELINES.md) for complete board structure, setup instructions, and update protocol.
+
 ## 🎯 True North Compliance
 
 PartPulse follows the mandatory True North execution sequence:
@@ -68,6 +81,7 @@ See: [Failure Learning Log](qa/FAILURE_LEARNING_LOG.md) for all logged failures 
 - [Governance Status](GOVERNANCE_STATUS.md) - Official governed application declaration
 - [BUILD-TO-GREEN Plan](BUILD_TO_GREEN.md) - Systematic test implementation plan (6 waves, 37 tests)
 - [QA Plan](qa/QA_PLAN.md) - Complete QA strategy (13 categories mapped to architecture)
+- [Project Board Guidelines](docs/PROJECT_BOARD_GUIDELINES.md) - Issue tracking dashboard and update protocol
 - [QA Governance Guide](docs/governance/QA_GOVERNANCE_GUIDE.md) - Complete compliance guide
 - [Policy Version](docs/governance/POLICY_VERSION.md) - Current governance policy (1.1.0)
 - [Agent Contract](.github/agents/PartPulse-agent.md) - ForemanApp agent contract
