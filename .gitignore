@@ -58,3 +58,11 @@ next-env.d.ts
 qa/evidence/*
 !qa/evidence/README.md
 !qa/evidence/capture.js
+
+# Fix evidence - track structure but not all evidence files
+# Evidence subdirectories should be committed for audit trail
+# But we keep the directory structure
+evidence/fixes/*
+!evidence/fixes/README.md
+!evidence/fixes/*/
+!evidence/fixes/*/README.md

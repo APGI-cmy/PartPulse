@@ -1,0 +1,151 @@
+name: Defect Report - Technical Debt
+description: Report architectural or quality issues that create maintenance burden
+title: "[TECH-DEBT] "
+labels: ["defect-tech-debt"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Defect Report - TECH_DEBT
+        Use this template to report implementation that works but violates quality standards or creates maintenance burden.
+        
+        **Classification**: TECH_DEBT (Architectural or Quality Issue)
+        
+        This template follows the Defect Resolution and Maintenance Canon from maturion-foreman-governance.
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this technical debt?
+      options:
+        - CRITICAL - Security vulnerability, data integrity risk, system instability
+        - HIGH - Significant maintenance burden, performance issues, test gaps
+        - MEDIUM - Code quality issues, moderate complexity, incomplete error handling
+        - LOW - Minor improvements, documentation gaps, code style
+    validations:
+      required: true
+
+  - type: dropdown
+    id: debt_type
+    attributes:
+      label: Tech Debt Type
+      description: What type of technical debt is this?
+      options:
+        - Code Quality - Complexity, duplication, poor structure
+        - Performance - Slow queries, inefficient algorithms
+        - Error Handling - Incomplete or missing error handling
+        - Testing - Test coverage gaps, incomplete tests
+        - Documentation - Missing or outdated documentation
+        - Security - Vulnerability in dependencies, insecure patterns
+        - Architecture - Design issues, tight coupling
+        - Dependencies - Deprecated or outdated dependencies
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Technical Debt Description
+      description: What is the quality or architectural issue?
+      placeholder: Describe the technical debt...
+    validations:
+      required: true
+
+  - type: textarea
+    id: location
+    attributes:
+      label: Location
+      description: Where is this technical debt?
+      placeholder: |
+        - File(s): path/to/file.ts
+        - Function/Component: ComponentName
+        - Lines: 123-456
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue
+    attributes:
+      label: Specific Issues
+      description: What specifically is wrong?
+      placeholder: |
+        - Issue 1
+        - Issue 2
+        - Issue 3
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact Assessment
+      description: What is the impact of this tech debt?
+      placeholder: |
+        - Maintenance burden: (describe difficulty)
+        - Risk: (performance / security / stability)
+        - Development velocity impact: (slows down changes)
+        - Future problems: (what could go wrong)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: deliberate
+    attributes:
+      label: Tech Debt Origin
+      description: How did this tech debt arise?
+      options:
+        - Deliberate - Conscious tradeoff, documented
+        - Accidental - Oversight, should have been caught
+        - Emergent - Became debt as system evolved
+    validations:
+      required: true
+
+  - type: textarea
+    id: improvement
+    attributes:
+      label: Improvement Approach
+      description: How could this be improved?
+      placeholder: Describe potential solution or improvements...
+    validations:
+      required: true
+
+  - type: textarea
+    id: standards
+    attributes:
+      label: Standards Violated
+      description: What quality standards or best practices are violated?
+      placeholder: |
+        - Standard 1
+        - Best practice 2
+        - Governance requirement 3
+
+  - type: input
+    id: discoverer
+    attributes:
+      label: Identified By
+      description: Who identified this technical debt?
+      placeholder: Name or username
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional Notes
+      description: Any other relevant information
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Reporter Checklist
+      options:
+        - label: I have identified the specific quality issue
+          required: true
+        - label: I have assessed the impact
+          required: true
+        - label: I have assigned appropriate severity
+          required: true
+        - label: I have described the improvement approach
+          required: true
