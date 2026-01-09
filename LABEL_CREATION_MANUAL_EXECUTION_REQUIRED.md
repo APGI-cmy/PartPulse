@@ -245,7 +245,7 @@ Re-run script - it's idempotent and will skip already-created labels.
 
 ## References
 
-- **Original Issue**: [Link to issue requesting label creation]
+- **Original Issue**: [GOVERNANCE] Create Required Labels for Defect Resolution Process
 - **PR #136**: Defect Resolution Canon Implementation (merged)
 - **Documentation**: 
   - `/docs/github-labels-configuration.md` - Label taxonomy

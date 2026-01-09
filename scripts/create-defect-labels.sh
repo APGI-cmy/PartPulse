@@ -13,7 +13,7 @@
 # Usage:
 #   bash scripts/create-defect-labels.sh
 #
-# Reference: https://github.com/APGI-cmy/PartPulse/issues/[ISSUE_NUMBER]
+# Reference: https://github.com/APGI-cmy/PartPulse/labels
 
 set -e  # Exit on error
 set -u  # Exit on undefined variable

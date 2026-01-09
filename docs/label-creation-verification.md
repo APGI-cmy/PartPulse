@@ -158,10 +158,13 @@ After successful creation, provide evidence:
 
 ## References
 
-- **Issue**: [Link to issue requesting label creation]
-- **PR #136**: Defect Resolution Canon Implementation
-- **Documentation**: `/docs/github-labels-configuration.md`
-- **Process**: `/docs/defect-resolution-process.md`
+- **Original Issue**: [GOVERNANCE] Create Required Labels for Defect Resolution Process
+- **PR #136**: Defect Resolution Canon Implementation (merged)
+- **Documentation**: 
+  - `/docs/github-labels-configuration.md` - Label taxonomy
+  - `/docs/defect-resolution-process.md` - Full process
+  - `/docs/label-creation-verification.md` - Verification checklist
+- **Script**: `/scripts/create-defect-labels.sh`
 - **Canonical Source**: `maturion-foreman-governance/governance/canon/DEFECT_RESOLUTION_MAINTENANCE_CANON.md`
 
 ---
