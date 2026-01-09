@@ -29,17 +29,17 @@ echo "Creating Classification Labels..."
 gh label create "defect-bug" \
   --color "d73a4a" \
   --description "Functional defect - behavior does not match specification" \
-  --force || echo "  ⚠️  defect-bug already exists"
+  --force || { echo "  ⚠️  Failed to create defect-bug"; exit 1; }
 
 gh label create "defect-feature" \
   --color "0075ca" \
   --description "Missing capability - required functionality not implemented" \
-  --force || echo "  ⚠️  defect-feature already exists"
+  --force || { echo "  ⚠️  Failed to create defect-feature"; exit 1; }
 
 gh label create "defect-tech-debt" \
   --color "fbca04" \
   --description "Quality/architectural issue - creates maintenance burden" \
-  --force || echo "  ⚠️  defect-tech-debt already exists"
+  --force || { echo "  ⚠️  Failed to create defect-tech-debt"; exit 1; }
 
 echo "✅ Classification labels created"
 echo ""
@@ -49,22 +49,22 @@ echo "Creating Severity Labels..."
 gh label create "severity-critical" \
   --color "b60205" \
   --description "Production down, data loss, security breach, blocking users" \
-  --force || echo "  ⚠️  severity-critical already exists"
+  --force || { echo "  ⚠️  Failed to create severity-critical"; exit 1; }
 
 gh label create "severity-high" \
   --color "d93f0b" \
   --description "Major functionality broken, significant user impact" \
-  --force || echo "  ⚠️  severity-high already exists"
+  --force || { echo "  ⚠️  Failed to create severity-high"; exit 1; }
 
 gh label create "severity-medium" \
   --color "fbca04" \
   --description "Functionality degraded, moderate user impact, workaround available" \
-  --force || echo "  ⚠️  severity-medium already exists"
+  --force || { echo "  ⚠️  Failed to create severity-medium"; exit 1; }
 
 gh label create "severity-low" \
   --color "0e8a16" \
   --description "Minor issue, cosmetic, limited impact" \
-  --force || echo "  ⚠️  severity-low already exists"
+  --force || { echo "  ⚠️  Failed to create severity-low"; exit 1; }
 
 echo "✅ Severity labels created"
 echo ""
@@ -74,17 +74,17 @@ echo "Creating Status Labels..."
 gh label create "fix-in-progress" \
   --color "1d76db" \
   --description "Fix work underway" \
-  --force || echo "  ⚠️  fix-in-progress already exists"
+  --force || { echo "  ⚠️  Failed to create fix-in-progress"; exit 1; }
 
 gh label create "fix-deployed" \
   --color "0e8a16" \
   --description "Fix deployed to production" \
-  --force || echo "  ⚠️  fix-deployed already exists"
+  --force || { echo "  ⚠️  Failed to create fix-deployed"; exit 1; }
 
 gh label create "fix-verified" \
   --color "006b75" \
   --description "Defect confirmed resolved in production" \
-  --force || echo "  ⚠️  fix-verified already exists"
+  --force || { echo "  ⚠️  Failed to create fix-verified"; exit 1; }
 
 echo "✅ Status labels created"
 echo ""
@@ -94,7 +94,7 @@ echo "Creating Special Labels..."
 gh label create "ripple" \
   --color "e99695" \
   --description "Requires cross-repo awareness" \
-  --force || echo "  ⚠️  ripple already exists"
+  --force || { echo "  ⚠️  Failed to create ripple"; exit 1; }
 
 echo "✅ Special labels created"
 echo ""

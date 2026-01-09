@@ -59,12 +59,11 @@ To facilitate manual execution by a human with GitHub access, I have created:
 
 **Steps:**
 ```bash
-# 1. Clone repository (if not already cloned)
-git clone https://github.com/APGI-cmy/PartPulse.git
-cd PartPulse
+# 1. Navigate to repository directory
+cd /path/to/PartPulse
 
-# 2. Checkout PR branch
-git checkout copilot/create-required-labels-defect-resolution
+# 2. Ensure you have the latest changes (if PR is merged to main)
+git pull origin main
 
 # 3. Run script
 bash scripts/create-defect-labels.sh

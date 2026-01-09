@@ -26,10 +26,10 @@ This is a GitHub platform limitation, not a repository configuration.
 
 **Steps**:
 ```bash
-# 1. Ensure you're in repository root
-cd /home/runner/work/PartPulse/PartPulse
+# 1. Navigate to repository root directory
+cd /path/to/PartPulse
 
-# 2. Make script executable
+# 2. Make script executable (if not already)
 chmod +x scripts/create-defect-labels.sh
 
 # 3. Run script
