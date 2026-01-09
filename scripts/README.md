@@ -4,6 +4,41 @@ This directory contains utility scripts for PartPulse administration.
 
 ## Available Scripts
 
+### create-defect-labels.sh
+
+**Purpose:** Create required GitHub labels for Defect Resolution Process
+
+**Usage:**
+```bash
+bash scripts/create-defect-labels.sh
+```
+
+**Prerequisites:**
+- GitHub CLI (`gh`) installed
+- Authenticated with repository access (`gh auth login`)
+
+**What it creates:**
+- 3 Classification labels (`defect-bug`, `defect-feature`, `defect-tech-debt`)
+- 4 Severity labels (`severity-critical`, `severity-high`, `severity-medium`, `severity-low`)
+- 3 Status labels (`fix-in-progress`, `fix-deployed`, `fix-verified`)
+- 1 Special label (`ripple`)
+
+**Features:**
+- Creates all 11 labels with correct colors and descriptions
+- Uses `--force` flag to update existing labels
+- Provides clear status messages
+- Includes verification instructions
+
+**Use Cases:**
+- Initial setup of Defect Resolution Process (PR #136)
+- Recovering deleted labels
+- Updating label descriptions to match canonical requirements
+
+**Related Documentation:**
+- [/docs/label-creation-verification.md](../docs/label-creation-verification.md) - Complete verification checklist
+- [/docs/github-labels-configuration.md](../docs/github-labels-configuration.md) - Label taxonomy and usage
+- [/docs/defect-resolution-process.md](../docs/defect-resolution-process.md) - Defect resolution process
+
 ### create-user.ts
 
 **Purpose:** Manually create a user or update an existing user's password in the database.
