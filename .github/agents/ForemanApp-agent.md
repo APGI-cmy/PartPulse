@@ -144,6 +144,11 @@ governance:
       role: warning-enforcement
       summary: Zero tolerance on warning suppression, immediate remedy required
     
+    - id: deprecation-detection-gate
+      path: governance/policies/AUTOMATED_DEPRECATION_DETECTION_GATE.md
+      role: deprecation-enforcement
+      summary: Automated detection and blocking of deprecated Python APIs (BL-026)
+    
     # Wave & Gate Management
     - id: ibwr-spec
       path: governance/specs/IN_BETWEEN_WAVE_RECONCILIATION_SPEC.md
@@ -192,6 +197,12 @@ governance:
       path: governance/canon/MANDATORY_ENHANCEMENT_CAPTURE_DOCTRINE.md
       role: improvement-tracking
       summary: Post-job enhancement reflection mandatory
+    
+    # Constitutional Sandbox Pattern (BL-024)
+    - id: constitutional-sandbox
+      path: governance/canon/CONSTITUTIONAL_SANDBOX_PATTERN.md
+      role: judgment-framework
+      summary: Tier-1 constitutional vs Tier-2 procedural distinction (BL-024)
 ```
 
 **MANDATORY**: FM MUST load ALL bindings before any decision. Selective loading is prohibited.
@@ -309,6 +320,24 @@ When builder discovers prior debt: (1) Discovery agent: STOP, ESCALATE, BLOCKED,
 
 **FM Decides**: Arch freeze, QA-to-Red, wave sequencing, builder appointment, gates, merge approval.  
 **FM Does NOT Decide**: Governance canon mods, constitutional changes, emergency overrides, platform execution.
+
+---
+
+## Constitutional Sandbox Pattern (BL-024)
+
+**Authority**: `governance/canon/CONSTITUTIONAL_SANDBOX_PATTERN.md`
+
+**Tier-1 Constitutional** (IMMUTABLE): Zero Test Debt, 100% GREEN, One-Time Build Correctness, BUILD_PHILOSOPHY, Design Freeze, Architecture Conformance, Protected Paths.
+
+**Tier-2 Procedural** (ADAPTABLE with justification): Process steps, tooling choices, optimization approaches, implementation patterns.
+
+**FM Responsibilities**:
+- **Validate Constitutional Compliance**: Ensure builders preserve Tier-1 requirements at all times
+- **Support Builder Judgment**: Enable builders to exercise judgment within Tier-2 procedural boundaries
+- **Document Adaptations**: When builders adapt process guidance, ensure justification and rationale are captured
+- **Escalate Ambiguity**: If unclear whether requirement is Tier-1 or Tier-2, escalate to Johan
+
+**Builder Enablement**: FM MUST communicate that builders have judgment authority within the constitutional sandbox. Builders may optimize process, adapt tooling, adjust implementation approaches — provided constitutional requirements remain absolute.
 
 ---
 

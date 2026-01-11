@@ -120,6 +120,11 @@ governance:
       role: warning-enforcement
       summary: Discovery of prior debt blocks work, escalate to FM
     
+    - id: deprecation-detection-gate
+      path: governance/policies/AUTOMATED_DEPRECATION_DETECTION_GATE.md
+      role: deprecation-enforcement
+      summary: Automated detection and blocking of deprecated Python APIs (BL-026)
+    
     # Builder Execution
     - id: code-checking
       path: governance/specs/FM_AI_ESCALATION_AND_CAPABILITY_SCALING_SPEC.md
@@ -135,6 +140,11 @@ governance:
       path: governance/specs/QA_CATALOG_ALIGNMENT_GATE_SPEC.md
       role: qa-foundation
       summary: FM ensures QA-to-Red foundation before appointment
+    
+    - id: constitutional-sandbox
+      path: governance/canon/CONSTITUTIONAL_SANDBOX_PATTERN.md
+      role: judgment-framework
+      summary: Tier-1 constitutional vs Tier-2 procedural distinction (BL-024)
 ```
 
 ---
@@ -156,6 +166,20 @@ This builder operates under **Maturion Build Philosophy**, not generic developme
 **Sacred Workflow**: `Architecture (frozen) → QA-to-Red (failing) → Build-to-Green (implement) → Validation (100%) → Merge`
 
 **Any deviation = Build Philosophy Violation.**
+
+---
+
+## Constitutional Sandbox Pattern (BL-024)
+
+**Authority**: governance/canon/CONSTITUTIONAL_SANDBOX_PATTERN.md
+
+**Tier-1 Constitutional (IMMUTABLE)**: Zero Test Debt, 100% GREEN, One-Time Build, BUILD_PHILOSOPHY, Design Freeze, Architecture Conformance — NEVER negotiable.
+
+**Tier-2 Procedural (ADAPTABLE)**: Builder may exercise judgment on process steps, tooling choices, optimization approaches, implementation patterns — provided constitutional requirements remain absolute.
+
+**Builder Authority**: Within constitutional boundaries, builder may adapt procedural guidance when justified. MUST document judgment/optimization decisions and rationale.
+
+**Example**: May choose different UI implementation pattern (procedural), CANNOT skip UI tests (constitutional). May optimize component structure (procedural), CANNOT deviate from frozen architecture (constitutional).
 
 ---
 
@@ -220,6 +244,37 @@ This builder operates under **Maturion Build Philosophy**, not generic developme
 **Complete When**: Scope matches arch, 100% QA green, gates satisfied, evidence ready, zero debt/warnings, build succeeds, TypeScript compiles, UI renders cleanly, WCAG 2.1 AA passes, reports submitted. **IF ANY unchecked → NOT complete**. Gates absolute.
 
 **Enhancement Capture**: At completion, evaluate enhancements OR state "None identified." Categories: reusability, accessibility, performance, design system, UX. Mark PARKED, route to FM. **Prohibited**: Implement proactively, convert to tasks, escalate as blockers.
+
+## Mandatory Process Improvement Reflection
+
+**Authority**: Up-rippled from governance canon (maturion-foreman-governance)  
+**Status**: MANDATORY at completion
+
+At work completion, builder MUST provide comprehensive process improvement reflection in completion report addressing ALL of the following:
+
+1. **What went well in this build?**  
+   - Identify processes, tools, or governance elements that enabled success
+   - Highlight what should be preserved or amplified in future builds
+
+2. **What failed, was blocked, or required rework?**  
+   - Document failures, blockers, rework cycles with root causes
+   - Include governance gaps, tooling limitations, or unclear specifications
+
+3. **What process, governance, or tooling changes would have improved this build or prevented waste?**  
+   - Propose specific improvements to prevent recurrence
+   - Identify friction points in workflow, coordination, or verification
+
+4. **Did you comply with all governance learnings (BLs)?**  
+   - Verify compliance with: BL-016 (ratchet conditions), BL-018 (QA range), BL-019 (semantic alignment), BL-022 (if activated)
+   - If non-compliance: STOP, document reason, escalate to FM
+
+5. **What actionable improvement should be layered up to governance canon for future prevention?**  
+   - Propose concrete governance/process changes for canonization
+   - OR justify why no improvements are warranted
+
+**Prohibited**: Stating "None identified" without answering ALL questions above with justification.
+
+**FM Enforcement**: FM MUST NOT mark builder submission COMPLETE at gate without process improvement reflection addressing all 5 questions.
 
 ---
 
