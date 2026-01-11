@@ -1,9 +1,10 @@
 # Governance Version — PartPulse
 
 **Repository**: MaturionISMS/PartPulse (APGI-cmy/PartPulse)  
-**Date**: 2026-01-09  
+**Date**: 2026-01-11  
 **Status**: Active  
-**Governance Framework**: ForemanApp Agent Contract
+**Governance Framework**: ForemanApp Agent Contract  
+**Layer-Down Status**: ✅ COMPLETE (FPC Protocol Applied 2026-01-11)
 
 ---
 
@@ -12,9 +13,11 @@
 **Version**: 2.0.0  
 **Effective Date**: 2026-01-09  
 **Policy Framework**: DP-RED Support + FL/CI Integration + Canonical Governance Sync  
-**Last Sync Date**: 2026-01-09  
+**Last Sync Date**: 2026-01-11  
 **Sync Source**: maturion-foreman-governance + maturion-foreman-office-app  
-**Sync Status**: ✅ COMPLETE - 19 core governance files synced (306KB)
+**Sync Status**: ✅ COMPLETE - 19 core governance files synced (306KB)  
+**Layer-Down Protocol**: REPOSITORY_INITIALIZATION_AND_GOVERNANCE_SEEDING_PROTOCOL v1.0  
+**Layer-Down Completion**: 2026-01-11 (Retroactive alignment for established repository)
 
 ---
 
@@ -296,6 +299,30 @@
 ---
 
 ## Version History
+
+### Version 2.0.1 (2026-01-11) — Layer-Down Completion
+
+**Changes**:
+- ✅ Applied FPC (First Point of Contact) Layer-Down Protocol
+- ✅ Created `.architecture/` directory with mandatory subdirectories
+  - `.architecture/commissioning/` for commissioning evidence
+  - `.architecture/parking-station/` for enhancement parking
+- ✅ Created `.architecture/REPOSITORY_INITIALIZATION_EVIDENCE.md` (initialization evidence)
+- ✅ Created `governance/schemas/` with README referencing canonical schemas
+- ✅ Created `governance/policies/` with README referencing canonical policies
+- ✅ Updated GOVERNANCE_VERSION.md with layer-down status and protocol references
+- ✅ Documented repository as REPOSITORY_INITIALIZED state
+- ✅ Confirmed retroactive layer-down for already-governed repository
+
+**Protocol**: REPOSITORY_INITIALIZATION_AND_GOVERNANCE_SEEDING_PROTOCOL v1.0  
+**Layer-Down Guides**:
+- REPOSITORY_INITIALIZATION_AND_GOVERNANCE_SEEDING_PROTOCOL.md
+- GOVERNANCE_LAYERDOWN_CONTRACT.md
+- CROSS_REPOSITORY_LAYER_DOWN_PROTOCOL.md
+
+**Summary**: Retroactive governance layer-down completed. Repository structure now fully compliant with canonical requirements. Existing governance (9 agents, 5 workflows, comprehensive QA) confirmed and documented.
+
+---
 
 ### Version 1.1.0 (2026-01-09)
 
