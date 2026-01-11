@@ -1,0 +1,290 @@
+---
+id: partpulse-app
+description: >
+  PartPulse application repository for parts management, inventory control,
+  and procurement tracking with multi-location support. Full-stack Next.js
+  application under Maturion governance framework.
+
+repository:
+  name: PartPulse
+  owner: APGI-cmy
+  type: application
+  technology: next.js
+
+governance:
+  canon:
+    repository: APGI-cmy/maturion-foreman-governance
+    path: /governance/canon
+    reference: main
+    version: 7dc8110ce2477e1eb441eb905c56951090df36ed
+  
+  fpc_compliance:
+    status: complete
+    version: 1.0.0
+    date: 2026-01-11
+  
+  bindings:
+    # Supreme authority
+    - id: build-philosophy
+      path: BUILD_PHILOSOPHY.md
+      role: supreme-authority
+    
+    # Constitutional governance
+    - id: agent-constitution
+      path: governance/canon/AGENT_CONSTITUTION.md
+      role: agent-doctrine
+    
+    # FM authority and execution
+    - id: fm-execution-mandate
+      path: governance/canon/FM_EXECUTION_MANDATE.md
+      role: fm-authority
+    - id: fm-operational-guidance
+      path: governance/canon/FM_OPERATIONAL_GUIDANCE.md
+      role: fm-operations
+    - id: fm-preauth-checklist
+      path: governance/canon/FM_PREAUTH_CHECKLIST_CANON.md
+      role: builder-gate
+    
+    # Builder appointment and lifecycle
+    - id: builder-appointment
+      path: governance/canon/BUILDER_APPOINTMENT_PROCESS.md
+      role: builder-lifecycle
+    - id: agent-recruitment
+      path: governance/canon/AGENT_RECRUITMENT.md
+      role: agent-legitimacy
+    
+    # QA and testing governance
+    - id: qa-catalog-gate
+      path: governance/canon/QA_CATALOG_GATE.md
+      role: qa-enforcement
+    - id: zero-test-debt
+      path: governance/canon/zero-test-debt-constitutional-rule.md
+      role: qa-enforcement
+    - id: test-removal-governance
+      path: governance/canon/TEST_REMOVAL_GOVERNANCE_GATE_LOCAL.md
+      role: test-governance
+    - id: zero-warning-debt
+      path: governance/canon/ZERO_WARNING_TEST_DEBT_IMMEDIATE_REMEDY_DOCTRINE.md
+      role: warning-enforcement
+    - id: agent-qa-boundaries
+      path: governance/canon/AGENT_SCOPED_QA_BOUNDARIES.md
+      role: constitutional-boundary
+    
+    # PR gates and enforcement
+    - id: pr-gate-requirements
+      path: governance/canon/PR_GATE_REQUIREMENTS_CANON.md
+      role: gate-enforcement
+    - id: pr-gate-precondition
+      path: governance/canon/PR_GATE_PRECONDITION_RULE.md
+      role: gate-precondition
+    
+    # Escalation and procedures
+    - id: escalation-procedures
+      path: governance/canon/ESCALATION_PROCEDURES.md
+      role: escalation-policy
+    
+    # Learning and improvement
+    - id: learning-promotion
+      path: governance/canon/LEARNING_PROMOTION_RULE.md
+      role: learning-capture
+    - id: failure-promotion
+      path: governance/canon/FAILURE_PROMOTION_RULE.md
+      role: failure-learning
+    - id: bootstrap-learnings
+      path: governance/canon/BOOTSTRAP_EXECUTION_LEARNINGS.md
+      role: execution-learnings
+    
+    # Repository initialization
+    - id: repo-initialization
+      path: governance/canon/REPOSITORY_INITIALIZATION_AND_GOVERNANCE_SEEDING_PROTOCOL.md
+      role: initialization-protocol
+    - id: fpc-layerdown
+      path: governance/canon/FPC_REPOSITORY_LAYERDOWN_GUIDE.md
+      role: layerdown-protocol
+    - id: cross-repo-layerdown
+      path: governance/canon/CROSS_REPOSITORY_LAYER_DOWN_PROTOCOL.md
+      role: cross-repo-governance
+    
+    # Governance completeness
+    - id: governance-completeness
+      path: governance/canon/GOVERNANCE_COMPLETENESS_MODEL.md
+      role: completeness-validation
+
+agents:
+  foreman:
+    - id: ForemanApp
+      path: .github/agents/ForemanApp-agent.md
+      version: 4.0.0
+      role: orchestration-authority
+  
+  governance:
+    - id: governance-liaison
+      path: .github/agents/governance-liaison.md
+      version: 2.0.0
+      role: governance-enforcement
+  
+  builders:
+    - id: api-builder
+      path: .github/agents/api-builder.md
+      role: backend-development
+    - id: ui-builder
+      path: .github/agents/ui-builder.md
+      role: frontend-development
+    - id: qa-builder
+      path: .github/agents/qa-builder.md
+      role: quality-assurance
+    - id: schema-builder
+      path: .github/agents/schema-builder.md
+      role: database-schema
+    - id: integration-builder
+      path: .github/agents/integration-builder.md
+      role: integration-development
+  
+  domain:
+    - id: partpulse-agent
+      path: .github/agents/PartPulse-agent.md
+      version: 1.0.0
+      role: domain-coordination
+    - id: codex-advisor
+      path: .github/agents/CodexAdvisor-agent.md
+      role: advisory
+
+gates:
+  workflows:
+    - id: qa-enforcement
+      path: .github/workflows/qa-enforcement.yml
+      role: qa-validation
+    - id: qa-enforcement-v2
+      path: .github/workflows/qa-enforcement-v2.yml
+      role: enhanced-qa-validation
+    - id: minimum-build-to-red
+      path: .github/workflows/minimum-build-to-red.yml
+      role: build-to-green-enforcement
+    - id: model-scaling-check
+      path: .github/workflows/model-scaling-check.yml
+      role: architecture-validation
+  
+  branch_protection:
+    enabled: true
+    default_branch: main
+    required_checks:
+      - qa-enforcement
+      - qa-enforcement-v2
+      - minimum-build-to-red
+      - model-scaling-check
+
+scope:
+  repository: APGI-cmy/PartPulse
+  
+  allowed_paths:
+    # Application code
+    - "app/**"
+    - "components/**"
+    - "lib/**"
+    - "types/**"
+    - "public/**"
+    
+    # Architecture and documentation
+    - "architecture/**"
+    - "docs/**"
+    - ".architecture/**"
+    
+    # QA and testing
+    - "qa/**"
+    - ".qa/**"
+    - "__tests__/**"
+    - "jest.*"
+    - "*.test.*"
+    - "*.spec.*"
+    
+    # Governance (governed changes only)
+    - "governance/**"
+    
+    # Infrastructure
+    - ".github/workflows/**"
+    - "prisma/**"
+    - "scripts/**"
+    
+    # Configuration
+    - ".env.example"
+    - "package.json"
+    - "tsconfig.json"
+    - "next.config.*"
+    - "tailwind.config.*"
+    - "postcss.config.*"
+    - "eslint.config.*"
+  
+  restricted_paths:
+    # Repository contract
+    - ".agent"
+    
+    # Agent contracts (require governance authority)
+    - ".github/agents/**"
+  
+  escalation_required_paths:
+    # Constitutional governance changes
+    - "BUILD_PHILOSOPHY.md"
+    - "governance/CONSTITUTION.md"
+    - "governance/canon/**"
+    
+    # Supreme governance files
+    - ".agent"
+    - ".github/agents/ForemanApp-agent.md"
+    - ".github/agents/governance-liaison.md"
+
+evidence:
+  initialization:
+    path: .architecture/REPOSITORY_INITIALIZATION_EVIDENCE.md
+    schema: governance/schemas/REPOSITORY_INITIALIZATION_EVIDENCE.schema.md
+    status: complete
+  
+  commissioning:
+    path: governance/evidence/commissioning/COMMISSIONING_READINESS.md
+    status: complete
+  
+  architecture:
+    path: architecture/
+    documents: 11
+    size: 280KB
+    status: complete
+  
+  qa:
+    path: qa/
+    plan: qa/QA_PLAN.md
+    tests_defined: 37
+    tests_implemented: 30+
+    status: in-progress
+  
+  learning:
+    failures: qa/FAILURE_LEARNING_LOG.md
+    entries: 6
+    prevention_tests: 17+
+    status: active
+
+cross_references:
+  repos:
+    - id: maturion-foreman-governance
+      repository: APGI-cmy/maturion-foreman-governance
+      role: primary-governance
+    - id: maturion-foreman-office-app
+      repository: APGI-cmy/maturion-foreman-office-app
+      role: fm-execution-surface
+
+lifecycle:
+  phase: build-to-green
+  status: operational
+  created: 2025-12-01
+  initialized: 2025-12-16
+  commissioned: 2025-12-16
+  fpc_layerdown: 2026-01-11
+
+authority:
+  human: Johan Ras
+  foreman: ForemanApp Agent (v4.0.0)
+  governance: Governance Liaison Agent (v2.0.0)
+  
+  escalation_path:
+    - Builder → FM → Johan (operational)
+    - Direct to Johan (constitutional)
+
+---
