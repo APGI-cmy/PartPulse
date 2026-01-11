@@ -1,20 +1,20 @@
 # Governance Version — PartPulse
 
 **Repository**: MaturionISMS/PartPulse (APGI-cmy/PartPulse)  
-**Date**: 2026-01-09  
+**Date**: 2026-01-11  
 **Status**: Active  
-**Governance Framework**: ForemanApp Agent Contract
+**Governance Framework**: ForemanApp Agent Contract + FPC Layer-Down
 
 ---
 
 ## Current Governance Version
 
-**Version**: 2.0.0  
-**Effective Date**: 2026-01-09  
-**Policy Framework**: DP-RED Support + FL/CI Integration + Canonical Governance Sync  
-**Last Sync Date**: 2026-01-09  
-**Sync Source**: maturion-foreman-governance + maturion-foreman-office-app  
-**Sync Status**: ✅ COMPLETE - 19 core governance files synced (306KB)
+**Version**: 2.1.0  
+**Effective Date**: 2026-01-11  
+**Policy Framework**: DP-RED Support + FL/CI Integration + Canonical Governance Sync + FPC Layer-Down  
+**Last Sync Date**: 2026-01-11  
+**Sync Source**: maturion-foreman-governance (canonical commit: 7dc8110ce)  
+**Sync Status**: ✅ COMPLETE - FPC layer-down applied, governance structure aligned with canonical standards
 
 ---
 
@@ -297,7 +297,28 @@
 
 ## Version History
 
-### Version 1.1.0 (2026-01-09)
+### Version 2.1.0 (2026-01-11)
+
+**Changes**:
+- ✅ Applied FPC (First Point of Contact) Repository Layer-Down process
+- ✅ Created `.architecture/` directory with REPOSITORY_INITIALIZATION_EVIDENCE.md
+- ✅ Created `.qa/` directory for QA evidence structure
+- ✅ Created `governance/alignment/` with GOVERNANCE_ALIGNMENT.md for drift detection
+- ✅ Created `governance/evidence/initialization/` and `governance/evidence/commissioning/` for evidence tracking
+- ✅ Created `governance/schemas/` with CANONICAL_SCHEMAS.md (canonical schema references)
+- ✅ Created `governance/mappings/` with GOVERNANCE_GATE_MAPPING.md (gate implementation mapping)
+- ✅ Created `governance/memory/` for future learning storage
+- ✅ Created `governance/evidence/commissioning/COMMISSIONING_READINESS.md`
+- ✅ Updated GOVERNANCE_VERSION.md to reflect FPC compliance
+- ✅ Documented governance version and alignment tracking
+
+**Summary**: FPC layer-down applied to bring repository structure into alignment with canonical governance standards from `maturion-foreman-governance` (commit 7dc8110ce). Repository was already operational with governance v2.0.0; FPC layer-down is additive standardization.
+
+**FPC Compliance**: ✅ COMPLETE - All 8 FPC phases completed, repository now FPC-compliant
+
+---
+
+### Version 2.0.0 (2026-01-09) — SUPERSEDED by 2.1.0
 
 **Changes**:
 - ✅ Created LEARNING_INTEGRATION_SUMMARY.md (comprehensive learning documentation)
