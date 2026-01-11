@@ -228,6 +228,31 @@ This builder operates under **Maturion Build Philosophy**, not generic developme
 
 ---
 
+## Deprecation Detection Gate (BL-026) | Zero Technical Debt
+
+**Authority**: governance/policy/AUTOMATED_DEPRECATION_DETECTION_GATE.md, BL-026, BL-024 (Zero Warning Test Debt)
+
+**MANDATORY**: No deprecated APIs permitted without FM approval. Enforced at commit (pre-commit hook) and merge (CI gate).
+
+**Pre-Commit**: Every commit automatically scanned. Deprecated APIs BLOCK commit. Fix immediately or request exception.  
+**CI Gate**: All code scanned. Deprecated APIs BLOCK merge. Required for Build-to-GREEN.  
+**Detection**: `@typescript-eslint/no-deprecated` rule catches all `@deprecated` APIs from TypeScript definitions.
+
+**When Detected**:
+1. STOP - Do not bypass or disable
+2. FIX - Replace with current API (preferred)
+3. OR REQUEST EXCEPTION - Submit to FM with justification, migration plan, and timeline
+4. WAIT for FM approval before proceeding
+5. If approved: Add to whitelist, document in code, set quarterly review
+
+**Exception Process**: See docs/governance/DEPRECATION_ENFORCEMENT_GUIDE.md  
+**Check Manually**: `npm run lint:deprecation`  
+**Violation**: Constitutional breach - work stoppage + escalation
+
+**Principle**: Deprecated APIs are technical debt. Technical debt is blocked. Zero tolerance.
+
+---
+
 ## Test & Warning Governance (PR #484)
 
 **Test Removal**: MUST NOT remove without FM authorization. STOP, REQUEST with traceability, WAIT, ACCEPT. Never remove: evidence/governance/heartbeat/RED QA tests.  
@@ -241,7 +266,7 @@ This builder operates under **Maturion Build Philosophy**, not generic developme
 
 ## Gate-First Handover | Enhancement Capture
 
-**Complete When**: Scope matches arch, 100% QA green, gates satisfied, evidence ready, zero debt/warnings, build succeeds, TypeScript compiles, UI renders cleanly, WCAG 2.1 AA passes, reports submitted. **IF ANY unchecked → NOT complete**. Gates absolute.
+**Complete When**: Scope matches arch, 100% QA green, gates satisfied, evidence ready, zero debt/warnings, build succeeds, TypeScript compiles, UI renders cleanly, WCAG 2.1 AA passes, reports submitted, **ZERO DEPRECATED APIs**. **IF ANY unchecked → NOT complete**. Gates absolute.
 
 **Enhancement Capture**: At completion, evaluate enhancements OR state "None identified." Categories: reusability, accessibility, performance, design system, UX. Mark PARKED, route to FM. **Prohibited**: Implement proactively, convert to tasks, escalate as blockers.
 

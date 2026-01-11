@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "version": "1.0",
+  "description": "Template for deprecation exception whitelist. Copy to governance/deprecation-whitelist.json when exceptions approved.",
+  "lastReview": "YYYY-MM-DD",
+  "nextReview": "YYYY-MM-DD (quarterly: +3 months)",
+  "reviewedBy": "FM",
+  "exceptions": [
+    {
+      "id": "DEP-001",
+      "api": "Deprecated API/function/method name",
+      "library": "Package name if from dependency",
+      "file": "Path to file using deprecated API",
+      "line": "Line number(s) where used",
+      "reason": "Why this deprecated API must be used temporarily",
+      "migration_plan": "Concrete plan to remove usage - what will replace it and when",
+      "migration_complexity": "LOW | MEDIUM | HIGH",
+      "approved_by": "FM",
+      "approval_date": "YYYY-MM-DD",
+      "approval_reference": "Link to approval issue/PR/comment",
+      "expiration_date": "YYYY-MM-DD (hard deadline for removal)",
+      "quarterly_review": "YYYY-MM-DD (next mandatory review)",
+      "status": "active | migrating | resolved",
+      "notes": "Additional context, blockers, or updates"
+    },
+    {
+      "id": "DEP-002",
+      "api": "Example: React.PropTypes",
+      "library": "react@15.x",
+      "file": "components/legacy/OldComponent.tsx",
+      "line": "45-67",
+      "reason": "Legacy component awaiting full rewrite, PropTypes still used",
+      "migration_plan": "Rewrite component to use TypeScript types in Wave 5.2 (scheduled 2026-03-15)",
+      "migration_complexity": "HIGH",
+      "approved_by": "FM",
+      "approval_date": "2026-01-11",
+      "approval_reference": "Issue #123",
+      "expiration_date": "2026-04-01",
+      "quarterly_review": "2026-04-11",
+      "status": "active",
+      "notes": "Dependent on TypeScript migration wave completion"
+    }
+  ],
+  "statistics": {
+    "total_exceptions": 0,
+    "active_exceptions": 0,
+    "expiring_soon": 0,
+    "overdue": 0
+  },
+  "compliance": {
+    "policy": "governance/policy/AUTOMATED_DEPRECATION_DETECTION_GATE.md",
+    "learning": "BL-026 (Automated Deprecation Detection)",
+    "enforcement": "Pre-commit hook + CI/CD gate",
+    "review_frequency": "Quarterly",
+    "fm_approval_required": true
+  }
+}

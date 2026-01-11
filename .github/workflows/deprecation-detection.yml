@@ -1,0 +1,80 @@
+name: Deprecation Detection Gate
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+jobs:
+  deprecation-check:
+    name: Detect Deprecated API Usage
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run Deprecation Detection
+        id: deprecation-check
+        run: |
+          echo "=== Scanning for deprecated API usage ==="
+          echo "Policy: governance/policy/AUTOMATED_DEPRECATION_DETECTION_GATE.md"
+          echo "Learning: BL-026 (Automated Deprecation Detection)"
+          echo ""
+          
+          # Run ESLint with deprecation-only config
+          # Uses eslint.config.deprecation.mjs which ONLY checks @typescript-eslint/no-deprecated
+          # --no-inline-config ignores eslint-disable comments for other rules
+          npx eslint --config eslint.config.deprecation.mjs --no-inline-config '**/*.ts' '**/*.tsx' --no-error-on-unmatched-pattern
+      
+      - name: Evidence Capture on Failure
+        if: failure()
+        run: |
+          echo ""
+          echo "╔══════════════════════════════════════════════════════════════╗"
+          echo "║  ❌ MERGE BLOCKED: Deprecated API Usage Detected            ║"
+          echo "╚══════════════════════════════════════════════════════════════╝"
+          echo ""
+          echo "Deprecated APIs found in codebase."
+          echo ""
+          echo "Required Actions:"
+          echo "1. Fix deprecated API usage immediately (preferred)"
+          echo "2. OR submit exception request to FM with:"
+          echo "   - What API is deprecated"
+          echo "   - Why it must be used temporarily"
+          echo "   - Migration plan with timeline"
+          echo "   - Obtain FM written approval"
+          echo ""
+          echo "Policy: governance/policy/AUTOMATED_DEPRECATION_DETECTION_GATE.md"
+          echo "Learning: BL-026 (Automated Deprecation Detection)"
+          echo ""
+          echo "This is a CONSTITUTIONAL requirement - no exceptions without FM approval."
+          echo ""
+          
+          # Capture evidence if evidence script exists
+          if [ -f qa/evidence/capture.js ]; then
+            node qa/evidence/capture.js "deprecation-violation" "Deprecated API usage detected in CI"
+          fi
+          
+          exit 1
+      
+      - name: Success Message
+        if: success()
+        run: |
+          echo ""
+          echo "✅ Deprecation Detection: PASS"
+          echo "No deprecated APIs detected in codebase"
+          echo ""

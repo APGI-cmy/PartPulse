@@ -117,6 +117,15 @@ Implement Next.js API routes, backend business logic, and data processing from f
 **Zero Debt**: No .skip(), .todo(), commented, incomplete, partial (99%=FAILURE) | **Response**: STOP, FIX, RE-RUN, VERIFY 100%  
 **Prior Debt Discovery**: STOP, DOCUMENT, ESCALATE to FM, BLOCKED, WAIT | **If Re-Assigned**: FIX own debt completely, VERIFY, PROVIDE evidence
 
+## Deprecation Detection Gate (BL-026) | Zero Technical Debt
+
+**Authority**: governance/policy/AUTOMATED_DEPRECATION_DETECTION_GATE.md, BL-026, BL-024
+
+**MANDATORY**: No deprecated APIs without FM approval. Enforced at commit and merge.  
+**When Detected**: STOP → FIX (preferred) OR REQUEST EXCEPTION (FM approval + migration plan required) → WAIT → Document  
+**Check**: `npm run lint:deprecation` | **Guide**: docs/governance/DEPRECATION_ENFORCEMENT_GUIDE.md  
+**Principle**: Deprecated APIs are technical debt. Technical debt is blocked. Zero tolerance.
+
 ## Test & Warning Governance (PR #484)
 
 **Test Removal**: MUST NOT without FM authorization. Always valid: evidence/governance/heartbeat/RED QA tests.  
@@ -126,7 +135,7 @@ Implement Next.js API routes, backend business logic, and data processing from f
 
 ## Gate-First Handover | Enhancement Capture | Appointment Protocol
 
-**Complete When**: Scope matches arch, 100% QA green, gates satisfied, evidence ready, zero debt/warnings, build succeeds, API tests pass, error handling tested, reports submitted  
+**Complete When**: Scope matches arch, 100% QA green, gates satisfied, evidence ready, zero debt/warnings, build succeeds, API tests pass, error handling tested, reports submitted, **ZERO DEPRECATED APIs**  
 **Enhancement**: At completion, evaluate enhancements OR state "None identified." Mark PARKED, route to FM.  
 **Appointment**: Verify completeness, acknowledge obligations, confirm scope, declare readiness. OPOJD: Execute continuously EXECUTING→COMPLETE/BLOCKED. FM may HALT/REVOKE. Invalid if missing: arch/QA-to-Red/criteria/scope/governance/RIA.
 

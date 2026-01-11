@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Pre-commit Hook - Deprecation Detection Gate (BL-026)
+# Policy: governance/policy/AUTOMATED_DEPRECATION_DETECTION_GATE.md
+# This hook blocks commits containing deprecated API usage
+
+node scripts/check-deprecations.js
+

@@ -87,7 +87,9 @@ export async function POST(request: NextRequest) {
     const validationResult = InternalTransferSchema.safeParse(body);
     
     if (!validationResult.success) {
-      console.error('[INTERNAL_TRANSFER] Validation failed:', validationResult.error.flatten());
+      // Use error.issues for validation errors (format() and flatten() deprecated in zod 4.x)
+      const errorDetails = validationResult.error.issues;
+      console.error('[INTERNAL_TRANSFER] Validation failed:', JSON.stringify(errorDetails));
       
       return NextResponse.json(
         {
@@ -95,7 +97,7 @@ export async function POST(request: NextRequest) {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'Invalid input data',
-            details: validationResult.error.flatten(),
+            details: errorDetails,
           },
         },
         { status: 400 }

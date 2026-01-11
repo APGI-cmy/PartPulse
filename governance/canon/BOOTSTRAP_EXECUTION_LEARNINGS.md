@@ -2104,13 +2104,212 @@ This is a **first-time failure** (CATASTROPHIC classification) representing **mi
 
 ---
 
+## BL-024 — Zero Warning Test Debt (Constitutional Requirement)
+
+**Context:** Code Quality and Technical Debt Prevention
+
+**Observed Issue:**  
+Warning accumulation in builds and tests creates technical debt that compounds over time. Warnings are often ignored as "non-blocking" but eventually cause:
+- Build failures when dependencies updated
+- Security vulnerabilities from ignored deprecations
+- Maintenance burden from accumulated cruft
+- Emergency fixes when warnings become errors
+
+**Root Cause:**  
+- Warnings treated as "soft failures" rather than errors
+- No enforcement mechanism for zero-warning builds
+- "Will fix later" mentality allows accumulation
+- Lack of automated gates to prevent warning introduction
+
+**Learning:**  
+Warnings MUST be treated as errors and blocked at commit and merge time. Zero-warning philosophy is constitutional and non-negotiable. All warnings must be configured as errors in tooling (ESLint, TypeScript, etc.) to enforce 100% GREEN standard.
+
+**Governance Impact:**  
+- Lint warnings must be error-level, not warning-level
+- CI/CD gates must fail on any warnings
+- Pre-commit hooks must block warning introduction
+- Exception process requires FM approval
+- Related to BL-026 (extends to deprecation warnings)
+
+**Implementation Requirements:**
+- ESLint: `--max-warnings 0` flag required
+- TypeScript: Strict mode with no ignored diagnostics
+- Build tools: Warning-as-error configuration
+- CI workflows: Fail on warnings detected
+- Pre-commit: Local warning detection and blocking
+
+**Status:** Constitutional — Required in all repositories
+
+**Related Policy:** governance/policy/AUTOMATED_DEPRECATION_DETECTION_GATE.md (Section 11)
+
+---
+
+**End of BL-024**
+
+---
+
+## BL-026 — Automated Deprecation Detection Required
+
+**Context:** Code Quality and Technical Debt Prevention
+
+**Observed Issue:**  
+Deprecated API usage accumulates silently in codebases until library updates force emergency migrations. This creates:
+- Unexpected breaking changes during routine dependency updates
+- Emergency work when deprecated APIs are removed by maintainers
+- Security vulnerabilities from unmaintained deprecated code paths
+- Technical debt that compounds over time
+- Production incidents when deprecated features fail
+
+**Root Cause:**  
+- No automated detection of deprecated API usage
+- Deprecation warnings from libraries ignored or unseen
+- Developers unaware when using deprecated APIs
+- No enforcement mechanism at commit or merge time
+- Reactive rather than proactive approach to API deprecations
+
+**Learning:**  
+Deprecation detection MUST be automated and enforced at two gates:
+1. **Pre-commit hook** - Immediate developer feedback before code enters git
+2. **CI/CD gate** - Merge blocking enforcement before code enters main branch
+
+Deprecations are a form of technical debt and MUST be treated with the same zero-tolerance as test failures and build warnings. This is an extension of BL-024 (Zero Warning Test Debt) to include deprecation-specific detection.
+
+**Governance Impact:**  
+- Requires ESLint with deprecation plugin configured as error-level
+- Requires pre-commit hooks with deprecation checks
+- Requires CI/CD workflow with deprecation detection gate
+- Requires exception process with FM approval and documentation
+- Requires quarterly whitelist review for approved exceptions
+- Requires initial codebase audit when implementing policy
+
+**Implementation Requirements:**
+- **ESLint Plugin**: `eslint-plugin-deprecation` (v3.0.0+)
+- **ESLint Rule**: `'deprecation/deprecation': 'error'` (error level mandatory)
+- **TypeScript Parser**: Required for deprecation detection to function
+- **Pre-commit Tool**: `husky` for git hook management
+- **CI Workflow**: `.github/workflows/deprecation-detection.yml`
+- **Whitelist**: `governance/deprecation-whitelist.json` for FM-approved exceptions
+- **Audit Process**: Initial scan of entire codebase with remediation plan
+
+**Technical Configuration:**
+
+```javascript
+// eslint.config.mjs (required configuration)
+import deprecation from 'eslint-plugin-deprecation';
+import tseslint from 'typescript-eslint';
+
+export default [
+  {
+    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+    plugins: { deprecation },
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        project: './tsconfig.json'
+      }
+    },
+    rules: {
+      'deprecation/deprecation': 'error' // MUST be error, not warn
+    }
+  }
+];
+```
+
+**Exception Process:**
+
+When deprecated API usage is unavoidable:
+1. Document what API is deprecated and why it's being used
+2. Submit written justification to FM with migration plan
+3. Obtain explicit FM approval with deadline for removal
+4. Add to whitelist: `governance/deprecation-whitelist.json`
+5. Add code comment with FM approval reference and expiration
+6. Set quarterly review date for exception status
+
+**Quarterly Review Requirement:**
+
+FM MUST review deprecation whitelist quarterly to:
+- Verify exceptions still justified
+- Check for available migration paths
+- Remove resolved exceptions
+- Escalate overdue migrations
+- Update or remove expired exceptions
+
+**Audit Process:**
+
+When implementing in existing codebase:
+1. Run: `npm run lint:deprecation 2>&1 | tee governance/evidence/deprecation-audit-YYYY-MM-DD.log`
+2. Document ALL existing deprecations found
+3. Create remediation plan for each finding
+4. Either fix immediately (preferred) OR create whitelist entry with FM approval
+5. No merge permitted until audit complete and all items addressed
+
+**Enforcement Rules:**
+
+The following are **PROHIBITED** (governance violations):
+- Changing deprecation rule from 'error' to 'warn'
+- Disabling the deprecation rule globally
+- Skipping pre-commit hooks
+- Bypassing CI deprecation checks
+- Using `eslint-disable` without FM approval and whitelist entry
+- Removing or disabling the deprecation detection workflow
+
+**Status:** Constitutional — Required in all repositories before builder onboarding
+
+**Canonical Policy:** governance/policy/AUTOMATED_DEPRECATION_DETECTION_GATE.md
+
+**Related Learning:** BL-024 (Zero Warning Test Debt) — Deprecations are a category of technical debt warnings
+
+**Relationship to BL-024:**
+
+| Aspect | BL-024 (Warnings) | BL-026 (Deprecations) |
+|--------|-------------------|----------------------|
+| Detection | Lint warnings | Deprecation warnings |
+| Enforcement | Error level | Error level |
+| Tolerance | Zero | Zero |
+| Pre-commit | Blocked | Blocked |
+| CI/CD | Gate blocks | Gate blocks |
+| Exceptions | FM approval | FM approval |
+| Review | Quarterly | Quarterly |
+
+**Migration Path:**
+
+For repositories implementing this learning:
+1. Install dependencies: `eslint-plugin-deprecation`, `husky`
+2. Configure ESLint with deprecation rule as error
+3. Create pre-commit hook with deprecation check
+4. Create CI workflow for deprecation detection
+5. Run initial codebase audit
+6. Fix or whitelist (with FM approval) all findings
+7. Add to merge gate dependencies
+8. Update builder contracts with policy reference
+9. Document exception process in onboarding guides
+
+**Success Criteria:**
+
+Policy implementation complete when:
+- ✅ ESLint deprecation rule active and set to 'error'
+- ✅ Pre-commit hook blocks deprecated API usage
+- ✅ CI workflow fails on deprecation detection
+- ✅ Initial audit complete with all findings addressed
+- ✅ Whitelist created (if exceptions exist)
+- ✅ Builder contracts updated
+- ✅ Onboarding docs include deprecation guidance
+- ✅ Quarterly review schedule established
+- ✅ Evidence captured in governance/evidence/
+
+---
+
+**End of BL-026**
+
+---
+
 **Maintained by**: Maturion Governance Administrator  
-**Last Updated**: 2026-01-08  
+**Last Updated**: 2026-01-11  
 **Registry Status**: ACTIVE
 
 ---
 
-**Next Learning ID**: BL-023
+**Next Learning ID**: BL-027
 
 ---
 
