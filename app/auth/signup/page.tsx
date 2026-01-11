@@ -110,7 +110,7 @@ function SignupForm() {
 
       // Redirect to signin with success message
       router.push("/auth/signin?signup=success");
-    } catch (err) {
+    } catch {
       setError("An error occurred. Please try again.");
       setSubmitting(false);
     }

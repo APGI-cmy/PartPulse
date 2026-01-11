@@ -10,7 +10,33 @@ import prisma from '@/lib/prisma';
 import { generateInternalTransferPDF, savePDF } from '@/lib/pdf/internalTransferPdf';
 import { sendInternalTransferReceipt } from '@/lib/email/sendInternalTransferReceipt';
 import { logInternalTransferSubmission, logPdfGeneration, logEvent } from '@/lib/logging/systemLog';
-import type { InternalTransfer } from '@/lib/db/schema';
+import type { InternalTransfer, InternalTransferItem } from '@/lib/db/schema';
+
+/**
+ * Prisma types for database queries with relations
+ */
+type PrismaTransferItem = {
+  qty: number;
+  partNo: string;
+  description: string;
+};
+
+type TransferItemInput = {
+  qty: number;
+  partNo: string;
+  description: string;
+};
+
+type PrismaTransferWithRelations = {
+  id: string;
+  technician: { name: string | null; email: string };
+  siteName: string | null;
+  ssid: string | null;
+  items: Array<{ qty: number; partNo: string; description: string }>;
+  clientSignature?: string | null;
+  pdfPath?: string | null;
+  createdAt: Date;
+};
 
 /**
  * Adapter: Convert Prisma InternalTransfer to legacy format for PDF/Email
@@ -18,7 +44,7 @@ import type { InternalTransfer } from '@/lib/db/schema';
 const DEFAULT_DEPARTMENT = 'Unknown';
 const DEFAULT_TRANSFER_TYPE = 'Internal';
 
-function adaptTransferForPdfEmail(prismaTransfer: any): InternalTransfer {
+function adaptTransferForPdfEmail(prismaTransfer: PrismaTransferWithRelations): InternalTransfer {
   return {
     id: prismaTransfer.id,
     technician: prismaTransfer.technician.name || prismaTransfer.technician.email,
@@ -33,7 +59,7 @@ function adaptTransferForPdfEmail(prismaTransfer: any): InternalTransfer {
     comments: '',
     images: [],
     signature: prismaTransfer.clientSignature || undefined,
-    items: prismaTransfer.items.map((item: any) => ({
+    items: prismaTransfer.items.map((item: PrismaTransferItem): InternalTransferItem => ({
       quantity: item.qty,
       partNo: item.partNo,
       description: item.description,
@@ -119,7 +145,7 @@ export async function POST(request: NextRequest) {
         clientDate: sanitizedData.clientDate || null,
         clientSignature: sanitizedData.clientSignature || null,
         items: {
-          create: sanitizedData.items.map((item: any) => ({
+          create: sanitizedData.items.map((item: TransferItemInput) => ({
             qty: item.qty,
             partNo: item.partNo,
             description: item.description,

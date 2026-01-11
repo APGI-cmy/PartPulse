@@ -92,7 +92,7 @@ export default function FirstAdminSetup() {
 
       // Redirect to signin
       router.push("/auth/signin?setup=success");
-    } catch (err) {
+    } catch {
       setError("An error occurred. Please try again.");
       setSubmitting(false);
     }
