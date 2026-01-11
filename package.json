@@ -7,6 +7,7 @@
     "build": "node scripts/resolve-failed-migrations.js && prisma generate && prisma migrate deploy && next build",
     "start": "next start",
     "lint": "eslint",
+    "lint:deprecation": "eslint . --max-warnings 0",
     "test": "jest",
     "test:ci": "jest --runInBand --ci",
     "db:seed": "tsx prisma/seed.ts",
@@ -44,6 +45,8 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.52.0",
+    "@typescript-eslint/parser": "^8.52.0",
     "autoprefixer": "^10.4.22",
     "eslint": "^9",
     "eslint-config-next": "16.0.7",
@@ -51,6 +54,7 @@
     "jest-environment-jsdom": "^30.2.0",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "typescript-eslint": "^8.52.0"
   }
 }

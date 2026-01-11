@@ -1,6 +1,7 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
+import tseslint from "typescript-eslint";
 
 const eslintConfig = defineConfig([
   ...nextVitals,
@@ -13,6 +14,27 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  // Deprecation Detection Gate (BL-026)
+  // Policy: governance/policy/AUTOMATED_DEPRECATION_DETECTION_GATE.md
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    plugins: {
+      "@typescript-eslint": tseslint.plugin,
+    },
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        project: "./tsconfig.json",
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      // CRITICAL: Must be 'error' not 'warn' per BL-026 constitutional requirement
+      // Any weakening of this rule is a governance violation
+      // This rule detects usage of @deprecated APIs from TypeScript definitions
+      "@typescript-eslint/no-deprecated": "error",
+    },
+  },
 ]);
 
 export default eslintConfig;
