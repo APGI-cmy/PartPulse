@@ -35,9 +35,10 @@ jobs:
           echo "Learning: BL-026 (Automated Deprecation Detection)"
           echo ""
           
-          # Run ESLint with deprecation rule only
-          # Using --no-error-on-unmatched-pattern to avoid errors on pattern matching
-          npx eslint '**/*.ts' '**/*.tsx' --rule "@typescript-eslint/no-deprecated: error" --no-error-on-unmatched-pattern
+          # Run ESLint with deprecation-only config
+          # Uses eslint.config.deprecation.mjs which ONLY checks @typescript-eslint/no-deprecated
+          # --no-inline-config ignores eslint-disable comments for other rules
+          npx eslint --config eslint.config.deprecation.mjs --no-inline-config '**/*.ts' '**/*.tsx' --no-error-on-unmatched-pattern
       
       - name: Evidence Capture on Failure
         if: failure()

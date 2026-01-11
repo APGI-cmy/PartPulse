@@ -111,7 +111,7 @@ jobs:
           echo "=== Deprecation Detection Gate (BL-026) ==="
           echo "Policy: governance/policy/AUTOMATED_DEPRECATION_DETECTION_GATE.md"
           echo ""
-          npx eslint '**/*.ts' '**/*.tsx' --rule "@typescript-eslint/no-deprecated: error" --no-error-on-unmatched-pattern
+          npx eslint --config eslint.config.deprecation.mjs --no-inline-config '**/*.ts' '**/*.tsx' --no-error-on-unmatched-pattern
           echo ""
           echo "✅ No deprecated APIs detected"
       

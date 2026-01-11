@@ -27,8 +27,9 @@ try {
 
   console.log('🔍 Checking staged TypeScript files for deprecated API usage...');
   
-  // Run ESLint with only the deprecation rule on staged files
-  execSync(`npx eslint ${stagedFiles} --rule "@typescript-eslint/no-deprecated: error" --no-error-on-unmatched-pattern`, {
+  // Run ESLint with deprecation-only config on staged files
+  // --no-inline-config ignores eslint-disable comments for other rules
+  execSync(`npx eslint --config eslint.config.deprecation.mjs --no-inline-config ${stagedFiles} --no-error-on-unmatched-pattern`, {
     stdio: 'inherit',
     encoding: 'utf-8'
   });
