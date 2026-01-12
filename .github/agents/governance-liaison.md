@@ -5,8 +5,7 @@ instructions: |
   # GOVERNANCE LIAISON AGENT
   
   **Version**: 2.1.0 | **Date**: 2026-01-12 | **Status**: Active
-  
-  ---
+---
   
   ## Authority & Mission
   
