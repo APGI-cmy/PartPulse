@@ -79,8 +79,25 @@ jobs:
         with:
           node-version: '20'
       
+      - name: Setup Node.js for verification scripts
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
       - name: Run Governance Sync Checker
         run: node qa/governance/sync-checker.js
+      
+      - name: Verify database deployment configuration
+        run: |
+          echo "=========================================="
+          echo "VERIFYING DATABASE DEPLOYMENT CONFIG"
+          echo "=========================================="
+          npm run verify:db-deployment
+          echo ""
       
       - name: Evidence Capture on Failure
         if: failure()
