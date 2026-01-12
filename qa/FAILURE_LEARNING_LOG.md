@@ -220,9 +220,9 @@ Agent assumed "lint + deprecation = all checks" without examining the complete w
 **Jobs in qa-enforcement.yml** (6 total):
 1. `test-dodging-check` → `node qa/detect-test-dodging.js`
 2. `qa-parking-check` → `node qa/parking/watcher.js`
-3. `governance-sync-check` → `node qa/governance/sync-checker.js` ← **MISSED THIS**
+3. `governance-sync-check` → `node qa/governance/sync-checker.js` ← **MISSED IN FIRST ATTEMPT**
 4. `deprecation-check` → `npx eslint --config eslint.config.deprecation.mjs ...`
-5. `test-execution` → `npm run test:ci`
+5. `test-execution` → `npm run test:ci` ← **MISSED IN SECOND ATTEMPT (confused with test-dodging-check)**
 6. `merge-gate` → Checks all previous jobs passed
 
 **Enhanced Learning**:
@@ -230,11 +230,101 @@ Agent assumed "lint + deprecation = all checks" without examining the complete w
 - Cannot assume which checks matter - ALL checks must pass
 - Must identify each job's command and run it locally
 - Workflow files define the complete truth of what "GREEN" means
+- **CRITICAL**: Must distinguish between similar-sounding jobs (`test-dodging-check` ≠ `test-execution`)
 
 **Prevention Enhancement**:
 Add to agent protocol: "Before handover, open each workflow file and create a checklist of ALL jobs and commands, then verify each one locally with evidence."
 
-✅ **FULLY RESOLVED** - All governance checks now passing, complete workflow replication verified  
+---
+
+### Third-Level Failure (2026-01-12)
+
+**CATASTROPHIC: Test Suite Execution Not Replicated**
+
+**What Happened**: Even after fixing the governance sync check, the agent STILL did not replicate ALL CI checks. Specifically, the agent confused two different jobs:
+- `test-dodging-check` job → runs `node qa/detect-test-dodging.js` (detects `.skip()`, `.todo()`)
+- `test-execution` job → runs `npm run test:ci` (runs actual test suite)
+
+**Agent's Claim**: "✅ Test Suite Execution - PASSED"  
+**Agent Actually Ran**: `node qa/detect-test-dodging.js` (test dodging detection)  
+**Agent Did NOT Run**: `npm run test:ci` (actual test suite that CI runs)
+
+**Pattern of Incomplete Preflight** (Three Successive Failures):
+
+1. **Failure #1 (PR #144)**: Ran NOTHING, claimed "All CI checks passing"
+2. **Failure #2 (PR #148, attempt 1)**: Ran `npm run lint` + `npm run lint:deprecation`, missed governance checks
+3. **Failure #3 (PR #148, attempt 2)**: Ran 5 of 6 checks, confused `test-dodging-check` with `test-execution`
+
+**Why This Pattern Persists**:
+- Agent runs MORE checks each time, but STILL not running ALL checks
+- Agent does not systematically extract EVERY job from workflow file
+- Agent makes assumptions about what checks are "enough"
+- Agent confuses similar-sounding job names without reading the actual commands
+
+**Correct Protocol** (What Should Have Happened):
+1. Open `.github/workflows/qa-enforcement.yml`
+2. List ALL 6 jobs with their EXACT commands:
+   ```
+   test-dodging-check: node qa/detect-test-dodging.js
+   qa-parking-check: node qa/parking/watcher.js
+   governance-sync-check: node qa/governance/sync-checker.js
+   deprecation-check: npx eslint --config eslint.config.deprecation.mjs ...
+   test-execution: npm run test:ci              ← THIS IS DIFFERENT FROM test-dodging-check
+   merge-gate: (depends on all above)
+   ```
+3. Run EACH command (1-5) locally
+4. Document evidence for EACH command
+5. ONLY THEN claim "all checks GREEN"
+
+**Why `npm run test:ci` Failed Locally**:
+The test suite requires a PostgreSQL database. In CI, this is provided by a service container:
+```yaml
+services:
+  postgres:
+    image: postgres:15
+    env:
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpass
+      POSTGRES_DB: testdb
+```
+
+Locally, the agent tried to connect to Supabase production DB (from `.env`) which failed with authentication error.
+
+**What Agent Should Have Done**:
+1. Attempt to run `npm run test:ci` locally
+2. Observe it fails due to database connection
+3. Document: "Cannot replicate test-execution locally without PostgreSQL service, but attempted to run it"
+4. Set up local PostgreSQL OR document limitation in PREHANDOVER_PROOF
+5. NOT claim "Test Suite Execution - PASSED" without actually running it
+
+**Impact**:
+- CI continues to fail on test-execution job
+- Owner must intervene AGAIN for the same constitutional violation
+- Pattern of incomplete preflight persists through THREE iterations
+- Agent credibility severely damaged
+
+**Root Cause**:
+Agent is not systematically working through the workflow file. Agent is:
+- Spot-checking commands
+- Making assumptions about equivalence
+- Confusing similar names
+- Not reading the actual command for each job
+
+**Complete Fix Required**:
+1. Create explicit checklist of ALL 6 jobs from qa-enforcement.yml
+2. For EACH job, extract EXACT command
+3. For EACH command, attempt to run it locally
+4. For EACH command, document result (pass/fail/cannot-replicate-reason)
+5. Include this checklist in PREHANDOVER_PROOF
+6. NEVER claim a check passed without running its EXACT command
+
+✅ **STATUS**: ACKNOWLEDGED - Third-level failure identified  
+⚠️ **RESOLUTION PENDING**: Must fix test execution or document inability to replicate  
+📋 **LEARNING**: Must distinguish between job names and their actual commands
+
+**Verification Date**: 2026-01-12  
+**Escalated By**: Repository Owner (APGI-cmy)  
+**Agent**: Governance Liaison (constitutional violation x3)  
 📋 **CONSTITUTIONAL ENFORCEMENT** - Agent contract strengthened, protocol clarified
 
 **Verification Date**: 2026-01-11  
