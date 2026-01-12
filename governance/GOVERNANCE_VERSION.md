@@ -31,10 +31,9 @@
 | QA Builder | - | `.github/agents/qa-builder.md` | ✅ Active |
 | Schema Builder | - | `.github/agents/schema-builder.md` | ✅ Active |
 | Integration Builder | - | `.github/agents/integration-builder.md` | ✅ Active |
-| PartPulse Agent | 1.0.0 | `.github/agents/PartPulse-agent.md` | ✅ Active |
 | CodexAdvisor Agent | - | `.github/agents/CodexAdvisor-agent.md` | ✅ Active |
 
-**Total Active Agents**: 9
+**Total Active Agents**: 8
 
 ---
 
@@ -411,7 +410,7 @@
 
 ### Governance Files Present in PartPulse
 
-**Agent Contracts** (9 files):
+**Agent Contracts** (8 files):
 ```
 .github/agents/
   ├── ForemanApp-agent.md (v4.0.0)
@@ -421,7 +420,6 @@
   ├── qa-builder.md
   ├── schema-builder.md
   ├── integration-builder.md
-  ├── PartPulse-agent.md (v1.0.0)
   └── CodexAdvisor-agent.md
 ```
 

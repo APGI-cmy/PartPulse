@@ -4,7 +4,7 @@
 
 import tseslint from "typescript-eslint";
 
-export default [
+const deprecationConfig = [
   {
     files: ["**/*.ts", "**/*.tsx"],
     ignores: [
@@ -34,3 +34,5 @@ export default [
     },
   },
 ];
+
+export default deprecationConfig;

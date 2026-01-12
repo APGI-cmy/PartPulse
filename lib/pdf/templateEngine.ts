@@ -148,12 +148,6 @@ export async function loadTemplate(templateName: 'warranty' | 'internalTransfer'
 }
 
 /**
- * Conversion ratio from template width units (points) to character count for text padding
- * This approximates how many characters fit in a given width for monospace console output
- */
-const WIDTH_TO_CHARS_RATIO = 5;
-
-/**
  * Get nested value from object using dot notation path
  */
 function getNestedValue(obj: unknown, path: string): unknown {

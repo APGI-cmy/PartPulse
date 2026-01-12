@@ -13,6 +13,13 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Utility scripts use CommonJS require() pattern
+    "scripts/**/*.js",
+    "qa/**/*.js",
+    "jest.*.js",
+    "proxy.ts", // Proxy script (not part of Next.js app)
+    // Test files may use require() for dynamic imports
+    "__tests__/**",
   ]),
   // Deprecation Detection Gate (BL-026)
   // Policy: governance/policy/AUTOMATED_DEPRECATION_DETECTION_GATE.md

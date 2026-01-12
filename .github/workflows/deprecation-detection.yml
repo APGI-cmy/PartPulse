@@ -25,6 +25,8 @@ jobs:
           cache: 'npm'
       
       - name: Install dependencies
+        env:
+          DATABASE_URL: 'postgresql://localhost:5432/placeholder'
         run: npm ci
       
       - name: Run Deprecation Detection
