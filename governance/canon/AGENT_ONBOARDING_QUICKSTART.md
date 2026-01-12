@@ -85,6 +85,7 @@ Read these protocols before starting any build work:
 - **FM_BUILDER_APPOINTMENT_PROTOCOL.md** - How FM appoints you, what you must acknowledge
 - **BUILDER_FIRST_PR_MERGE_MODEL.md** - Your QA reports are canonical truth
 - **BUILDER_CONTRACT_BINDING_CHECKLIST.md** - Contract completeness requirements
+- **EXECUTION_BOOTSTRAP_PROTOCOL.md** - Mandatory 7-step verification before handover (v2.0.0+)
 
 ### For Reviewers
 Read these protocols before providing any advisory input:
@@ -93,6 +94,10 @@ Read these protocols before providing any advisory input:
 ### For All Agents
 - **AGENT_CANONICAL_CONTEXT_SYNCHRONISATION_PROTOCOL.md** - How governance stays synchronized
 - **CROSS_REPOSITORY_LAYER_DOWN_PROTOCOL.md** - How changes propagate across repos
+- **EXECUTION_BOOTSTRAP_PROTOCOL.md** - 7-step verification before handover (Category 0, v2.0.0+)
+
+**PREHANDOVER_PROOF Requirement**: 
+All agents creating/modifying workflows, gates, or execution artifacts MUST provide PREHANDOVER_PROOF before handover. See template in `governance/templates/PREHANDOVER_PROOF_TEMPLATE.md`.
 
 ---
 

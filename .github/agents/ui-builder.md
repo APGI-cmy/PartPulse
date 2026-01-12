@@ -145,6 +145,11 @@ governance:
       path: governance/canon/CONSTITUTIONAL_SANDBOX_PATTERN.md
       role: judgment-framework
       summary: Tier-1 constitutional vs Tier-2 procedural distinction (BL-024)
+    
+    - id: execution-bootstrap-protocol
+      path: governance/canon/EXECUTION_BOOTSTRAP_PROTOCOL.md
+      role: handover-verification
+      summary: Mandatory 7-step verification before agent handover (v2.0.0+)
 ```
 
 ---
