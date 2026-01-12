@@ -17,6 +17,7 @@
 
 | Date | Governance Version | Changes Applied | Authority |
 |------|-------------------|-----------------|-----------|
+| 2026-01-12 | v1.1.0 | .agent File Governance - 4 canonical documents layered down, .agent file schema compliance achieved | Governance Liaison Agent |
 | 2026-01-12 | 2.0.0 | Execution Bootstrap Protocol layer-down - 7-step verification, PREHANDOVER_PROOF, monitoring infrastructure | Governance Liaison Agent |
 | 2026-01-11 | 7dc8110ce | FPC layer-down process applied - directory structure completed, alignment tracking established | Governance Liaison Agent |
 | 2026-01-09 | 2.0.0 | Initial governance framework with learning integration | ForemanApp Agent |
@@ -126,6 +127,82 @@ All violations tracked in `governance/incidents/protocol-violations/` with:
 - Prevention measures
 
 **Escalation**: Pattern violations escalate to Repository Owner
+
+---
+
+## .agent File Governance (v1.1.0)
+
+**Effective Date**: 2026-01-12  
+**Layer-Down Date**: 2026-01-12  
+**Status**: COMPLETE
+
+### Documents Layered Down
+
+1. **AGENT_FILE_SCHEMA.md** → `governance/schemas/AGENT_FILE_SCHEMA.md`
+   - Version: 1.0.0
+   - Purpose: Comprehensive specification for repository `.agent` files
+   - Authority: Supreme - Canonical
+
+2. **AGENT_FILE_BINDING_REQUIREMENTS.md** → `governance/canon/AGENT_FILE_BINDING_REQUIREMENTS.md`
+   - Version: 1.0.0
+   - Purpose: Define mandatory and optional bindings for `.agent` files
+   - Authority: Supreme - Canonical
+
+3. **AGENT_FILE_VALIDATION.md** → `governance/runbooks/AGENT_FILE_VALIDATION.md`
+   - Version: 1.0.0
+   - Purpose: 4-level validation process for `.agent` files
+   - Authority: Canonical
+
+4. **AGENT_FILE_MAINTENANCE.md** → `governance/runbooks/AGENT_FILE_MAINTENANCE.md`
+   - Version: 1.0.0
+   - Purpose: Maintenance protocol for `.agent` files
+   - Authority: Canonical
+
+### Validation Status
+
+Complete 4-level validation executed per AGENT_FILE_VALIDATION.md:
+
+- ✅ **Level 1 (Syntax)**: PASS - File exists, YAML parseable, no syntax errors
+- ✅ **Level 2 (Schema)**: PASS - All required fields and sections present, constraint values correct
+- ✅ **Level 3 (Semantic)**: PASS - Canonical references valid, all bindings verified, agent contracts exist
+- ✅ **Level 4 (Alignment)**: PASS - No duplication, bindings relevant, consistent with contracts
+
+**Validation Evidence**: `governance/evidence/initialization/AGENT_FILE_VALIDATION_RESULTS.md`
+
+### .agent File Updates Applied
+
+**Required Sections Added**:
+- `capabilities` section (6 fields)
+- `constraints` section (6 mandatory constraints)
+- `enforcement` section (3 enforcement rules)
+
+**Bindings Added**:
+- `execution-bootstrap-protocol` (governance/canon/EXECUTION_BOOTSTRAP_PROTOCOL.md)
+- `fm-merge-gate-management` (governance/canon/T0-014_FM_MERGE_GATE_MANAGEMENT_CANON.md)
+
+**Workflow Gates Fixed**:
+- Removed: `qa-enforcement-v2` (workflow file deleted in PR #148)
+- Added: `deprecation-detection` (governance/canon/AUTOMATED_DEPRECATION_DETECTION_GATE.md)
+- Updated branch protection required_checks accordingly
+
+**Total Bindings**: 24 (up from 22)
+
+### Schema Compliance
+
+✅ **Repository `.agent` file is now fully compliant** with:
+- AGENT_FILE_SCHEMA.md v1.0.0
+- AGENT_FILE_BINDING_REQUIREMENTS.md v1.0.0
+
+**Repository Type**: Application (Next.js Full-Stack) with FM + Builders  
+**Mandatory Bindings Met**: All application-type mandatory bindings present
+
+### Outstanding Items
+
+**Future Layer-Down Needed**:
+- Some Tier-0 canonical documents not yet present in local governance/canon (governance-purpose-scope, governance-ripple-model)
+- Will be addressed in future canonical governance synchronization
+
+**Next Review**: 2026-04-12 (quarterly validation per AGENT_FILE_MAINTENANCE.md)
 
 ---
 
