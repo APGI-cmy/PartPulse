@@ -203,6 +203,12 @@ governance:
       path: governance/canon/CONSTITUTIONAL_SANDBOX_PATTERN.md
       role: judgment-framework
       summary: Tier-1 constitutional vs Tier-2 procedural distinction (BL-024)
+    
+    # Execution Bootstrap Protocol (2026)
+    - id: execution-bootstrap-protocol
+      path: governance/canon/EXECUTION_BOOTSTRAP_PROTOCOL.md
+      role: handover-verification
+      summary: Mandatory 7-step verification before agent handover (v2.0.0+)
 ```
 
 **MANDATORY**: FM MUST load ALL bindings before any decision. Selective loading is prohibited.
