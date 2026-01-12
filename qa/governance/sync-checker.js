@@ -36,8 +36,8 @@ class GovernanceSyncChecker {
         critical: true
       },
       {
-        path: '.github/agents/PartPulse-agent.md',
-        name: 'Agent Contract',
+        path: '.github/agents/ForemanApp-agent.md',
+        name: 'ForemanApp Agent Contract',
         critical: true
       },
       {

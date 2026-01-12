@@ -57,8 +57,7 @@ This repository has completed the **First Point of Contact (FPC) Repository Laye
 5. QA Builder - Quality assurance
 6. Schema Builder - Database schema management
 7. Integration Builder - Integration development
-8. PartPulse Agent (v1.0.0) - Domain-specific coordination
-9. CodexAdvisor Agent - Advisory services
+8. CodexAdvisor Agent - Advisory services
 
 ---
 

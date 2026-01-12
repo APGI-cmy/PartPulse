@@ -88,8 +88,7 @@ PartPulse repository has successfully completed the FPC Layer-Down process, brin
 5. QA Builder
 6. Schema Builder
 7. Integration Builder
-8. PartPulse Agent (v1.0.0)
-9. CodexAdvisor Agent
+8. CodexAdvisor Agent
 
 **Status**: COMPLETE - All agent contracts validated per FPC Phase 4
 
