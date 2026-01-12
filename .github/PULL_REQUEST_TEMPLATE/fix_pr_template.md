@@ -41,6 +41,19 @@
 
 ## Test Evidence (Red → Green)
 
+### PREHANDOVER_PROOF (v2.0.0+)
+
+**Required If**: This PR modifies workflows, CI gates, build scripts, or execution artifacts
+
+- [ ] PREHANDOVER_PROOF provided as comment (see governance/templates/PREHANDOVER_PROOF_TEMPLATE.md)
+- [ ] Not Required (this PR does not modify execution artifacts)
+
+**If Required**: Complete 7-step verification protocol and post PREHANDOVER_PROOF comment before requesting review.
+
+**Authority**: governance/canon/EXECUTION_BOOTSTRAP_PROTOCOL.md
+
+---
+
 ### Defect Reproduction Test
 **Before Fix** (Red):
 ```
