@@ -109,6 +109,16 @@ governance:
     - id: governance-completeness
       path: governance/canon/GOVERNANCE_COMPLETENESS_MODEL.md
       role: completeness-validation
+    
+    # Execution discipline
+    - id: execution-bootstrap-protocol
+      path: governance/canon/EXECUTION_BOOTSTRAP_PROTOCOL.md
+      role: execution-discipline
+    
+    # FM merge gate management
+    - id: fm-merge-gate-management
+      path: governance/canon/T0-014_FM_MERGE_GATE_MANAGEMENT_CANON.md
+      role: merge-gate-authority
 
 agents:
   foreman:
@@ -154,24 +164,45 @@ gates:
     - id: qa-enforcement
       path: .github/workflows/qa-enforcement.yml
       role: qa-validation
-    - id: qa-enforcement-v2
-      path: .github/workflows/qa-enforcement-v2.yml
-      role: enhanced-qa-validation
     - id: minimum-build-to-red
       path: .github/workflows/minimum-build-to-red.yml
       role: build-to-green-enforcement
     - id: model-scaling-check
       path: .github/workflows/model-scaling-check.yml
       role: architecture-validation
+    - id: deprecation-detection
+      path: .github/workflows/deprecation-detection.yml
+      role: deprecation-enforcement
   
   branch_protection:
     enabled: true
     default_branch: main
     required_checks:
       - qa-enforcement
-      - qa-enforcement-v2
       - minimum-build-to-red
       - model-scaling-check
+      - deprecation-detection
+
+capabilities:
+  execute_changes: true
+  modify_tests: true
+  modify_migrations: false
+  mechanical_fixes: true
+  read_only: false
+  advisory_only: false
+
+constraints:
+  governance_interpretation: forbidden
+  scope_expansion: forbidden
+  zero_test_debt: required
+  build_to_green_only: true
+  architecture_immutable_during_build: true
+  secrets_and_env_config: forbidden
+
+enforcement:
+  on_scope_violation: halt_and_escalate
+  on_governance_resolution_failure: halt
+  escalation_target: Foreman
 
 scope:
   repository: APGI-cmy/PartPulse
