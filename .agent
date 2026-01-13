@@ -33,6 +33,11 @@ governance:
     - id: agent-constitution
       path: governance/canon/AGENT_CONSTITUTION.md
       role: agent-doctrine
+    - id: agent-contract-management
+      path: governance/canon/AGENT_CONTRACT_MANAGEMENT_PROTOCOL.md
+      role: constitutional-contract-protocol
+      tier: 0
+      enforcement: mandatory
     
     # FM authority and execution
     - id: fm-execution-mandate
@@ -146,7 +151,7 @@ agents:
   governance:
     - id: governance-liaison
       path: .github/agents/governance-liaison.md
-      version: 2.0.0
+      version: 2.2.0
       role: governance-enforcement
   
   builders:
