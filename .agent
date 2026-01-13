@@ -119,6 +119,22 @@ governance:
     - id: fm-merge-gate-management
       path: governance/canon/T0-014_FM_MERGE_GATE_MANAGEMENT_CANON.md
       role: merge-gate-authority
+    
+    # Automated deprecation detection (BL-026/T0-015)
+    - id: automated-deprecation-detection
+      path: governance/policy/AUTOMATED_DEPRECATION_DETECTION_GATE.md
+      role: tier-0-constitutional
+      learning_id: BL-026
+      tier: 0
+      enforcement: mandatory
+    
+  runbooks:
+    # Test execution protocol
+    - id: agent-test-execution-protocol
+      path: governance/runbooks/AGENT_TEST_EXECUTION_PROTOCOL.md
+      role: test-execution
+      principle: ci-is-confirmation-not-diagnostic
+      enforcement: mandatory
 
 agents:
   foreman:

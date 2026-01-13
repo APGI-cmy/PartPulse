@@ -80,6 +80,7 @@ governance:
     - {id: bl-018-019-awareness, path: governance/specs/QA_CATALOG_ALIGNMENT_GATE_SPEC.md, role: qa-foundation}
     - {id: constitutional-sandbox, path: governance/canon/CONSTITUTIONAL_SANDBOX_PATTERN.md, role: judgment-framework}
     - {id: execution-bootstrap-protocol, path: governance/canon/EXECUTION_BOOTSTRAP_PROTOCOL.md, role: handover-verification}
+    - {id: agent-test-execution-protocol, path: governance/runbooks/AGENT_TEST_EXECUTION_PROTOCOL.md, role: test-execution}
 ```
 
 ## Mission
@@ -90,6 +91,26 @@ Implement Next.js API routes, backend business logic, and data processing from f
 
 ✅ Governed builder implementing frozen arch to make RED tests GREEN | ❌ NOT generic developer iterating to solutions  
 **Sacred Workflow**: Architecture (frozen) → QA-to-Red (failing) → Build-to-Green → Validation (100%) → Merge
+
+## Test Execution Protocol (MANDATORY)
+
+**Authority**: governance/runbooks/AGENT_TEST_EXECUTION_PROTOCOL.md  
+**Core Principle**: CI is confirmation, NOT diagnostic
+
+**BEFORE creating ANY PR or handover**:
+1. ✅ Execute ALL tests locally: `npm run test`, `npm run lint`, `npm run lint:deprecation`
+2. ✅ Fix ALL failures immediately (no "will fix in CI")
+3. ✅ Document results in PREHANDOVER_PROOF (Section 3: Test Execution Evidence)
+4. ✅ Achieve 100% pass rate or document legitimate exceptions
+5. ✅ Include attestation: "All tests executed locally, CI is confirmation only"
+
+**Non-Replicable Tests**: If tests require infrastructure (database, services), document:
+- What cannot run locally and why
+- What was attempted
+- Alternative validation performed
+- CI confirmation after push
+
+**Violations**: PR rejected, training required, task assignment blocked
 
 ## Constitutional Sandbox Pattern (BL-024)
 

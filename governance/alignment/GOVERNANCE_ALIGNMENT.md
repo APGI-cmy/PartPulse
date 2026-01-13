@@ -17,6 +17,7 @@
 
 | Date | Governance Version | Changes Applied | Authority |
 |------|-------------------|-----------------|-----------|
+| 2026-01-13 | v2.1.0 | Agent Test Execution Protocol & BL-026 (T0-015) layer-down - CI-confirmatory-not-diagnostic principle, local test execution required, builder attestations | Governance Liaison Agent |
 | 2026-01-12 | v1.1.0 | .agent File Governance - 4 canonical documents layered down, .agent file schema compliance achieved | Governance Liaison Agent |
 | 2026-01-12 | 2.0.0 | Execution Bootstrap Protocol layer-down - 7-step verification, PREHANDOVER_PROOF, monitoring infrastructure | Governance Liaison Agent |
 | 2026-01-11 | 7dc8110ce | FPC layer-down process applied - directory structure completed, alignment tracking established | Governance Liaison Agent |
@@ -25,7 +26,7 @@
 
 ## Drift Detection
 
-**Last Check**: 2026-01-11  
+**Last Check**: 2026-01-13  
 **Status**: No drift detected  
 **Next Scheduled Check**: 2026-02-11 (monthly review)
 
@@ -203,6 +204,115 @@ Complete 4-level validation executed per AGENT_FILE_VALIDATION.md:
 - Will be addressed in future canonical governance synchronization
 
 **Next Review**: 2026-04-12 (quarterly validation per AGENT_FILE_MAINTENANCE.md)
+
+---
+
+## Agent Test Execution Protocol & BL-026 (v2.1.0)
+
+**Effective Date**: 2026-01-13  
+**Layer-Down Date**: 2026-01-13  
+**Compliance Deadline**: 2026-01-27  
+**Status**: ACTIVE - Training Pending
+
+### Protocol Overview
+
+Two critical protocols layered down simultaneously:
+
+1. **Agent Test Execution Protocol** (governance/runbooks/AGENT_TEST_EXECUTION_PROTOCOL.md)
+   - Core Principle: CI is confirmation, NOT diagnostic
+   - Requires local test execution before PR creation
+   - Mandates PREHANDOVER_PROOF Section 3 evidence
+   - 100% pass rate or documented legitimate exceptions
+
+2. **BL-026 (T0-015): Automated Deprecation Detection** (governance/policy/AUTOMATED_DEPRECATION_DETECTION_GATE.md)
+   - Constitutional Tier-0 requirement
+   - Zero deprecated APIs without FM approval
+   - Pre-commit and CI gate enforcement
+   - Learning ID: BL-026
+
+### Implementation Status
+
+- [x] Protocol document created (`governance/runbooks/AGENT_TEST_EXECUTION_PROTOCOL.md`)
+- [x] .agent file updated with `runbooks` section and BL-026 Tier-0 binding
+- [x] PREHANDOVER_PROOF template updated with Section 3 (Test Execution Evidence)
+- [x] All 5 builder contracts updated (API, UI, QA, Schema, Integration)
+- [x] Attestation tracking document created (`governance/evidence/attestations/test-execution-protocol-attestations.md`)
+- [x] Governance event created (`governance/events/2026-01-13-agent-test-execution-bl026-layerdown.md`)
+- [x] Governance alignment updated
+- [x] Deprecation check validated locally (exit code 0)
+- [ ] Training session scheduled by FM
+- [ ] All builder attestations collected
+- [ ] First 5 PRs validated for compliance
+
+### Builder Requirements
+
+**BEFORE creating ANY PR**, builders MUST:
+1. Execute ALL tests locally: `npm run test`, `npm run lint`, `npm run lint:deprecation`
+2. Fix ALL failures immediately (no "will fix in CI")
+3. Document results in PREHANDOVER_PROOF Section 3
+4. Achieve 100% pass rate or document legitimate exceptions
+5. Include test execution attestation
+
+**Non-Replicable Tests**: Document what cannot run locally, why, what was attempted, alternative validation
+
+**Deprecation (BL-026)**: MUST run `npm run lint:deprecation` and achieve 0 deprecated APIs. No exceptions without FM approval.
+
+### Attestation Status
+
+**Total Builders**: 5 (API, UI, QA, Schema, Integration)  
+**Attestations Complete**: 0  
+**Attestations Pending**: 5  
+**Training Scheduled**: To be scheduled by FM (before 2026-01-27)  
+**Task Assignment**: BLOCKED for all builders until attestation complete
+
+**Attestation Requirements**:
+- Attend mandatory training session
+- Sign attestation for both protocols
+- Attestations tracked in `governance/evidence/attestations/test-execution-protocol-attestations.md`
+
+### FM Responsibilities
+
+- Schedule synchronous training session for all builders
+- Conduct 45-60 minute training covering both protocols
+- Collect and file builder attestations
+- Enforce PREHANDOVER_PROOF Section 3 requirements in all PR reviews
+- Block task assignment for builders without attestation
+- Review first 5 PRs with extra scrutiny
+- Escalate violations to Governance Liaison
+
+### Enforcement Rules
+
+**Test Execution Protocol**:
+- PR rejected if PREHANDOVER_PROOF Section 3 missing
+- PR rejected if test execution evidence incomplete
+- Builder re-training required after violations
+- Task assignment blocked until re-training complete
+
+**BL-026 Deprecation**:
+- Pre-commit hook blocks commits with deprecated APIs
+- CI gate blocks PRs with deprecation violations
+- No exceptions without FM written approval
+- Violations = catastrophic (constitutional Tier-0)
+
+### Validation Evidence
+
+**Local Validation**:
+- Deprecation check executed: `npm run lint:deprecation` → Exit code 0 ✅
+- Zero deprecated APIs detected
+- Pre-commit hooks operational
+- CI workflow confirmed operational
+
+**CI Validation**:
+- `.github/workflows/deprecation-detection.yml` active
+- Gate included in branch protection
+- BL-026 policy document present
+
+### Next Milestones
+
+1. FM schedules training (target: week of 2026-01-20)
+2. Training conducted, attestations collected
+3. First 5 PRs post-training validated
+4. Quarterly compliance review (2026-04-13)
 
 ---
 

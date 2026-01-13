@@ -87,7 +87,113 @@ Verification: No test files modified in this PR, test structure validated
 
 ---
 
-## 3. CI Workflow Runs
+## 3. Test Execution Evidence (AGENT_TEST_EXECUTION_PROTOCOL)
+
+**Protocol**: governance/runbooks/AGENT_TEST_EXECUTION_PROTOCOL.md  
+**Principle**: CI is confirmation, NOT diagnostic
+
+Document results of ALL test types executed locally BEFORE creating this PR.
+
+### A. Unit Tests
+
+**Command**: `npm run test` or `npm test`  
+**Exit Code**: [0 or error code]  
+**Output**: [number of tests passed/failed, coverage if applicable]  
+**Status**: ✅ PASSED / ❌ FAILED / ⚠️ EXCEPTION (explain below)
+
+**Example**:
+```bash
+$ npm run test
+Exit Code: 0
+Output: 220 tests passed, 0 failed
+Coverage: 87.3% statements, 82.1% branches
+Status: ✅ PASSED
+```
+
+### B. Integration Tests (if applicable)
+
+**Command**: `npm run test:integration` or similar  
+**Exit Code**: [0 or error code]  
+**Output**: [number of tests passed/failed]  
+**Status**: ✅ PASSED / ❌ FAILED / ⚠️ EXCEPTION (explain below)
+
+### C. Linting
+
+**Command**: `npm run lint`  
+**Exit Code**: [0 or error code]  
+**Output**: [0 errors, 0 warnings OR list of issues]  
+**Status**: ✅ PASSED / ❌ FAILED
+
+**Requirement**: MUST be ✅ PASSED (no exceptions permitted)
+
+### D. Deprecation Detection (BL-026/T0-015)
+
+**Command**: `npm run lint:deprecation`  
+**Exit Code**: [0 or error code]  
+**Output**: [0 deprecated APIs OR list of deprecations]  
+**Status**: ✅ PASSED / ❌ FAILED
+
+**Requirement**: MUST be ✅ PASSED (no exceptions permitted per BL-026)  
+**Policy**: governance/policy/AUTOMATED_DEPRECATION_DETECTION_GATE.md
+
+**Example**:
+```bash
+$ npm run lint:deprecation
+Exit Code: 0
+Output: ✓ 0 deprecated API usages detected
+Status: ✅ PASSED
+```
+
+### E. Type Checking (if applicable)
+
+**Command**: `npm run typecheck` or `tsc --noEmit`  
+**Exit Code**: [0 or error code]  
+**Output**: [0 type errors OR list of errors]  
+**Status**: ✅ PASSED / ❌ FAILED
+
+### F. Test Execution Exceptions
+
+Document any tests that could NOT be executed locally:
+
+**Format**:
+```
+Test Type: [unit/integration/e2e/etc.]
+Command: [exact command]
+Cannot Run Locally Because: [specific reason]
+Attempted: [what you tried to run it]
+Alternative Validation: [how you validated the code instead]
+FM Approval Required: [yes/no and why]
+```
+
+**Example**:
+```
+Test Type: Integration Tests
+Command: npm run test:integration
+Cannot Run Locally Because: Requires PostgreSQL service container (port 5432)
+Attempted: Installed PostgreSQL locally, connection timeout on port 5432
+Alternative Validation:
+- No integration test files modified in this PR
+- All unit tests covering changed logic pass locally
+- Code review confirms no database schema changes
+- CI confirmation will be provided after push
+FM Approval Required: No (standard database service exception)
+```
+
+### G. Test Execution Attestation
+
+**I certify that**:
+- [ ] I executed all replicable tests locally before creating this PR
+- [ ] All executed tests passed (exit code 0)
+- [ ] I documented any non-replicable tests with legitimate exceptions
+- [ ] I understand CI is for confirmation only, not diagnostics
+- [ ] I achieved 100% pass rate on all executed tests
+
+**Agent**: [agent-name]  
+**Date**: [YYYY-MM-DD]
+
+---
+
+## 4. CI Workflow Runs
 
 List URLs to completed GitHub Actions workflow runs that verify ALL checks passed.
 
@@ -108,7 +214,7 @@ List URLs to completed GitHub Actions workflow runs that verify ALL checks passe
 
 ---
 
-## 4. Limitations and Exceptions
+## 5. Limitations and Exceptions
 
 Document any commands that could NOT be replicated locally and explain why:
 
@@ -135,7 +241,7 @@ CI Run URL: [link to successful CI run]
 
 ---
 
-## 5. Fixes Applied
+## 6. Fixes Applied
 
 If any local checks initially failed, document what was fixed:
 
@@ -156,13 +262,16 @@ Verification: [re-run results showing fix worked]
 
 ---
 
-## 6. Verification Summary
+## 7. Verification Summary
 
 Complete this checklist:
 
 - [ ] **Step 1**: All CI jobs identified from workflow files
 - [ ] **Step 2**: Every command executed locally (or limitation documented)
 - [ ] **Step 3**: Results documented for each command
+- [ ] **Step 3A**: All test types executed per AGENT_TEST_EXECUTION_PROTOCOL
+- [ ] **Step 3B**: Test execution evidence documented (Section 3)
+- [ ] **Step 3C**: Deprecation detection executed and passed (BL-026)
 - [ ] **Step 4**: All failures fixed (or legitimate exceptions documented)
 - [ ] **Step 5**: 100% pass rate achieved (locally or with CI proof)
 - [ ] **Step 6**: GitHub Actions workflow runs completed and verified
@@ -179,7 +288,7 @@ Complete this checklist:
 
 ---
 
-## 7. Authorization Statement
+## 8. Authorization Statement
 
 **I hereby certify that**:
 
