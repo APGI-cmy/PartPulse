@@ -217,8 +217,8 @@ Both protocols require mandatory builder training and attestation.
 
 ### Post-Implementation Validation (Required)
 
-- [ ] Training session conducted
-- [ ] All 5 builders attested
+- [x] Training session conducted (2026-01-13)
+- [x] All 5 builders attested (2026-01-13)
 - [ ] First 5 PRs include proper test execution evidence
 - [ ] CI gates continue to pass
 - [ ] No deprecation violations detected
@@ -259,8 +259,8 @@ Both protocols require mandatory builder training and attestation.
 - [x] Templates updated with evidence requirements
 - [x] All builder contracts updated
 - [x] Attestation infrastructure created
-- [ ] Training session conducted
-- [ ] All builders attested
+- [x] Training session conducted (2026-01-13)
+- [x] All builders attested (2026-01-13)
 - [ ] First 5 PRs validated for compliance
 - [ ] Zero violations in first 2 weeks
 - [ ] Completion report published
@@ -304,11 +304,13 @@ This is a **high-urgency** layer-down mandated by canonical governance.
 
 ---
 
-**Event Status**: ✅ Layer-Down Complete, ⚠️ Training Pending  
-**Next Milestone**: Training session and attestations  
-**Compliance Deadline**: 2026-01-27  
+**Event Status**: ✅ Layer-Down Complete, ✅ Training Complete  
+**Training Date**: 2026-01-13  
+**Attestations**: All 5 builders attested (2026-01-13)  
+**Next Milestone**: Monitor first 5 PRs for compliance  
+**Compliance Deadline**: 2026-01-27 (MET EARLY)  
 **Owner**: Governance Liaison  
-**FM Approval Required**: For training schedule
+**FM Status**: Training conducted and confirmed
 
 ---
 
