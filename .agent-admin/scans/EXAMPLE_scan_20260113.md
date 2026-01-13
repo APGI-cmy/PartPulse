@@ -193,4 +193,4 @@
 
 ---
 
-**Scan Version**: 1.0.0 (based on PREHANDOVER_PROOF Template v3.0.0)
+**Scan Version**: 1.0.0 (based on PREHANDOVER_PROOF Template v2.0.0)

@@ -1,7 +1,7 @@
 # PREHANDOVER_PROOF Template
 
 **Purpose**: Evidence that all execution checks passed before agent handover with mandatory governance artifacts  
-**Version**: 3.0.0  
+**Version**: 2.0.0  
 **Authority**: 
 - Execution Bootstrap Protocol (governance/canon/EXECUTION_BOOTSTRAP_PROTOCOL.md v2.0.0+)
 - Combined Testing Pattern (COMBINED_TESTING_PATTERN.md v1.0.0)
@@ -15,7 +15,7 @@
 
 This template enforces **10/10 governance compliance** through mandatory governance artifacts and comprehensive testing validation.
 
-### Key Enhancements in v3.0.0
+### Key Enhancements in v2.0.0
 
 1. **Governance Artifacts (Section 0)**: Four mandatory artifacts required
    - Governance Scan
@@ -1370,21 +1370,19 @@ A: **Governance artifact quality guidelines**:
 
 ### Version History
 
-**v3.0.0** (2026-01-13):
+**v2.0.0** (2026-01-13):
 - Added Section 0: Governance Artifacts (4 required artifacts)
 - Added Section 9: CST Validation with decision framework
 - Added Section 11: Comprehensive FAQ (22 questions)
 - Added artifact flexibility (embed vs. separate files)
 - Expanded Section 10: Complete Verification Checklist
 - Enhanced authority references (3 canonical sources)
-- Increased from 328 lines to 813+ lines
-
-**v2.0.0** (2026-01-12):
 - Added AGENT_TEST_EXECUTION_PROTOCOL requirements
 - Added deprecation detection (BL-026)
 - Enhanced test execution evidence section
+- Increased from 328 lines to 813+ lines
 
-**v1.0.0** (Initial):
+**v1.0.0** (2026-01-11):
 - Basic 7-step execution bootstrap protocol
 - Core CI verification requirements
 

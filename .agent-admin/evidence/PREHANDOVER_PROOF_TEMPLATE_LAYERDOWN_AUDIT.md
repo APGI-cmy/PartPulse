@@ -14,7 +14,7 @@
 Layer down the updated PREHANDOVER_PROOF template from canonical governance to PartPulse repository with enhancements for 10/10 governance compliance.
 
 ### Scope
-- Updated PREHANDOVER_PROOF template to v3.0.0 (from v2.0.0)
+- Updated PREHANDOVER_PROOF template to v2.0.0 (from v1.0.0)
 - Added mandatory governance artifacts section (4 artifacts required)
 - Added CST validation section with decision framework
 - Expanded FAQ with 22 comprehensive questions
@@ -29,7 +29,7 @@ Layer down the updated PREHANDOVER_PROOF template from canonical governance to P
 
 **File**: `governance/templates/PREHANDOVER_PROOF_TEMPLATE.md`
 
-**Version**: v2.0.0 → v3.0.0  
+**Version**: v1.0.0 → v2.0.0  
 **Line Count**: 328 lines → 1,434 lines (1,106 lines added)  
 **Effective Date**: 2026-01-13
 
@@ -78,7 +78,7 @@ Layer down the updated PREHANDOVER_PROOF template from canonical governance to P
 6. **Section 13: References (ENHANCED)**
    - Added comprehensive authority references
    - Organized by category: Constitutional, Testing, Quality Gates, FM, Repository
-   - Added version history with v3.0.0 changelog
+   - Added version history with v2.0.0 changelog
    - Added template usage instructions for agents and reviewers
    - Added rejection criteria
    - **Lines**: ~110 lines (from ~15 lines)
@@ -213,7 +213,7 @@ The enhanced template provides TWO options for artifact storage:
 ### Acceptance Criteria from Issue
 
 - [x] **PREHANDOVER_PROOF template in PartPulse matches canonical version**
-  - Template updated to v3.0.0 with all canonical enhancements
+  - Template updated to v2.0.0 with all canonical enhancements
   - Exceeds canonical line count requirement (1,434 vs. 813 lines)
   
 - [x] **Four artifact sections (scan, risk, change, completion) present**
@@ -313,7 +313,7 @@ Status: ✅ All constitutional authorities aligned
 ## Ripple Analysis
 
 ### Files Modified
-1. `governance/templates/PREHANDOVER_PROOF_TEMPLATE.md` - Enhanced to v3.0.0
+1. `governance/templates/PREHANDOVER_PROOF_TEMPLATE.md` - Enhanced to v2.0.0
 
 ### Files Created
 1. `.agent-admin/scans/EXAMPLE_scan_20260113.md` - Example scan template
@@ -343,7 +343,7 @@ Status: ✅ All constitutional authorities aligned
 
 **Enhancement Identified**: No additional governance enhancements beyond this layerdown.
 
-**Rationale**: The template v3.0.0 already represents the canonical governance enhancement. Further improvements should be identified through actual usage and can be promoted back to canonical governance if patterns emerge.
+**Rationale**: The template v2.0.0 already represents the canonical governance enhancement. Further improvements should be identified through actual usage and can be promoted back to canonical governance if patterns emerge.
 
 **Status**: No additional enhancements - this IS the enhancement.
 
@@ -352,7 +352,7 @@ Status: ✅ All constitutional authorities aligned
 ## Handover Readiness
 
 ### Completion Verification
-- [x] Template enhanced to v3.0.0 (1,434 lines)
+- [x] Template enhanced to v2.0.0 (1,434 lines)
 - [x] All 4 governance artifact sections added
 - [x] CST validation section complete
 - [x] FAQ section comprehensive (22 questions)
@@ -395,7 +395,7 @@ Status: ✅ All constitutional authorities aligned
 ## References
 
 **Issue**: Layer down enhanced PREHANDOVER_PROOF template  
-**Template**: `governance/templates/PREHANDOVER_PROOF_TEMPLATE.md` v3.0.0  
+**Template**: `governance/templates/PREHANDOVER_PROOF_TEMPLATE.md` v2.0.0  
 **Example Artifacts**: `.agent-admin/` (4 templates)  
 **Canonical Authority**: maturion-foreman-governance/governance/canon  
 

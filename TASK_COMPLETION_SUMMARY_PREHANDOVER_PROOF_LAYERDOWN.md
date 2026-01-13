@@ -19,8 +19,8 @@
 ## Acceptance Criteria - All Met ✅
 
 ### 1. PREHANDOVER_PROOF template matches canonical version
-✅ **COMPLETE** - Template updated to v3.0.0 with all canonical enhancements
-- Version: v2.0.0 → v3.0.0
+✅ **COMPLETE** - Template updated to v2.0.0 with all canonical enhancements
+- Version: v1.0.0 → v2.0.0
 - Line count: 328 → 1,434 lines
 - Effective date: 2026-01-13
 - All canonical features implemented and exceeded
@@ -107,7 +107,7 @@
 ## Deliverables Summary
 
 ### Primary Deliverable
-**File**: `governance/templates/PREHANDOVER_PROOF_TEMPLATE.md` v3.0.0
+**File**: `governance/templates/PREHANDOVER_PROOF_TEMPLATE.md` v2.0.0
 - **Status**: ✅ Complete
 - **Quality**: 10/10 governance compliance
 - **Line count**: 1,434 lines (exceeds canonical requirement)
@@ -158,7 +158,7 @@
 ### 5. Complete Authority References (Section 13)
 - Organized by category (Constitutional, Testing, Quality, FM)
 - Repository locations for all documents
-- Version history (v1.0.0 → v2.0.0 → v3.0.0)
+- Version history (v1.0.0 → v1.0.0 → v2.0.0)
 - Template usage instructions for agents and reviewers
 - Rejection criteria documentation
 
@@ -193,7 +193,7 @@
 
 ### Governance Compliance
 - **Authority alignment**: All 3 primary + 10 secondary authorities ✅
-- **Version control**: v3.0.0 with changelog ✅
+- **Version control**: v2.0.0 with changelog ✅
 - **Audit trail**: Complete documentation ✅
 - **Constitutional compliance**: All Tier-0 requirements met ✅
 
@@ -268,7 +268,7 @@
 **Answer**: No additional governance enhancements identified.
 
 **Rationale**: 
-This layerdown IS the governance enhancement. The PREHANDOVER_PROOF template v3.0.0 represents the canonical governance improvement from maturion-foreman-governance. The template provides:
+This layerdown IS the governance enhancement. The PREHANDOVER_PROOF template v2.0.0 represents the canonical governance improvement from maturion-foreman-governance. The template provides:
 - Comprehensive governance artifact framework
 - Clear CST validation approach
 - Extensive FAQ covering all scenarios
@@ -283,7 +283,7 @@ Future improvements should emerge from actual usage patterns and be promoted bac
 ## Handover Readiness
 
 ### Completion Verification
-- [x] Template enhanced to v3.0.0 (1,434 lines)
+- [x] Template enhanced to v2.0.0 (1,434 lines)
 - [x] All 4 governance artifact sections implemented
 - [x] CST validation framework complete
 - [x] FAQ comprehensive (22 questions, 380+ lines)
@@ -317,14 +317,14 @@ Future improvements should emerge from actual usage patterns and be promoted bac
 ## Next Steps
 
 ### For Future PRs
-1. Use enhanced PREHANDOVER_PROOF template v3.0.0
+1. Use enhanced PREHANDOVER_PROOF template v2.0.0
 2. Complete all 4 governance artifacts (Section 0)
 3. Follow CST validation framework (Section 9)
 4. Reference FAQ for common questions (Section 11)
 5. Use example templates from `.agent-admin/` as needed
 
 ### For Governance
-1. Monitor usage of template v3.0.0
+1. Monitor usage of template v2.0.0
 2. Collect feedback from agents
 3. Identify common patterns for future enhancements
 4. Promote learnings to canonical governance if applicable
@@ -363,7 +363,7 @@ I certify that:
 
 **Issue**: Layer down enhanced PREHANDOVER_PROOF template with embedded governance artifacts and CST validation sections  
 **PR**: (current PR on branch copilot/update-prehandover-proof-template)  
-**Template**: `governance/templates/PREHANDOVER_PROOF_TEMPLATE.md` v3.0.0  
+**Template**: `governance/templates/PREHANDOVER_PROOF_TEMPLATE.md` v2.0.0  
 **Example Artifacts**: `.agent-admin/` (4 comprehensive templates)  
 **Audit Evidence**: `.agent-admin/evidence/PREHANDOVER_PROOF_TEMPLATE_LAYERDOWN_AUDIT.md`  
 **Canonical Authority**: maturion-foreman-governance/governance/canon  

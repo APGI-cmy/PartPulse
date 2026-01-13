@@ -377,4 +377,4 @@ git log --oneline -n 10
 
 ---
 
-**Change Record Version**: 1.0.0 (based on PREHANDOVER_PROOF Template v3.0.0)
+**Change Record Version**: 1.0.0 (based on PREHANDOVER_PROOF Template v2.0.0)
