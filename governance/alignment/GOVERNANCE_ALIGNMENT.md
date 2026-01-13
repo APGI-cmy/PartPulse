@@ -17,6 +17,7 @@
 
 | Date | Governance Version | Changes Applied | Authority |
 |------|-------------------|-----------------|-----------|
+| 2026-01-13 | v2.2.0 | Agent Contract Management Protocol (Tier-0) layer-down - Constitutional self-modification prohibition, instruction system, contract modification template | Governance Liaison Agent |
 | 2026-01-13 | v2.1.0 | Agent Test Execution Protocol & BL-026 (T0-015) layer-down - CI-confirmatory-not-diagnostic principle, local test execution required, builder attestations | Governance Liaison Agent |
 | 2026-01-12 | v1.1.0 | .agent File Governance - 4 canonical documents layered down, .agent file schema compliance achieved | Governance Liaison Agent |
 | 2026-01-12 | 2.0.0 | Execution Bootstrap Protocol layer-down - 7-step verification, PREHANDOVER_PROOF, monitoring infrastructure | Governance Liaison Agent |
@@ -54,7 +55,7 @@ This repository has completed the **First Point of Contact (FPC) Repository Laye
 
 **Agent Roster**:
 1. ForemanApp Agent (v4.0.0) - Orchestration authority
-2. Governance Liaison Agent (v2.0.0) - Governance enforcement
+2. Governance Liaison Agent (v2.2.0) - Governance enforcement
 3. API Builder - Backend development
 4. UI Builder - Frontend development
 5. QA Builder - Quality assurance
@@ -316,4 +317,105 @@ Two critical protocols layered down simultaneously:
 
 ---
 
-**Governance Liaison Agent**: governance-liaison.md (v2.0.0)
+## Agent Contract Management Protocol (v2.2.0)
+
+**Effective Date**: 2026-01-13  
+**Layer-Down Date**: 2026-01-13  
+**Status**: ACTIVE - Constitutional (Tier-0)
+
+### Protocol Overview
+
+The **Agent Contract Management Protocol** establishes constitutional rules for agent contract modification, explicitly prohibiting agents from writing to their own contract files.
+
+**Key Documents Layered Down**:
+
+1. **AGENT_CONTRACT_MANAGEMENT_PROTOCOL.md** → `governance/canon/AGENT_CONTRACT_MANAGEMENT_PROTOCOL.md`
+   - Version: 1.0.0
+   - Tier: 0 (Constitutional)
+   - Purpose: Define self-modification prohibition and instruction system
+   - Authority: Supreme - Canonical
+
+2. **AGENT_CONTRACT_MODIFICATION_REQUEST.template.md** → `governance/templates/AGENT_CONTRACT_MODIFICATION_REQUEST.template.md`
+   - Version: 1.0.0
+   - Purpose: Template for contract modification requests via instruction system
+   - Authority: Canonical
+
+### Core Principle
+
+**ABSOLUTE PROHIBITION**: Agents MUST NOT modify their own contract files under ANY circumstances.
+
+> "I enforce governance. I do NOT define my own authority."
+
+### Implementation Status
+
+- [x] Protocol document created (`governance/canon/AGENT_CONTRACT_MANAGEMENT_PROTOCOL.md`)
+- [x] Modification request template created (`governance/templates/AGENT_CONTRACT_MODIFICATION_REQUEST.template.md`)
+- [x] Governance-liaison contract updated with explicit prohibition (v2.2.0)
+- [x] .agent file updated with protocol binding
+- [x] Governance visibility event created (`governance/events/2026-01-13-agent-contract-management-protocol-layerdown.md`)
+- [x] Governance alignment updated
+- [ ] All agents acknowledge prohibition
+- [ ] First contract modification request processed via instruction system
+
+### Governance Liaison Specific Prohibition
+
+**EXPLICITLY PROHIBITED from**:
+- ❌ Writing to `.github/agents/governance-liaison.md`
+- ❌ Modifying own contract in any form (direct edits, templates, mechanical fixes, ripple updates)
+- ❌ Applying automated updates to own contract file
+- ❌ Bypassing prohibition for any reason
+
+**ALLOWED Actions**:
+- ✅ Read and reference own contract for self-awareness
+- ✅ Identify contract gaps and submit modification requests
+- ✅ Modify OTHER agents' contracts (when authorized)
+- ✅ Escalate contract conflicts or ambiguities
+
+### Instruction System
+
+**Process for Contract Modifications**:
+1. Agent identifies contract modification need
+2. Agent creates modification request using template
+3. Agent submits via GitHub issue with label `contract-modification`
+4. Authority reviews and approves/rejects
+5. Authority executes modification OR delegates to authorized agent
+6. Modification is documented and tracked
+
+**Authority Hierarchy**:
+- **Human Governance (Johan Ras)**: Ultimate authority for ALL contract modifications
+- **Foreman (FM)**: Delegated authority for builder contracts ONLY
+- **Governance Liaison**: Delegated authority for governance-driven updates (CANNOT modify own contract)
+
+### Enforcement
+
+**Validation**:
+- All PRs modifying agent contracts MUST be reviewed by authority
+- Reviewers MUST verify agent is not modifying its own contract
+- Modification request reference required
+
+**Consequences of Violation**:
+- Self-modification attempt = CATASTROPHIC governance violation
+- PR rejected immediately
+- Escalate to Human Governance
+- Root cause analysis required
+- Agent retraining or contract revision
+
+### Ripple Awareness
+
+All contract modification requests MUST include ripple impact analysis per AGENT_RIPPLE_AWARENESS_OBLIGATION.md:
+- Affected agents
+- Affected workflows
+- Affected governance documents
+- Breaking vs non-breaking classification
+- Remediation plan
+
+### Next Steps
+
+1. **All Agents**: Review AGENT_CONTRACT_MANAGEMENT_PROTOCOL.md
+2. **Governance Liaison**: Acknowledge self-modification prohibition
+3. **FM**: Understand contract modification approval authority
+4. **Human Governance**: Monitor for compliance
+
+---
+
+**Governance Liaison Agent**: governance-liaison.md (v2.2.0)
