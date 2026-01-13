@@ -25,7 +25,7 @@ instructions: |
   
   ### Tier-0 Constitutional (Supreme Authority)
   - **BUILD_PHILOSOPHY.md** — Supreme constitutional authority, One-Time Build Law
-  - **governance-supremacy-rule. md** — Governance as absolute authority
+  - **governance-supremacy-rule.md** — Governance as absolute authority
   - **zero-test-debt-constitutional-rule.md** — Zero test debt prohibition
   - **design-freeze-rule.md** — Architecture freeze before build
   - **RED_GATE_AUTHORITY_AND_OWNERSHIP.md** — Gate ownership, stop authority
@@ -41,16 +41,16 @@ instructions: |
   
   ### QA & Quality
   - **AGENT_SCOPED_QA_BOUNDARIES.md** — Agent QA separation (constitutional)
-  - **QA_CATALOG_GATE. md** — QA catalog requirements
+  - **QA_CATALOG_GATE.md** — QA catalog requirements
   - **TEST_REMOVAL_GOVERNANCE_GATE_LOCAL.md** — Test removal governance
   - **ZERO_WARNING_TEST_DEBT_IMMEDIATE_REMEDY_DOCTRINE.md** — Zero warnings enforcement
   - **build-to-green-enforcement-spec.md** — Build-to-green requirement
   - **quality-integrity-contract.md** — Quality standards
-  - **AUTOMATED_DEPRECATION_DETECTION_GATE. md** — BL-026 deprecation enforcement
+  - **AUTOMATED_DEPRECATION_DETECTION_GATE.md** — BL-026 deprecation enforcement
   
   ### Agent Doctrine
   - **AGENT_CONSTITUTION.md** — Agent obligations, boundaries, authority
-  - **AGENT_RECRUITMENT. md** — Agent legitimacy
+  - **AGENT_RECRUITMENT.md** — Agent legitimacy
   - **AGENT_ONBOARDING_QUICKSTART.md** — Onboarding requirements
   - **AGENT_CONTRACT_MANAGEMENT_PROTOCOL.md** — Contract modification protocol (Tier-0 Constitutional)
   
@@ -78,7 +78,7 @@ instructions: |
   
   ## Mandatory PR-Gate Preflight (Category 0)
   
-  **Authority**:  EXECUTION_BOOTSTRAP_PROTOCOL. md (v2.0.0+)
+  **Authority**: EXECUTION_BOOTSTRAP_PROTOCOL.md (v2.0.0+)
   
   **Before EVERY handover**, MUST execute **7-step verification**:
   
@@ -168,7 +168,7 @@ instructions: |
   ## FM Office Visibility
   
   **For governance changes affecting FM**:
-  - Create visibility event:  governance/events/YYYY-MM-DD-description. md
+  - Create visibility event: governance/events/YYYY-MM-DD-description.md
   - Include:  Summary, date, adjustments required, grace period, enforcement
   - Don't rely on FM diffing governance changes
   
@@ -177,12 +177,12 @@ instructions: |
   ## Ripple Intelligence (MANDATORY)
   
   **Governance changes ripple to**:
-  - . agent file (repository contract)
-  - Agent contracts (.github/agents/*. md)
+  - .agent file (repository contract)
+  - Agent contracts (.github/agents/*.md)
   - Validation scripts (if applicable)
   - Workflows (if applicable)
   - FM contract (if applicable)
-  - Documentation (GOVERNANCE_ALIGNMENT. md, etc.)
+  - Documentation (GOVERNANCE_ALIGNMENT.md, etc.)
   
   **MUST**:
   - Identify ripple scope (all affected files)
