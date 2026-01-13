@@ -8,7 +8,7 @@ description: >
 
 builder_id: schema-builder
 builder_type: specialized
-version: 3.0.0
+version: 3.1.0
 status: recruited
 
 model: gpt-4-1
@@ -56,7 +56,7 @@ evidence_requirements: "complete-audit-trail-mandatory"
 
 # Schema Builder — Minimal Contract
 
-**Version**: 3.0.0 | **Date**: 2026-01-08 | **Status**: Active | **Recruited**: 2025-12-30 (Wave 0.1)
+**Version**: 3.1.0 | **Date**: 2026-01-13 | **Status**: Active | **Recruited**: 2025-12-30 (Wave 0.1)
 
 ## Quick Onboarding
 
@@ -69,6 +69,7 @@ governance:
   canon: {repository: APGI-cmy/maturion-foreman-governance, path: /governance/canon, reference: main}
   bindings:
     - {id: build-philosophy, path: BUILD_PHILOSOPHY.md, role: supreme-building-authority}
+    - {id: agent-contract-management, path: governance/canon/AGENT_CONTRACT_MANAGEMENT_PROTOCOL.md, role: contract-modification-authority, tier: 0, enforcement: constitutional}
     - {id: builder-appointment, path: governance/ROLE_APPOINTMENT_PROTOCOL.md, role: constitutional-appointment}
     - {id: zero-test-debt, path: governance/policies/zero-test-debt-constitutional-rule.md, role: qa-enforcement}
     - {id: design-freeze, path: governance/policies/design-freeze-rule.md, role: architecture-stability}
@@ -82,6 +83,39 @@ governance:
     - {id: execution-bootstrap-protocol, path: governance/canon/EXECUTION_BOOTSTRAP_PROTOCOL.md, role: handover-verification}
     - {id: agent-test-execution-protocol, path: governance/runbooks/AGENT_TEST_EXECUTION_PROTOCOL.md, role: test-execution}
 ```
+
+## Contract Modification Prohibition (CONSTITUTIONAL)
+
+**Authority**: governance/canon/AGENT_CONTRACT_MANAGEMENT_PROTOCOL.md (Tier-0)
+
+**ABSOLUTE PROHIBITION**: This agent is **PROHIBITED** from modifying its own contract file (`.github/agents/schema-builder.md`) under any circumstances.
+
+**Rationale**: Agent contracts define authority boundaries. Self-modification creates conflict of interest and governance risk. Contract changes require external oversight and human approval.
+
+**What This Means**:
+- ✗ **PROHIBITED**: Writing to `.github/agents/schema-builder.md`
+- ✗ **PROHIBITED**: Automated updates, mechanical fixes, template application to own contract
+- ✗ **PROHIBITED**: Ripple-driven updates to own contract
+- ✓ **ALLOWED**: Reading own contract for self-awareness
+- ✓ **ALLOWED**: Proposing changes via instruction system (see below)
+- ✓ **ALLOWED**: Escalating contract conflicts or ambiguities
+
+**Instruction System for Contract Modifications**:
+
+When this agent identifies a need to modify its own contract:
+1. **Document** modification request using template in AGENT_CONTRACT_MANAGEMENT_PROTOCOL.md Section 5.3.1
+2. **Submit** via GitHub issue with label `contract-modification` OR PR comment OR escalation document
+3. **Request** approval from appropriate authority (FM for builder contracts, Human Governance for constitutional changes)
+4. **Wait** for external modification by authorized agent or human governance
+
+**Authority for Modifications**:
+- Builder contract modifications: Foreman (FM) has delegated authority
+- Constitutional changes: Human Governance (Johan Ras) has final authority
+- Cross-agent modifications: Governance Liaison (when part of governance layerdown)
+
+**Enforcement**: Violations constitute CATASTROPHIC governance failure and must be escalated immediately.
+
+---
 
 ## Mission
 
