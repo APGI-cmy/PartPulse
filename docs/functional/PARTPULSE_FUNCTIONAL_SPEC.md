@@ -3437,49 +3437,1456 @@ Each FR requirement includes acceptance criteria checkboxes. QA tests should ver
 
 ---
 
+
+
 ## 16. Architecture Derivation Guidance
 
-**Purpose**: Guide architects in deriving architecture from this FRS.
+**Purpose**: This section provides explicit wiring specifications that architects and builders MUST follow to ensure all system components are properly connected and integrated. Without these specifications, builders will create isolated components that don't communicate, resulting in the "empty TV shell" problem where user actions produce no results.
 
-### 16.1 Component Mapping
+### 16.1 Component Interface Contracts
 
-Functional requirements map to architectural components as follows:
+#### 16.1.1 UI Component → API Route Contracts
 
-| FRS Functional Area | Suggested Architecture Components |
-|---------------------|-----------------------------------|
-| FR-DIST-* (Internal Transfers) | InternalTransferForm component, InternalTransferList component, InternalTransferDetail component, Internal Transfer API routes, InternalTransfer/InternalTransferItem Prisma models |
-| FR-WARR-* (Warranty Claims) | WarrantyClaimForm component, WarrantyClaimList component, WarrantyClaimDetail component, AdminReview component, Warranty Claim API routes, WarrantyClaim/WarrantyItem Prisma models |
-| FR-EMP-* (Employee Management) | EmployeeList component, InviteUser component, AcceptInvitation page, Employee API routes, User/Invitation Prisma models |
-| FR-REPORT-* (Reports) | ReportsDashboard component, TransferReport component, ClaimReport component, UserActivityReport component, AuditReport component, Report API routes |
-| FR-AUTH-* (Authentication) | Login page, NextAuth.js configuration, session middleware, password validation utility |
-| FR-SEC-* (Security) | Input sanitization utilities, security headers middleware, rate limiting middleware |
-| FR-PDF-* (PDF Generation) | PDF template engine, Transfer PDF template, Warranty Claim PDF template, PDF storage service |
-| FR-EMAIL-* (Email) | Email template system, email sending service, email queue (optional) |
-| FR-AUDIT-* (Audit Logging) | Audit logging service, SystemLog Prisma model, audit log middleware |
+**Internal Transfer Submission Contract**:
+```typescript
+// UI Component: InternalTransferForm
+interface TransferSubmissionRequest {
+  date: string;              // ISO 8601 date
+  ssid?: string;             // Optional site identifier
+  siteName?: string;         // Optional site name
+  poNumber?: string;         // Optional PO number
+  items: Array<{
+    qty: number;             // 1-9999
+    partNo: string;          // Max 100 chars
+    description: string;     // Max 500 chars
+  }>;
+  clientName?: string;       // Optional, max 200 chars
+  clientDate?: string;       // Optional ISO 8601 date
+  clientSignature?: string;  // Optional signature data
+}
 
-### 16.2 Data Model Requirements
+interface TransferSubmissionResponse {
+  success: boolean;
+  transferId: string;        // CUID
+  pdfUrl: string;           // URL to download PDF
+  message: string;          // Success/error message
+  errors?: Record<string, string[]>; // Validation errors by field
+}
 
-Architecture must implement data models per `APP_DESCRIPTION.md` Section "Data Captured":
-- **User**: Authentication and role management
-- **InternalTransfer** & **InternalTransferItem**: Part transfer tracking
-- **WarrantyClaim** & **WarrantyItem**: Warranty claim processing
-- **Invitation**: User invitation and registration
-- **SystemLog**: Comprehensive audit logging
+// API Route: POST /api/transfers
+// Wiring: Form onSubmit → API call → Response handler → Navigation
+```
 
-### 16.3 Integration Points
+**Warranty Claim Submission Contract**:
+```typescript
+// UI Component: WarrantyClaimForm
+interface ClaimSubmissionRequest {
+  date: string;              // ISO 8601 date
+  chillerModel?: string;     // Optional, max 100 chars
+  chillerSerial?: string;    // Optional, max 100 chars
+  ssidJobNumber?: string;    // Optional, max 100 chars
+  buildingName?: string;     // Optional, max 200 chars
+  siteName?: string;         // Optional, max 200 chars
+  coveredByWarranty: boolean;
+  comments?: string;         // Optional, max 5000 chars
+  technicianSignature?: string; // Optional
+  items: Array<{
+    partNo: string;          // Required, max 100 chars
+    quantity: number;        // 1-999
+    failedPartSerial: string; // Required (Trane mandate)
+    replacedPartSerial: string; // Required
+    dateOfFailure: string;   // ISO 8601 date
+    dateOfRepair: string;    // ISO 8601 date, >= dateOfFailure
+  }>;
+}
 
-Architecture must support:
-- **Email Provider**: Resend, SendGrid, or AWS SES (configurable)
-- **Storage Provider**: Local filesystem or S3-compatible storage (configurable)
-- **Database**: SQLite (development), PostgreSQL (production)
+interface ClaimSubmissionResponse {
+  success: boolean;
+  claimId: string;          // CUID
+  pdfUrl: string;           // URL to download PDF
+  message: string;
+  errors?: Record<string, string[]>;
+}
 
-### 16.4 Technology Stack Constraints
+// API Route: POST /api/warranty-claims
+// Wiring: Form onSubmit → API call → Response handler → Navigation
+```
 
-Per `APP_DESCRIPTION.md` Section "Technical Architecture Summary → Technology Stack":
-- **Frontend**: Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4
-- **Backend**: Next.js API Routes, NextAuth.js v5, Prisma
-- **Database**: SQLite (dev), PostgreSQL (prod)
-- **Deployment**: Vercel (MVP), Docker/self-hosted (production)
+**Admin Claim Review Contract**:
+```typescript
+// UI Component: AdminReviewForm
+interface ClaimReviewRequest {
+  claimId: string;
+  decision: 'approve' | 'reject';
+  adminSignature: string;    // Required
+  adminNotes?: string;       // Optional
+  processingDate: string;    // ISO 8601 date
+}
+
+interface ClaimReviewResponse {
+  success: boolean;
+  claimId: string;
+  status: 'Approved' | 'Rejected';
+  updatedPdfUrl: string;    // New PDF with admin signature
+  message: string;
+  errors?: Record<string, string[]>;
+}
+
+// API Route: POST /api/warranty-claims/:id/review
+// Wiring: Review form → API call → PDF regeneration → Email notification → Response
+```
+
+#### 16.1.2 API Route → Business Logic Contracts
+
+**Transfer Service Interface**:
+```typescript
+// Service: TransferService
+interface ITransferService {
+  createTransfer(data: CreateTransferDTO, userId: string): Promise<Transfer>;
+  updateTransfer(id: string, data: UpdateTransferDTO, userId: string): Promise<Transfer>;
+  deleteTransfer(id: string, userId: string): Promise<void>;
+  getTransfer(id: string, userId: string, userRole: string): Promise<Transfer>;
+  listTransfers(filters: TransferFilters, userId: string, userRole: string): Promise<PaginatedTransfers>;
+  addAdminStamp(id: string, adminSignature: string, userId: string): Promise<Transfer>;
+}
+
+// API Route → Service wiring:
+// 1. Extract authenticated user from session (middleware)
+// 2. Validate request body with Zod schema
+// 3. Call service method with validated data + userId
+// 4. Service performs authorization check (ownership or admin role)
+// 5. Service executes business logic
+// 6. Service returns result or throws typed error
+// 7. API route catches error and returns appropriate HTTP response
+```
+
+**Warranty Claim Service Interface**:
+```typescript
+// Service: WarrantyClaimService
+interface IWarrantyClaimService {
+  createClaim(data: CreateClaimDTO, userId: string): Promise<WarrantyClaim>;
+  updateClaim(id: string, data: UpdateClaimDTO, userId: string): Promise<WarrantyClaim>;
+  deleteClaim(id: string, userId: string): Promise<void>;
+  getClaim(id: string, userId: string, userRole: string): Promise<WarrantyClaim>;
+  listClaims(filters: ClaimFilters, userId: string, userRole: string): Promise<PaginatedClaims>;
+  reviewClaim(id: string, review: ClaimReviewDTO, adminId: string): Promise<WarrantyClaim>;
+}
+
+// API Route → Service wiring:
+// Same pattern as TransferService with additional:
+// - Admin review authorization check (admin role required)
+// - PDF regeneration trigger after admin review
+// - Email notification trigger after status change
+```
+
+#### 16.1.3 Business Logic → Data Access Contracts
+
+**Repository Pattern with Prisma**:
+```typescript
+// Repository: TransferRepository
+interface ITransferRepository {
+  create(data: Prisma.InternalTransferCreateInput): Promise<InternalTransfer>;
+  update(id: string, data: Prisma.InternalTransferUpdateInput): Promise<InternalTransfer>;
+  delete(id: string): Promise<void>;
+  findById(id: string): Promise<InternalTransfer | null>;
+  findMany(where: Prisma.InternalTransferWhereInput, options: PaginationOptions): Promise<InternalTransfer[]>;
+  count(where: Prisma.InternalTransferWhereInput): Promise<number>;
+}
+
+// Service → Repository wiring:
+// 1. Service receives validated business data
+// 2. Service transforms to Prisma input types
+// 3. Service calls repository method
+// 4. Repository executes Prisma query (parameterized - SQL injection safe)
+// 5. Repository returns Prisma model
+// 6. Service transforms to domain model or DTO
+// 7. Service returns to API route
+```
+
+**Prisma Transaction Patterns**:
+```typescript
+// Multi-step operations require transactions
+// Example: Create Transfer + Items + Audit Log
+async function createTransferWithItems(
+  prisma: PrismaClient,
+  transferData: TransferData,
+  items: ItemData[],
+  userId: string
+): Promise<InternalTransfer> {
+  return await prisma.$transaction(async (tx) => {
+    // 1. Create transfer
+    const transfer = await tx.internalTransfer.create({
+      data: {
+        ...transferData,
+        technicianId: userId,
+      },
+    });
+    
+    // 2. Create items
+    await tx.internalTransferItem.createMany({
+      data: items.map(item => ({
+        ...item,
+        transferId: transfer.id,
+      })),
+    });
+    
+    // 3. Create audit log
+    await tx.systemLog.create({
+      data: {
+        eventType: 'submission',
+        action: 'TRANSFER_SUBMITTED',
+        userId: userId,
+        details: JSON.stringify({ transferId: transfer.id }),
+      },
+    });
+    
+    // 4. Return complete transfer with items
+    return await tx.internalTransfer.findUnique({
+      where: { id: transfer.id },
+      include: { items: true, technician: true },
+    });
+  });
+}
+
+// Wiring: Service calls transaction function, Prisma ensures atomicity
+```
+
+### 16.2 Integration Point Specifications
+
+#### 16.2.1 Frontend-Backend API Integration
+
+**API Route Structure**:
+```
+/api/transfers
+  POST   /              → Create transfer (FR-DIST-002, FR-DIST-004, FR-DIST-005)
+  GET    /              → List transfers (FR-DIST-009)
+  GET    /:id           → Get transfer details (FR-DIST-008)
+  PUT    /:id           → Update transfer (FR-DIST-010)
+  DELETE /:id           → Delete transfer (FR-DIST-011)
+  POST   /:id/admin-stamp → Add admin stamp (FR-DIST-012)
+
+/api/warranty-claims
+  POST   /              → Create claim (FR-WARR-002 to FR-WARR-006)
+  GET    /              → List claims (FR-WARR-009)
+  GET    /:id           → Get claim details (FR-WARR-010)
+  PUT    /:id           → Update claim (FR-WARR-015)
+  DELETE /:id           → Delete claim (FR-WARR-016)
+  POST   /:id/review    → Admin review (FR-WARR-012)
+
+/api/employees
+  POST   /invite        → Invite user (FR-EMP-001)
+  GET    /              → List employees (FR-EMP-006)
+  POST   /:id/reset-password → Reset password (FR-EMP-007)
+  PUT    /:id/deactivate → Deactivate user (FR-EMP-008)
+
+/api/reports
+  GET    /dashboard     → Reports dashboard (FR-REPORT-001)
+  GET    /transfers     → Transfer report (FR-REPORT-002)
+  GET    /claims        → Claims report (FR-REPORT-003)
+  GET    /user-activity → User activity (FR-REPORT-004)
+  GET    /audit-log     → Audit log (FR-REPORT-005)
+
+/api/auth
+  POST   /login         → User login (FR-AUTH-001)
+  POST   /logout        → User logout (FR-AUTH-004)
+  GET    /session       → Get current session
+```
+
+**Request/Response Flow**:
+```
+1. User Action (Button Click, Form Submit)
+   ↓
+2. UI Component Event Handler
+   ↓
+3. Client-side Validation (Zod schema, immediate feedback)
+   ↓
+4. HTTP Request (fetch/axios with auth headers)
+   ↓
+5. Next.js Middleware (authentication check, JWT validation)
+   ↓
+6. API Route Handler (request parsing, validation)
+   ↓
+7. Server-side Validation (Zod schema re-validation)
+   ↓
+8. Authorization Check (role + ownership)
+   ↓
+9. Business Logic Service (orchestration)
+   ↓
+10. Data Access Layer (Prisma queries)
+    ↓
+11. Database (PostgreSQL/SQLite)
+    ↓
+12. Response Path (reverse of above)
+    ↓
+13. UI Update (state management, re-render)
+    ↓
+14. User Feedback (success message, navigation, etc.)
+```
+
+#### 16.2.2 Database Integration
+
+**Prisma Client Initialization**:
+```typescript
+// lib/prisma.ts
+import { PrismaClient } from '@prisma/client';
+
+// Singleton pattern for Prisma client
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
+
+export const prisma = globalForPrisma.prisma || new PrismaClient({
+  log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+});
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+
+// Wiring: Import prisma from this file in all services/repositories
+// Connection pooling handled by Prisma automatically
+```
+
+**Query Patterns**:
+```typescript
+// Pattern 1: Simple CRUD
+const transfer = await prisma.internalTransfer.create({ data: {...} });
+
+// Pattern 2: Relations (eager loading)
+const transfer = await prisma.internalTransfer.findUnique({
+  where: { id },
+  include: { 
+    items: true,           // Load all items
+    technician: true,      // Load technician details
+  },
+});
+
+// Pattern 3: Filtering (role-based)
+const transfers = await prisma.internalTransfer.findMany({
+  where: {
+    technicianId: userRole === 'technician' ? userId : undefined, // Filter by ownership
+  },
+  include: { items: true },
+  orderBy: { date: 'desc' },
+  skip: (page - 1) * perPage,
+  take: perPage,
+});
+
+// Pattern 4: Transactions (multi-step atomic operations)
+// See 16.1.3 for transaction example
+```
+
+#### 16.2.3 External Service Integration
+
+**Email Service Wiring**:
+```typescript
+// lib/email/client.ts
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+interface EmailOptions {
+  to: string;
+  subject: string;
+  html: string;
+  attachments?: Array<{ filename: string; content: Buffer }>;
+}
+
+export async function sendEmail(options: EmailOptions): Promise<void> {
+  try {
+    await resend.emails.send({
+      from: `PartPulse <${process.env.EMAIL_FROM}>`,
+      to: options.to,
+      subject: options.subject,
+      html: options.html,
+      attachments: options.attachments,
+    });
+    
+    // Log success to audit trail
+    await prisma.systemLog.create({
+      data: {
+        eventType: 'email_sent',
+        action: 'EMAIL_SENT',
+        details: JSON.stringify({ to: options.to, subject: options.subject }),
+        success: true,
+      },
+    });
+  } catch (error) {
+    // Log failure to audit trail
+    await prisma.systemLog.create({
+      data: {
+        eventType: 'email_sent',
+        action: 'EMAIL_FAILED',
+        details: JSON.stringify({ to: options.to, error: error.message }),
+        success: false,
+        errorMessage: error.message,
+      },
+    });
+    
+    // Retry logic: throw error to trigger retry (3 attempts)
+    throw error;
+  }
+}
+
+// Wiring: Service layer calls sendEmail after successful database operation
+// Example: After transfer created → Send confirmation email
+```
+
+**PDF Generator Wiring**:
+```typescript
+// lib/pdf/generator.ts
+import { generatePDF } from './engine';
+import { uploadToStorage } from './storage';
+
+interface TransferPDFData {
+  transferId: string;
+  date: Date;
+  technician: string;
+  items: Array<{ qty: number; partNo: string; description: string }>;
+  // ... other transfer fields
+}
+
+export async function generateTransferPDF(data: TransferPDFData): Promise<string> {
+  // 1. Generate PDF binary
+  const pdfBuffer = await generatePDF('transfer-template', data);
+  
+  // 2. Upload to storage
+  const pdfPath = `transfers/${data.transferId}.pdf`;
+  const pdfUrl = await uploadToStorage(pdfPath, pdfBuffer, 'application/pdf');
+  
+  // 3. Log to audit trail
+  await prisma.systemLog.create({
+    data: {
+      eventType: 'pdf_generation',
+      action: 'TRANSFER_PDF_GENERATED',
+      details: JSON.stringify({ transferId: data.transferId, pdfUrl }),
+      success: true,
+    },
+  });
+  
+  return pdfUrl;
+}
+
+// Wiring: Service layer calls generateTransferPDF after database save
+// Example: Transfer created → Generate PDF → Update transfer record with PDF URL
+```
+
+**Storage Provider Wiring**:
+```typescript
+// lib/storage/index.ts
+// Configurable storage: local filesystem or S3
+const STORAGE_PROVIDER = process.env.STORAGE_PROVIDER || 'local';
+
+export async function uploadToStorage(
+  path: string,
+  buffer: Buffer,
+  contentType: string
+): Promise<string> {
+  if (STORAGE_PROVIDER === 's3') {
+    // S3 implementation
+    const s3Client = getS3Client();
+    await s3Client.putObject({
+      Bucket: process.env.S3_BUCKET,
+      Key: path,
+      Body: buffer,
+      ContentType: contentType,
+    });
+    return `https://${process.env.S3_BUCKET}.s3.amazonaws.com/${path}`;
+  } else {
+    // Local filesystem implementation
+    const localPath = `./public/uploads/${path}`;
+    await fs.promises.mkdir(dirname(localPath), { recursive: true });
+    await fs.promises.writeFile(localPath, buffer);
+    return `/uploads/${path}`;
+  }
+}
+
+// Wiring: PDF generator calls uploadToStorage, config determines provider
+```
+
+**Authentication Middleware Wiring**:
+```typescript
+// lib/auth/middleware.ts
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+
+export async function requireAuth(req: Request) {
+  const session = await getServerSession(authOptions);
+  
+  if (!session || !session.user) {
+    throw new UnauthorizedError('Authentication required');
+  }
+  
+  return {
+    userId: session.user.id,
+    userEmail: session.user.email,
+    userRole: session.user.role,
+  };
+}
+
+export async function requireAdmin(req: Request) {
+  const auth = await requireAuth(req);
+  
+  if (auth.userRole !== 'admin') {
+    throw new ForbiddenError('Admin access required');
+  }
+  
+  return auth;
+}
+
+// Wiring: Every API route calls requireAuth or requireAdmin at start
+// Example:
+// export async function POST(req: Request) {
+//   const auth = await requireAuth(req);
+//   // ... rest of handler with auth.userId, auth.userRole
+// }
+```
+
+### 16.3 Data Flow Wiring
+
+#### 16.3.1 Internal Transfer Submission Flow
+
+**End-to-End Wiring**:
+```
+1. User fills form in InternalTransferForm component
+   ↓
+2. User clicks "Submit" button
+   ↓
+3. Form onSubmit handler triggered
+   ↓
+4. Client-side validation (Zod schema)
+   - If invalid: Display errors inline, stop
+   - If valid: Continue to step 5
+   ↓
+5. POST request to /api/transfers
+   - Headers: Authorization (JWT from session cookie)
+   - Body: TransferSubmissionRequest
+   ↓
+6. Next.js middleware validates JWT
+   - If invalid: Return 401, stop
+   - If valid: Continue to step 7
+   ↓
+7. API route handler: POST /api/transfers
+   - Extract authenticated user from session
+   - Server-side validation (Zod re-validation)
+   - If invalid: Return 400 with errors, stop
+   - If valid: Continue to step 8
+   ↓
+8. Call TransferService.createTransfer(data, userId)
+   ↓
+9. TransferService orchestrates:
+   a. Sanitize inputs (XSS protection - FR-SEC-002)
+   b. Start Prisma transaction
+   c. Create InternalTransfer record
+   d. Create InternalTransferItem records (related)
+   e. Create SystemLog audit entry (FR-AUDIT-001)
+   f. Commit transaction
+   ↓
+10. Transfer created → Trigger side effects:
+    a. Call generateTransferPDF(transferData) (FR-DIST-006)
+       - Generate PDF from template
+       - Upload PDF to storage
+       - Return PDF URL
+    b. Update transfer record with pdfUrl
+    c. Call sendTransferEmail(transfer, userId) (FR-DIST-007)
+       - Compose email with branded template
+       - Send via Resend
+       - Log email event to audit trail
+       - Retry on failure (3 attempts)
+    ↓
+11. Service returns Transfer with pdfUrl
+    ↓
+12. API route returns 201 with TransferSubmissionResponse
+    - transferId, pdfUrl, success message
+    ↓
+13. UI receives response
+    - Navigate to /transfers/[transferId]
+    - Display success message
+    - Show transfer details with PDF download link
+    ↓
+14. User sees confirmation page (FR-DIST-008)
+```
+
+**Failure Handling in Flow**:
+```
+- Database failure (step 9): Transaction rolls back, return 500, log error
+- PDF generation failure (step 10a): Transfer still created, mark as pending PDF, retry later
+- Email failure (step 10c): Transfer + PDF still created, log failure, retry later
+- Any exception: Caught by error middleware, logged to audit trail, generic error returned to user
+```
+
+#### 16.3.2 Warranty Claim Submission Flow
+
+**End-to-End Wiring**:
+```
+1-7. Same as Internal Transfer (user action → API route → validation)
+   ↓
+8. Call WarrantyClaimService.createClaim(data, userId)
+   ↓
+9. WarrantyClaimService orchestrates:
+   a. Sanitize inputs (FR-SEC-002)
+   b. Validate serial numbers present (Trane requirement - FR-WARR-003)
+   c. Validate date relationships (repair >= failure - FR-WARR-005)
+   d. Start Prisma transaction
+   e. Create WarrantyClaim record
+   f. Create WarrantyItem records (related)
+   g. Create SystemLog audit entry
+   h. Commit transaction
+   ↓
+10. Claim created → Trigger side effects:
+    a. Call generateWarrantyClaimPDF(claimData) (FR-WARR-007)
+       - Generate PDF matching Trane Warranty Parts Claims Form
+       - Include Trane logos and branding
+       - Upload PDF to storage
+       - Return PDF URL
+    b. Update claim record with pdfUrl
+    c. Call sendClaimSubmissionEmail(claim, userId) (FR-WARR-008)
+       - Send confirmation to technician
+       - Send notification to admins
+       - Log email events
+    ↓
+11. Service returns WarrantyClaim with pdfUrl
+    ↓
+12. API route returns 201 with ClaimSubmissionResponse
+    ↓
+13. UI navigates to /warranty-claims/[claimId]
+    ↓
+14. User sees confirmation page (FR-WARR-010)
+```
+
+#### 16.3.3 Admin Warranty Claim Review Flow
+
+**End-to-End Wiring**:
+```
+1. Admin views claim detail page
+   - Loads claim data via GET /api/warranty-claims/:id
+   - Displays all claim details, parts, comments
+   ↓
+2. Admin clicks "Admin Review" button
+   - Navigates to review page or opens modal
+   ↓
+3. Admin fills review form:
+   - Decision: Approve or Reject
+   - Admin signature (required)
+   - Admin notes (optional)
+   - Processing date (auto-filled)
+   ↓
+4. Admin clicks "Submit" button
+   ↓
+5. POST request to /api/warranty-claims/:id/review
+   - Headers: Authorization (JWT)
+   - Body: ClaimReviewRequest
+   ↓
+6. API route handler validates:
+   - User is authenticated (middleware)
+   - User has admin role (requireAdmin) (FR-AUTH-002)
+   - If not admin: Return 403, stop
+   - Admin signature provided (FR-WARR-012)
+   - If missing: Return 400, stop
+   ↓
+7. Call WarrantyClaimService.reviewClaim(claimId, reviewData, adminId)
+   ↓
+8. Service orchestrates:
+   a. Load existing claim
+   b. Update claim with admin data:
+      - adminSignature
+      - adminStamp = true
+      - status = 'Approved' or 'Rejected'
+      - adminProcessingDate
+      - adminNotes
+   c. Save to database
+   d. Create audit log entry (FR-AUDIT-001)
+   ↓
+9. Claim updated → Trigger side effects:
+   a. Call regenerateWarrantyClaimPDF(claimData) (FR-WARR-013)
+      - Generate new PDF with admin signature
+      - Add red "PROCESSED" stamp
+      - Upload to storage
+      - Return new PDF URL
+      - Archive previous PDF version
+   b. Update claim record with new pdfUrl
+   c. Call sendClaimDecisionEmail(claim, technicianId) (FR-WARR-014)
+      - Email to technician with decision
+      - Include updated PDF with admin signature
+      - Provide next steps (parts shipment or resubmission)
+      - Log email event
+   ↓
+10. Service returns updated WarrantyClaim
+    ↓
+11. API route returns 200 with ClaimReviewResponse
+    ↓
+12. UI updates:
+    - Display success message
+    - Refresh claim details showing admin signature
+    - Show "PROCESSED" badge
+    - Provide link to download updated PDF
+    ↓
+13. Admin sees confirmation (FR-WARR-012)
+```
+
+### 16.4 Service Layer Architecture
+
+#### 16.4.1 Service Instantiation Pattern
+
+```typescript
+// services/TransferService.ts
+export class TransferService {
+  constructor(
+    private prisma: PrismaClient,
+    private pdfGenerator: PDFGenerator,
+    private emailService: EmailService,
+    private auditLogger: AuditLogger
+  ) {}
+  
+  async createTransfer(data: CreateTransferDTO, userId: string): Promise<Transfer> {
+    // Service implementation using injected dependencies
+    // 1. Validate and sanitize
+    // 2. Save to database via prisma
+    // 3. Generate PDF via pdfGenerator
+    // 4. Send email via emailService
+    // 5. Log audit via auditLogger
+    // 6. Return result
+  }
+}
+
+// services/index.ts (Service Factory)
+import { prisma } from '@/lib/prisma';
+import { PDFGenerator } from '@/lib/pdf/generator';
+import { EmailService } from '@/lib/email/client';
+import { AuditLogger } from '@/lib/audit/logger';
+
+// Singleton instances
+const pdfGenerator = new PDFGenerator();
+const emailService = new EmailService();
+const auditLogger = new AuditLogger(prisma);
+
+// Service instances
+export const transferService = new TransferService(
+  prisma,
+  pdfGenerator,
+  emailService,
+  auditLogger
+);
+
+export const warrantyClaimService = new WarrantyClaimService(
+  prisma,
+  pdfGenerator,
+  emailService,
+  auditLogger
+);
+
+// ... other services
+
+// Wiring: API routes import services from this file
+// Example: import { transferService } from '@/services';
+```
+
+#### 16.4.2 Dependency Injection
+
+**Pattern**: Constructor injection with singleton services
+
+```typescript
+// API Route: app/api/transfers/route.ts
+import { transferService } from '@/services';
+import { requireAuth } from '@/lib/auth/middleware';
+
+export async function POST(req: Request) {
+  // 1. Authenticate
+  const auth = await requireAuth(req);
+  
+  // 2. Parse and validate request
+  const body = await req.json();
+  const validatedData = CreateTransferSchema.parse(body);
+  
+  // 3. Call service (dependency injected via constructor)
+  const transfer = await transferService.createTransfer(validatedData, auth.userId);
+  
+  // 4. Return response
+  return NextResponse.json({
+    success: true,
+    transferId: transfer.id,
+    pdfUrl: transfer.pdfUrl,
+    message: 'Transfer submitted successfully',
+  }, { status: 201 });
+}
+
+// Services are instantiated once (singleton) and reused across all requests
+// Dependencies (prisma, pdfGenerator, etc.) injected at service creation time
+```
+
+#### 16.4.3 Service Lifecycle
+
+**Initialization**:
+```
+1. Application starts
+   ↓
+2. services/index.ts loads
+   ↓
+3. Singleton dependencies created:
+   - prisma client (lib/prisma.ts)
+   - PDF generator (lib/pdf/generator.ts)
+   - Email service (lib/email/client.ts)
+   - Audit logger (lib/audit/logger.ts)
+   ↓
+4. Services instantiated with dependencies:
+   - transferService
+   - warrantyClaimService
+   - employeeService
+   - etc.
+   ↓
+5. Services ready for use by API routes
+```
+
+**Request Lifecycle**:
+```
+1. HTTP request arrives
+   ↓
+2. Next.js routes to API handler
+   ↓
+3. API handler imports service (already instantiated)
+   ↓
+4. Service method called with request data
+   ↓
+5. Service uses injected dependencies
+   ↓
+6. Service returns result
+   ↓
+7. API handler formats response
+   ↓
+8. Response sent to client
+```
+
+**Cleanup**:
+```
+- Prisma connection pool managed automatically
+- No explicit cleanup needed for stateless services
+- On application shutdown: prisma.$disconnect() called
+```
+
+### 16.5 Error Handling Wiring
+
+#### 16.5.1 Error Propagation Patterns
+
+**Error Flow**: Database → Service → API Route → UI
+
+```typescript
+// Custom Error Types
+class ValidationError extends Error {
+  constructor(public errors: Record<string, string[]>) {
+    super('Validation failed');
+    this.name = 'ValidationError';
+  }
+}
+
+class UnauthorizedError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'UnauthorizedError';
+  }
+}
+
+class ForbiddenError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ForbiddenError';
+  }
+}
+
+class NotFoundError extends Error {
+  constructor(resource: string) {
+    super(`${resource} not found`);
+    this.name = 'NotFoundError';
+  }
+}
+
+// Database Layer: Prisma errors
+try {
+  const transfer = await prisma.internalTransfer.create({ data });
+} catch (error) {
+  if (error.code === 'P2002') {
+    // Unique constraint violation
+    throw new ValidationError({ [error.meta.target]: ['Already exists'] });
+  } else if (error.code === 'P2025') {
+    // Record not found
+    throw new NotFoundError('Transfer');
+  } else {
+    // Generic database error
+    throw new Error('Database operation failed');
+  }
+}
+
+// Service Layer: Business logic errors
+async createTransfer(data: CreateTransferDTO, userId: string): Promise<Transfer> {
+  // Validate ownership
+  if (data.technicianId && data.technicianId !== userId) {
+    throw new ForbiddenError('Cannot create transfer for another user');
+  }
+  
+  // Sanitize inputs
+  const sanitizedData = sanitizeTransferData(data);
+  
+  // Save to database (may throw database errors)
+  try {
+    const transfer = await this.prisma.internalTransfer.create({
+      data: sanitizedData,
+    });
+    return transfer;
+  } catch (error) {
+    // Re-throw as service error
+    throw error;
+  }
+}
+
+// API Route Layer: HTTP error responses
+export async function POST(req: Request) {
+  try {
+    const auth = await requireAuth(req); // May throw UnauthorizedError
+    const body = await req.json();
+    const validatedData = CreateTransferSchema.parse(body); // May throw ZodError
+    const transfer = await transferService.createTransfer(validatedData, auth.userId); // May throw service errors
+    
+    return NextResponse.json({ success: true, transfer }, { status: 201 });
+    
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return NextResponse.json({
+        success: false,
+        message: 'Validation failed',
+        errors: error.flatten().fieldErrors,
+      }, { status: 400 });
+    } else if (error instanceof UnauthorizedError) {
+      return NextResponse.json({
+        success: false,
+        message: error.message,
+      }, { status: 401 });
+    } else if (error instanceof ForbiddenError) {
+      return NextResponse.json({
+        success: false,
+        message: error.message,
+      }, { status: 403 });
+    } else if (error instanceof NotFoundError) {
+      return NextResponse.json({
+        success: false,
+        message: error.message,
+      }, { status: 404 });
+    } else {
+      // Log unexpected errors
+      console.error('Unexpected error:', error);
+      await auditLogger.logError(error);
+      
+      return NextResponse.json({
+        success: false,
+        message: 'An unexpected error occurred',
+      }, { status: 500 });
+    }
+  }
+}
+
+// UI Layer: Error display
+async function handleSubmit(data: TransferFormData) {
+  try {
+    const response = await fetch('/api/transfers', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    
+    const result = await response.json();
+    
+    if (!response.ok) {
+      if (response.status === 400 && result.errors) {
+        // Validation errors: display inline
+        setFieldErrors(result.errors);
+      } else if (response.status === 401) {
+        // Unauthorized: redirect to login
+        router.push('/login');
+      } else {
+        // Other errors: display toast message
+        toast.error(result.message || 'An error occurred');
+      }
+    } else {
+      // Success: navigate to detail page
+      router.push(`/transfers/${result.transferId}`);
+      toast.success('Transfer submitted successfully');
+    }
+  } catch (error) {
+    // Network error
+    toast.error('Network error. Please try again.');
+  }
+}
+```
+
+#### 16.5.2 Error Recovery Strategies
+
+**Retry Logic for External Services**:
+```typescript
+// lib/utils/retry.ts
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  maxAttempts: number = 3,
+  delayMs: number = 1000
+): Promise<T> {
+  let lastError: Error;
+  
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      
+      if (attempt < maxAttempts) {
+        // Exponential backoff
+        await new Promise(resolve => setTimeout(resolve, delayMs * Math.pow(2, attempt - 1)));
+      }
+    }
+  }
+  
+  throw lastError;
+}
+
+// Usage: Email sending with retry
+async function sendTransferEmail(transfer: Transfer, userId: string): Promise<void> {
+  await withRetry(async () => {
+    await emailService.send({
+      to: transfer.technician.email,
+      subject: `Internal Transfer Confirmation - ${transfer.id}`,
+      html: createTransferEmailTemplate(transfer),
+    });
+  }, 3, 1000); // 3 attempts, 1s initial delay
+}
+```
+
+**Fallback Behavior**:
+```typescript
+// PDF generation with fallback
+async function generateTransferPDF(data: TransferData): Promise<string> {
+  try {
+    // Try primary PDF generation
+    return await pdfGenerator.generate('transfer-template', data);
+  } catch (error) {
+    // Log error
+    await auditLogger.logError(error);
+    
+    // Fallback: Return URL to generate PDF on-demand
+    return `/api/transfers/${data.transferId}/pdf`;
+  }
+}
+
+// Email with fallback
+async function sendEmail(options: EmailOptions): Promise<void> {
+  try {
+    // Try primary email provider (Resend)
+    await resend.emails.send(options);
+  } catch (error) {
+    // Log error
+    await auditLogger.logError(error);
+    
+    // Fallback: Queue for later retry
+    await emailQueue.add(options);
+    
+    // Don't throw - email failure shouldn't block primary operation
+  }
+}
+```
+
+#### 16.5.3 Error Logging and Monitoring
+
+**Audit Trail for All Errors**:
+```typescript
+// lib/audit/logger.ts
+export class AuditLogger {
+  constructor(private prisma: PrismaClient) {}
+  
+  async logError(error: Error, context?: Record<string, any>): Promise<void> {
+    await this.prisma.systemLog.create({
+      data: {
+        timestamp: new Date(),
+        eventType: 'system_error',
+        action: 'ERROR_OCCURRED',
+        details: JSON.stringify({
+          errorName: error.name,
+          errorMessage: error.message,
+          errorStack: error.stack,
+          context,
+        }),
+        success: false,
+        errorMessage: error.message,
+      },
+    });
+  }
+  
+  async logOperationFailure(
+    operation: string,
+    userId: string,
+    error: Error
+  ): Promise<void> {
+    await this.prisma.systemLog.create({
+      data: {
+        timestamp: new Date(),
+        eventType: 'operation_failure',
+        userId,
+        action: operation,
+        details: JSON.stringify({ error: error.message }),
+        success: false,
+        errorMessage: error.message,
+      },
+    });
+  }
+}
+
+// Wiring: All error handlers call auditLogger.logError()
+```
+
+### 16.6 Asynchronous Operation Wiring
+
+#### 16.6.1 Background Job Patterns
+
+**PDF Generation (Synchronous with Async Retry)**:
+```typescript
+// Primary flow: Synchronous PDF generation
+async function createTransfer(data: CreateTransferDTO, userId: string): Promise<Transfer> {
+  // 1. Save transfer to database
+  const transfer = await prisma.internalTransfer.create({ data });
+  
+  // 2. Try to generate PDF synchronously
+  try {
+    const pdfUrl = await generateTransferPDF(transfer);
+    await prisma.internalTransfer.update({
+      where: { id: transfer.id },
+      data: { pdfUrl },
+    });
+  } catch (error) {
+    // 3. If PDF generation fails, mark for retry
+    await pdfRetryQueue.add({
+      transferId: transfer.id,
+      type: 'transfer',
+    });
+    
+    // Log error but don't fail the transfer creation
+    await auditLogger.logError(error, { transferId: transfer.id });
+  }
+  
+  return transfer;
+}
+
+// Background worker: Retry failed PDF generations
+// (Can be implemented with a simple setInterval or a job queue like BullMQ)
+```
+
+**Email Sending (Synchronous with Async Retry)**:
+```typescript
+// Primary flow: Synchronous email sending
+async function sendTransferEmail(transfer: Transfer): Promise<void> {
+  try {
+    await withRetry(async () => {
+      await emailService.send({
+        to: transfer.technician.email,
+        subject: `Transfer Confirmation - ${transfer.id}`,
+        html: createEmailTemplate(transfer),
+      });
+    }, 3);
+  } catch (error) {
+    // If all retries fail, queue for later
+    await emailRetryQueue.add({
+      to: transfer.technician.email,
+      subject: `Transfer Confirmation - ${transfer.id}`,
+      html: createEmailTemplate(transfer),
+    });
+    
+    // Log error but don't fail the transfer creation
+    await auditLogger.logError(error, { transferId: transfer.id });
+  }
+}
+```
+
+#### 16.6.2 Event Publishing and Subscription
+
+**Event-Driven Pattern (Optional for Complex Workflows)**:
+```typescript
+// lib/events/emitter.ts
+import { EventEmitter } from 'events';
+
+export const appEvents = new EventEmitter();
+
+// Event types
+export const Events = {
+  TRANSFER_CREATED: 'transfer.created',
+  CLAIM_CREATED: 'claim.created',
+  CLAIM_REVIEWED: 'claim.reviewed',
+  USER_INVITED: 'user.invited',
+  USER_ACTIVATED: 'user.activated',
+} as const;
+
+// Service: Emit events after successful operations
+async function createTransfer(data: CreateTransferDTO, userId: string): Promise<Transfer> {
+  const transfer = await prisma.internalTransfer.create({ data });
+  
+  // Emit event
+  appEvents.emit(Events.TRANSFER_CREATED, { transfer, userId });
+  
+  return transfer;
+}
+
+// Event handlers: Subscribe to events
+appEvents.on(Events.TRANSFER_CREATED, async ({ transfer, userId }) => {
+  // Generate PDF
+  await generateTransferPDF(transfer);
+  
+  // Send email
+  await sendTransferEmail(transfer, userId);
+  
+  // Any other side effects...
+});
+
+appEvents.on(Events.CLAIM_REVIEWED, async ({ claim, adminId }) => {
+  // Regenerate PDF with admin signature
+  await regenerateWarrantyClaimPDF(claim);
+  
+  // Send decision email
+  await sendClaimDecisionEmail(claim);
+});
+
+// Wiring: Services emit events, handlers execute side effects asynchronously
+```
+
+#### 16.6.3 Queue Management
+
+**Simple In-Memory Queue (MVP)**:
+```typescript
+// lib/queue/simple.ts
+interface QueueItem<T> {
+  id: string;
+  data: T;
+  attempts: number;
+  maxAttempts: number;
+  nextRetry: Date;
+}
+
+class SimpleQueue<T> {
+  private queue: QueueItem<T>[] = [];
+  private processing = false;
+  
+  async add(data: T, maxAttempts: number = 3): Promise<void> {
+    this.queue.push({
+      id: Math.random().toString(36),
+      data,
+      attempts: 0,
+      maxAttempts,
+      nextRetry: new Date(),
+    });
+    
+    this.process();
+  }
+  
+  private async process(): Promise<void> {
+    if (this.processing) return;
+    this.processing = true;
+    
+    while (this.queue.length > 0) {
+      const item = this.queue[0];
+      
+      if (item.nextRetry > new Date()) {
+        // Not ready for retry yet
+        break;
+      }
+      
+      try {
+        await this.processItem(item.data);
+        // Success: remove from queue
+        this.queue.shift();
+      } catch (error) {
+        item.attempts++;
+        
+        if (item.attempts >= item.maxAttempts) {
+          // Max attempts reached: remove and log
+          this.queue.shift();
+          console.error('Queue item failed after max attempts:', error);
+        } else {
+          // Retry later with exponential backoff
+          item.nextRetry = new Date(Date.now() + 1000 * Math.pow(2, item.attempts));
+          // Move to end of queue
+          this.queue.push(this.queue.shift());
+        }
+      }
+    }
+    
+    this.processing = false;
+  }
+  
+  protected async processItem(data: T): Promise<void> {
+    // Override in subclass
+    throw new Error('Not implemented');
+  }
+}
+
+// Usage: Email retry queue
+class EmailQueue extends SimpleQueue<EmailOptions> {
+  protected async processItem(email: EmailOptions): Promise<void> {
+    await emailService.send(email);
+  }
+}
+
+export const emailRetryQueue = new EmailQueue();
+
+// Wiring: Services add failed operations to queue, queue retries automatically
+```
+
+### 16.7 Security Wiring
+
+**Input Sanitization Wiring**:
+```typescript
+// lib/security/sanitize.ts
+import DOMPurify from 'isomorphic-dompurify';
+
+export function sanitizeString(input: string): string {
+  // HTML entity encoding
+  return DOMPurify.sanitize(input, { ALLOWED_TAGS: [] });
+}
+
+export function sanitizeTransferData(data: CreateTransferDTO): CreateTransferDTO {
+  return {
+    ...data,
+    ssid: data.ssid ? sanitizeString(data.ssid) : undefined,
+    siteName: data.siteName ? sanitizeString(data.siteName) : undefined,
+    poNumber: data.poNumber ? sanitizeString(data.poNumber) : undefined,
+    clientName: data.clientName ? sanitizeString(data.clientName) : undefined,
+    items: data.items.map(item => ({
+      ...item,
+      partNo: sanitizeString(item.partNo),
+      description: sanitizeString(item.description),
+    })),
+  };
+}
+
+// Wiring: All services call sanitize functions before database operations
+```
+
+**Authorization Wiring**:
+```typescript
+// lib/auth/authorization.ts
+export function checkOwnership(
+  resource: { technicianId: string } | { userId: string },
+  currentUserId: string,
+  currentUserRole: string
+): void {
+  // Admins can access anything
+  if (currentUserRole === 'admin') {
+    return;
+  }
+  
+  // Technicians can only access own resources
+  const resourceUserId = 'technicianId' in resource ? resource.technicianId : resource.userId;
+  
+  if (resourceUserId !== currentUserId) {
+    throw new ForbiddenError('Access denied: you can only access your own resources');
+  }
+}
+
+// Wiring: All service methods that access user-specific resources call checkOwnership
+// Example:
+async function getTransfer(id: string, userId: string, userRole: string): Promise<Transfer> {
+  const transfer = await prisma.internalTransfer.findUnique({ where: { id } });
+  
+  if (!transfer) {
+    throw new NotFoundError('Transfer');
+  }
+  
+  // Check authorization
+  checkOwnership(transfer, userId, userRole);
+  
+  return transfer;
+}
+```
+
+### 16.8 Implementation Checklist for Architects
+
+**Component Interfaces**:
+- [ ] All UI → API contracts defined with TypeScript interfaces
+- [ ] All API → Service contracts defined with TypeScript interfaces
+- [ ] All Service → Repository contracts defined with TypeScript interfaces
+- [ ] Request/response schemas documented for all API endpoints
+
+**Integration Points**:
+- [ ] Frontend-backend API integration fully specified
+- [ ] Database integration patterns documented (Prisma client, transactions)
+- [ ] Email service integration wired (Resend, retry logic)
+- [ ] PDF generation service wired (template engine, storage)
+- [ ] Storage provider wired (local/S3 configuration)
+- [ ] Authentication middleware wired (NextAuth.js, JWT validation)
+
+**Data Flows**:
+- [ ] Internal transfer submission flow documented end-to-end
+- [ ] Warranty claim submission flow documented end-to-end
+- [ ] Admin claim review flow documented end-to-end
+- [ ] Employee invitation flow documented end-to-end
+- [ ] All major workflows include error handling paths
+
+**Service Wiring**:
+- [ ] Service instantiation pattern defined (constructor injection)
+- [ ] Dependency injection implemented (singleton services)
+- [ ] Service lifecycle documented (initialization, request, cleanup)
+- [ ] All services use injected dependencies (prisma, emailService, etc.)
+
+**Error Handling**:
+- [ ] Error propagation pattern defined (DB → Service → API → UI)
+- [ ] Custom error types created (ValidationError, UnauthorizedError, etc.)
+- [ ] Error recovery strategies implemented (retry, fallback)
+- [ ] All errors logged to audit trail
+
+**Async Operations**:
+- [ ] Background job patterns defined (PDF generation retry)
+- [ ] Event publishing/subscription implemented (optional)
+- [ ] Queue management implemented (email retry queue)
+- [ ] All async operations have failure recovery
+
+**Security**:
+- [ ] Input sanitization wired into all services
+- [ ] Authorization checks wired into all operations
+- [ ] HTTPS enforcement configured (production)
+- [ ] Security headers middleware configured
+- [ ] Rate limiting implemented
+
+**Testing**:
+- [ ] Integration tests verify API → Service → DB wiring
+- [ ] E2E tests verify UI → API → DB → External Services wiring
+- [ ] Error path tests verify error propagation
+- [ ] Retry logic tests verify background job recovery
+
+---
+
+## Integration Verification Steps
+
+**Before declaring architecture complete, verify**:
+
+1. **Manual Flow Test**: Submit a transfer from UI
+   - Does button click trigger API call?
+   - Does API call reach service?
+   - Does service save to database?
+   - Does database save trigger PDF generation?
+   - Does PDF generation trigger email?
+   - Does email arrive?
+   - Does audit log capture all steps?
+   - **If ANY step fails, wiring is incomplete**
+
+2. **Error Path Test**: Simulate database failure
+   - Does error propagate from database → service → API → UI?
+   - Does user see appropriate error message?
+   - Does audit log capture error?
+   - **If error silently fails, wiring is incomplete**
+
+3. **Authorization Test**: Technician tries to access admin's transfer
+   - Does authorization check prevent access?
+   - Does API return 403?
+   - Does audit log capture unauthorized attempt?
+   - **If access granted, authorization wiring is incomplete**
+
+4. **Retry Test**: Simulate email provider failure
+   - Does email fail initially?
+   - Does retry logic trigger?
+   - Does email eventually succeed?
+   - Does audit log capture all attempts?
+   - **If email never sent, retry wiring is incomplete**
+
+**Success Criteria**: All 4 verification tests pass = Wiring is complete
+
+---
+
+*This section ensures builders create a fully-wired system, not an "empty TV shell". Every component, service, and integration point is explicitly connected with clear contracts and data flows.*
 
 ---
 
