@@ -133,6 +133,15 @@ governance:
       tier: 0
       enforcement: mandatory
     
+    # Watchdog Quality Integrity Channel (QIW)
+    - id: watchdog-quality-integrity-channel
+      path: governance/canon/WATCHDOG_QUALITY_INTEGRITY_CHANNEL.md
+      role: quality-integrity-enforcement
+      tier: 0
+      version: 1.0.0
+      enforcement: mandatory
+      summary: QIW observes build, lint, test, deployment, runtime logs; blocks QA on anomalies
+    
   runbooks:
     # Test execution protocol
     - id: agent-test-execution-protocol
