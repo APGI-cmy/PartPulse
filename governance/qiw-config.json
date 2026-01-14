@@ -1,0 +1,577 @@
+{
+  "$schema": "./schemas/qiw-config-schema.json",
+  "version": "1.0.0",
+  "repository": "APGI-cmy/PartPulse",
+  "qiw_enabled": true,
+  "last_updated": "2026-01-14T07:58:00.000Z",
+  
+  "channels": {
+    "build": {
+      "enabled": true,
+      "description": "Monitors code compilation, dependency resolution, and build process health",
+      "triggers": [
+        "on_commit",
+        "on_pr",
+        "on_deployment_preparation"
+      ],
+      "detectors": [
+        {
+          "name": "build_failure_detector",
+          "type": "threshold",
+          "enabled": true,
+          "threshold": {
+            "metric": "build_failure_rate",
+            "operator": "greater_than",
+            "value": 0.05,
+            "window": "7d",
+            "severity": "high"
+          }
+        },
+        {
+          "name": "build_duration_anomaly",
+          "type": "threshold",
+          "enabled": true,
+          "threshold": {
+            "metric": "build_duration_increase",
+            "operator": "greater_than",
+            "value": 0.50,
+            "baseline": "30d_average",
+            "severity": "medium"
+          }
+        },
+        {
+          "name": "dependency_conflict_detector",
+          "type": "pattern",
+          "enabled": true,
+          "pattern": "dependency.*conflict|ERESOLVE|peer dependency",
+          "severity": "high"
+        },
+        {
+          "name": "flaky_build_detector",
+          "type": "pattern",
+          "enabled": true,
+          "description": "Detects intermittent build failures on same code",
+          "severity": "medium"
+        }
+      ],
+      "metrics": [
+        "build_success_rate",
+        "build_duration",
+        "dependency_resolution_failures",
+        "configuration_errors",
+        "build_artifact_integrity"
+      ],
+      "blocking_rules": {
+        "critical": {
+          "block_merge": true,
+          "block_deployment": true,
+          "require_immediate_fix": true
+        },
+        "high": {
+          "block_merge_to_main": true,
+          "block_deployment": true,
+          "require_remediation_plan": true
+        },
+        "medium": {
+          "block_merge": false,
+          "create_tracking_issue": true,
+          "require_remediation_within": "7d"
+        },
+        "low": {
+          "block_merge": false,
+          "log_only": true
+        }
+      }
+    },
+    
+    "lint": {
+      "enabled": true,
+      "description": "Monitors code style, static analysis, and linting violations",
+      "triggers": [
+        "pre_commit",
+        "on_pr"
+      ],
+      "detectors": [
+        {
+          "name": "lint_violation_increase",
+          "type": "threshold",
+          "enabled": true,
+          "threshold": {
+            "metric": "lint_violation_count",
+            "operator": "increases_without_plan",
+            "severity": "medium"
+          }
+        },
+        {
+          "name": "critical_violation_in_main",
+          "type": "pattern",
+          "enabled": true,
+          "pattern": "error|critical",
+          "branch": "main",
+          "severity": "critical"
+        },
+        {
+          "name": "lint_bypass_detector",
+          "type": "pattern",
+          "enabled": true,
+          "pattern": "eslint-disable|@ts-ignore|@ts-nocheck",
+          "severity": "medium"
+        },
+        {
+          "name": "code_complexity_threshold",
+          "type": "threshold",
+          "enabled": true,
+          "threshold": {
+            "metric": "cyclomatic_complexity",
+            "operator": "greater_than",
+            "value": 15,
+            "severity": "high"
+          }
+        }
+      ],
+      "metrics": [
+        "lint_violation_count",
+        "violation_severity_distribution",
+        "code_complexity_metrics",
+        "style_consistency_score",
+        "technical_debt_indicators"
+      ],
+      "blocking_rules": {
+        "critical": {
+          "block_merge": true,
+          "require_immediate_fix": true
+        },
+        "high": {
+          "block_merge_to_main": true,
+          "require_remediation_plan": true
+        },
+        "medium": {
+          "block_merge": false,
+          "create_warning": true
+        },
+        "low": {
+          "block_merge": false,
+          "log_only": true
+        }
+      }
+    },
+    
+    "test": {
+      "enabled": true,
+      "description": "Monitors test execution, coverage, reliability, and test health",
+      "triggers": [
+        "on_commit",
+        "on_pr",
+        "scheduled_regression"
+      ],
+      "detectors": [
+        {
+          "name": "test_pass_rate_drop",
+          "type": "threshold",
+          "enabled": true,
+          "threshold": {
+            "metric": "test_pass_rate",
+            "operator": "less_than",
+            "value": 0.95,
+            "severity": "critical"
+          }
+        },
+        {
+          "name": "coverage_decrease",
+          "type": "threshold",
+          "enabled": true,
+          "threshold": {
+            "metric": "coverage_percentage",
+            "operator": "decreases_without_approval",
+            "severity": "high"
+          }
+        },
+        {
+          "name": "flaky_test_detector",
+          "type": "threshold",
+          "enabled": true,
+          "threshold": {
+            "metric": "test_flakiness_rate",
+            "operator": "greater_than",
+            "value": 0.02,
+            "description": "More than 2% failure rate on stable code",
+            "severity": "high"
+          }
+        },
+        {
+          "name": "test_dodging_detector",
+          "type": "pattern",
+          "enabled": true,
+          "description": "Code changes without corresponding test updates",
+          "severity": "high"
+        },
+        {
+          "name": "skipped_test_detector",
+          "type": "pattern",
+          "enabled": true,
+          "pattern": ".skip|.todo|xit\\(|xdescribe\\(",
+          "severity": "medium"
+        },
+        {
+          "name": "test_duration_degradation",
+          "type": "threshold",
+          "enabled": true,
+          "threshold": {
+            "metric": "test_execution_time",
+            "operator": "increases_by",
+            "value": 0.25,
+            "baseline": "30d_average",
+            "severity": "medium"
+          }
+        }
+      ],
+      "metrics": [
+        "test_pass_rate",
+        "test_coverage_percentage",
+        "test_execution_time",
+        "flaky_test_count",
+        "test_dodging_incidents",
+        "test_debt_count"
+      ],
+      "test_dodging_config": {
+        "enabled": true,
+        "exclusions": [
+          "*.md",
+          "*.json",
+          "*.yaml",
+          "*.yml"
+        ],
+        "test_file_patterns": [
+          "__tests__/**/*.test.ts",
+          "__tests__/**/*.test.tsx",
+          "*.test.ts",
+          "*.test.tsx",
+          "*.spec.ts",
+          "*.spec.tsx"
+        ]
+      },
+      "blocking_rules": {
+        "critical": {
+          "block_merge": true,
+          "block_deployment": true,
+          "require_immediate_fix": true
+        },
+        "high": {
+          "block_merge_to_main": true,
+          "require_remediation_before_release": true
+        },
+        "medium": {
+          "block_merge": false,
+          "create_tracking_issue": true
+        },
+        "low": {
+          "block_merge": false,
+          "log_only": true
+        }
+      }
+    },
+    
+    "deployment": {
+      "enabled": true,
+      "description": "Monitors deployment process, environment health, and deployment success",
+      "triggers": [
+        "on_deployment",
+        "environment_health_check"
+      ],
+      "detectors": [
+        {
+          "name": "deployment_failure_rate",
+          "type": "threshold",
+          "enabled": true,
+          "threshold": {
+            "metric": "deployment_failure_rate",
+            "operator": "greater_than",
+            "value": 0.10,
+            "window": "7d",
+            "severity": "high"
+          }
+        },
+        {
+          "name": "repeated_rollback_detector",
+          "type": "pattern",
+          "enabled": true,
+          "description": "Multiple rollbacks to same version",
+          "severity": "critical"
+        },
+        {
+          "name": "environment_drift_detector",
+          "type": "pattern",
+          "enabled": true,
+          "description": "Configuration differences between environments",
+          "severity": "high"
+        },
+        {
+          "name": "deployment_duration_anomaly",
+          "type": "threshold",
+          "enabled": true,
+          "threshold": {
+            "metric": "deployment_duration",
+            "operator": "increases_significantly",
+            "baseline": "30d_average",
+            "severity": "medium"
+          }
+        },
+        {
+          "name": "post_deployment_health_check_failure",
+          "type": "pattern",
+          "enabled": true,
+          "pattern": "health.*check.*failed|readiness.*probe.*failed",
+          "severity": "critical"
+        }
+      ],
+      "metrics": [
+        "deployment_success_rate",
+        "deployment_duration",
+        "rollback_frequency",
+        "environment_drift_count",
+        "configuration_validation_failures",
+        "post_deployment_health_score"
+      ],
+      "blocking_rules": {
+        "critical": {
+          "block_deployment": true,
+          "trigger_rollback": true,
+          "escalate_immediately": true
+        },
+        "high": {
+          "block_production_deployment": true,
+          "allow_staging_with_warning": true,
+          "require_remediation_plan": true
+        },
+        "medium": {
+          "allow_deployment": true,
+          "create_tracking_issue": true,
+          "monitor_closely": true
+        },
+        "low": {
+          "allow_deployment": true,
+          "log_only": true
+        }
+      }
+    },
+    
+    "runtime": {
+      "enabled": true,
+      "description": "Monitors application behavior in production/staging, errors, and performance",
+      "triggers": [
+        "continuous_monitoring"
+      ],
+      "detectors": [
+        {
+          "name": "error_rate_spike",
+          "type": "threshold",
+          "enabled": true,
+          "threshold": {
+            "metric": "error_rate",
+            "operator": "exceeds_baseline_by",
+            "value": 0.20,
+            "baseline": "7d_average",
+            "severity": "critical"
+          }
+        },
+        {
+          "name": "response_time_degradation",
+          "type": "threshold",
+          "enabled": true,
+          "threshold": {
+            "metric": "p95_response_time",
+            "operator": "degrades_by",
+            "value": 0.30,
+            "baseline": "7d_average",
+            "severity": "high"
+          }
+        },
+        {
+          "name": "memory_leak_detector",
+          "type": "pattern",
+          "enabled": true,
+          "description": "Continuously increasing memory usage",
+          "severity": "critical"
+        },
+        {
+          "name": "exception_rate_anomaly",
+          "type": "threshold",
+          "enabled": true,
+          "threshold": {
+            "metric": "exception_count",
+            "operator": "exceeds_baseline_by",
+            "value": 0.50,
+            "baseline": "24h_average",
+            "severity": "high"
+          }
+        },
+        {
+          "name": "sla_violation_detector",
+          "type": "threshold",
+          "enabled": true,
+          "threshold": {
+            "metric": "sla_compliance",
+            "operator": "less_than",
+            "value": 0.99,
+            "severity": "critical"
+          }
+        },
+        {
+          "name": "deployment_correlation_detector",
+          "type": "pattern",
+          "enabled": true,
+          "description": "Runtime incidents correlating with recent deployments",
+          "severity": "high"
+        }
+      ],
+      "metrics": [
+        "error_rate_4xx",
+        "error_rate_5xx",
+        "p50_response_time",
+        "p95_response_time",
+        "p99_response_time",
+        "cpu_utilization",
+        "memory_utilization",
+        "disk_utilization",
+        "exception_count",
+        "crash_count",
+        "user_reported_incidents",
+        "sla_compliance"
+      ],
+      "monitoring_config": {
+        "check_interval": "60s",
+        "retention_period": "30d",
+        "aggregation_window": "5m"
+      },
+      "blocking_rules": {
+        "critical": {
+          "trigger_incident": true,
+          "escalate_to_oncall": true,
+          "consider_rollback": true,
+          "block_further_deployments": true
+        },
+        "high": {
+          "trigger_incident": true,
+          "escalate_to_team": true,
+          "monitor_for_degradation": true
+        },
+        "medium": {
+          "create_tracking_issue": true,
+          "investigate_within": "24h"
+        },
+        "low": {
+          "log_only": true,
+          "include_in_weekly_digest": true
+        }
+      }
+    }
+  },
+  
+  "severity_sla": {
+    "critical": {
+      "mttr_target": "4h",
+      "escalation_threshold": "2h",
+      "notification": ["oncall", "engineering_manager", "governance_liaison"]
+    },
+    "high": {
+      "mttr_target": "24h",
+      "escalation_threshold": "12h",
+      "notification": ["team_lead", "governance_liaison"]
+    },
+    "medium": {
+      "mttr_target": "7d",
+      "escalation_threshold": "5d",
+      "notification": ["assigned_engineer"]
+    },
+    "low": {
+      "mttr_target": "30d",
+      "escalation_threshold": "21d",
+      "notification": ["backlog"]
+    }
+  },
+  
+  "dashboard": {
+    "enabled": true,
+    "endpoint": "/governance/qiw/dashboard",
+    "refresh_interval": "30s",
+    "features": {
+      "real_time_views": true,
+      "metrics_and_trends": true,
+      "reporting": true,
+      "alerting": true
+    },
+    "views": [
+      "channel_health",
+      "active_incidents",
+      "recent_detections",
+      "blocking_status",
+      "quality_score",
+      "incident_trends",
+      "mttr_metrics",
+      "channel_performance"
+    ]
+  },
+  
+  "alerting": {
+    "enabled": true,
+    "channels": {
+      "email": {
+        "enabled": true,
+        "recipients": {
+          "oncall": ["oncall@example.com"],
+          "team_lead": ["team-lead@example.com"],
+          "engineering_manager": ["eng-manager@example.com"],
+          "governance_liaison": ["governance@example.com"]
+        }
+      },
+      "slack": {
+        "enabled": false,
+        "webhook_url": "https://hooks.slack.com/services/YOUR/WEBHOOK/URL",
+        "channels": {
+          "critical": "#incidents",
+          "high": "#quality-alerts",
+          "digest": "#qiw-digest"
+        }
+      }
+    },
+    "digest_schedule": {
+      "daily_summary": "08:00",
+      "weekly_digest": "Monday 09:00"
+    }
+  },
+  
+  "incident_storage": {
+    "path": "governance/memory/PartPulse/qiw-events.json",
+    "schema_version": "1.0.0",
+    "append_only": true,
+    "backup_enabled": true,
+    "backup_frequency": "daily",
+    "retention_policy": {
+      "critical": "permanent",
+      "high": "2y",
+      "medium": "1y",
+      "low": "6m"
+    }
+  },
+  
+  "integration": {
+    "ci_cd": {
+      "github_actions": {
+        "enabled": true,
+        "check_name": "QIW Quality Gate"
+      }
+    },
+    "quality_gates": {
+      "pre_commit": ["lint"],
+      "pull_request": ["build", "lint", "test"],
+      "pre_merge": ["build", "lint", "test", "deployment"],
+      "post_deployment": ["runtime"]
+    }
+  },
+  
+  "detector_implementation": {
+    "path": "governance/qiw/detectors/",
+    "status": "scaffolded",
+    "note": "Detector implementation to be completed by app engineers"
+  }
+}
