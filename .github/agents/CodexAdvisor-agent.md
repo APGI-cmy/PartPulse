@@ -43,6 +43,14 @@ governance:
       tier: 0
       enforcement: constitutional
       summary: Self-modification prohibition, instruction system for contract changes
+    
+    - id: watchdog-quality-integrity-channel
+      path: governance/canon/WATCHDOG_QUALITY_INTEGRITY_CHANNEL.md
+      role: quality-integrity-awareness
+      tier: 0
+      version: 1.0.0
+      enforcement: mandatory
+      summary: QIW observes 5 channels (build, lint, test, deployment, runtime); blocks QA on anomalies
 
 scope:
   repository: MaturionISMS/*

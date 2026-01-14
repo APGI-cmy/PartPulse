@@ -157,6 +157,15 @@ governance:
       role: deprecation-enforcement
       summary: Automated detection and blocking of deprecated Python APIs (BL-026)
     
+    # Watchdog Quality Integrity Channel
+    - id: watchdog-quality-integrity-channel
+      path: governance/canon/WATCHDOG_QUALITY_INTEGRITY_CHANNEL.md
+      role: quality-integrity-enforcement
+      tier: 0
+      version: 1.0.0
+      enforcement: mandatory
+      summary: QIW observes 5 channels (build, lint, test, deployment, runtime); blocks QA on anomalies
+    
     # Wave & Gate Management
     - id: ibwr-spec
       path: governance/specs/IN_BETWEEN_WAVE_RECONCILIATION_SPEC.md

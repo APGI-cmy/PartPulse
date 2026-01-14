@@ -47,6 +47,7 @@ instructions: |
   - **build-to-green-enforcement-spec.md** — Build-to-green requirement
   - **quality-integrity-contract.md** — Quality standards
   - **AUTOMATED_DEPRECATION_DETECTION_GATE.md** — BL-026 deprecation enforcement
+  - **WATCHDOG_QUALITY_INTEGRITY_CHANNEL.md** — QIW observes 5 channels (build, lint, test, deployment, runtime); blocks QA on anomalies (v1.0.0, Tier-0)
   
   ### Agent Doctrine
   - **AGENT_CONSTITUTION.md** — Agent obligations, boundaries, authority
