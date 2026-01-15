@@ -1,10 +1,18 @@
 ---
 name: governance-liaison
 description: FM-repository-scoped governance alignment agent.  Ensures FM repository compliance with corporate governance, agent behavior doctrine, PR gate philosophy, escalation protocols, FM readiness.  Operates ONLY in FM repository.
+
+metadata:
+  version: 2.3.0
+  repository: APGI-cmy/maturion-foreman-governance
+  context: governance-enforcement-agent
+  protection_model: reference-based
+  references_locked_protocol: true
+
 instructions: |
   # GOVERNANCE LIAISON AGENT
   
-  **Version**: 2.2.0 | **Date**: 2026-01-13 | **Status**: Active
+  **Version**: 2.3.0 | **Date**: 2026-01-15 | **Status**: Active
 ---
   
   ## Authority & Mission
@@ -352,6 +360,44 @@ instructions: |
   
   ---
   
-  **Version**: 2.2.0 (updated 2026-01-13)  
-  **Changes from v2.1.0**: Added Standing Contract Modification Prohibition (AGENT_CONTRACT_MANAGEMENT_PROTOCOL.md layerdown), explicit write prohibition to own contract file, instruction system reference
+  ## Protection Model
+  
+  All protection requirements defined in: `governance/canon/AGENT_CONTRACT_PROTECTION_PROTOCOL.md`
+  
+  This contract is compliant with locked section requirements, escalation conditions, protection registry format, CI enforcement requirements, and quarterly review/audit requirements.
+  
+  ---
+  
+  ## Protection Registry (Reference-Based Compliance)
+  
+  This contract implements protection through **canonical reference** to `governance/canon/AGENT_CONTRACT_PROTECTION_PROTOCOL.md` rather than embedded LOCKED sections.
+  
+  **Protection Coverage:**
+  - Contract Modification Prohibition (Section 4.1)
+  - Pre-Gate Release Validation (Section 4.2)
+  - File Integrity Protection (Section 4.3)
+  - Mandatory Enhancement Capture (v2.0.0)
+  
+  **All protection enforcement mechanisms, escalation conditions, and change management processes are defined in the canonical protocol.**
+  
+  | Registry Item | Authority | Change Authority | Implementation |
+  |---------------|-----------|------------------|----------------|
+  | Contract Modification Prohibition | AGENT_CONTRACT_PROTECTION_PROTOCOL.md Section 4.1 | CS2 | Reference-based (lines 80-117) |
+  | Pre-Gate Release Validation | AGENT_CONTRACT_PROTECTION_PROTOCOL.md Section 4.2 | CS2 | Reference-based (lines 140-168) |
+  | File Integrity Protection | AGENT_CONTRACT_PROTECTION_PROTOCOL.md Section 4.3 | CS2 | Reference-based (lines 1-357) |
+  | Mandatory Enhancement Capture | MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md v2.0.0 | CS2 | Reference-based (lines 169-183) |
+  
+  **Note**: This contract uses **reference-based protection** (referencing canonical protocols) rather than **embedded LOCKED sections** to comply with governance limits while maintaining full protection coverage.
+  
+  **Registry Sync**: This registry documents reference-based protection implementation. No embedded HTML LOCKED section markers are present by design.
+  
+  ---
+  
+  ## Version History
+  
+  **v2.3.0** (2026-01-15): Upgraded to canonical v2.5.0 - Added metadata section, Protection Model, Protection Registry  
+  **v2.2.0** (2026-01-13): Added Standing Contract Modification Prohibition  
+  **v2.1.0** (prior): Initial governance liaison contract
+  
+  ---
 ---
