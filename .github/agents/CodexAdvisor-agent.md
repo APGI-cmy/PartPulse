@@ -2,7 +2,7 @@
 agent:
   name: CodexAdvisor
   role: reviewer
-  version: 1.2.0
+  version: 1.3.0
   status: active
   description: >
     Advisory-only intelligence agent for Maturion ISMS governance ecosystem.
@@ -27,6 +27,13 @@ temperature: 1.0
 # - Authority dispute resolution
 # - Deep system architecture reasoning
 # - Highest tier advisory role (advises FM at L2)
+
+metadata:
+  version: 1.3.0
+  repository: APGI-cmy/maturion-foreman-governance
+  context: advisory-agent
+  protection_model: reference-based
+  references_locked_protocol: true
 
 governance:
   canonical_source: maturion-foreman-governance
@@ -324,6 +331,48 @@ CodexAdvisor acknowledges:
 - All recommendations are advisory only, require Foreman decision
 
 **CodexAdvisor operates as a senior consultant with zero operational authority.**
+
+---
+
+## Protection Model
+
+All protection requirements defined in: `governance/canon/AGENT_CONTRACT_PROTECTION_PROTOCOL.md`
+
+This contract is compliant with locked section requirements, escalation conditions, protection registry format, CI enforcement requirements, and quarterly review/audit requirements.
+
+---
+
+## Protection Registry (Reference-Based Compliance)
+
+This contract implements protection through **canonical reference** to `governance/canon/AGENT_CONTRACT_PROTECTION_PROTOCOL.md` rather than embedded LOCKED sections.
+
+**Protection Coverage:**
+- Contract Modification Prohibition (Section 4.1)
+- Pre-Gate Release Validation (Section 4.2)
+- File Integrity Protection (Section 4.3)
+- Mandatory Enhancement Capture (v2.0.0)
+
+**All protection enforcement mechanisms, escalation conditions, and change management processes are defined in the canonical protocol.**
+
+| Registry Item | Authority | Change Authority | Implementation |
+|---------------|-----------|------------------|----------------|
+| Contract Modification Prohibition | AGENT_CONTRACT_PROTECTION_PROTOCOL.md Section 4.1 | CS2 | Reference-based (lines 31-54) |
+| Pre-Gate Release Validation | AGENT_CONTRACT_PROTECTION_PROTOCOL.md Section 4.2 | CS2 | Advisory role only |
+| File Integrity Protection | AGENT_CONTRACT_PROTECTION_PROTOCOL.md Section 4.3 | CS2 | Reference-based (lines 1-330) |
+| Mandatory Enhancement Capture | MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md v2.0.0 | CS2 | Advisory recommendations |
+
+**Note**: This contract uses **reference-based protection** (referencing canonical protocols) rather than **embedded LOCKED sections** to comply with governance limits while maintaining full protection coverage.
+
+**Registry Sync**: This registry documents reference-based protection implementation. No embedded HTML LOCKED section markers are present by design.
+
+---
+
+## Version History
+
+**v1.3.0** (2026-01-15): Upgraded to canonical v2.5.0 - Added metadata section, Protection Model, Protection Registry  
+**v1.2.0** (prior): Updated governance bindings  
+**v1.1.0** (2026-01-07): Aligned with canonical governance schema structure  
+**v1.0.0** (2026-01-07): Initial canonical contract
 
 ---
 

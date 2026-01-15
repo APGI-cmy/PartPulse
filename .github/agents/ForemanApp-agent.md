@@ -33,14 +33,21 @@ authority:
     normal: "FM plans and requests; Maturion executes platform actions via DAI/DAR"
     bootstrap_wave0: "CS2 acts as execution proxy for GitHub mechanics"
 
-version: 4.1.0
+version: 4.2.0
 status: active
+
+metadata:
+  version: 4.2.0
+  repository: APGI-cmy/maturion-foreman-governance
+  context: foreman-orchestration-authority
+  protection_model: reference-based
+  references_locked_protocol: true
 ---
 
 # Foreman (FM) — Minimal Contract
 
-**Version**: 4.1.0  
-**Date**: 2026-01-13  
+**Version**: 4.2.0  
+**Date**: 2026-01-15  
 **Status**: Active  
 **Authority**: Derived from all 14 Tier-0 Canonical Governance Documents
 
@@ -411,18 +418,44 @@ When builder discovers prior debt: (1) Discovery agent: STOP, ESCALATE, BLOCKED,
 
 ---
 
-## Signature
+## Protection Model
 
-**This minimal contract references canonical governance. All detailed doctrine lives in governance bindings.**
+All protection requirements defined in: `governance/canon/AGENT_CONTRACT_PROTECTION_PROTOCOL.md`
 
-**Version**: 4.0.0  
-**Status**: Active  
-**Date**: 2026-01-08  
-**Authority**: Derived from all 14 Tier-0 canonical governance documents
+This contract is compliant with locked section requirements, escalation conditions, protection registry format, CI enforcement requirements, and quarterly review/audit requirements.
 
-**Line Count**: ~250 lines (target met: 150-250)
+---
 
-**Detailed Content Located In**: See all governance.bindings above
+## Protection Registry (Reference-Based Compliance)
+
+This contract implements protection through **canonical reference** to `governance/canon/AGENT_CONTRACT_PROTECTION_PROTOCOL.md` rather than embedded LOCKED sections.
+
+**Protection Coverage:**
+- Contract Modification Prohibition (Section 4.1)
+- Pre-Gate Release Validation (Section 4.2)
+- File Integrity Protection (Section 4.3)
+- Mandatory Enhancement Capture (v2.0.0)
+
+**All protection enforcement mechanisms, escalation conditions, and change management processes are defined in the canonical protocol.**
+
+| Registry Item | Authority | Change Authority | Implementation |
+|---------------|-----------|------------------|----------------|
+| Contract Modification Prohibition | AGENT_CONTRACT_PROTECTION_PROTOCOL.md Section 4.1 | CS2 | Reference-based (lines 94-99) |
+| Pre-Gate Release Validation | AGENT_CONTRACT_PROTECTION_PROTOCOL.md Section 4.2 | CS2 | Reference-based (lines 234-252) |
+| File Integrity Protection | AGENT_CONTRACT_PROTECTION_PROTOCOL.md Section 4.3 | CS2 | Reference-based (lines 1-429) |
+| Mandatory Enhancement Capture | MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md v2.0.0 | CS2 | Reference-based (lines 406-411) |
+
+**Note**: This contract uses **reference-based protection** (referencing canonical protocols) rather than **embedded LOCKED sections** to comply with governance limits while maintaining full protection coverage.
+
+**Registry Sync**: This registry documents reference-based protection implementation. No embedded HTML LOCKED section markers are present by design.
+
+---
+
+## Version History
+
+**v4.2.0** (2026-01-15): Upgraded to canonical v2.5.0 - Added metadata section, Protection Model, Protection Registry  
+**v4.1.0** (2026-01-13): Updated governance bindings  
+**v4.0.0** (2026-01-08): Initial minimal FM contract
 
 ---
 
