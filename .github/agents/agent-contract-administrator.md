@@ -350,8 +350,13 @@ Attempting to modify this contract or any other `.agent` file is a **catastrophi
 Before any handover, merge request, or work completion declaration, this agent MUST:  
 
 1. **Execute Local Gate Validation**
-   - Run all applicable governance validation checks
-   - Verify schema compliance (if tooling exists)
+  - Run all applicable governance validation checks: 
+     - **Governance Scope-to-Diff** (if governance files modified) - Validate scope declaration matches changed files
+     - **Agent Governance Validation** (if . agent files modified) - Validate contract structure
+     - **FM Effectiveness Validation** (if applicable) - Validate effectiveness. md completeness
+     - **Schema Validation** (if governance schemas modified) - Validate schema structure
+     - **Locked Section Protection** (if agent contracts modified) - Verify no unauthorized LOCKED section changes
+     - **Additional CI gates** as documented in `.github/workflows/`   - Verify schema compliance (if tooling exists)
    - Validate governance artifact completeness (scan, risk assessment, change record, completion summary)
    - Check PREHANDOVER_PROOF completeness
    - Verify all acceptance criteria satisfied
