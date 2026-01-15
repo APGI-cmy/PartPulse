@@ -8,7 +8,7 @@ description: >
 
 builder_id: ui-builder
 builder_type: specialized
-version: 3.1.0
+version: 3.2.0
 status: recruited
 
 # Model Tier Specification
@@ -21,6 +21,13 @@ temperature: 0.3
 
 # Tier Justification:
 # UI Builder requires L1 due to scoped implementation with frozen architecture
+
+metadata:
+  version: 3.2.0
+  repository: APGI-cmy/maturion-foreman-governance
+  context: builder-contract
+  protection_model: reference-based
+  references_locked_protocol: true
 
 capabilities:
   - ui
@@ -60,8 +67,8 @@ evidence_requirements: "complete-audit-trail-mandatory"
 
 # UI Builder — Minimal Contract
 
-**Version**: 3.1.0  
-**Date**: 2026-01-13  
+**Version**: 3.2.0  
+**Date**: 2026-01-15  
 **Status**: Active  
 **Recruited**: 2025-12-30 (Wave 0.1)
 
@@ -409,21 +416,44 @@ At work completion, builder MUST provide comprehensive process improvement refle
 
 ---
 
-## Signature
+## Protection Model
 
-**This minimal contract references canonical governance.**
+All protection requirements defined in: `governance/canon/AGENT_CONTRACT_PROTECTION_PROTOCOL.md`
 
-**Version**: 3.0.0  
-**Status**: Active  
-**Date**: 2026-01-08  
-**Recruited By**: Maturion Foreman (FM)
-**Contract Version**: 3.0.0  
-**Maturion Doctrine Version**: 1.0.0  
-**Canonical Reference**: foreman/builder/ui-builder-spec.md
+This contract is compliant with locked section requirements, escalation conditions, protection registry format, CI enforcement requirements, and quarterly review/audit requirements.
 
-**Line Count**: ~300 lines (excluding YAML frontmatter)
+---
 
-**Detailed Content**: See all governance.bindings above and foreman/builder/ui-builder-spec.md
+## Protection Registry (Reference-Based Compliance)
+
+This contract implements protection through **canonical reference** to `governance/canon/AGENT_CONTRACT_PROTECTION_PROTOCOL.md` rather than embedded LOCKED sections.
+
+**Protection Coverage:**
+- Contract Modification Prohibition (Section 4.1)
+- Pre-Gate Release Validation (Section 4.2)
+- File Integrity Protection (Section 4.3)
+- Mandatory Enhancement Capture (v2.0.0)
+
+**All protection enforcement mechanisms, escalation conditions, and change management processes are defined in the canonical protocol.**
+
+| Registry Item | Authority | Change Authority | Implementation |
+|---------------|-----------|------------------|----------------|
+| Contract Modification Prohibition | AGENT_CONTRACT_PROTECTION_PROTOCOL.md Section 4.1 | CS2 | Reference-based (lines 109-139) |
+| Pre-Gate Release Validation | AGENT_CONTRACT_PROTECTION_PROTOCOL.md Section 4.2 | CS2 | Reference-based (lines 361-365) |
+| File Integrity Protection | AGENT_CONTRACT_PROTECTION_PROTOCOL.md Section 4.3 | CS2 | Reference-based (lines 1-437) |
+| Mandatory Enhancement Capture | MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md v2.0.0 | CS2 | Reference-based (lines 366-394) |
+
+**Note**: This contract uses **reference-based protection** (referencing canonical protocols) rather than **embedded LOCKED sections** to comply with governance limits while maintaining full protection coverage.
+
+**Registry Sync**: This registry documents reference-based protection implementation. No embedded HTML LOCKED section markers are present by design.
+
+---
+
+## Version History
+
+**v3.2.0** (2026-01-15): Upgraded to canonical v2.5.0 - Added metadata section, Protection Model, Protection Registry  
+**v3.1.0** (2026-01-13): Minimal contract with constitutional bindings  
+**v3.0.0** (2026-01-08): Initial minimal contract
 
 ---
 
