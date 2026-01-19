@@ -4,7 +4,95 @@
   "repository": "APGI-cmy/PartPulse",
   "description": "QIW (Quality Integrity Watchdog) incident event log - append-only",
   "created_at": "2026-01-14T07:58:00.000Z",
-  "last_updated": "2026-01-14T07:58:00.000Z",
-  "event_count": 0,
-  "events": []
+  "last_updated": "2026-01-19T16:49:28.421Z",
+  "event_count": 3,
+  "events": [
+    {
+      "incident_id": "QIW-LINT-1768840937361-17F1D21C",
+      "timestamp": "2026-01-19T16:42:17.361Z",
+      "status": "detected",
+      "channel": "lint",
+      "severity": "medium",
+      "title": "10 lint errors detected",
+      "description": "Found 10 lint errors and 13 warnings across 7 files. This may indicate code quality degradation.",
+      "detection": {
+        "detector": "lint_violation_increase",
+        "detection_method": "threshold",
+        "confidence": 0.9
+      },
+      "metrics": {
+        "error_count": 10,
+        "warning_count": 13,
+        "total_violations": 23,
+        "file_count": 7
+      },
+      "metadata": {
+        "created_by": "system",
+        "updated_at": "2026-01-19T16:42:17.361Z",
+        "tags": []
+      }
+    },
+    {
+      "incident_id": "QIW-LINT-1768840937361-61C074F8",
+      "timestamp": "2026-01-19T16:42:17.361Z",
+      "status": "detected",
+      "channel": "lint",
+      "severity": "medium",
+      "title": "13 lint bypass directives detected",
+      "description": "Found 13 files using lint bypass directives (eslint-disable, @ts-ignore, @ts-nocheck). Files: jest.globalTeardown.js, jest.globalSetup.js, jest.config.js, scripts/check-deprecations.js, qa/detect-test-dodging.js...",
+      "detection": {
+        "detector": "lint_bypass_detector",
+        "detection_method": "pattern",
+        "confidence": 1
+      },
+      "metrics": {
+        "bypass_count": 13,
+        "bypass_files": [
+          "jest.globalTeardown.js",
+          "jest.globalSetup.js",
+          "jest.config.js",
+          "scripts/check-deprecations.js",
+          "qa/detect-test-dodging.js",
+          "qa/check-qa-plan-status.js",
+          "qa/parking/watcher.js",
+          "qa/governance/sync-checker.js",
+          "qa/evidence/capture.js",
+          "lib/storage/s3.ts",
+          "lib/storage/local.ts",
+          "governance/qiw/detectors/lint-detector.ts",
+          "app/reports/page.tsx"
+        ]
+      },
+      "metadata": {
+        "created_by": "system",
+        "updated_at": "2026-01-19T16:42:17.361Z",
+        "tags": []
+      }
+    },
+    {
+      "incident_id": "QIW-LINT-1768841368421-68306D8B",
+      "timestamp": "2026-01-19T16:49:28.421Z",
+      "status": "detected",
+      "channel": "lint",
+      "severity": "medium",
+      "title": "8 lint errors detected",
+      "description": "Found 8 lint errors and 13 warnings across 7 files. This may indicate code quality degradation.",
+      "detection": {
+        "detector": "lint_violation_increase",
+        "detection_method": "threshold",
+        "confidence": 0.9
+      },
+      "metrics": {
+        "error_count": 8,
+        "warning_count": 13,
+        "total_violations": 21,
+        "file_count": 7
+      },
+      "metadata": {
+        "created_by": "system",
+        "updated_at": "2026-01-19T16:49:28.421Z",
+        "tags": []
+      }
+    }
+  ]
 }

@@ -11,7 +11,7 @@
 
 This directory contains the implementation scaffold for QIW detectors. Each detector monitors one of the 5 observation channels and creates incidents when anomalies are detected.
 
-**Status**: 📋 Scaffold Complete | ⏳ Implementation Pending
+**Status**: ✅ Implementation Complete | 🎯 Ready for Integration
 
 ---
 
@@ -227,13 +227,13 @@ Add to GitHub Actions workflow:
 
 ## Detector Implementation Status
 
-| Detector | Status | Priority | Assignee |
-|----------|--------|----------|----------|
-| build-detector.ts | 📋 Stub | High | TBD |
-| lint-detector.ts | 📋 Stub | High | TBD |
-| test-detector.ts | 📋 Stub | High | TBD |
-| deployment-detector.ts | 📋 Stub | Medium | TBD |
-| runtime-detector.ts | 📋 Stub | Medium | TBD |
+| Detector | Status | Priority | Implementation |
+|----------|--------|----------|----------------|
+| build-detector.ts | ✅ Complete | High | Detects build failures, dependency conflicts, duration anomalies |
+| lint-detector.ts | ✅ Complete | High | Detects lint violations, bypasses, critical errors |
+| test-detector.ts | ✅ Complete | High | Detects test failures, coverage drops, flaky tests, test dodging, skipped tests |
+| deployment-detector.ts | ⚠️ Stub | Medium | Requires Vercel API integration (placeholder ready) |
+| runtime-detector.ts | ⚠️ Stub | Medium | Requires APM integration (placeholder ready) |
 
 ---
 
@@ -517,6 +517,89 @@ cat governance/memory/PartPulse/qiw-events.json | jq '.events[-1]'
 
 ---
 
-**Last Updated**: 2026-01-14  
-**Version**: 1.0.0  
-**Status**: Scaffold Complete, Implementation Pending
+**Last Updated**: 2026-01-19  
+**Version**: 2.0.0  
+**Status**: Core Detectors Implemented, Platform Integrations Pending
+
+---
+
+## Implementation Summary
+
+### ✅ Completed (2026-01-19)
+
+**Infrastructure**:
+- ✅ `governance/schemas/qiw-events-schema.json` - JSON schema for incident events
+- ✅ `governance/schemas/qiw-config-schema.json` - JSON schema for QIW configuration
+- ✅ `lib/incident-writer.ts` - Shared utility for writing incidents to event log
+- ✅ `lib/config-loader.ts` - Shared utility for loading QIW configuration
+
+**High-Priority Detectors**:
+- ✅ `build-detector.ts` - Monitors CI builds, detects failures, dependency conflicts, duration anomalies
+- ✅ `lint-detector.ts` - Monitors ESLint output, detects violations, bypasses, critical errors
+- ✅ `test-detector.ts` - Monitors test execution, detects failures, coverage drops, flaky tests, test dodging, skipped tests
+
+**Medium-Priority Detectors (Stubs)**:
+- ⚠️ `deployment-detector.ts` - Placeholder ready, requires Vercel API integration
+- ⚠️ `runtime-detector.ts` - Placeholder ready, requires APM/monitoring tool integration
+
+**npm Scripts**:
+- ✅ `npm run qiw:detect:build` - Run build detector
+- ✅ `npm run qiw:detect:lint` - Run lint detector
+- ✅ `npm run qiw:detect:test` - Run test detector
+- ✅ `npm run qiw:detect:deployment` - Run deployment detector (stub)
+- ✅ `npm run qiw:detect:runtime` - Run runtime detector (stub)
+- ✅ `npm run qiw:detect:all` - Run all detectors sequentially
+
+### 🔧 Integration Notes
+
+All detectors follow the canonical QIW detector interface and:
+1. Load configuration from `governance/qiw-config.json`
+2. Collect metrics from their respective channels
+3. Detect anomalies based on configured thresholds/patterns
+4. Write incidents to `governance/memory/PartPulse/qiw-events.json`
+5. Exit with code 1 if blocking incidents detected, 0 otherwise
+6. Fail gracefully (log-only) on detector errors to avoid blocking CI
+
+### 📦 Dependencies
+
+Detectors use:
+- `tsx` for TypeScript execution (already in devDependencies)
+- `glob` for file pattern matching (bundled with Node.js)
+- Standard Node.js `fs`, `path`, `child_process`, `crypto` modules
+
+No additional dependencies required.
+
+### 🧪 Testing
+
+To manually test a detector:
+
+```bash
+# Test build detector
+npm run qiw:detect:build
+
+# Test lint detector  
+npm run qiw:detect:lint
+
+# Test test detector
+npm run qiw:detect:test
+
+# Run all detectors
+npm run qiw:detect:all
+
+# Check incident log
+cat governance/memory/PartPulse/qiw-events.json | jq '.events[-5:]'
+```
+
+### ⚠️ Platform Integration Required
+
+**Deployment Detector**:
+- Requires Vercel API client or equivalent
+- Needs authentication tokens (VERCEL_TOKEN env var)
+- Should query deployment status, health checks, environment configs
+
+**Runtime Detector**:
+- Requires APM tool integration (Datadog, New Relic, Sentry, etc.)
+- Needs API keys/tokens for monitoring platforms
+- Should query error rates, response times, resource utilization
+
+Both stub implementations are ready for integration once platform credentials are configured.

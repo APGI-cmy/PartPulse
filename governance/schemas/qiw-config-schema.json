@@ -1,0 +1,158 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://maturion.com/schemas/qiw-config-schema.json",
+  "title": "QIW Configuration Schema",
+  "description": "Schema for Quality Integrity Watchdog configuration",
+  "type": "object",
+  "required": ["version", "repository", "qiw_enabled", "channels"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to this schema"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Config version"
+    },
+    "repository": {
+      "type": "string",
+      "description": "Repository name (owner/repo format)"
+    },
+    "qiw_enabled": {
+      "type": "boolean",
+      "description": "Whether QIW is enabled"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last update timestamp"
+    },
+    "channels": {
+      "type": "object",
+      "description": "Configuration for each observation channel",
+      "additionalProperties": {
+        "$ref": "#/definitions/channel"
+      }
+    },
+    "severity_sla": {
+      "type": "object",
+      "description": "SLA targets by severity",
+      "additionalProperties": {
+        "$ref": "#/definitions/sla"
+      }
+    },
+    "dashboard": {
+      "type": "object",
+      "description": "Dashboard configuration"
+    },
+    "alerting": {
+      "type": "object",
+      "description": "Alerting configuration"
+    },
+    "incident_storage": {
+      "type": "object",
+      "description": "Incident storage configuration"
+    },
+    "integration": {
+      "type": "object",
+      "description": "CI/CD integration configuration"
+    },
+    "detector_implementation": {
+      "type": "object",
+      "description": "Detector implementation metadata"
+    }
+  },
+  "definitions": {
+    "channel": {
+      "type": "object",
+      "required": ["enabled", "description", "detectors"],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether channel is enabled"
+        },
+        "description": {
+          "type": "string",
+          "description": "Channel description"
+        },
+        "triggers": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Detection triggers"
+        },
+        "detectors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/detector"
+          },
+          "description": "Channel detectors"
+        },
+        "metrics": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Metrics to collect"
+        },
+        "blocking_rules": {
+          "type": "object",
+          "description": "Blocking rules by severity"
+        }
+      }
+    },
+    "detector": {
+      "type": "object",
+      "required": ["name", "type", "enabled"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Detector name"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["threshold", "pattern", "anomaly"],
+          "description": "Detector type"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether detector is enabled"
+        },
+        "threshold": {
+          "type": "object",
+          "description": "Threshold configuration"
+        },
+        "pattern": {
+          "type": "string",
+          "description": "Pattern to match"
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["critical", "high", "medium", "low"],
+          "description": "Detection severity"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detector description"
+        }
+      }
+    },
+    "sla": {
+      "type": "object",
+      "required": ["mttr_target", "escalation_threshold", "notification"],
+      "properties": {
+        "mttr_target": {
+          "type": "string",
+          "description": "Mean Time To Remediation target"
+        },
+        "escalation_threshold": {
+          "type": "string",
+          "description": "Time before escalation"
+        },
+        "notification": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Notification recipients"
+        }
+      }
+    }
+  }
+}
