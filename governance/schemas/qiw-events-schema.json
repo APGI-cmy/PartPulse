@@ -1,0 +1,243 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://maturion.com/schemas/qiw-events-schema.json",
+  "title": "QIW Event Log Schema",
+  "description": "Schema for Quality Integrity Watchdog incident event log",
+  "type": "object",
+  "required": ["$schema", "version", "repository", "description", "created_at", "last_updated", "event_count", "events"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to this schema"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Schema version"
+    },
+    "repository": {
+      "type": "string",
+      "description": "Repository name (owner/repo format)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of this event log"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Event log creation timestamp"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last update timestamp"
+    },
+    "event_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total number of events"
+    },
+    "events": {
+      "type": "array",
+      "description": "Array of incident events",
+      "items": {
+        "$ref": "#/definitions/incident"
+      }
+    }
+  },
+  "definitions": {
+    "incident": {
+      "type": "object",
+      "required": ["incident_id", "timestamp", "channel", "severity", "status", "title", "description", "detection"],
+      "properties": {
+        "incident_id": {
+          "type": "string",
+          "pattern": "^QIW-[A-Z]+-\\d+-[A-F0-9]{8}$",
+          "description": "Unique incident identifier"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Detection timestamp"
+        },
+        "channel": {
+          "type": "string",
+          "enum": ["build", "lint", "test", "deployment", "runtime"],
+          "description": "QIW observation channel"
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["critical", "high", "medium", "low"],
+          "description": "Incident severity level"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["detected", "investigating", "remediated", "false_positive"],
+          "description": "Incident status"
+        },
+        "title": {
+          "type": "string",
+          "description": "Brief description of anomaly"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description with context"
+        },
+        "detection": {
+          "type": "object",
+          "required": ["detector", "detection_method", "confidence"],
+          "properties": {
+            "detector": {
+              "type": "string",
+              "description": "Detector name or source"
+            },
+            "detection_method": {
+              "type": "string",
+              "enum": ["threshold", "pattern", "anomaly", "manual"],
+              "description": "Detection method used"
+            },
+            "confidence": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Detection confidence (0.0 - 1.0)"
+            }
+          }
+        },
+        "metrics": {
+          "type": "object",
+          "description": "Relevant metrics for this incident",
+          "additionalProperties": true
+        },
+        "evidence": {
+          "type": "object",
+          "properties": {
+            "logs": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Log references"
+            },
+            "commits": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Related commit SHAs"
+            },
+            "pr_numbers": {
+              "type": "array",
+              "items": { "type": "integer" },
+              "description": "Related PR numbers"
+            },
+            "ci_run_urls": {
+              "type": "array",
+              "items": { "type": "string", "format": "uri" },
+              "description": "CI run URLs"
+            },
+            "screenshots": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Screenshot paths"
+            }
+          }
+        },
+        "impact": {
+          "type": "object",
+          "properties": {
+            "affected_components": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Affected components"
+            },
+            "affected_branches": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Affected branches"
+            },
+            "user_impact": {
+              "type": "string",
+              "enum": ["none", "low", "medium", "high", "critical"],
+              "description": "User impact level"
+            },
+            "business_impact": {
+              "type": "string",
+              "description": "Business impact description"
+            }
+          }
+        },
+        "remediation": {
+          "type": "object",
+          "properties": {
+            "assigned_to": {
+              "type": "string",
+              "description": "Assignee for remediation"
+            },
+            "remediation_plan": {
+              "type": "string",
+              "description": "Remediation plan"
+            },
+            "completed_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Remediation completion timestamp"
+            },
+            "resolution": {
+              "type": "string",
+              "description": "Resolution description"
+            },
+            "verification": {
+              "type": "string",
+              "description": "Verification method"
+            }
+          }
+        },
+        "escalation": {
+          "type": "object",
+          "properties": {
+            "escalated": {
+              "type": "boolean",
+              "description": "Whether incident was escalated"
+            },
+            "escalated_to": {
+              "type": "string",
+              "description": "Escalation target"
+            },
+            "escalated_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Escalation timestamp"
+            },
+            "escalation_reason": {
+              "type": "string",
+              "description": "Reason for escalation"
+            }
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "required": ["created_by", "updated_at"],
+          "properties": {
+            "created_by": {
+              "type": "string",
+              "description": "Creator (system or user ID)"
+            },
+            "updated_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Last update timestamp"
+            },
+            "tags": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Tags for categorization"
+            },
+            "related_incidents": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Related incident IDs"
+            }
+          }
+        }
+      }
+    }
+  }
+}

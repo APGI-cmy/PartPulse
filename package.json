@@ -17,6 +17,12 @@
     "migrate:resolve-failed": "node scripts/resolve-failed-migrations.js",
     "fl:log": "node qa/log-failure.js",
     "fl:view": "cat qa/FAILURE_LEARNING_LOG.md",
+    "qiw:detect:build": "tsx governance/qiw/detectors/build-detector.ts",
+    "qiw:detect:lint": "tsx governance/qiw/detectors/lint-detector.ts",
+    "qiw:detect:test": "tsx governance/qiw/detectors/test-detector.ts",
+    "qiw:detect:deployment": "tsx governance/qiw/detectors/deployment-detector.ts",
+    "qiw:detect:runtime": "tsx governance/qiw/detectors/runtime-detector.ts",
+    "qiw:detect:all": "npm run qiw:detect:build && npm run qiw:detect:lint && npm run qiw:detect:test && npm run qiw:detect:deployment && npm run qiw:detect:runtime",
     "prepare": "husky"
   },
   "prisma": {
@@ -51,6 +57,7 @@
     "autoprefixer": "^10.4.22",
     "eslint": "^9",
     "eslint-config-next": "16.0.7",
+    "glob": "^13.0.0",
     "husky": "^9.1.7",
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
