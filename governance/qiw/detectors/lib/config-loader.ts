@@ -80,7 +80,7 @@ export function loadConfig(): QIWConfig {
     return cachedConfig;
   }
   
-  const configPath = path.join(__dirname, '../../../../qiw-config.json');
+  const configPath = path.join(__dirname, '../../../qiw-config.json');
   
   if (!fs.existsSync(configPath)) {
     throw new Error(`QIW config not found: ${configPath}`);

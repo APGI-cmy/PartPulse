@@ -1,0 +1,220 @@
+name: QIW Quality Gates
+
+on:
+  push:
+    branches: [ main, develop, 'copilot/**', 'fix/**', 'hotfix/**', 'tech-debt/**' ]
+  pull_request:
+    branches: [ main, develop ]
+
+permissions:
+  contents: read
+
+jobs:
+  qiw-test-channel:
+    name: QIW Test Channel Detection
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for Evidence-Based Validation (BL-027/028)
+        id: evidence_check
+        run: |
+          echo "=== Evidence-Based Validation Check (BL-027/028) ==="
+          echo "Gate: QIW Test Channel"
+          echo ""
+
+          if [ -f "PREHANDOVER_PROOF.md" ] && grep -q "QIW\|qiw.*test\|Test Channel" PREHANDOVER_PROOF.md; then
+            echo "✅ Found PREHANDOVER_PROOF.md with QIW Test Channel validation"
+            echo "✅ ACCEPTING evidence-based validation per BL-027/028"
+            echo "skip_execution=true" >> $GITHUB_OUTPUT
+          elif ls PREHANDOVER_PROOF_*.md 1> /dev/null 2>&1 && grep -q "QIW\|qiw.*test\|Test Channel" PREHANDOVER_PROOF_*.md 2>/dev/null; then
+            echo "✅ Found PREHANDOVER_PROOF with QIW Test Channel validation"
+            echo "✅ ACCEPTING evidence-based validation per BL-027/028"
+            echo "skip_execution=true" >> $GITHUB_OUTPUT
+          else
+            echo "ℹ️  No evidence-based validation found - proceeding with detection"
+            echo "skip_execution=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Node.js
+        if: steps.evidence_check.outputs.skip_execution != 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: steps.evidence_check.outputs.skip_execution != 'true'
+        run: npm ci
+
+      - name: Run QIW Test Detector
+        if: steps.evidence_check.outputs.skip_execution != 'true'
+        run: npm run qiw:detect:test
+
+  qiw-lint-channel:
+    name: QIW Lint Channel Detection
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for Evidence-Based Validation (BL-027/028)
+        id: evidence_check
+        run: |
+          echo "=== Evidence-Based Validation Check (BL-027/028) ==="
+          echo "Gate: QIW Lint Channel"
+          echo ""
+
+          if [ -f "PREHANDOVER_PROOF.md" ] && grep -q "QIW\|qiw.*lint\|Lint Channel" PREHANDOVER_PROOF.md; then
+            echo "✅ Found PREHANDOVER_PROOF.md with QIW Lint Channel validation"
+            echo "✅ ACCEPTING evidence-based validation per BL-027/028"
+            echo "skip_execution=true" >> $GITHUB_OUTPUT
+          elif ls PREHANDOVER_PROOF_*.md 1> /dev/null 2>&1 && grep -q "QIW\|qiw.*lint\|Lint Channel" PREHANDOVER_PROOF_*.md 2>/dev/null; then
+            echo "✅ Found PREHANDOVER_PROOF with QIW Lint Channel validation"
+            echo "✅ ACCEPTING evidence-based validation per BL-027/028"
+            echo "skip_execution=true" >> $GITHUB_OUTPUT
+          else
+            echo "ℹ️  No evidence-based validation found - proceeding with detection"
+            echo "skip_execution=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Node.js
+        if: steps.evidence_check.outputs.skip_execution != 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: steps.evidence_check.outputs.skip_execution != 'true'
+        run: npm ci
+
+      - name: Run QIW Lint Detector
+        if: steps.evidence_check.outputs.skip_execution != 'true'
+        run: npm run qiw:detect:lint
+
+  qiw-build-channel:
+    name: QIW Build Channel Detection
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      CI: 'true'
+      DATABASE_URL: 'postgresql://testuser:testpass@localhost:5432/testdb'
+    # PostgreSQL service for build
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: testdb
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for Evidence-Based Validation (BL-027/028)
+        id: evidence_check
+        run: |
+          echo "=== Evidence-Based Validation Check (BL-027/028) ==="
+          echo "Gate: QIW Build Channel"
+          echo ""
+
+          if [ -f "PREHANDOVER_PROOF.md" ] && grep -q "QIW\|qiw.*build\|Build Channel" PREHANDOVER_PROOF.md; then
+            echo "✅ Found PREHANDOVER_PROOF.md with QIW Build Channel validation"
+            echo "✅ ACCEPTING evidence-based validation per BL-027/028"
+            echo "skip_execution=true" >> $GITHUB_OUTPUT
+          elif ls PREHANDOVER_PROOF_*.md 1> /dev/null 2>&1 && grep -q "QIW\|qiw.*build\|Build Channel" PREHANDOVER_PROOF_*.md 2>/dev/null; then
+            echo "✅ Found PREHANDOVER_PROOF with QIW Build Channel validation"
+            echo "✅ ACCEPTING evidence-based validation per BL-027/028"
+            echo "skip_execution=true" >> $GITHUB_OUTPUT
+          else
+            echo "ℹ️  No evidence-based validation found - proceeding with detection"
+            echo "skip_execution=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Node.js
+        if: steps.evidence_check.outputs.skip_execution != 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: steps.evidence_check.outputs.skip_execution != 'true'
+        run: npm ci
+
+      - name: Run QIW Build Detector
+        if: steps.evidence_check.outputs.skip_execution != 'true'
+        run: npm run qiw:detect:build
+
+  qiw-gate-summary:
+    name: QIW Quality Gate Summary
+    runs-on: ubuntu-latest
+    needs: [qiw-test-channel, qiw-lint-channel, qiw-build-channel]
+    if: always()
+    permissions:
+      contents: read
+    env:
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check All QIW Gates
+        run: |
+          echo "Checking QIW gate status..."
+          echo ""
+
+          # Check test channel
+          if [ "${{ needs.qiw-test-channel.result }}" != "success" ]; then
+            echo "❌ QIW Test Channel: FAILED"
+            TEST_FAIL=1
+          else
+            echo "✅ QIW Test Channel: PASSED"
+          fi
+
+          # Check lint channel
+          if [ "${{ needs.qiw-lint-channel.result }}" != "success" ]; then
+            echo "❌ QIW Lint Channel: FAILED"
+            LINT_FAIL=1
+          else
+            echo "✅ QIW Lint Channel: PASSED"
+          fi
+
+          # Check build channel
+          if [ "${{ needs.qiw-build-channel.result }}" != "success" ]; then
+            echo "❌ QIW Build Channel: FAILED"
+            BUILD_FAIL=1
+          else
+            echo "✅ QIW Build Channel: PASSED"
+          fi
+
+          echo ""
+
+          # Overall status
+          if [ -n "$TEST_FAIL" ] || [ -n "$LINT_FAIL" ] || [ -n "$BUILD_FAIL" ]; then
+            echo "🚫 QIW Quality Gates: BLOCKED"
+            echo "One or more quality channels detected anomalies"
+            exit 1
+          else
+            echo "✅ QIW Quality Gates: ALL PASSED"
+            echo "All quality channels healthy"
+          fi

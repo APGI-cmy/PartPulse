@@ -66,7 +66,7 @@ export function generateIncidentId(channel: string): string {
  * Returns the incident ID
  */
 export async function recordIncident(incident: DetectedIncident): Promise<string> {
-  const eventsPath = path.join(__dirname, '../../../../memory/PartPulse/qiw-events.json');
+  const eventsPath = path.join(__dirname, '../../../memory/PartPulse/qiw-events.json');
   
   // Ensure file exists
   if (!fs.existsSync(eventsPath)) {
@@ -121,7 +121,7 @@ export function getRecentIncidents(
   channel: string,
   count: number = 10
 ): FullIncident[] {
-  const eventsPath = path.join(__dirname, '../../../../memory/PartPulse/qiw-events.json');
+  const eventsPath = path.join(__dirname, '../../../memory/PartPulse/qiw-events.json');
   
   if (!fs.existsSync(eventsPath)) {
     return [];
