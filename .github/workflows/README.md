@@ -2,6 +2,44 @@
 
 This directory contains all CI/CD workflows for PartPulse.
 
+## Evidence-Based Validation (BL-027/028)
+
+**Authority**: Layered down from APGI-cmy/maturion-foreman-governance#981
+
+All CI validation gates now accept **EITHER**:
+1. **Script execution** (traditional automated validation)
+2. **Evidence-based validation** (PREHANDOVER_PROOF + manual attestation)
+
+### How Evidence-Based Validation Works
+
+When a PR includes a `PREHANDOVER_PROOF.md` (or `PREHANDOVER_PROOF_*.md`) file that documents validation for a specific gate, that gate will:
+1. Check for the presence of PREHANDOVER_PROOF
+2. Verify the gate is documented in the proof
+3. **ACCEPT** the evidence-based validation and skip script execution
+4. Mark the gate as passing based on manual attestation
+
+### Example Usage
+
+For agent-driven PRs where local validation has been performed:
+
+1. Create `PREHANDOVER_PROOF.md` using template in `governance/templates/PREHANDOVER_PROOF_TEMPLATE.md`
+2. Document each gate validation with results (exit codes, outputs, etc.)
+3. Include gate names like:
+   - "Test Dodging Detection" or "test-dodging"
+   - "QA Parking Validation" or "qa-parking"
+   - "Governance Sync Validation" or "governance-sync"
+   - "Deprecation Detection" or "deprecation"
+   - "Test Suite Execution" or "test-execution"
+4. Commit PREHANDOVER_PROOF.md to the PR branch
+5. CI gates will detect and accept the evidence-based validation
+
+### Benefits
+
+- **Flexibility**: Allows manual validation when automated scripts cannot run locally
+- **Governance**: Maintains evidence trail through PREHANDOVER_PROOF
+- **Agent-friendly**: Supports agent-driven PRs with BL-027/028 compliance
+- **Dual-mode**: Still runs automated validation when PREHANDOVER_PROOF not present
+
 ## Active Workflows
 
 ### 1. Minimum Build-to-Red Gate
