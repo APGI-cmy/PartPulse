@@ -15,6 +15,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { execSync } from 'child_process';
+import { glob } from 'glob';
 import { 
   recordIncident, 
   recordIncidents, 
@@ -327,7 +328,6 @@ class TestDetector {
     ];
     
     const testFiles: string[] = [];
-    const glob = require('glob');
     
     for (const pattern of testPatterns) {
       try {

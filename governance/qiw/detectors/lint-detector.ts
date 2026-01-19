@@ -13,6 +13,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { execSync } from 'child_process';
+import { glob } from 'glob';
 import { 
   recordIncident, 
   recordIncidents, 
@@ -255,7 +256,6 @@ class LintDetector {
     ];
     
     // Find all TypeScript/JavaScript files
-    const glob = require('glob');
     const files = glob.sync('**/*.{ts,tsx,js,jsx}', {
       cwd: process.cwd(),
       ignore: ['**/node_modules/**', '**/dist/**', '**/build/**', '**/.next/**']
