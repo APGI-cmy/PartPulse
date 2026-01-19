@@ -1,0 +1,54 @@
+---
+# Yamllint configuration for agent contract markdown files
+# Agent contracts: YAML frontmatter + markdown body
+# Yamllint will check entire file, so we configure for both
+
+extends: default
+
+rules:
+  # Line length: 120 to accommodate markdown and descriptions
+  line-length:
+    max: 120
+    level: warning
+
+  # Document separators (---) are expected
+  document-start: disable
+  document-end: disable
+
+  # Trailing spaces: error
+  trailing-spaces:
+    level: error
+
+  # Comments: allow flexible spacing
+  comments:
+    min-spaces-from-content: 1
+    level: warning
+
+  # Colons: flexible for markdown
+  colons:
+    max-spaces-before: 0
+    max-spaces-after: -1  # No limit (for markdown)
+
+  # Brackets: flexible
+  brackets:
+    min-spaces-inside: 0
+    max-spaces-inside: 1
+
+  # Braces: flexible
+  braces:
+    min-spaces-inside: 0
+    max-spaces-inside: 1
+
+  # Indentation: standard YAML
+  indentation:
+    spaces: 2
+    indent-sequences: true
+
+  # Allow empty values
+  empty-values:
+    forbid-in-block-mappings: false
+    forbid-in-flow-mappings: false
+
+  # Truthy: allow yes/no
+  truthy:
+    allowed-values: ['true', 'false', 'yes', 'no']
