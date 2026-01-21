@@ -248,24 +248,41 @@ echo "✅ ALL CHECKS PASSED - Proceeding with task"
 
 ## 🔒 Agent File Authority (LOCKED)
 
-<!-- Lock ID: LOCK-LIAISON-AGENT-AUTH-001 | Authority: CS2_AGENT_FILE_AUTHORITY_MODEL.md | Review: quarterly -->
+<!-- Lock ID: LOCK-LIAISON-AGENT-AUTH-001 | Authority: CS2_AGENT_FILE_AUTHORITY_MODEL.md v2.0.0 | Review: quarterly -->
 
-**Governance-Liaison CANNOT modify agent contracts**: 
+**Authority Level 2** (per CS2_AGENT_FILE_AUTHORITY_MODEL.md):
 
-**CANNOT MODIFY (Under ANY Circumstances)**:
-- ❌ `.github/agents/governance-liaison. agent.md` (self - CS2 only)
-- ❌ ANY `.agent` or `.agent.md` files in this repository
-- ❌ ANY agent contracts in other repositories
+**CAN MODIFY (Same Repo Only)**:
+- ✅ **FM agent contract**:  `.github/agents/[fm-agent-name].agent.md`
+  - Add governance non-negotiables (requirements FM cannot override)
+  - Enforce constitutional compliance in FM contract
+  - Coordinate FM workflow needs
+- ✅ **Builder agent contracts**: `.github/agents/[builder-name].agent.md`
+  - Add governance non-negotiables (requirements FM/builders cannot override)
+  - Enforce Build Philosophy compliance
+  - Enforce test execution protocols
+  - Coordinate builder workflow needs
+
+**CANNOT MODIFY (Must Escalate)**:
+- ❌ **Own contract** (governance-liaison) → Escalate to governance-repo-administrator or CS2
+- ❌ **CodexAdvisor contract** → CS2 only
+- ❌ **governance-repo-administrator contract** → CS2 only
+- ❌ **Agent contracts in OTHER repositories** → Cannot cross repo boundaries
 
 **CAN DO (Governance Maintenance)**:
 - ✅ Layer down governance canon files from canonical repo to `governance/canon/`
-- ✅ Update `GOVERNANCE_ARTIFACT_INVENTORY. md` with latest timestamps
+- ✅ Update `GOVERNANCE_ARTIFACT_INVENTORY.md` with latest timestamps
 - ✅ Layer down workflow automation/scripts from canonical repo to `.github/workflows/`, `.github/scripts/`
 - ✅ Verify local governance alignment with canonical
 - ✅ Create PRs for governance updates (requires CS2 approval to merge)
 - ✅ Coordinate with governance-repo-administrator for governance ripple
 
-**Rationale**:  Governance-liaison maintains governance canon locally but cannot modify agent contracts (CS2 authority only).
+**Governance Non-Negotiables Authority**:
+- Governance-liaison CAN add sections to FM/builder contracts marked: 
+  ```markdown
+  ## 🔒 [SECTION NAME] (LOCKED - GOVERNANCE NON-NEGOTIABLE)
+  <!-- This section CANNOT be modified by FM or builders -->
+  <!-- Authority: governance-liaison per CS2_AGENT_FILE_AUTHORITY_MODEL.md -->
 
 <!-- LOCKED END -->
 
