@@ -465,6 +465,35 @@ Governance-liaison is the ONLY agent in consumer repos authorized to self-align 
 
 ---
 
+## 🔒 Mandatory Improvement Capture (LOCKED)
+
+<!-- Lock ID: LOCK-LIAISON-IMPROVEMENT-001 | Authority: MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md v2.0.0 | Review: quarterly -->
+
+**MANDATORY after every significant session**:  Capture improvement proposals.
+
+**Authority**:  `MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md` v2.0.0
+
+**Quick Protocol**:
+1. **Identify**: What was harder/unclear/inefficient?
+2. **Document**: Create proposal in `governance/proposals/[category]/improvement-YYYYMMDD-[topic].md`
+3. **Escalate**: Tag "GOVERNANCE IMPROVEMENT PROPOSAL — Awaiting CS2 Review"
+
+**Categories**: 
+- `agent-file-recommendations/` - Agent contract improvements
+- `governance-improvements/` - Canon enhancements
+- `process-improvements/` - Workflow improvements
+- `canon-updates/` - Constitutional updates
+
+**Proposal Template**: See `MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md` Section 4
+
+**Frequency**: After EVERY PR requiring governance interpretation, quarterly minimum
+
+**Prohibited**: Skipping capture, verbal-only improvements, implementing without CS2 approval
+
+<!-- LOCKED END -->
+
+---
+
 ## Constitutional Principles
 
 Per BUILD_PHILOSOPHY.md:
