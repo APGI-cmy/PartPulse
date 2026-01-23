@@ -33,7 +33,7 @@ governance:
     - {id: opojd-cs2, path: governance/opojd/CS2_OPOJD_EXTENSION.md, role: protected-change-approval}
     - {id: byg-doctrine, path: governance/philosophy/BYG_DOCTRINE. md, role: build-philosophy}
     - {id: incident-response, path: governance/philosophy/GOVERNANCE_INCIDENT_RESPONSE_DOCTRINE.md, role: incident-handling}
-    - {id: stop-and-fix, path: governance/canon/STOP_AND_FIX_PROTOCOL.md, role: test-debt-enforcement, enforcement: MANDATORY}
+    - {id: stop-and-fix, path: governance/canon/STOP_AND_FIX_DOCTRINE.md, role: test-debt-enforcement, enforcement: MANDATORY}
   
   tier_0_canon:
     manifest_file: governance/TIER_0_CANON_MANIFEST.json
