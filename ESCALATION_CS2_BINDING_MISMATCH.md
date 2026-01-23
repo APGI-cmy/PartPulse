@@ -19,6 +19,8 @@ During execution of Issue #197 (Governance Ripple: Layer down STOP_AND_FIX_DOCTR
 
 ## Precise Details
 
+### Issue #1: Binding Mismatch
+
 **File**: `.github/agents/governance-liaison.md`  
 **Line**: 36  
 **Current Binding**: 
@@ -30,23 +32,59 @@ During execution of Issue #197 (Governance Ripple: Layer down STOP_AND_FIX_DOCTR
 **Expected**: Binding should reference `governance/canon/STOP_AND_FIX_DOCTRINE.md`  
 **Actual File Present**: `governance/canon/STOP_AND_FIX_DOCTRINE.md` (22,643 bytes, layered down 2026-01-23)  
 
+### Issue #2: YAML Validation Failures
+
+**Authority**: BL-028 (YAML Warnings = Errors)
+
+Running `yamllint .github/agents/governance-liaison.md` produces **8 errors and 10 warnings**:
+
+**Errors**:
+- Line 3, col 170: Trailing spaces
+- Line 5, col 7: Trailing spaces  
+- Line 14, col 1: Trailing spaces
+- Line 37, col 1: Trailing spaces
+- Line 75, col 2: Syntax error (expected alphabetic/numeric, found '*')
+- Line 79, col 161: Trailing spaces
+- Line 282, col 70: Trailing spaces
+- Line 296, col 70: Trailing spaces
+- Line 302, col 111: Trailing spaces
+
+**Warnings** (BL-028: warnings ARE errors):
+- Multiple lines exceed 120 character limit (lines 3, 23, 25, 30, 35, 36, 94, 101, 131, 294)
+
 **Why This Prevents Work**: 
-- The agent contract binding points to a non-existent file
-- This creates a governance alignment failure
-- Prevents successful validation and handover
+- The agent contract binding points to a non-existent file → Governance alignment failure
+- YAML validation failures prevent handover per BL-028 and Pre-Handover Validation protocol
+- Cannot pass required validation gates with current contract state
 - Violates canonical governance reference integrity
+- BL-028 mandates exit code 0 for yamllint (currently failing)
 
 ---
 
-## Required Fix
+## Required Fixes
 
-CS2 must update `.github/agents/governance-liaison.md` line 36 to:
+CS2 must make the following updates to `.github/agents/governance-liaison.md`:
+
+### Fix #1: Binding Reference (Line 36)
+
+**Change**: `STOP_AND_FIX_PROTOCOL.md` → `STOP_AND_FIX_DOCTRINE.md`
 
 ```yaml
+# Current (INCORRECT):
+- {id: stop-and-fix, path: governance/canon/STOP_AND_FIX_PROTOCOL.md, role: test-debt-enforcement, enforcement: MANDATORY}
+
+# Required (CORRECT):
 - {id: stop-and-fix, path: governance/canon/STOP_AND_FIX_DOCTRINE.md, role: test-debt-enforcement, enforcement: MANDATORY}
 ```
 
-**Change**: `STOP_AND_FIX_PROTOCOL.md` → `STOP_AND_FIX_DOCTRINE.md`
+### Fix #2: YAML Validation Errors
+
+**Required Actions**:
+1. Remove all trailing spaces (lines 3, 5, 14, 37, 79, 282, 296, 302)
+2. Fix syntax error on line 75 (unexpected '*' character)
+3. Wrap or shorten lines exceeding 120 characters (lines 3, 23, 25, 30, 35, 36, 94, 101, 131, 294)
+
+**Validation Command**: `yamllint .github/agents/governance-liaison.md` must exit with code 0 (no errors, no warnings)
 
 ---
 
