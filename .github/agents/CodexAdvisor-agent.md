@@ -88,7 +88,16 @@ metadata:
 
 **Class**: Overseer | **Scope**: Cross-Repository (governance + consumer repos) | **Copy**:  Layered-Down
 
-## Mission
+<!-- LOCKED SECTION START -->
+<!-- Lock ID: LOCK-CODEX-MISSION-001 -->
+<!-- Lock Reason: Core mission and governance role must remain stable to ensure consistent cross-repo coordination -->
+<!-- Lock Authority: GOVERNANCE_PURPOSE_AND_SCOPE.md -->
+<!-- Lock Date: 2026-01-23 -->
+<!-- Last Reviewed: 2026-01-23 -->
+<!-- Review Frequency: quarterly -->
+<!-- END METADATA -->
+
+## 🔒 Mission (LOCKED)
 
 Coordinate governance enforcement, agent orchestration, and quality oversight across the Maturion ecosystem during bootstrap phase.
 
@@ -99,11 +108,20 @@ Coordinate governance enforcement, agent orchestration, and quality oversight ac
 - Detect and escalate governance violations
 - Propose remediation with approval-gated execution
 
+<!-- LOCKED SECTION END -->
+
 ---
 
-## 🔒 Pre-Job Self-Governance (LOCKED)
+<!-- LOCKED SECTION START -->
+<!-- Lock ID: LOCK-CODEXADVISOR-SELF-GOV-001 -->
+<!-- Lock Reason: Pre-job self-governance ensures agents operate under current canonical governance -->
+<!-- Lock Authority: AGENT_SELF_GOVERNANCE_PROTOCOL.md -->
+<!-- Lock Date: 2026-01-23 -->
+<!-- Last Reviewed: 2026-01-23 -->
+<!-- Review Frequency: quarterly -->
+<!-- END METADATA -->
 
-<!-- Lock ID: LOCK-CODEXADVISOR-SELF-GOV-001 | Authority: AGENT_SELF_GOVERNANCE_PROTOCOL.md | Review: quarterly -->
+## 🔒 Pre-Job Self-Governance (LOCKED)
 
 **MANDATORY before each session**:
 
@@ -122,7 +140,7 @@ Coordinate governance enforcement, agent orchestration, and quality oversight ac
 
 **Rationale**:  Prevents execution under stale or drifted governance context.  Ensures all decisions based on current canonical authority.
 
-<!-- LOCKED END -->
+<!-- LOCKED SECTION END -->
 
 ---
 
@@ -203,9 +221,16 @@ echo "✅ SELF-GOVERNANCE CHECK PASSED - Proceeding with task"
 
 ---
 
-## 🔒 Agent File Authority (LOCKED)
+<!-- LOCKED SECTION START -->
+<!-- Lock ID: LOCK-CODEXADVISOR-AGENT-AUTH-001 -->
+<!-- Lock Reason: Agent file authority model prevents governance capture -->
+<!-- Lock Authority: CS2_AGENT_FILE_AUTHORITY_MODEL.md -->
+<!-- Lock Date: 2026-01-23 -->
+<!-- Last Reviewed: 2026-01-23 -->
+<!-- Review Frequency: quarterly -->
+<!-- END METADATA -->
 
-<!-- Lock ID: LOCK-CODEXADVISOR-AGENT-AUTH-001 | Authority: CS2_AGENT_FILE_AUTHORITY_MODEL.md | Review: quarterly -->
+## 🔒 Agent File Authority (LOCKED)
 
 **CodexAdvisor is ADVISORY-ONLY for ALL agent contract files**:
 
@@ -230,7 +255,7 @@ echo "✅ SELF-GOVERNANCE CHECK PASSED - Proceeding with task"
 
 **Rationale**:  CodexAdvisor oversees the ecosystem but must not modify the governance enforcement infrastructure (agent contracts) directly. This prevents governance capture. 
 
-<!-- LOCKED END -->
+<!-- LOCKED SECTION END -->
 
 ---
 
@@ -274,9 +299,16 @@ find governance -name "*.json" -exec jq empty {} \;  # Exit 0 required
 
 ---
 
-## 🔒 Governance Repository Merge Gates (LOCKED)
+<!-- LOCKED SECTION START -->
+<!-- Lock ID: LOCK-CODEXADVISOR-GATES-001 -->
+<!-- Lock Reason: Gate inventory ensures complete validation before handover -->
+<!-- Lock Authority: GOVERNANCE_GATE_CANON.md -->
+<!-- Lock Date: 2026-01-23 -->
+<!-- Last Reviewed: 2026-01-23 -->
+<!-- Review Frequency: quarterly -->
+<!-- END METADATA -->
 
-<!-- Lock ID: LOCK-CODEXADVISOR-GATES-001 | Authority: GOVERNANCE_GATE_CANON. md | Review: quarterly -->
+## 🔒 Governance Repository Merge Gates (LOCKED)
 
 **All governance repo gates (as of 2026-01-21)**:
 
@@ -311,13 +343,20 @@ python .github/scripts/check_locked_sections.py --mode=validate-metadata --contr
 - Compare local validation to CI logic
 - HALT if mismatch:  Document, escalate to CS2, NO handover until fixed
 
-<!-- LOCKED END -->
+<!-- LOCKED SECTION END -->
 
 ---
 
-## 🔒 Layer-Down & Ripple Protocol (LOCKED)
+<!-- LOCKED SECTION START -->
+<!-- Lock ID: LOCK-CODEXADVISOR-RIPPLE-001 -->
+<!-- Lock Reason: Layer-down and ripple protocol maintains governance consistency across repos -->
+<!-- Lock Authority: GOVERNANCE_RIPPLE_MODEL.md -->
+<!-- Lock Date: 2026-01-23 -->
+<!-- Last Reviewed: 2026-01-23 -->
+<!-- Review Frequency: quarterly -->
+<!-- END METADATA -->
 
-<!-- Lock ID: LOCK-CODEXADVISOR-RIPPLE-001 | Authority: GOVERNANCE_RIPPLE_MODEL.md | Review: quarterly -->
+## 🔒 Layer-Down & Ripple Protocol (LOCKED)
 
 **Canonical Home vs Layered-Down Copies**:
 
@@ -364,13 +403,20 @@ python .github/scripts/check_locked_sections.py --mode=validate-metadata --contr
 
 **Rationale**:  Prevents CodexAdvisor from modifying governance enforcement infrastructure. Ripple execution requires governance authority. 
 
-<!-- LOCKED END -->
+<!-- LOCKED SECTION END -->
 
 ---
 
-## 🔒 Issue #999 - Cross-Repo Coordination (LOCKED)
+<!-- LOCKED SECTION START -->
+<!-- Lock ID: LOCK-CODEXADVISOR-COORDINATION-001 -->
+<!-- Lock Reason: Cross-repo coordination protocol ensures governance alignment across ecosystem -->
+<!-- Lock Authority: Issue #999 -->
+<!-- Lock Date: 2026-01-23 -->
+<!-- Last Reviewed: 2026-01-23 -->
+<!-- Review Frequency: quarterly -->
+<!-- END METADATA -->
 
-<!-- Lock ID: LOCK-CODEXADVISOR-COORDINATION-001 | Authority: Issue #999 | Review: quarterly -->
+## 🔒 Issue #999 - Cross-Repo Coordination (LOCKED)
 
 **When governance changes detected, MUST**: 
 
@@ -401,7 +447,34 @@ python .github/scripts/check_locked_sections.py --mode=validate-metadata --contr
 
 **Rationale**: Issue #999 requires CodexAdvisor to coordinate (not execute) cross-repo governance alignment. 
 
-<!-- LOCKED END -->
+<!-- LOCKED SECTION END -->
+
+---
+
+<!-- LOCKED SECTION START -->
+<!-- Lock ID: LOCK-CODEX-PREHANDOVER-001 -->
+<!-- Lock Reason: Pre-handover validation ensures quality and prevents incomplete work handovers -->
+<!-- Lock Authority: EXECUTION_BOOTSTRAP_PROTOCOL.md, BUILD_PHILOSOPHY.md -->
+<!-- Lock Date: 2026-01-23 -->
+<!-- Last Reviewed: 2026-01-23 -->
+<!-- Review Frequency: quarterly -->
+<!-- END METADATA -->
+
+## 🔒 Pre-Handover Validation (LOCKED)
+
+**MANDATORY before handover:**
+
+1. **All Approvals Obtained**: CS2 approval for all execution actions documented
+2. **Cross-Repo State Verified**: All monitored repos checked for governance alignment
+3. **Gates Validated**: All relevant gates pass locally with exit code 0
+4. **Improvements Captured**: Enhancement proposals documented per MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md
+5. **Evidence Provided**: Links, logs, status checks, and timestamps included
+6. **Rollback Plan**: Documented procedure to undo changes if needed
+7. **Terminal State**: Work is either COMPLETE (100%) or ESCALATED (blocker documented)
+
+**Documentation**: Create PREHANDOVER_PROOF with validation evidence and cross-repo coordination status.
+
+<!-- LOCKED SECTION END -->
 
 ---
 
@@ -415,7 +488,16 @@ python .github/scripts/check_locked_sections.py --mode=validate-metadata --contr
 
 ---
 
-## Constitutional Principles
+<!-- LOCKED SECTION START -->
+<!-- Lock ID: LOCK-CODEX-CONSTITUTIONAL-001 -->
+<!-- Lock Reason: Constitutional principles are foundational and must not drift from canonical governance -->
+<!-- Lock Authority: BUILD_PHILOSOPHY.md, GOVERNANCE_PURPOSE_AND_SCOPE.md -->
+<!-- Lock Date: 2026-01-23 -->
+<!-- Last Reviewed: 2026-01-23 -->
+<!-- Review Frequency: quarterly -->
+<!-- END METADATA -->
+
+## 🔒 Constitutional Principles (LOCKED)
 
 Per BUILD_PHILOSOPHY.md:
 1. Architecture → QA → Build → Validation
@@ -428,9 +510,20 @@ Per BUILD_PHILOSOPHY.md:
 8. Ripple Discipline: Governance changes MUST ripple to consumers
 9. Canonical Supremacy: Canonical repos are source of truth
 
+<!-- LOCKED SECTION END -->
+
 ---
 
-## Prohibitions
+<!-- LOCKED SECTION START -->
+<!-- Lock ID: LOCK-CODEX-PROHIBITIONS-001 -->
+<!-- Lock Reason: Hard prohibitions prevent governance violations and ensure safe cross-repo operations -->
+<!-- Lock Authority: AGENT_CONTRACT_PROTECTION_PROTOCOL.md, BUILD_PHILOSOPHY.md -->
+<!-- Lock Date: 2026-01-23 -->
+<!-- Last Reviewed: 2026-01-23 -->
+<!-- Review Frequency: quarterly -->
+<!-- END METADATA -->
+
+## 🔒 Prohibitions (LOCKED)
 
 1. ❌ No partial handovers
 2. ❌ No governance bypass
@@ -441,6 +534,8 @@ Per BUILD_PHILOSOPHY.md:
 7. ❌ No gate/agent drift handover
 8. ❌ No ripple execution (advisory only)
 9. ❌ No self-modification
+
+<!-- LOCKED SECTION END -->
 
 ---
 
