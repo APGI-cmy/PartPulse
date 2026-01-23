@@ -116,12 +116,14 @@
 
 **Resolution**:
 - **Batch 1**: Add LOCKED sections to CodexAdvisor and FM agents (2 agents)
-- **Batch 2**: Add LOCKED sections to governance-liaison and agent-contract-administrator (2 agents)
+- **Batch 2**: Add LOCKED sections to governance-liaison (1 agent) - Note: agent-contract-administrator discontinued
 - **Batch 3**: Add LOCKED sections to 5 builder agents (api, qa, schema, ui, integration)
 - **Timeline**: Batches 1-3 execution (Day 1-9)
 - **Validation**: Python script validates LOCKED section metadata
 
 **Status**: **RESOLVED VIA BATCHES 1-3 EXECUTION**
+
+**Note**: agent-contract-administrator.md was discontinued due to file corruption issues and is no longer part of the protection plan.
 
 ### 1.2 Structural Issues
 
@@ -276,7 +278,7 @@
 
 **Scope**:
 - **Canon Files**: 10 HIGH-priority agent governance canons
-- **Agent Files**: governance-liaison and agent-contract-administrator (2 agents, add LOCKED sections)
+- **Agent Files**: governance-liaison (1 agent, add LOCKED sections) - Note: agent-contract-administrator discontinued
 - **Cleanup**: Replace outdated versions of 9 aligned files (if verification shows mismatch)
 - **Archive**: Extra local files (if investigation shows obsolete)
 
@@ -292,9 +294,10 @@
 9. `FOREMAN_AUTHORITY_AND_SUPERVISION_MODEL.md`
 10. `DELEGATION_INSTRUCTION_AND_AUDIT_MODEL.md`
 
-**Agent Files** (2 agents - add LOCKED sections):
+**Agent Files** (1 agent - add/verify LOCKED sections):
 1. `governance-liaison.md`: Add missing LOCKED sections (Agent File Authority, Pre-Handover Validation, Governance Layer-Down, Merge Gates, Self-Alignment, Improvement Capture) - NOTE: Some may already exist, verify and add missing
-2. `agent-contract-administrator.md`: Add 7 LOCKED sections (Mission, Scope, Contract Protection, File Integrity, Constitutional Principles, Prohibitions, Pre-Handover, Improvement Capture)
+
+**Note**: agent-contract-administrator.md was discontinued due to file corruption issues.
 
 **Cleanup Tasks**:
 1. Replace 9 aligned files if version mismatch detected (from Batch 1 verification)
@@ -304,18 +307,16 @@
 **Execution Steps**:
 1. **Day 4 Morning**: Copy 10 agent governance canons to `governance/canon/`
 2. **Day 4 Afternoon**: Verify and add LOCKED sections to governance-liaison.md
-3. **Day 4 Evening**: Add LOCKED sections to agent-contract-administrator.md
-4. **Day 5 Morning**: Replace outdated versions of 9 aligned files (if needed)
-5. **Day 5 Afternoon**: Archive obsolete extra local files (move to governance/archive/)
-6. **Day 5 Evening**: Update GOVERNANCE_ARTIFACT_INVENTORY.md (25 canons total now)
-7. **Day 6 Morning**: Run all validation checks
-8. **Day 6 Afternoon**: Create PR with PREHANDOVER_PROOF
-9. **Day 6 Evening**: Submit for CS2 review
+3. **Day 5 Morning**: Replace outdated versions of 9 aligned files (if needed)
+4. **Day 5 Afternoon**: Archive obsolete extra local files (move to governance/archive/)
+5. **Day 5 Evening**: Update GOVERNANCE_ARTIFACT_INVENTORY.md (25 canons total now)
+6. **Day 6 Morning**: Run all validation checks
+7. **Day 6 Afternoon**: Create PR with PREHANDOVER_PROOF
+8. **Day 6 Evening**: Submit for CS2 review
 
 **Success Criteria**:
 - [ ] All 10 agent governance canons present in `governance/canon/`
-- [ ] governance-liaison.md has all 7 required LOCKED sections
-- [ ] agent-contract-administrator.md has 7 LOCKED sections
+- [ ] governance-liaison.md has all required LOCKED sections verified
 - [ ] Outdated versions replaced (if applicable)
 - [ ] Obsolete extra local files archived (if applicable)
 - [ ] GOVERNANCE_ARTIFACT_INVENTORY.md updated (25 canons documented)
