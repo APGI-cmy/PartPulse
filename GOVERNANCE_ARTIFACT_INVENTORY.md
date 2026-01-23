@@ -3,7 +3,7 @@
 **Repository**: APGI-cmy/PartPulse  
 **Type**: Consumer Repository (Layered-Down Governance)  
 **Canonical Source**: APGI-cmy/maturion-foreman-governance  
-**Last Updated**: 2026-01-23T12:02:11Z  
+**Last Updated**: 2026-01-23T13:58:27Z  
 **Updated By**: governance-liaison  
 
 ---
@@ -20,7 +20,22 @@ This inventory tracks all governance artifacts layered down from the canonical g
 
 | File | Path | Last Layered-Down | Source PR | Status |
 |------|------|-------------------|-----------|--------|
+| .agent.schema.md | governance/canon/.agent.schema.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
+| AGENT_CONTRACT_PROTECTION_PROTOCOL.md | governance/canon/AGENT_CONTRACT_PROTECTION_PROTOCOL.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
+| AGENT_SELF_GOVERNANCE_PROTOCOL.md | governance/canon/AGENT_SELF_GOVERNANCE_PROTOCOL.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
+| CI_CONFIRMATORY_NOT_DIAGNOSTIC.md | governance/canon/CI_CONFIRMATORY_NOT_DIAGNOSTIC.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
+| CROSS_REPOSITORY_LAYER_DOWN_PROTOCOL.md | governance/canon/CROSS_REPOSITORY_LAYER_DOWN_PROTOCOL.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
+| CS2_AGENT_FILE_AUTHORITY_MODEL.md | governance/canon/CS2_AGENT_FILE_AUTHORITY_MODEL.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
+| FAILURE_PROMOTION_RULE.md | governance/canon/FAILURE_PROMOTION_RULE.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
+| GOVERNANCE_PURPOSE_AND_SCOPE.md | governance/canon/GOVERNANCE_PURPOSE_AND_SCOPE.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
+| GOVERNANCE_RIPPLE_MODEL.md | governance/canon/GOVERNANCE_RIPPLE_MODEL.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
+| GOVERNANCE_VERSIONING_AND_SYNC_PROTOCOL.md | governance/canon/GOVERNANCE_VERSIONING_AND_SYNC_PROTOCOL.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
+| MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md | governance/canon/MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
+| MERGE_GATE_PHILOSOPHY.md | governance/canon/MERGE_GATE_PHILOSOPHY.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
+| SCOPE_TO_DIFF_RULE.md | governance/canon/SCOPE_TO_DIFF_RULE.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
 | STOP_AND_FIX_DOCTRINE.md | governance/canon/STOP_AND_FIX_DOCTRINE.md | 2026-01-23T12:02:11Z | #1005 | ✅ CURRENT |
+| VERSIONING_AND_EVOLUTION_GOVERNANCE.md | governance/canon/VERSIONING_AND_EVOLUTION_GOVERNANCE.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
+| WARNING_DISCOVERY_BLOCKER_PROTOCOL.md | governance/canon/WARNING_DISCOVERY_BLOCKER_PROTOCOL.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
 
 ### Philosophy Files
 
@@ -41,6 +56,51 @@ This inventory tracks all governance artifacts layered down from the canonical g
 ---
 
 ## Layer-Down History
+
+### 2026-01-23 - Batch 1: CRITICAL Tier-0 Canon Layer-Down
+
+**Ripple Type**: CRITICAL Tier-0 Constitutional Foundation  
+**Source**: Canonical governance repository (APGI-cmy/maturion-foreman-governance)  
+**Executed By**: governance-liaison  
+**Timestamp**: 2026-01-23T13:58:27Z  
+**Related Issue**: Batch 1: CRITICAL Tier-0 Governance Canon Layer-Down
+
+**Files Layered Down** (15 CRITICAL Tier-0 Canons):
+1. ✅ governance/canon/.agent.schema.md (6.5 KB) - Agent contract schema specification
+2. ✅ governance/canon/AGENT_CONTRACT_PROTECTION_PROTOCOL.md (3.8 KB) - Contract protection framework
+3. ✅ governance/canon/AGENT_SELF_GOVERNANCE_PROTOCOL.md (34.9 KB) - Agent self-check protocol
+4. ✅ governance/canon/CI_CONFIRMATORY_NOT_DIAGNOSTIC.md (2.8 KB) - Local validation doctrine
+5. ✅ governance/canon/CROSS_REPOSITORY_LAYER_DOWN_PROTOCOL.md (3.1 KB) - Layer-down protocol
+6. ✅ governance/canon/CS2_AGENT_FILE_AUTHORITY_MODEL.md (1.5 KB) - Authority model
+7. ✅ governance/canon/FAILURE_PROMOTION_RULE.md (2.5 KB) - Failure governance
+8. ✅ governance/canon/GOVERNANCE_PURPOSE_AND_SCOPE.md (3.4 KB) - Supreme authority
+9. ✅ governance/canon/GOVERNANCE_RIPPLE_MODEL.md (2.8 KB) - Ripple model
+10. ✅ governance/canon/GOVERNANCE_VERSIONING_AND_SYNC_PROTOCOL.md (3.4 KB) - Sync protocol
+11. ✅ governance/canon/MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md (2.8 KB) - Enhancement capture (v2.0.0)
+12. ✅ governance/canon/MERGE_GATE_PHILOSOPHY.md (2.7 KB) - Gate doctrine
+13. ✅ governance/canon/SCOPE_TO_DIFF_RULE.md (2.2 KB) - Scope enforcement
+14. ✅ governance/canon/VERSIONING_AND_EVOLUTION_GOVERNANCE.md (2.4 KB) - Versioning
+15. ✅ governance/canon/WARNING_DISCOVERY_BLOCKER_PROTOCOL.md (2.1 KB) - Warning=error enforcement
+
+**Total Size**: 80.5 KB
+
+**Agent File Updates** (Pending):
+- CodexAdvisor-agent.md: Add 9 LOCKED sections
+- PartPulse-app_FM.md: Add 9 LOCKED sections
+
+**Validation**:
+- [COMPLETE] File integrity check - PASS ✅
+- [COMPLETE] File count verification (15/15) - PASS ✅
+- [PENDING] Agent file LOCKED section implementation
+- [PENDING] Pre-handover validation gates
+
+**Notes**:
+- These 15 files establish foundational governance framework
+- Resolves governance binding gaps identified in gap analysis
+- Provides constitutional authority for agent operations
+- Enables proper governance ripple and layer-down operations
+
+---
 
 ### 2026-01-23 - Governance Ripple: Stop-and-Fix Doctrine
 
