@@ -1,8 +1,8 @@
 # PREHANDOVER PROOF
 
 **Task**: Update governance-liaison.md to v1.2.0: Zero-Warning Enforcement, Ripple Protocol, and YAML Fixes
-**Agent**: copilot (governance-liaison contract update)
-**Date**: 2026-01-26T12:09:00Z
+**Agent**: copilot (governance-liaison contract update + STOP-AND-FIX)
+**Date**: 2026-01-26T12:18:00Z
 **Branch**: copilot/update-governance-liaison-v120
 
 ---
@@ -33,7 +33,7 @@
 
 ## Changes Made
 
-### 1. YAML Frontmatter Fixes
+### 1. governance-liaison.md - YAML Frontmatter Fixes
 
 **Description**: Fixed all YAML validation errors and warnings in frontmatter
 
@@ -50,7 +50,7 @@
 
 **Validation**: YAML frontmatter now passes yamllint with ZERO warnings and ZERO errors ✅
 
-### 2. Document Body Fixes
+### 2. governance-liaison.md - Document Body Fixes
 
 **Description**: Fixed YAML spacing errors in markdown body
 
@@ -58,7 +58,25 @@
 - Line 430: Fixed `governance-alignment-check. yml` → `governance-alignment-check.yml`
 - Line 246: Fixed timestamp format `[HH:MM: SS]` → `[HH:MM:SS]`
 
-### 3. Content Verification
+### 3. CodexAdvisor-agent.md - STOP-AND-FIX Remediation
+
+**Description**: Fixed yamllint warnings discovered during validation
+
+**Authority**: STOP_AND_FIX_DOCTRINE.md Section 3.1 ("Encountered = Owned")
+
+**Changes**:
+- Converted `description` to block-style (folded scalar with `>-`) to fix line-length
+- Converted all `bindings` from flow-style to block-style YAML
+- Removed blank line before closing `---`
+
+**Rationale**: While validating governance-liaison.md, ran `yamllint` on all agent files
+and discovered pre-existing line-length warnings in CodexAdvisor-agent.md. Per
+STOP_AND_FIX_DOCTRINE, "Encountered = Owned" - all discovered warnings must be
+remediated regardless of original task scope.
+
+**Validation**: YAML frontmatter now passes yamllint with ZERO warnings and ZERO errors ✅
+
+### 4. Content Verification
 
 **Verified Present** (no changes needed):
 - ✅ Zero-Warning Handover Enforcement (LOCKED) section - Already present
@@ -73,12 +91,27 @@
 ### 1. YAML Validation (BL-028: warnings ARE errors)
 
 ```bash
-$ awk '/^---$/{c++; if(c==2) exit} 1' .github/agents/governance-liaison.md | yamllint -
+$ for file in .github/agents/*.md; do
+    if head -1 "$file" | grep -q "^---$"; then
+      awk '/^---$/{c++; if(c==2) exit} 1' "$file" | yamllint -
+    fi
+  done
 ```
 
 **Result**: ✅ EXIT 0
-**Output**: No errors, no warnings
-**Timestamp**: 2026-01-26T12:09:30Z
+**Output**: No errors, no warnings across ALL agent files with YAML frontmatter
+**Files Validated**:
+- governance-liaison.md ✅
+- CodexAdvisor-agent.md ✅
+- PartPulse-app_FM.md ✅
+- api-builder.md ✅
+- integration-builder.md ✅
+- qa-builder.md ✅
+- schema-builder.md ✅
+- ui-builder.md ✅
+- BUILDER_CONTRACT_SCHEMA.md (skipped - no YAML frontmatter)
+
+**Timestamp**: 2026-01-26T12:18:30Z
 
 ### 2. Scope-to-Diff Validation
 
@@ -99,7 +132,8 @@ $ find governance -name "*.json" -exec jq empty {} \;
 ```
 
 **Result**: ✅ EXIT 0
-**Timestamp**: 2026-01-26T12:09:40Z
+**Files Validated**: Multiple JSON files in governance/
+**Timestamp**: 2026-01-26T12:18:40Z
 
 ### 4. File Format Checks
 
@@ -109,7 +143,36 @@ $ git diff --check
 
 **Result**: ✅ EXIT 0
 **Issues Found**: NONE
-**Timestamp**: 2026-01-26T12:09:45Z
+**Timestamp**: 2026-01-26T12:18:45Z
+
+---
+
+## STOP_AND_FIX_DOCTRINE Compliance
+
+**Original Task**: Update governance-liaison.md to v1.2.0
+
+**Warnings Discovered**: Yamllint warnings in CodexAdvisor-agent.md
+- governance-liaison.md: Fixed as part of primary task
+- CodexAdvisor-agent.md: 6 line-length warnings discovered
+
+**Action Taken**: Fixed ALL warnings across ALL agent files per STOP_AND_FIX_DOCTRINE
+
+**Governance Rule Applied**: "Encountered = Owned" - scope is NOT an exemption
+
+**Validation**:
+```bash
+$ for file in .github/agents/*.md; do
+    if head -1 "$file" | grep -q "^---$"; then
+      awk '/^---$/{c++; if(c==2) exit} 1' "$file" | yamllint -
+    fi
+  done
+# Exit code: 0 ✅ (zero warnings across ALL files)
+```
+
+**Authority**:
+- STOP_AND_FIX_DOCTRINE.md Section 3.1 ("Encountered = Owned")
+- governance-repo-administrator v4.2.0 ("Zero-Warning Handover Enforcement")
+- BUILD_PHILOSOPHY.md ("Warnings = Errors")
 
 ---
 
@@ -153,6 +216,8 @@ Per issue description, all requirements met:
 ---
 
 **End of PREHANDOVER PROOF**
-**Timestamp**: 2026-01-26T12:09:50Z
+**Timestamp**: 2026-01-26T12:18:50Z
 **Agent**: copilot
 **Status**: ✅ READY FOR CS2 REVIEW
+
+**STOP-AND-FIX Compliance**: All discovered warnings remediated per governance doctrine
