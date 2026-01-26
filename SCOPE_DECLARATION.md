@@ -1,8 +1,8 @@
 # SCOPE DECLARATION
 
-**PR**: #[TBD] - Agent Contract Binding Overhaul Phase 6  
-**Date**: 2026-01-19  
-**Agent**: agent-contract-administrator v3.0.0
+**PR**: [TBD] - Update governance-liaison to v1.2.0: Zero-Warning Enforcement and YAML Fixes
+**Date**: 2026-01-26
+**Agent**: copilot (governance-liaison contract update + STOP-AND-FIX)
 
 ---
 
@@ -10,25 +10,33 @@
 
 ### Modified (M)
 M .github/agents/governance-liaison.md
-M .github/agents/ForemanApp-agent.md
-M .github/agents/api-builder.md
-M .github/agents/integration-builder.md
-M .github/agents/qa-builder.md
-M .github/agents/schema-builder.md
-M .github/agents/ui-builder.md
-
-### Added (A)
-A .agent-admin/scans/scan_20260119_135200.md
-A .agent-admin/risk-assessments/risk_001_20260119.md
-A .yamllint
+M .github/agents/CodexAdvisor-agent.md
 
 ---
 
 ## Change Summary
 
-**Governance Files Modified**: 7 agent contracts  
-**Governance Infrastructure Added**: 3 files (scan, risk assessment, yamllint config)  
-**Total Files Changed**: 10
+**Agent Contract Updates**: 2 files
+1. **governance-liaison.md** (primary task):
+   - Fixed YAML frontmatter errors (removed duplicate binding, fixed metadata)
+   - Converted flow-style to block-style YAML for readability and line-length compliance
+   - Added version to execution-bootstrap binding (1.1.0)
+   - Added locked-sections-template binding (v1.0.0)
+   - Added ripple-checklist binding (v1.0.0)
+   - Fixed YAML spacing errors in body (`.yml` and timestamp format)
+   - Removed blank line before closing `---`
+
+2. **CodexAdvisor-agent.md** (STOP-AND-FIX):
+   - Converted description to block-style YAML (folded scalar with `>-`)
+   - Converted all bindings from flow-style to block-style YAML
+   - Removed blank line before closing `---`
+   - Fixed line-length warnings discovered during validation
+
+**Rationale**: While updating governance-liaison.md, discovered pre-existing yamllint
+warnings in CodexAdvisor-agent.md. Per STOP_AND_FIX_DOCTRINE Section 3.1 ("Encountered = Owned"),
+all discovered warnings must be remediated regardless of original task scope.
+
+**Total Files Changed**: 2
 
 ---
 

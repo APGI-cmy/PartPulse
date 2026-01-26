@@ -1,6 +1,9 @@
 ---
 id: CodexAdvisor-agent
-description: Cross-repository coordination and oversight agent. Governance-first coordinator with approval-gated execution. Monitors multi-repo state, coordinates agents, enforces governance across ecosystem.
+description: >-
+  Cross-repository coordination and oversight agent. Governance-first
+  coordinator with approval-gated execution. Monitors multi-repo state,
+  coordinates agents, enforces governance across ecosystem.
 
 agent:
   id: CodexAdvisor-agent
@@ -13,26 +16,70 @@ governance:
     reference: main
 
   bindings:
-    - {id: governance-purpose, path: governance/canon/GOVERNANCE_PURPOSE_AND_SCOPE.md, role: supreme-authority}
-    - {id: build-philosophy, path: BUILD_PHILOSOPHY.md, role: constitutional-principles}
-    - {id: bootstrap-learnings, path: governance/canon/BOOTSTRAP_EXECUTION_LEARNINGS.md, role: execution-learnings}
-    - {id: ci-confirmatory, path: governance/canon/CI_CONFIRMATORY_NOT_DIAGNOSTIC.md, role: local-validation}
-    - {id: scope-to-diff, path: governance/canon/SCOPE_TO_DIFF_RULE.md, role: scope-enforcement}
-    - {id: agent-protection, path: governance/canon/AGENT_CONTRACT_PROTECTION_PROTOCOL.md, role: contract-protection}
-    - {id: mandatory-enhancement, path: governance/canon/MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md, role: enhancement-capture, version: 2.0.0}
-    - {id: execution-bootstrap, path: governance/canon/EXECUTION_BOOTSTRAP_PROTOCOL.md, role: execution-verification}
-    - {id: prehandover-proof, path: governance/templates/PREHANDOVER_PROOF_TEMPLATE.md, role: handover-template, version: 2.1.0}
-    - {id: ripple-model, path: governance/canon/GOVERNANCE_RIPPLE_MODEL.md, role: cross-repo-propagation}
-    - {id: self-governance, path: governance/canon/AGENT_SELF_GOVERNANCE_PROTOCOL.md, role: agent-self-check}
-    - {id: cs2-authority, path: governance/canon/CS2_AGENT_FILE_AUTHORITY_MODEL.md, role: agent-modification-authority}
-    - {id: merge-gate-philosophy, path: governance/canon/MERGE_GATE_PHILOSOPHY.md, role: gate-validation-doctrine}
-    - {id: test-execution, path: governance/runbooks/AGENT_TEST_EXECUTION_PROTOCOL.md, role: test-enforcement, enforcement: MANDATORY}
-    - {id: failure-promotion, path: governance/canon/FAILURE_PROMOTION_RULE.md, role: failure-governance}
-    - {id: opojd, path: governance/opojd/OPOJD_DOCTRINE.md, role: terminal-state-discipline}
-    - {id: opojd-cs2, path: governance/opojd/CS2_OPOJD_EXTENSION.md, role: protected-change-approval}
-    - {id: byg-doctrine, path: governance/philosophy/BYG_DOCTRINE.md, role: build-philosophy}
-    - {id: incident-response, path: governance/philosophy/GOVERNANCE_INCIDENT_RESPONSE_DOCTRINE.md, role: incident-handling}
-    - {id: stop-and-fix, path: governance/canon/STOP_AND_FIX_DOCTRINE.md, role: test-debt-enforcement, enforcement: MANDATORY}
+    - id: governance-purpose
+      path: governance/canon/GOVERNANCE_PURPOSE_AND_SCOPE.md
+      role: supreme-authority
+    - id: build-philosophy
+      path: BUILD_PHILOSOPHY.md
+      role: constitutional-principles
+    - id: bootstrap-learnings
+      path: governance/canon/BOOTSTRAP_EXECUTION_LEARNINGS.md
+      role: execution-learnings
+    - id: ci-confirmatory
+      path: governance/canon/CI_CONFIRMATORY_NOT_DIAGNOSTIC.md
+      role: local-validation
+    - id: scope-to-diff
+      path: governance/canon/SCOPE_TO_DIFF_RULE.md
+      role: scope-enforcement
+    - id: agent-protection
+      path: governance/canon/AGENT_CONTRACT_PROTECTION_PROTOCOL.md
+      role: contract-protection
+    - id: mandatory-enhancement
+      path: governance/canon/MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md
+      role: enhancement-capture
+      version: 2.0.0
+    - id: execution-bootstrap
+      path: governance/canon/EXECUTION_BOOTSTRAP_PROTOCOL.md
+      role: execution-verification
+    - id: prehandover-proof
+      path: governance/templates/PREHANDOVER_PROOF_TEMPLATE.md
+      role: handover-template
+      version: 2.1.0
+    - id: ripple-model
+      path: governance/canon/GOVERNANCE_RIPPLE_MODEL.md
+      role: cross-repo-propagation
+    - id: self-governance
+      path: governance/canon/AGENT_SELF_GOVERNANCE_PROTOCOL.md
+      role: agent-self-check
+    - id: cs2-authority
+      path: governance/canon/CS2_AGENT_FILE_AUTHORITY_MODEL.md
+      role: agent-modification-authority
+    - id: merge-gate-philosophy
+      path: governance/canon/MERGE_GATE_PHILOSOPHY.md
+      role: gate-validation-doctrine
+    - id: test-execution
+      path: governance/runbooks/AGENT_TEST_EXECUTION_PROTOCOL.md
+      role: test-enforcement
+      enforcement: MANDATORY
+    - id: failure-promotion
+      path: governance/canon/FAILURE_PROMOTION_RULE.md
+      role: failure-governance
+    - id: opojd
+      path: governance/opojd/OPOJD_DOCTRINE.md
+      role: terminal-state-discipline
+    - id: opojd-cs2
+      path: governance/opojd/CS2_OPOJD_EXTENSION.md
+      role: protected-change-approval
+    - id: byg-doctrine
+      path: governance/philosophy/BYG_DOCTRINE.md
+      role: build-philosophy
+    - id: incident-response
+      path: governance/philosophy/GOVERNANCE_INCIDENT_RESPONSE_DOCTRINE.md
+      role: incident-handling
+    - id: stop-and-fix
+      path: governance/canon/STOP_AND_FIX_DOCTRINE.md
+      role: test-debt-enforcement
+      enforcement: MANDATORY
 
   tier_0_canon:
     manifest_file: governance/TIER_0_CANON_MANIFEST.json
