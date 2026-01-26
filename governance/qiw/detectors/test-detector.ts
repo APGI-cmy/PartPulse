@@ -17,7 +17,6 @@ import * as path from 'path';
 import { execSync } from 'child_process';
 import { glob } from 'glob';
 import { 
-  recordIncident, 
   recordIncidents, 
   DetectedIncident,
   hasSimilarIncident 
@@ -64,7 +63,7 @@ class TestDetector {
     await this.detectFlakyTests(metrics);
     await this.detectTestDodging();
     await this.detectSkippedTests(metrics);
-    await this.detectDurationDegradation(metrics);
+    await this.detectDurationDegradation();
     
     return this.incidents;
   }
@@ -256,7 +255,7 @@ class TestDetector {
         execSync(`node ${dodgingScript}`, { stdio: 'pipe' });
         console.log('✅ No test dodging detected');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Test dodging detected
       const incident: DetectedIncident = {
         channel: CHANNEL,
@@ -308,7 +307,7 @@ class TestDetector {
     }
   }
   
-  private async detectDurationDegradation(metrics: TestMetrics): Promise<void> {
+  private async detectDurationDegradation(): Promise<void> {
     const detector = getDetectorConfig(CHANNEL, 'test_duration_degradation');
     if (!detector) return;
     
@@ -336,7 +335,7 @@ class TestDetector {
           ignore: ['**/node_modules/**', '**/dist/**', '**/build/**']
         });
         testFiles.push(...files);
-      } catch (error) {
+      } catch {
         // Ignore glob errors
       }
     }
@@ -365,7 +364,7 @@ class TestDetector {
             break;
           }
         }
-      } catch (error) {
+      } catch {
         // Ignore file read errors
       }
     }

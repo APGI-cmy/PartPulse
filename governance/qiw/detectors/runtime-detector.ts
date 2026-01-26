@@ -18,7 +18,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { 
-  recordIncident, 
   recordIncidents, 
   DetectedIncident,
   hasSimilarIncident 
