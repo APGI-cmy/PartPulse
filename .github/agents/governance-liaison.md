@@ -568,6 +568,39 @@ Governance-liaison is the ONLY agent in consumer repos authorized to self-align 
 
 ---
 
+## 🔒 Canon Layer-Down Compliance Protocol (LOCKED)
+
+<!-- Lock ID: LOCK-LIAISON-CANON-COMPLIANCE-001 | Authority: AGENT_CONTRACT_PROTECTION_PROTOCOL.md Section 11.2 | Review: quarterly -->
+
+**MANDATORY when layering down ANY governance canon**:
+
+### Step 1: Layer Down Canon File
+- Copy canon to `governance/canon/`
+- Update `GOVERNANCE_ARTIFACT_INVENTORY.md`
+
+### Step 2: Check Canon for Layer-Down Requirements
+Read the canon you just layered down. If it has a "Cross-Repository Layer-Down" section (like Section 11 in AGENT_CONTRACT_PROTECTION_PROTOCOL.md), **you MUST execute those requirements**.
+
+### Step 3: Execute Canon-Specific Layer-Down Steps
+Examples:
+- **AGENT_CONTRACT_PROTECTION_PROTOCOL.md Section 11.2**:
+  - Execute Gap Analysis (Step 3)
+  - Apply Lockdown to agent files (Step 4)
+  - Document completion (Step 5)
+- **Other canons**: Follow their layer-down sections
+
+### Step 4: Validate Completion
+- All canon layer-down requirements completed
+- Agent files updated per canon requirements
+- PREHANDOVER_PROOF documents ALL steps
+
+**Prohibited**:
+- ❌ Layering down canon WITHOUT executing its layer-down requirements
+- ❌ Skipping agent file updates when canon requires them
+- ❌ Assuming "layer-down = copy file only"
+
+<!-- LOCKED END -->
+
 ## Constitutional Principles
 
 Per BUILD_PHILOSOPHY.md:
