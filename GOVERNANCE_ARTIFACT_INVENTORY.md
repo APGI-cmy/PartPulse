@@ -3,7 +3,7 @@
 **Repository**: APGI-cmy/PartPulse  
 **Type**: Consumer Repository (Layered-Down Governance)  
 **Canonical Source**: APGI-cmy/maturion-foreman-governance  
-**Last Updated**: 2026-01-23T13:58:27Z  
+**Last Updated**: 2026-01-23T14:34:00Z  
 **Updated By**: governance-liaison  
 
 ---
@@ -36,6 +36,21 @@ This inventory tracks all governance artifacts layered down from the canonical g
 | STOP_AND_FIX_DOCTRINE.md | governance/canon/STOP_AND_FIX_DOCTRINE.md | 2026-01-23T12:02:11Z | #1005 | ✅ CURRENT |
 | VERSIONING_AND_EVOLUTION_GOVERNANCE.md | governance/canon/VERSIONING_AND_EVOLUTION_GOVERNANCE.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
 | WARNING_DISCOVERY_BLOCKER_PROTOCOL.md | governance/canon/WARNING_DISCOVERY_BLOCKER_PROTOCOL.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
+
+### Agent Governance Canon (Batch 2)
+
+| File | Path | Last Layered-Down | Source PR | Status |
+|------|------|-------------------|-----------|--------|
+| AGENT_CANONICAL_CONTEXT_SYNCHRONISATION_PROTOCOL.md | governance/canon/AGENT_CANONICAL_CONTEXT_SYNCHRONISATION_PROTOCOL.md | 2026-01-23T14:29:00Z | Batch-2 | ✅ CURRENT |
+| AGENT_CONTRACT_MIGRATION_GUIDE.md | governance/canon/AGENT_CONTRACT_MIGRATION_GUIDE.md | 2026-01-23T14:29:00Z | Batch-2 | ✅ CURRENT |
+| AGENT_RECRUITMENT.md | governance/canon/AGENT_RECRUITMENT.md | 2026-01-23T14:29:00Z | Batch-2 | ✅ CURRENT |
+| AGENT_RECRUITMENT_AND_CONTRACT_AUTHORITY_MODEL.md | governance/canon/AGENT_RECRUITMENT_AND_CONTRACT_AUTHORITY_MODEL.md | 2026-01-23T14:29:00Z | Batch-2 | ✅ CURRENT |
+| AGENT_ROLE_GATE_APPLICABILITY.md | governance/canon/AGENT_ROLE_GATE_APPLICABILITY.md | 2026-01-23T14:29:00Z | Batch-2 | ✅ CURRENT |
+| DELEGATION_INSTRUCTION_AND_AUDIT_MODEL.md | governance/canon/DELEGATION_INSTRUCTION_AND_AUDIT_MODEL.md | 2026-01-23T14:29:00Z | Batch-2 | ✅ CURRENT |
+| FM_BUILDER_APPOINTMENT_PROTOCOL.md | governance/canon/FM_BUILDER_APPOINTMENT_PROTOCOL.md | 2026-01-23T14:29:00Z | Batch-2 | ✅ CURRENT |
+| FM_GOVERNANCE_LOADING_PROTOCOL.md | governance/canon/FM_GOVERNANCE_LOADING_PROTOCOL.md | 2026-01-23T14:29:00Z | Batch-2 | ✅ CURRENT |
+| FM_RUNTIME_ENFORCEMENT_AND_AWARENESS_MODEL.md | governance/canon/FM_RUNTIME_ENFORCEMENT_AND_AWARENESS_MODEL.md | 2026-01-23T14:29:00Z | Batch-2 | ✅ CURRENT |
+| FOREMAN_AUTHORITY_AND_SUPERVISION_MODEL.md | governance/canon/FOREMAN_AUTHORITY_AND_SUPERVISION_MODEL.md | 2026-01-23T14:29:00Z | Batch-2 | ✅ CURRENT |
 
 ### Philosophy Files
 
@@ -123,6 +138,53 @@ This inventory tracks all governance artifacts layered down from the canonical g
 - STOP_AND_FIX_DOCTRINE.md is new Tier-0 constitutional canon
 - BYG_DOCTRINE.md updated with latest philosophy changes
 - **ESCALATION RESOLVED**: Agent binding mismatch detected and escalated to CS2. CS2 fixed governance-liaison.md line 36 binding from `STOP_AND_FIX_PROTOCOL.md` to `STOP_AND_FIX_DOCTRINE.md`. Validation complete.
+
+---
+
+### 2026-01-23 - Batch 2: Agent Governance & Leadership Canons Layer-Down
+
+**Ripple Type**: HIGH-priority Agent Governance Canon Layer-Down  
+**Source**: Canonical governance repository (APGI-cmy/maturion-foreman-governance)  
+**Executed By**: governance-liaison  
+**Timestamp**: 2026-01-23T14:29:00Z  
+**Related Issue**: Batch 2: Agent Governance & Leadership Canons Layer-Down
+
+**Files Layered Down** (10 HIGH-priority agent governance canons):
+1. ✅ governance/canon/AGENT_CANONICAL_CONTEXT_SYNCHRONISATION_PROTOCOL.md (30 KB, 823 lines) - Agent context synchronization
+2. ✅ governance/canon/AGENT_CONTRACT_MIGRATION_GUIDE.md (10 KB, 346 lines) - Contract migration guide
+3. ✅ governance/canon/AGENT_RECRUITMENT.md (6 KB, 218 lines) - Agent recruitment protocol
+4. ✅ governance/canon/AGENT_RECRUITMENT_AND_CONTRACT_AUTHORITY_MODEL.md (30 KB, 714 lines) - Authority model
+5. ✅ governance/canon/AGENT_ROLE_GATE_APPLICABILITY.md (23 KB, 631 lines) - Role-based gate applicability
+6. ✅ governance/canon/DELEGATION_INSTRUCTION_AND_AUDIT_MODEL.md (28 KB, 868 lines) - Delegation and audit
+7. ✅ governance/canon/FM_BUILDER_APPOINTMENT_PROTOCOL.md (42 KB, 851 lines) - Builder appointment protocol
+8. ✅ governance/canon/FM_GOVERNANCE_LOADING_PROTOCOL.md (29 KB, 831 lines) - Governance loading protocol
+9. ✅ governance/canon/FM_RUNTIME_ENFORCEMENT_AND_AWARENESS_MODEL.md (60 KB, 1429 lines) - FM enforcement model
+10. ✅ governance/canon/FOREMAN_AUTHORITY_AND_SUPERVISION_MODEL.md (37 KB, 1013 lines) - FM authority model
+
+**Total Size**: ~315 KB across 7,424 lines
+
+**Agent File Updates**:
+- governance-liaison.md: Verified - already has 8 LOCKED sections (complete)
+- agent-contract-administrator.md: DISCONTINUED - removed due to file corruption issues
+
+**Cleanup Actions**:
+- Archived agent-contract-administrator instruction files to governance/archive/discontinued-agents/
+- Removed agent-contract-administrator references from gap-analysis and alignment-plan reports
+- Updated agent count: 8 agents (was 9)
+- Updated LOCKED section gap: ~59 sections (was ~66)
+
+**Validation**:
+- [COMPLETE] File integrity check - PASS ✅
+- [COMPLETE] File count verification (10/10) - PASS ✅
+- [COMPLETE] Canon file size verification - PASS ✅
+- [COMPLETE] governance-liaison LOCKED sections verified (8/8) - PASS ✅
+- [PENDING] Pre-handover validation gates
+
+**Notes**:
+- These 10 files establish agent governance and FM supervision framework
+- Provides canonical authority for agent recruitment, contract management, and FM operations
+- Resolves high-priority governance gaps identified in gap analysis
+- Total canon files now: 25 (15 from Batch 1 + 10 from Batch 2)
 
 ---
 

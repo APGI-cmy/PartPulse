@@ -222,18 +222,17 @@ Files present in both canonical and PartPulse (require version verification):
 
 ### 2.1 Agent File Inventory
 
-**Total Agent Files in PartPulse**: 10 files
+**Total Agent Files in PartPulse**: 9 files
 
 1. `BUILDER_CONTRACT_SCHEMA.md` - Schema file (not an agent contract)
 2. `CodexAdvisor-agent.md` - CodexAdvisor agent
 3. `PartPulse-app_FM.md` - Foreman (FM) agent
-4. `agent-contract-administrator.md` - Agent contract administrator
-5. `api-builder.md` - API builder
-6. `governance-liaison.md` - Governance liaison (this agent)
-7. `integration-builder.md` - Integration builder
-8. `qa-builder.md` - QA builder
-9. `schema-builder.md` - Schema builder
-10. `ui-builder.md` - UI builder
+4. `api-builder.md` - API builder
+5. `governance-liaison.md` - Governance liaison (this agent)
+6. `integration-builder.md` - Integration builder
+7. `qa-builder.md` - QA builder
+8. `schema-builder.md` - Schema builder
+9. `ui-builder.md` - UI builder
 
 ### 2.2 LOCKED Section Analysis
 
@@ -322,11 +321,12 @@ Based on office-app template, expected LOCKED sections:
 | schema-builder.md | 7 | Unknown (0?) | ~7 |
 | ui-builder.md | 7 | Unknown (0?) | ~7 |
 | integration-builder.md | 7 | Unknown (0?) | ~7 |
-| agent-contract-administrator.md | 7 | Unknown (0?) | ~7 |
 
-**Total Estimated LOCKED Section Gap**: ~66 LOCKED sections missing across 9 agent files.
+**Total Estimated LOCKED Section Gap**: ~59 LOCKED sections missing across 8 agent files.
 
-**Note**: Office-app achieved 67% agent protection (6/9 agents with LOCKED sections). PartPulse appears to be at ~11% (1/9 agents partially protected).
+**Note**: Office-app achieved 67% agent protection (6/9 agents with LOCKED sections). PartPulse appears to be at ~13% (1/8 agents partially protected).
+
+**Discontinued**: agent-contract-administrator.md was discontinued due to file corruption issues.
 
 ---
 
@@ -378,7 +378,6 @@ From `.github/agents/governance-liaison.md`:
 - CodexAdvisor-agent.md bindings
 - PartPulse-app_FM.md bindings
 - Builder agent bindings (5 files)
-- agent-contract-administrator.md bindings
 
 **Estimated Additional Missing References**: 20-40 files across all agent bindings.
 
