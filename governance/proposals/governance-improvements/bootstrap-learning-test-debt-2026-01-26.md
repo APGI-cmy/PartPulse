@@ -1,4 +1,4 @@
-# Bottstand Learning: Test Debt Prevention & QIW Integration
+# Bootstrap Learning: Test Debt Prevention & QIW Integration
 
 **BL-ID**: BL-TEST-DEBT-001  
 **Date**: 2026-01-26  
