@@ -8,9 +8,9 @@ agent:
 
 governance:
   canon:
-    repository: APGI-cmy/maturion-foreman-governance
-    path: /governance/canon
-    reference: main
+  repository: APGI-cmy/maturion-foreman-governance
+  path: /governance/canon
+  reference: main
 
   bindings:
     - {id: governance-purpose, path: governance/canon/GOVERNANCE_PURPOSE_AND_SCOPE.md, role: supreme-authority}
@@ -362,7 +362,7 @@ yamllint .github/agents/*.md  # Exit 0 required
 # 2. Scope-to-Diff Validation
 .github/scripts/validate-scope-to-diff.sh  # Exit 0 required
 
-# 3. JSON Validation
+# 3.json Validation
 find governance -name "*.json" -exec jq empty {} \;  # Exit 0 required
 
 # 4. File Format Checks
