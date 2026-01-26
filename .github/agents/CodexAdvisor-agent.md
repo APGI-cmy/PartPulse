@@ -35,7 +35,7 @@ governance:
     - {id: stop-and-fix, path: governance/canon/STOP_AND_FIX_DOCTRINE.md, role: test-debt-enforcement, enforcement: MANDATORY}
     - {id: execution-bootstrap, path: governance/canon/EXECUTION_BOOTSTRAP_PROTOCOL.md, role: execution-verification, version: 1.1.0}  # UPDATE: Add version
     - {id: locked-sections-template, path: governance/templates/AGENT_FILE_LOCKED_SECTIONS_TEMPLATE.md, role: agent-lockdown-template, version: 1.0.0}  # ADD: New binding
-    - {id: ripple-checklist, path: governance/canon/GOVERNANCE_RIPPLE_CHECKLIST_PROTOCOL.md, role: ripple-enforcement, version: 1.0.0} 
+    - {id: ripple-checklist, path: governance/canon/GOVERNANCE_RIPPLE_CHECKLIST_PROTOCOL.md, role: ripple-enforcement, version: 1.0.0}  # ADD: After Issue #1020
     
     manifest_file: governance/TIER_0_CANON_MANIFEST.json
     manifest_version: "1.3.0"
