@@ -17,7 +17,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { 
-  recordIncident, 
   recordIncidents, 
   DetectedIncident,
   hasSimilarIncident 
@@ -88,7 +87,8 @@ class DeploymentDetector {
       // Check if vercel.json exists and is valid
       const vercelPath = path.join(process.cwd(), 'vercel.json');
       if (fs.existsSync(vercelPath)) {
-        const vercelConfig = JSON.parse(fs.readFileSync(vercelPath, 'utf8'));
+        // Verify JSON is valid
+        JSON.parse(fs.readFileSync(vercelPath, 'utf8'));
         console.log('✅ vercel.json found and valid');
       }
     } catch (error) {

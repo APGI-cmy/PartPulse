@@ -15,7 +15,6 @@ import * as path from 'path';
 import { execSync } from 'child_process';
 import { glob } from 'glob';
 import { 
-  recordIncident, 
   recordIncidents, 
   DetectedIncident,
   hasSimilarIncident 
@@ -104,9 +103,13 @@ class LintDetector {
       
       metrics.totalViolations = metrics.errorCount + metrics.warningCount;
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       // ESLint returns non-zero exit code when violations found
-      if (error.stdout) {
+      const errorOutput = error && typeof error === 'object' && 'stdout' in error && typeof error.stdout === 'string'
+        ? error.stdout
+        : '';
+      
+      if (errorOutput) {
         try {
           const lintResults = JSON.parse(error.stdout);
           
@@ -271,7 +274,7 @@ class LintDetector {
             break;
           }
         }
-      } catch (error) {
+      } catch {
         // Ignore file read errors
       }
     }
@@ -286,7 +289,7 @@ class LintDetector {
         stdio: ['pipe', 'pipe', 'pipe']
       }).trim();
       return branch === 'main' || branch === 'master';
-    } catch (error) {
+    } catch {
       return false;
     }
   }

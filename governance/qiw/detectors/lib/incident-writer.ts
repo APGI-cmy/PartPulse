@@ -19,7 +19,7 @@ export interface DetectedIncident {
     detection_method: 'threshold' | 'pattern' | 'anomaly' | 'manual';
     confidence: number; // 0.0 - 1.0
   };
-  metrics?: Record<string, any>;
+  metrics?: Record<string, unknown>;
   evidence?: {
     logs?: string[];
     commits?: string[];

@@ -10,11 +10,8 @@
  * - Flaky builds
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
 import { execSync } from 'child_process';
 import { 
-  recordIncident, 
   recordIncidents, 
   DetectedIncident,
   hasSimilarIncident 
@@ -81,14 +78,21 @@ class BuildDetector {
           timeout: 300000 // 5 minute timeout
         });
         metrics.success = true;
-      } catch (error: any) {
+      } catch (error: unknown) {
         metrics.success = false;
-        metrics.buildErrors.push(error.message || 'Build failed');
+        const errorMessage = error instanceof Error ? error.message : 'Build failed';
+        metrics.buildErrors.push(errorMessage);
         
         // Parse error output for specific issues
-        if (error.stderr || error.stdout) {
-          const output = (error.stderr || '') + (error.stdout || '');
-          
+        const errorOutput = error && typeof error === 'object' && 'stderr' in error && typeof error.stderr === 'string' 
+          ? error.stderr 
+          : '';
+        const stdoutOutput = error && typeof error === 'object' && 'stdout' in error && typeof error.stdout === 'string'
+          ? error.stdout
+          : '';
+        const output = errorOutput + stdoutOutput;
+        
+        if (output) {
           // Check for dependency conflicts
           if (/ERESOLVE|dependency.*conflict|peer dependency/i.test(output)) {
             const matches = output.match(/ERESOLVE[^\n]*/gi) || [];

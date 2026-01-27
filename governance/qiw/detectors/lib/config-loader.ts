@@ -13,7 +13,7 @@ export interface QIWConfig {
   qiw_enabled: boolean;
   channels: Record<string, ChannelConfig>;
   severity_sla: Record<string, SLAConfig>;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface ChannelConfig {
@@ -23,7 +23,7 @@ export interface ChannelConfig {
   detectors: DetectorConfig[];
   metrics: string[];
   blocking_rules: BlockingRules;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface DetectorConfig {
@@ -34,7 +34,7 @@ export interface DetectorConfig {
   pattern?: string;
   severity?: string;
   description?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface ThresholdConfig {
@@ -61,7 +61,7 @@ export interface BlockingRule {
   require_remediation_plan?: boolean;
   create_tracking_issue?: boolean;
   log_only?: boolean;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface SLAConfig {
