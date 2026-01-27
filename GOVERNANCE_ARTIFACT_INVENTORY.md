@@ -3,7 +3,7 @@
 **Repository**: APGI-cmy/PartPulse
 **Type**: Consumer Repository (Layered-Down Governance)
 **Canonical Source**: APGI-cmy/maturion-foreman-governance
-**Last Updated**: 2026-01-27T05:37:00Z
+**Last Updated**: 2026-01-27T07:01:22Z
 **Updated By**: governance-liaison
 
 ---
@@ -33,7 +33,7 @@ This inventory tracks all governance artifacts layered down from the canonical g
 | MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md | governance/canon/MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
 | MERGE_GATE_PHILOSOPHY.md | governance/canon/MERGE_GATE_PHILOSOPHY.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
 | SCOPE_TO_DIFF_RULE.md | governance/canon/SCOPE_TO_DIFF_RULE.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
-| STOP_AND_FIX_DOCTRINE.md | governance/canon/STOP_AND_FIX_DOCTRINE.md | 2026-01-23T12:02:11Z | #1005 | ✅ CURRENT |
+| STOP_AND_FIX_DOCTRINE.md | governance/canon/STOP_AND_FIX_DOCTRINE.md | 2026-01-27T07:01:22Z | #1023 | ✅ CURRENT |
 | VERSIONING_AND_EVOLUTION_GOVERNANCE.md | governance/canon/VERSIONING_AND_EVOLUTION_GOVERNANCE.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
 | WARNING_DISCOVERY_BLOCKER_PROTOCOL.md | governance/canon/WARNING_DISCOVERY_BLOCKER_PROTOCOL.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
 
