@@ -503,7 +503,9 @@ echo "✅ SELF-GOVERNANCE CHECK PASSED"
 **Quick Reference - Execute These Commands**:
 ```bash
 # 1. YAML Validation (BL-028: warnings ARE errors)
-yamllint .github/agents/*.md  # Exit 0 required
+.github/scripts/validate-agent-yaml.sh  # Exit 0 required
+# NOTE: Do NOT use "yamllint .github/agents/*.md" - it fails on markdown content
+# Use validate-agent-yaml.sh which extracts and validates only YAML frontmatter
 
 # 2. Scope-to-Diff Validation
 .github/scripts/validate-scope-to-diff.sh  # Exit 0 required
