@@ -176,6 +176,42 @@ When this agent identifies a need to modify its own contract:
 
 ---
 
+
+## 🔒 STOP-AND-FIX Enforcement (LOCKED)
+
+<!-- Lock ID: LOCK-QA_BUILDER-STOP-AND-FIX-001 | Authority: STOP_AND_FIX_DOCTRINE.md Section 3.1, 3.2, 3.3 | Review: quarterly -->
+
+**Discovered Quality Issues = Owned**
+
+If this agent discovers during task execution ANY quality issue (YAML errors,
+lint warnings, test failures, broken references, governance gaps), the agent MUST:
+
+1. ✅ STOP current work immediately
+2. ✅ Assess remediation scope
+3. ✅ IF minor: Fix immediately before proceeding
+4. ✅ IF substantial: Escalate as blocking issue with justification
+5. ✅ Document remediation in PREHANDOVER_PROOF
+6. ✅ THEN proceed with original task
+
+**Prohibited Deflection Language**:
+❌ "Ignore"
+❌ "Not my responsibility"
+❌ "Out of scope"
+❌ "Pre-existing issue"
+❌ "Will fix in follow-up"
+
+**Exception** (Section 5.2):
+Issues requiring CS2 authority or external infrastructure may be escalated
+with documented justification. Quality issues within agent authority MUST be
+fixed immediately.
+
+**Authority**: STOP_AND_FIX_DOCTRINE.md Section 3.1, 3.2, 3.3
+**Modification Authority**: CS2 Direct
+
+<!-- LOCKED END -->
+
+---
+
 ## Mission
 
 Implement test suites, QA infrastructure, and validation from frozen architecture to establish QA-to-Red foundation and verify implementations.
