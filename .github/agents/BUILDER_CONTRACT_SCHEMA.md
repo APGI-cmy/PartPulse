@@ -1,10 +1,21 @@
+---
+id: BUILDER_CONTRACT_SCHEMA
+description: >-
+  Machine-readable builder agent contract specification.
+  Defines required structure and format for all builder agent contracts.
+schema:
+  version: "2.0"
+  status: canonical
+  authority: BUILD_PHILOSOPHY.md
+---
+
 # Builder Contract Schema
 ## Machine-Readable Builder Agent Contract Specification
 
-**Version**: 2.0  
-**Status**: CANONICAL SCHEMA (MATURION DOCTRINE ENFORCED)  
-**Authority**: Builder Recruitment Automation Corrective Design + BL-016 Constitutional Alignment  
-**Location**: `.github/agents/BUILDER_CONTRACT_SCHEMA.md`  
+**Version**: 2.0
+**Status**: CANONICAL SCHEMA (MATURION DOCTRINE ENFORCED)
+**Authority**: Builder Recruitment Automation Corrective Design + BL-016 Constitutional Alignment
+**Location**: `.github/agents/BUILDER_CONTRACT_SCHEMA.md`
 **Upgrade Date**: 2026-01-01
 
 ---
@@ -70,15 +81,15 @@ Content...
 
 ### 🔴 GitHub Copilot Agent Fields (REQUIRED FOR SELECTABILITY)
 
-**These fields are MANDATORY for GitHub Copilot agent loader integration.**  
+**These fields are MANDATORY for GitHub Copilot agent loader integration.**
 **Without these fields, builders will appear in agent selector but will NOT be selectable.**
 
 These fields must be placed **at the top** of the YAML frontmatter, before Maturion-specific fields.
 
 #### 1. name (REQUIRED)
 
-**Type**: `string`  
-**Description**: Display name shown in GitHub Copilot agent selector  
+**Type**: `string`
+**Description**: Display name shown in GitHub Copilot agent selector
 **Example**: `name: API Builder`
 
 **Validation**:
@@ -92,9 +103,9 @@ These fields must be placed **at the top** of the YAML frontmatter, before Matur
 
 #### 2. role (REQUIRED)
 
-**Type**: `string`  
-**Description**: Agent role designation for GitHub Copilot platform  
-**Allowed Values**: `builder` (for all Maturion builders)  
+**Type**: `string`
+**Description**: Agent role designation for GitHub Copilot platform
+**Allowed Values**: `builder` (for all Maturion builders)
 **Example**: `role: builder`
 
 **Validation**:
@@ -107,8 +118,8 @@ These fields must be placed **at the top** of the YAML frontmatter, before Matur
 
 #### 3. description (REQUIRED)
 
-**Type**: `string` (multi-line with `>` YAML syntax)  
-**Description**: Multi-line description of builder purpose, constraints, and doctrine  
+**Type**: `string` (multi-line with `>` YAML syntax)
+**Description**: Multi-line description of builder purpose, constraints, and doctrine
 **Example**:
 ```yaml
 description: >
@@ -139,9 +150,9 @@ These fields define the builder's Maturion-specific identity and must follow the
 
 #### 4. builder_id (REQUIRED)
 
-**Type**: `string`  
-**Description**: Unique identifier for this builder  
-**Format**: `lowercase-with-hyphens`  
+**Type**: `string`
+**Description**: Unique identifier for this builder
+**Format**: `lowercase-with-hyphens`
 **Example**: `ui-builder`
 
 **Validation**:
@@ -151,9 +162,9 @@ These fields define the builder's Maturion-specific identity and must follow the
 
 #### 4. builder_id (REQUIRED)
 
-**Type**: `string`  
-**Description**: Unique identifier for this builder  
-**Format**: `lowercase-with-hyphens`  
+**Type**: `string`
+**Description**: Unique identifier for this builder
+**Format**: `lowercase-with-hyphens`
 **Example**: `ui-builder`
 
 **Validation**:
@@ -163,9 +174,9 @@ These fields define the builder's Maturion-specific identity and must follow the
 
 #### 5. builder_type (REQUIRED)
 
-**Type**: `string`  
-**Description**: Classification of builder role  
-**Allowed Values**: 
+**Type**: `string`
+**Description**: Classification of builder role
+**Allowed Values**:
 - `specialized` — Domain-specific builder (UI, API, schema, integration)
 - `qa` — Quality assurance and testing builder
 - `cross-cutting` — Builders that span multiple domains (rare)
@@ -174,15 +185,15 @@ These fields define the builder's Maturion-specific identity and must follow the
 
 #### 6. version (REQUIRED)
 
-**Type**: `string`  
-**Description**: Contract version (semantic versioning)  
-**Format**: `major.minor.patch`  
+**Type**: `string`
+**Description**: Contract version (semantic versioning)
+**Format**: `major.minor.patch`
 **Example**: `version: 1.0.0`
 
 #### 7. status (REQUIRED)
 
-**Type**: `string`  
-**Description**: Current recruitment status  
+**Type**: `string`
+**Description**: Current recruitment status
 **Allowed Values**:
 - `recruited` — Builder recruited and ready for assignment
 - `active` — Builder actively working on assigned tasks
@@ -193,8 +204,8 @@ These fields define the builder's Maturion-specific identity and must follow the
 
 #### 8. capabilities (REQUIRED)
 
-**Type**: `array of strings`  
-**Description**: List of technical capabilities this builder possesses  
+**Type**: `array of strings`
+**Description**: List of technical capabilities this builder possesses
 **Example**:
 ```yaml
 capabilities:
@@ -211,8 +222,8 @@ capabilities:
 
 #### 9. responsibilities (REQUIRED)
 
-**Type**: `array of strings`  
-**Description**: High-level responsibilities assigned to this builder  
+**Type**: `array of strings`
+**Description**: High-level responsibilities assigned to this builder
 **Example**:
 ```yaml
 responsibilities:
@@ -227,8 +238,8 @@ responsibilities:
 
 #### 10. forbidden (REQUIRED)
 
-**Type**: `array of strings`  
-**Description**: Actions or areas this builder MUST NOT perform or access  
+**Type**: `array of strings`
+**Description**: Actions or areas this builder MUST NOT perform or access
 **Example**:
 ```yaml
 forbidden:
@@ -243,8 +254,8 @@ forbidden:
 
 #### 11. permissions (REQUIRED)
 
-**Type**: `object`  
-**Description**: File system access permissions  
+**Type**: `object`
+**Description**: File system access permissions
 **Structure**:
 ```yaml
 permissions:
@@ -275,24 +286,24 @@ permissions:
 
 #### 12. recruitment_date (REQUIRED)
 
-**Type**: `string`  
-**Description**: ISO 8601 date when builder was recruited  
-**Format**: `YYYY-MM-DD`  
+**Type**: `string`
+**Description**: ISO 8601 date when builder was recruited
+**Format**: `YYYY-MM-DD`
 **Example**: `recruitment_date: 2025-12-30`
 
 ---
 
 ## 🔴 Maturion Doctrine Fields (REQUIRED)
 
-**These fields are MANDATORY as of Schema Version 2.0.**  
+**These fields are MANDATORY as of Schema Version 2.0.**
 **Without these fields, builder contracts CANNOT validate.**
 
 #### 13. canonical_authorities (REQUIRED)
 
 #### 13. canonical_authorities (REQUIRED)
 
-**Type**: `array of strings`  
-**Description**: List of canonical governance sources this builder is bound to  
+**Type**: `array of strings`
+**Description**: List of canonical governance sources this builder is bound to
 **Purpose**: Establish constitutional supremacy, prevent "generic developer" execution, and ensure ripple intelligence alignment
 
 **MUST Include**:
@@ -331,9 +342,9 @@ canonical_authorities:
 
 #### 14. maturion_doctrine_version (REQUIRED)
 
-**Type**: `string`  
-**Description**: Version of Maturion Build Philosophy this contract conforms to  
-**Format**: `major.minor.patch`  
+**Type**: `string`
+**Description**: Version of Maturion Build Philosophy this contract conforms to
+**Format**: `major.minor.patch`
 **Current Version**: `1.0.0`
 
 **Example**: `maturion_doctrine_version: "1.0.0"`
@@ -347,8 +358,8 @@ canonical_authorities:
 
 #### 15. handover_protocol (REQUIRED)
 
-**Type**: `string`  
-**Description**: Handover semantics this builder uses  
+**Type**: `string`
+**Description**: Handover semantics this builder uses
 **Allowed Values**: `gate-first-deterministic`
 
 **Example**: `handover_protocol: "gate-first-deterministic"`
@@ -365,8 +376,8 @@ canonical_authorities:
 
 #### 16. no_debt_rules (REQUIRED)
 
-**Type**: `string`  
-**Description**: Test debt policy this builder follows  
+**Type**: `string`
+**Description**: Test debt policy this builder follows
 **Allowed Values**: `zero-test-debt-mandatory`
 
 **Example**: `no_debt_rules: "zero-test-debt-mandatory"`
@@ -384,8 +395,8 @@ canonical_authorities:
 
 #### 17. evidence_requirements (REQUIRED)
 
-**Type**: `string`  
-**Description**: Evidence trail policy this builder follows  
+**Type**: `string`
+**Description**: Evidence trail policy this builder follows
 **Allowed Values**: `complete-audit-trail-mandatory`
 
 **Example**: `evidence_requirements: "complete-audit-trail-mandatory"`
@@ -404,8 +415,8 @@ canonical_authorities:
 
 #### 18. qa_range (OPTIONAL)
 
-**Type**: `object`  
-**Description**: QA range assignment for builders in build waves  
+**Type**: `object`
+**Description**: QA range assignment for builders in build waves
 **Structure**:
 ```yaml
 qa_range:
@@ -434,7 +445,7 @@ All builder contracts MUST include the following markdown sections:
 
 ## 🔴 Maturion Doctrine Sections (REQUIRED — CANNOT VALIDATE WITHOUT THESE)
 
-**These sections are MANDATORY as of Schema Version 2.0.**  
+**These sections are MANDATORY as of Schema Version 2.0.**
 **A builder contract without these sections CANNOT pass validation.**
 
 ### 1. Maturion Builder Mindset (## Maturion Builder Mindset — MANDATORY)
@@ -650,28 +661,28 @@ At completion of ANY work unit, builder MUST evaluate:
 ```markdown
 ## Mandatory Process Improvement Reflection
 
-**Authority**: Up-rippled from governance canon (maturion-foreman-governance)  
+**Authority**: Up-rippled from governance canon (maturion-foreman-governance)
 **Status**: MANDATORY at completion
 
 At work completion, builder MUST provide comprehensive process improvement reflection in completion report addressing ALL of the following:
 
-1. **What went well in this build?**  
+1. **What went well in this build?**
    - Identify processes, tools, or governance elements that enabled success
    - Highlight what should be preserved or amplified in future builds
 
-2. **What failed, was blocked, or required rework?**  
+2. **What failed, was blocked, or required rework?**
    - Document failures, blockers, rework cycles with root causes
    - Include governance gaps, tooling limitations, or unclear specifications
 
-3. **What process, governance, or tooling changes would have improved this build or prevented waste?**  
+3. **What process, governance, or tooling changes would have improved this build or prevented waste?**
    - Propose specific improvements to prevent recurrence
    - Identify friction points in workflow, coordination, or verification
 
-4. **Did you comply with all governance learnings (BLs)?**  
+4. **Did you comply with all governance learnings (BLs)?**
    - Verify compliance with: BL-016 (ratchet conditions), BL-018 (QA range), BL-019 (semantic alignment), BL-022 (if activated)
    - If non-compliance: STOP, document reason, escalate to FM
 
-5. **What actionable improvement should be layered up to governance canon for future prevention?**  
+5. **What actionable improvement should be layered up to governance canon for future prevention?**
    - Propose concrete governance/process changes for canonization
    - OR justify why no improvements are warranted
 
@@ -779,9 +790,9 @@ layouts, and interactive wizards in the Foreman Office App.
 ```markdown
 ## Forbidden Actions
 
-❌ **Backend Logic**: No API handlers, business logic, or data processing  
-❌ **Database Changes**: No schema modifications or migrations  
-❌ **Cross-Module Logic**: No integration code between modules  
+❌ **Backend Logic**: No API handlers, business logic, or data processing
+❌ **Database Changes**: No schema modifications or migrations
+❌ **Cross-Module Logic**: No integration code between modules
 ❌ **Governance Changes**: No modification of governance artifacts
 ```
 
@@ -811,10 +822,10 @@ layouts, and interactive wizards in the Foreman Office App.
 ```markdown
 ## Recruitment Information
 
-**Recruited**: 2025-12-30 (Wave 0.1)  
-**Recruited By**: Maturion Foreman (FM)  
-**Validation Status**: ✅ PASS  
-**Contract Version**: 2.0.0  
+**Recruited**: 2025-12-30 (Wave 0.1)
+**Recruited By**: Maturion Foreman (FM)
+**Validation Status**: ✅ PASS
+**Contract Version**: 2.0.0
 **Maturion Doctrine Version**: 1.0.0
 ```
 
@@ -826,7 +837,7 @@ layouts, and interactive wizards in the Foreman Office App.
 ```markdown
 ## Gate Binding
 
-**PR Gate**: Builder QA Gate (`.github/workflows/builder-qa-gate.yml`)  
+**PR Gate**: Builder QA Gate (`.github/workflows/builder-qa-gate.yml`)
 **Required Artifacts**:
 - Builder QA Report (`BUILDER_QA_REPORT.md`)
 - QA coverage evidence
@@ -1048,9 +1059,9 @@ architecture specifications and UX requirements.
 
 ## Forbidden Actions
 
-❌ **Backend Logic**: No API handlers, business logic, or data processing  
-❌ **Database Changes**: No schema modifications or migrations  
-❌ **Cross-Module Logic**: No integration code between modules  
+❌ **Backend Logic**: No API handlers, business logic, or data processing
+❌ **Database Changes**: No schema modifications or migrations
+❌ **Cross-Module Logic**: No integration code between modules
 ❌ **Governance Changes**: No modification of governance artifacts
 
 ## Permissions
@@ -1066,16 +1077,16 @@ architecture specifications and UX requirements.
 
 ## Recruitment Information
 
-**Recruited**: 2025-12-30 (Wave 0.1)  
-**Recruited By**: Maturion Foreman (FM)  
-**Validation Status**: ✅ PASS  
-**Contract Version**: 2.0.0  
-**Maturion Doctrine Version**: 1.0.0  
+**Recruited**: 2025-12-30 (Wave 0.1)
+**Recruited By**: Maturion Foreman (FM)
+**Validation Status**: ✅ PASS
+**Contract Version**: 2.0.0
+**Maturion Doctrine Version**: 1.0.0
 **Canonical Reference**: `foreman/builder/ui-builder-spec.md`
 
 ## Gate Binding
 
-**PR Gate**: Builder QA Gate (`.github/workflows/builder-qa-gate.yml`)  
+**PR Gate**: Builder QA Gate (`.github/workflows/builder-qa-gate.yml`)
 **Required Artifacts**:
 - Builder QA Report (`BUILDER_QA_REPORT.md`)
 - QA coverage evidence
@@ -1083,7 +1094,7 @@ architecture specifications and UX requirements.
 
 ---
 
-**Contract Status**: ✅ ACTIVE  
+**Contract Status**: ✅ ACTIVE
 **Last Updated**: 2026-01-01
 ```
 
@@ -1164,9 +1175,9 @@ Validation MUST be performed:
 
 ## Schema Versioning
 
-**Current Version**: 2.0 (Maturion Doctrine Enforced)  
-**Previous Version**: 1.0 (Basic structure only)  
-**Upgrade Date**: 2026-01-01  
+**Current Version**: 2.0 (Maturion Doctrine Enforced)
+**Previous Version**: 1.0 (Basic structure only)
+**Upgrade Date**: 2026-01-01
 **Breaking Change**: YES — All contracts require Maturion doctrine fields and sections
 
 **Compatibility**: All contracts must specify schema version they conform to
@@ -1197,7 +1208,7 @@ This schema is **mandatory** and **enforced** via:
 
 ---
 
-**Schema Authority**: Maturion Foreman (FM)  
-**Schema Status**: CANONICAL — ACTIVE (v2.0)  
-**Doctrine Enforcement**: MANDATORY  
+**Schema Authority**: Maturion Foreman (FM)
+**Schema Status**: CANONICAL — ACTIVE (v2.0)
+**Doctrine Enforcement**: MANDATORY
 **Last Updated**: 2026-01-01
