@@ -109,9 +109,9 @@ This inventory tracks all governance artifacts layered down from the canonical g
 | File | Path | Last Layered-Down | Source PR | Status |
 |------|------|-------------------|-----------|--------|
 | AGENT_TEST_EXECUTION_PROTOCOL.md | governance/runbooks/AGENT_TEST_EXECUTION_PROTOCOL.md | (existing) | - | ✅ CURRENT |
-| AGENT_FILE_VALIDATION.md | governance/runbooks/AGENT_FILE_VALIDATION.md | (existing) | - | ✅ CURRENT |
 | FOREMAN_GOVERNANCE_RUNBOOK.md | governance/runbooks/FOREMAN_GOVERNANCE_RUNBOOK.md | (existing) | - | ✅ CURRENT |
-| AGENT_FILE_MAINTENANCE.md | governance/runbooks/AGENT_FILE_MAINTENANCE.md | (existing) | - | ✅ CURRENT |
+
+**Note**: AGENT_FILE_VALIDATION.md and AGENT_FILE_MAINTENANCE.md moved to governance/canon/agent-contracts-guidance/runbooks/ per PR #1027
 
 ---
 
@@ -392,11 +392,12 @@ This inventory tracks all governance artifacts layered down from the canonical g
 
 ## Governance Alignment Status
 
-**Last Checked**: 2026-01-27T05:37:00Z
+**Last Checked**: 2026-02-04T13:02:00Z
 **Status**: **FULLY ALIGNED** ✅
 **Canonical Source**: APGI-cmy/maturion-foreman-governance@main
-**Local Governance Version**: Synchronized as of 2026-01-27T05:37:00Z
+**Local Governance Version**: Synchronized as of 2026-02-04T13:02:00Z
 **Agent Contract Binding**: Corrected and validated ✅
+**Agent Contracts Guidance**: Centralized per PR #1027 ✅
 
 ---
 

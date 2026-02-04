@@ -145,17 +145,17 @@ All violations tracked in `governance/incidents/protocol-violations/` with:
    - Purpose: Comprehensive specification for repository `.agent` files
    - Authority: Supreme - Canonical
 
-2. **AGENT_FILE_BINDING_REQUIREMENTS.md** → `governance/canon/AGENT_FILE_BINDING_REQUIREMENTS.md`
+2. **AGENT_FILE_BINDING_REQUIREMENTS.md** → `governance/canon/agent-contracts-guidance/AGENT_FILE_BINDING_REQUIREMENTS.md`
    - Version: 1.0.0
    - Purpose: Define mandatory and optional bindings for `.agent` files
    - Authority: Supreme - Canonical
 
-3. **AGENT_FILE_VALIDATION.md** → `governance/runbooks/AGENT_FILE_VALIDATION.md`
+3. **AGENT_FILE_VALIDATION.md** → `governance/canon/agent-contracts-guidance/runbooks/AGENT_FILE_VALIDATION.md`
    - Version: 1.0.0
    - Purpose: 4-level validation process for `.agent` files
    - Authority: Canonical
 
-4. **AGENT_FILE_MAINTENANCE.md** → `governance/runbooks/AGENT_FILE_MAINTENANCE.md`
+4. **AGENT_FILE_MAINTENANCE.md** → `governance/canon/agent-contracts-guidance/runbooks/AGENT_FILE_MAINTENANCE.md`
    - Version: 1.0.0
    - Purpose: Maintenance protocol for `.agent` files
    - Authority: Canonical

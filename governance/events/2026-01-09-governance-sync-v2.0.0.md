@@ -42,7 +42,7 @@
 
 **Operational Docs** (7 files, 55KB):
 - governance/runbooks/FOREMAN_GOVERNANCE_RUNBOOK.md
-- governance/templates/AGENT_CONTRACT.template.md
+- governance/canon/agent-contracts-guidance/templates/AGENT_CONTRACT.template.md
 - foreman/FOREMAN_EXECUTION_PLAYBOOK.md (39KB)
 - foreman/FOREMAN_EXECUTION_QUICK_REFERENCE.md (14KB)
 - foreman/constitution/architecture-design-checklist.md

@@ -94,7 +94,7 @@
 10. governance/canon/LEARNING_INTAKE_AND_PROMOTION_MODEL.md
 11. governance/canon/AGENT_RIPPLE_AWARENESS_OBLIGATION.md
 12. governance/runbooks/FOREMAN_GOVERNANCE_RUNBOOK.md
-13. governance/templates/AGENT_CONTRACT.template.md
+13. governance/canon/agent-contracts-guidance/templates/AGENT_CONTRACT.template.md
 14. foreman/FOREMAN_EXECUTION_PLAYBOOK.md (39KB)
 15. foreman/FOREMAN_EXECUTION_QUICK_REFERENCE.md (14KB)
 16. foreman/constitution/architecture-design-checklist.md
