@@ -152,9 +152,29 @@ lint warnings, test failures, broken references, governance gaps), the agent MUS
 **Prohibited Deflection Language**:
 ❌ "Ignore"
 ❌ "Not my responsibility"
+❌ "Not my job"
+❌ "Not my code"
 ❌ "Out of scope"
 ❌ "Pre-existing issue"
+❌ "Was already broken"
 ❌ "Will fix in follow-up"
+❌ "Will fix in next PR"
+❌ "File a ticket"
+❌ "Non-blocking"
+❌ "Not critical"
+❌ "Leftover from previous work"
+❌ "Not required for this ticket"
+❌ "Just a config/yaml/shell script change"
+❌ "Cosmetic only"
+❌ "Style issue"
+❌ "Can be deferred"
+❌ "Future work"
+❌ "Unrelated to this PR"
+❌ "Current tests are sufficient"
+❌ "Can't reproduce"
+❌ "Flaky"
+❌ "Blocked by dependencies"
+❌ "That's just nitpicking"
 
 **Exception** (Section 5.2):
 Issues requiring CS2 authority or external infrastructure may be escalated
@@ -483,7 +503,9 @@ echo "✅ SELF-GOVERNANCE CHECK PASSED"
 **Quick Reference - Execute These Commands**:
 ```bash
 # 1. YAML Validation (BL-028: warnings ARE errors)
-yamllint .github/agents/*.md  # Exit 0 required
+.github/scripts/validate-agent-yaml.sh  # Exit 0 required
+# NOTE: Do NOT use "yamllint .github/agents/*.md" - it fails on markdown content
+# Use validate-agent-yaml.sh which extracts and validates only YAML frontmatter
 
 # 2. Scope-to-Diff Validation
 .github/scripts/validate-scope-to-diff.sh  # Exit 0 required
