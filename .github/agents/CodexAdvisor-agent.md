@@ -342,8 +342,8 @@ echo "✅ SELF-GOVERNANCE CHECK PASSED - Proceeding with task"
 <!-- Lock ID: LOCK-CODEXADVISOR-AGENTFILE-001 | Authority: .agentt.schema.md, AGENT_CONTRACT_MINIMALISM_PRINCIPLE | Review: quarterly -->
 
 **When advising on or proposing ANY agent contract files**:
-- Follow `.agentt.schema.md` Section 6 (Agent Contract Minimalism Principle)
-- Use `governance/templates/AGENT_CONTRACT.template.md` (when created per Issue #1010)
+- Follow `.agent.schema.md` Section 6 (Agent Contract Minimalism Principle)
+- Use `governance/canon/agent-contracts-guidance/templates/AGENT_CONTRACT.template.md`
 - Reference canonical governance, don't duplicate
 - Keep files under 15,000 characters
 

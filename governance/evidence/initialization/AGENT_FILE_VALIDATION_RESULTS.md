@@ -244,9 +244,9 @@ find .github/agents -name "*.md" -type f
 
 **Files Created**:
 - `governance/schemas/AGENT_FILE_SCHEMA.md`
-- `governance/canon/AGENT_FILE_BINDING_REQUIREMENTS.md`
-- `governance/runbooks/AGENT_FILE_VALIDATION.md`
-- `governance/runbooks/AGENT_FILE_MAINTENANCE.md`
+- `governance/canon/agent-contracts-guidance/AGENT_FILE_BINDING_REQUIREMENTS.md`
+- `governance/canon/agent-contracts-guidance/runbooks/AGENT_FILE_VALIDATION.md`
+- `governance/canon/agent-contracts-guidance/runbooks/AGENT_FILE_MAINTENANCE.md`
 - `governance/evidence/initialization/AGENT_FILE_VALIDATION_RESULTS.md` (this file)
 
 ---

@@ -26,7 +26,7 @@ This specification ensures:
 - Repository authority boundaries are mechanically enforceable
 - Cross-repository governance relationships are explicit
 
-**Related Document**: `governance/canon/.agent.schema.md` defines individual agent contract schemas. This document defines the **repository-level** `.agent` file schema.
+**Related Document**: `governance/canon/agent-contracts-guidance/.agent.schema.md` defines individual agent contract schemas. This document defines the **repository-level** `.agent` file schema.
 
 ---
 
@@ -760,10 +760,10 @@ When this schema changes, ALL repositories MUST:
 
 | Document | Purpose |
 |----------|---------|
-| **governance/canon/.agent.schema.md** | Individual agent contract schema |
-| **governance/canon/AGENT_FILE_BINDING_REQUIREMENTS.md** | Mandatory and optional bindings |
-| **governance/runbooks/AGENT_FILE_VALIDATION.md** | Validation procedure and checklist |
-| **governance/runbooks/AGENT_FILE_MAINTENANCE.md** | Maintenance protocol and update triggers |
+| **governance/canon/agent-contracts-guidance/.agent.schema.md** | Individual agent contract schema |
+| **governance/canon/agent-contracts-guidance/AGENT_FILE_BINDING_REQUIREMENTS.md** | Mandatory and optional bindings |
+| **governance/canon/agent-contracts-guidance/runbooks/AGENT_FILE_VALIDATION.md** | Validation procedure and checklist |
+| **governance/canon/agent-contracts-guidance/runbooks/AGENT_FILE_MAINTENANCE.md** | Maintenance protocol and update triggers |
 | **governance/canon/FPC_REPOSITORY_LAYERDOWN_GUIDE.md** | Layer-down procedure including .agent creation |
 
 ---

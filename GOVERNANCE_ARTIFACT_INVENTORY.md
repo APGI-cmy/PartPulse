@@ -3,7 +3,7 @@
 **Repository**: APGI-cmy/PartPulse
 **Type**: Consumer Repository (Layered-Down Governance)
 **Canonical Source**: APGI-cmy/maturion-foreman-governance
-**Last Updated**: 2026-01-27T07:01:22Z
+**Last Updated**: 2026-02-04T13:02:00Z
 **Updated By**: governance-liaison
 
 ---
@@ -82,6 +82,21 @@ This inventory tracks all governance artifacts layered down from the canonical g
 | COGNITIVE_HYGIENE_AUTHORITY_MODEL.md | governance/canon/COGNITIVE_HYGIENE_AUTHORITY_MODEL.md | 2026-01-27T05:37:00Z | Batch-4 | ✅ CURRENT |
 | COGNITIVE_HYGIENE_MEMORY_INTEGRATION_MODEL.md | governance/canon/COGNITIVE_HYGIENE_MEMORY_INTEGRATION_MODEL.md | 2026-01-27T05:37:00Z | Batch-4 | ✅ CURRENT |
 
+### Agent Contracts Guidance (Centralized - PR #1027)
+
+| File | Path | Last Layered-Down | Source PR | Status |
+|------|------|-------------------|-----------|--------|
+| README.md | governance/canon/agent-contracts-guidance/README.md | 2026-02-04T13:02:00Z | #1027 | ✅ CURRENT |
+| .agent.schema.md | governance/canon/agent-contracts-guidance/.agent.schema.md | 2026-02-04T13:02:00Z | #1027 | ✅ CURRENT |
+| AGENT_FILE_CREATION_POLICY.md | governance/canon/agent-contracts-guidance/AGENT_FILE_CREATION_POLICY.md | 2026-02-04T13:02:00Z | #1027 | ✅ CURRENT |
+| AGENT_FILE_BINDING_REQUIREMENTS.md | governance/canon/agent-contracts-guidance/AGENT_FILE_BINDING_REQUIREMENTS.md | 2026-02-04T13:02:00Z | #1027 | ✅ CURRENT |
+| AGENT_CONTRACT_MIGRATION_GUIDE.md | governance/canon/agent-contracts-guidance/AGENT_CONTRACT_MIGRATION_GUIDE.md | 2026-02-04T13:02:00Z | #1027 | ✅ CURRENT |
+| AGENT_ONBOARDING_QUICKSTART.md | governance/canon/agent-contracts-guidance/AGENT_ONBOARDING_QUICKSTART.md | 2026-02-04T13:02:00Z | #1027 | ✅ CURRENT |
+| AGENT_CONTRACT.template.md | governance/canon/agent-contracts-guidance/templates/AGENT_CONTRACT.template.md | 2026-02-04T13:02:00Z | #1027 | ✅ CURRENT |
+| AGENT_FILE_LOCKED_SECTIONS_TEMPLATE.md | governance/canon/agent-contracts-guidance/templates/AGENT_FILE_LOCKED_SECTIONS_TEMPLATE.md | 2026-02-04T13:02:00Z | #1027 | ✅ CURRENT |
+| AGENT_FILE_VALIDATION.md | governance/canon/agent-contracts-guidance/runbooks/AGENT_FILE_VALIDATION.md | 2026-02-04T13:02:00Z | #1027 | ✅ CURRENT |
+| AGENT_FILE_MAINTENANCE.md | governance/canon/agent-contracts-guidance/runbooks/AGENT_FILE_MAINTENANCE.md | 2026-02-04T13:02:00Z | #1027 | ✅ CURRENT |
+
 ### Philosophy Files
 
 | File | Path | Last Layered-Down | Source PR | Status |
@@ -94,9 +109,9 @@ This inventory tracks all governance artifacts layered down from the canonical g
 | File | Path | Last Layered-Down | Source PR | Status |
 |------|------|-------------------|-----------|--------|
 | AGENT_TEST_EXECUTION_PROTOCOL.md | governance/runbooks/AGENT_TEST_EXECUTION_PROTOCOL.md | (existing) | - | ✅ CURRENT |
-| AGENT_FILE_VALIDATION.md | governance/runbooks/AGENT_FILE_VALIDATION.md | (existing) | - | ✅ CURRENT |
 | FOREMAN_GOVERNANCE_RUNBOOK.md | governance/runbooks/FOREMAN_GOVERNANCE_RUNBOOK.md | (existing) | - | ✅ CURRENT |
-| AGENT_FILE_MAINTENANCE.md | governance/runbooks/AGENT_FILE_MAINTENANCE.md | (existing) | - | ✅ CURRENT |
+
+**Note**: AGENT_FILE_VALIDATION.md and AGENT_FILE_MAINTENANCE.md moved to governance/canon/agent-contracts-guidance/runbooks/ per PR #1027
 
 ---
 
@@ -332,13 +347,79 @@ This inventory tracks all governance artifacts layered down from the canonical g
 
 ---
 
+### 2026-02-04 - Agent Contracts Guidance Centralization (PR #1027)
+
+**Ripple Type**: CRITICAL - Agent Contract Guidance Reorganization
+**Source**: Canonical governance repository (APGI-cmy/maturion-foreman-governance)
+**Source PR**: #1027
+**Executed By**: governance-liaison
+**Timestamp**: 2026-02-04T13:02:00Z
+**Related Issue**: Align agent contract governance with maturion-foreman-governance#1027
+
+**Files Reorganized** (7 files moved to new centralized location):
+1. ✅ governance/canon/.agent.schema.md → governance/canon/agent-contracts-guidance/.agent.schema.md
+2. ✅ governance/canon/AGENT_CONTRACT_MIGRATION_GUIDE.md → governance/canon/agent-contracts-guidance/AGENT_CONTRACT_MIGRATION_GUIDE.md
+3. ✅ governance/canon/AGENT_FILE_BINDING_REQUIREMENTS.md → governance/canon/agent-contracts-guidance/AGENT_FILE_BINDING_REQUIREMENTS.md
+4. ✅ governance/canon/AGENT_ONBOARDING_QUICKSTART.md → governance/canon/agent-contracts-guidance/AGENT_ONBOARDING_QUICKSTART.md
+5. ✅ governance/templates/AGENT_CONTRACT.template.md → governance/canon/agent-contracts-guidance/templates/AGENT_CONTRACT.template.md
+6. ✅ governance/runbooks/AGENT_FILE_MAINTENANCE.md → governance/canon/agent-contracts-guidance/runbooks/AGENT_FILE_MAINTENANCE.md
+7. ✅ governance/runbooks/AGENT_FILE_VALIDATION.md → governance/canon/agent-contracts-guidance/runbooks/AGENT_FILE_VALIDATION.md
+
+**New Files Layered Down** (3 new files):
+1. ✅ governance/canon/agent-contracts-guidance/README.md (6.8 KB) - Agent contracts guidance overview
+2. ✅ governance/canon/agent-contracts-guidance/AGENT_FILE_CREATION_POLICY.md (0.9 KB) - Agent file creation policy
+3. ✅ governance/canon/agent-contracts-guidance/templates/AGENT_FILE_LOCKED_SECTIONS_TEMPLATE.md (24.4 KB) - LOCKED sections template
+
+**Total Size**: ~135 KB across 10 files (7 moved + 3 new)
+
+**New Folder Structure**:
+```
+governance/canon/agent-contracts-guidance/
+├── README.md (new)
+├── .agent.schema.md (moved)
+├── AGENT_FILE_CREATION_POLICY.md (new)
+├── AGENT_FILE_BINDING_REQUIREMENTS.md (moved)
+├── AGENT_CONTRACT_MIGRATION_GUIDE.md (moved)
+├── AGENT_ONBOARDING_QUICKSTART.md (moved)
+├── templates/
+│   ├── AGENT_CONTRACT.template.md (moved)
+│   └── AGENT_FILE_LOCKED_SECTIONS_TEMPLATE.md (new)
+└── runbooks/
+    ├── AGENT_FILE_VALIDATION.md (moved)
+    └── AGENT_FILE_MAINTENANCE.md (moved)
+```
+
+**References Updated** (5 files):
+- .github/agents/CodexAdvisor-agent.md
+- governance/schemas/AGENT_FILE_SCHEMA.md
+- governance/alignment/GOVERNANCE_ALIGNMENT.md
+- governance/evidence/initialization/AGENT_FILE_VALIDATION_RESULTS.md
+- governance/GOVERNANCE_VERSION.md
+- governance/events/2026-01-09-governance-sync-v2.0.0.md
+
+**Validation**:
+- [COMPLETE] File integrity check - PASS ✅
+- [COMPLETE] File count verification (10/10) - PASS ✅
+- [COMPLETE] References updated - PASS ✅
+- [PENDING] Pre-handover validation gates
+
+**Notes**:
+- Centralizes all agent contract guidance into single authoritative location
+- Enables atomic layer-down to consumer repos
+- Improves discoverability and maintenance of agent contract policies
+- Follows git mv to preserve file history
+- Total canon files now: 48 (45 from previous batches + 3 new)
+
+---
+
 ## Governance Alignment Status
 
-**Last Checked**: 2026-01-27T05:37:00Z
+**Last Checked**: 2026-02-04T13:02:00Z
 **Status**: **FULLY ALIGNED** ✅
 **Canonical Source**: APGI-cmy/maturion-foreman-governance@main
-**Local Governance Version**: Synchronized as of 2026-01-27T05:37:00Z
+**Local Governance Version**: Synchronized as of 2026-02-04T13:02:00Z
 **Agent Contract Binding**: Corrected and validated ✅
+**Agent Contracts Guidance**: Centralized per PR #1027 ✅
 
 ---
 
