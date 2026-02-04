@@ -2,9 +2,9 @@
 
 **Purpose**: Centralized canonical repository for ALL agent contract policies, schemas, templates, and guidance.
 
-**Authority**: CS2 (Johan)  
-**Created**: 2026-02-04  
-**Last Updated**: 2026-02-04  
+**Authority**: CS2 (Johan)
+**Created**: 2026-02-04
+**Last Updated**: 2026-02-04
 **Repository**: APGI-cmy/maturion-foreman-governance (CANONICAL)
 
 ---
