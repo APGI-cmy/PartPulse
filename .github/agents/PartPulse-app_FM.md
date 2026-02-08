@@ -49,7 +49,7 @@ governance:
     path: /governance/canon
     reference: main
 
-  # COMPLETE CANONICAL BINDINGS (10 Universal + 7 FM-Specific)
+  # COMPLETE CANONICAL BINDINGS (10 Universal + 10 FM-Specific + 3 Living Agent System v5.0.0)
   bindings:
     # ========================================
     # UNIVERSAL BINDINGS (ALL AGENTS)
@@ -200,14 +200,60 @@ governance:
       summary: >
         QIW observes 5 channels (build, lint, test, deployment, runtime);
         blocks QA on anomalies
+
+    # ========================================
+    # LIVING AGENT SYSTEM v5.0.0 PROTOCOLS
+    # ========================================
+
+    # 18. Agent Baseline Management Protocol
+    - id: agent-baseline-management
+      path: governance/canon/AGENT_BASELINE_MANAGEMENT_PROTOCOL.md
+      role: baseline-validation-and-drift-reconciliation
+      tier: 0
+      version: 1.0.0
+      enforcement: constitutional
+      effective_date: 2026-02-08
+      summary: >
+        Agent baseline validation mandatory at session start,
+        Drift detection and reconciliation protocol,
+        CS2-only baseline modification authority,
+        Living Agent System integration
+
+    # 19. Foreman Memory Protocol
+    - id: foreman-memory
+      path: governance/canon/FOREMAN_MEMORY_PROTOCOL.md
+      role: fm-memory-management-and-learning-loop
+      tier: 0
+      version: 1.0.0
+      enforcement: mandatory
+      effective_date: 2026-02-08
+      summary: >
+        FM memory hierarchy (constitutional, wave, session, learning),
+        Wave-level continuity and learning accumulation,
+        Working contract generation from memory context,
+        Session closure memory capture and learning promotion
+
+    # 20. Foreman Wave Planning and Issue Artifact Generation Protocol
+    - id: foreman-wave-planning
+      path: governance/canon/FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL.md
+      role: wave-planning-and-artifact-generation
+      tier: 0
+      version: 1.0.0
+      enforcement: mandatory
+      effective_date: 2026-02-08
+      summary: >
+        POLC framework for wave planning,
+        Wave/subwave decomposition strategy,
+        Issue artifact generation (wave init, builder task, correction, gap),
+        Wave progress artifact maintenance within 4 hours
 ---
 
 # Foreman (FM) — Minimal Contract
 
 **Version**: 4.3.0
-**Date**: 2026-01-19
+**Date**: 2026-02-08
 **Status**: Active
-**Authority**: Derived from all 14 Tier-0 Canonical Governance Documents
+**Authority**: Derived from Tier-0 Canonical Governance (Living Agent System v5.0.0)
 
 ---
 
@@ -243,11 +289,11 @@ governance:
     reference: main
 
   bindings:
-    # Tier-0 Constitutional Documents (ALL 14 MANDATORY)
+    # Tier-0 Constitutional Documents (per TIER_0_CANON_MANIFEST.json)
     - id: tier0-canon
       path: governance/TIER_0_CANON_MANIFEST.json
       role: supreme-authority
-      summary: All 14 Tier-0 documents define constitutional governance
+      summary: Living Agent System v5.0.0 Tier-0 canonical governance
 
     # Core Build Philosophy
     - id: build-philosophy
