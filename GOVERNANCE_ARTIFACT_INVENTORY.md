@@ -452,6 +452,39 @@ This inventory tracks all governance artifacts layered down from the canonical g
 
 ---
 
+## Pending Canon Files
+
+### Tracked for Future Layer-Down
+
+The following canonical files are referenced in existing governance but not yet available for layer-down. See `governance/PENDING_CANON_FILES_TRACKING.md` for detailed tracking and monitoring strategy.
+
+| File | Priority | Status | References |
+|------|----------|--------|------------|
+| FM_ROLE_CANON.md | HIGH | 🔍 Tracked | TIER_0_CANON_MANIFEST.json (T0-011), AGENT_BASELINE_MANAGEMENT_PROTOCOL.md, FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL.md |
+| WAVE_MODEL.md | HIGH | 🔍 Tracked | FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL.md, multiple wave planning references |
+| LIVING_AGENT_SYSTEM.md | CRITICAL | 🔍 Tracked | AGENT_BASELINE_MANAGEMENT_PROTOCOL.md (§2, §8.1-8.3), TIER_0_CANON_MANIFEST.json metadata |
+
+**Tracking Document**: `governance/PENDING_CANON_FILES_TRACKING.md`  
+**Monitoring**: Weekly review of canonical governance repository  
+**Action**: Immediate layer-down upon availability via governance ripple
+
+---
+
+## Implementation Support Scripts
+
+### Living Agent System v5.0.0 Scripts
+
+| Script | Path | Version | Purpose | Authority |
+|--------|------|---------|---------|-----------|
+| validate_baseline.sh | scripts/validate_baseline.sh | 1.0.0 | Agent baseline validation at startup | AGENT_BASELINE_MANAGEMENT_PROTOCOL.md §5 |
+| wave_closure.sh | scripts/wave_closure.sh | 1.0.0 | Wave completion certification and closure | FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL.md §6 |
+
+**Implemented**: 2026-02-08  
+**Status**: ✅ Complete and tested  
+**Integration**: Ready for agent wake-up and FM wave planning workflows
+
+---
+
 ## Governance Alignment Status
 
 **Last Checked**: 2026-02-08T10:06:00Z
@@ -461,6 +494,8 @@ This inventory tracks all governance artifacts layered down from the canonical g
 **Agent Contract Binding**: Corrected and validated ✅
 **Agent Contracts Guidance**: Centralized per PR #1027 ✅
 **TIER_0 Manifest**: Created and current (v5.0.0) ✅
+**Implementation Scripts**: Complete (validate_baseline.sh, wave_closure.sh) ✅
+**Pending Canon Tracking**: Active monitoring (3 files tracked) ✅
 
 ---
 
@@ -470,3 +505,4 @@ This inventory tracks all governance artifacts layered down from the canonical g
 - All layered-down files MUST match canonical source
 - Any drift detected triggers automatic self-alignment per Issue #999
 - Agent contract modifications require CS2 approval per AGENT_CONTRACT_PROTECTION_PROTOCOL.md
+- Pending canon files are actively monitored and will be layered down immediately upon availability
