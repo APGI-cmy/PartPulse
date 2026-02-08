@@ -107,7 +107,7 @@ CANONICAL_REF="main"
 CANONICAL_TIER0_URL="$CANONICAL_REPO/raw/$CANONICAL_REF/governance/TIER_0_CANON_MANIFEST.json"
 
 echo "🌐 Fetching canonical TIER_0 version..."
-CANONICAL_TIER0_VERSION=$(curl -s "$CANONICAL_TIER0_URL" | grep '"version"' | head -1 | cut -d'"' -f4)
+CANONICAL_TIER0_VERSION=$(curl -f -s "$CANONICAL_TIER0_URL" 2>/dev/null | grep '"version"' | head -1 | cut -d'"' -f4)
 
 if [ -n "$CANONICAL_TIER0_VERSION" ] && [ -n "$LOCAL_TIER0_VERSION" ]; then
     # Compare versions
@@ -276,7 +276,7 @@ if [ ! -f "$EVIDENCE_LOG" ]; then
     echo "❌ CHECK 2 FAILED: No evidence log generated"
     VALIDATION_FAILED=true
 else
-    EVIDENCE_COUNT=$(wc -l < "$EVIDENCE_LOG" 2>/dev/null || echo "0")
+    EVIDENCE_COUNT=$(wc -l < "$EVIDENCE_LOG")
     echo "✅ CHECK 2 PASSED: Evidence collected ($EVIDENCE_COUNT entries)"
 fi
 
@@ -397,16 +397,22 @@ echo "Step 1: Fetching canonical TIER_0 manifest..."
 CANONICAL_REPO="https://github.com/APGI-cmy/maturion-foreman-governance"
 CANONICAL_REF="main"
 
-curl -s "$CANONICAL_REPO/raw/$CANONICAL_REF/governance/TIER_0_CANON_MANIFEST.json" \
-    -o "governance/TIER_0_CANON_MANIFEST.json.new"
-
-if [ -s "governance/TIER_0_CANON_MANIFEST.json.new" ]; then
-    mv "governance/TIER_0_CANON_MANIFEST.json.new" "governance/TIER_0_CANON_MANIFEST.json"
-    echo "$(date -Iseconds): TIER_0_CANON_MANIFEST.json updated" >> "$ALIGNMENT_LOG"
-    echo "✅ TIER_0 manifest updated"
+if curl -f -s "$CANONICAL_REPO/raw/$CANONICAL_REF/governance/TIER_0_CANON_MANIFEST.json" \
+    -o "governance/TIER_0_CANON_MANIFEST.json.new" 2>> "$ALIGNMENT_LOG"; then
+    if [ -s "governance/TIER_0_CANON_MANIFEST.json.new" ]; then
+        mv "governance/TIER_0_CANON_MANIFEST.json.new" "governance/TIER_0_CANON_MANIFEST.json"
+        echo "$(date -Iseconds): TIER_0_CANON_MANIFEST.json updated" >> "$ALIGNMENT_LOG"
+        echo "✅ TIER_0 manifest updated"
+    else
+        echo "❌ Failed to fetch TIER_0 manifest (empty response)"
+        echo "$(date -Iseconds): ERROR - Failed to fetch TIER_0 manifest (empty response)" >> "$ALIGNMENT_LOG"
+        rm -f "governance/TIER_0_CANON_MANIFEST.json.new"
+        exit 1
+    fi
 else
-    echo "❌ Failed to fetch TIER_0 manifest"
-    echo "$(date -Iseconds): ERROR - Failed to fetch TIER_0 manifest" >> "$ALIGNMENT_LOG"
+    echo "❌ Failed to fetch TIER_0 manifest (curl error)"
+    echo "$(date -Iseconds): ERROR - Failed to fetch TIER_0 manifest (curl error)" >> "$ALIGNMENT_LOG"
+    rm -f "governance/TIER_0_CANON_MANIFEST.json.new"
     exit 1
 fi
 
@@ -423,7 +429,7 @@ for canon_file in $CANON_FILES; do
     mkdir -p "$(dirname "$canon_file")"
     
     echo "   Fetching: $canon_file"
-    if curl -s "$CANONICAL_URL" -o "$canon_file.new" 2>/dev/null; then
+    if curl -f -s "$CANONICAL_URL" -o "$canon_file.new" 2>> "$ALIGNMENT_LOG"; then
         if [ -s "$canon_file.new" ]; then
             mv "$canon_file.new" "$canon_file"
             SHA256=$(sha256sum "$canon_file" | cut -d' ' -f1)
@@ -449,11 +455,11 @@ echo "Step 3: Updating GOVERNANCE_ARTIFACT_INVENTORY.md..."
 if [ -f "GOVERNANCE_ARTIFACT_INVENTORY.md" ]; then
     # Update Last Checked timestamp
     if grep -q "Last Checked:" GOVERNANCE_ARTIFACT_INVENTORY.md; then
-        sed -i "s/Last Checked:.*/Last Checked: $(date -Iseconds)/" GOVERNANCE_ARTIFACT_INVENTORY.md
+        sed -i "s/Last Checked:[^$]*/Last Checked: $(date -Iseconds)/" GOVERNANCE_ARTIFACT_INVENTORY.md
     fi
     # Update Last Synced timestamp
     if grep -q "Last Synced:" GOVERNANCE_ARTIFACT_INVENTORY.md; then
-        sed -i "s/Last Synced:.*/Last Synced: $(date -Iseconds)/" GOVERNANCE_ARTIFACT_INVENTORY.md
+        sed -i "s/Last Synced:[^$]*/Last Synced: $(date -Iseconds)/" GOVERNANCE_ARTIFACT_INVENTORY.md
     fi
     echo "$(date -Iseconds): GOVERNANCE_ARTIFACT_INVENTORY.md updated" >> "$ALIGNMENT_LOG"
     echo "✅ Inventory updated"
