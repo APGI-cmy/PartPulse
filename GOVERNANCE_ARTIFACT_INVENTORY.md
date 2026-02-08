@@ -3,7 +3,7 @@
 **Repository**: APGI-cmy/PartPulse
 **Type**: Consumer Repository (Layered-Down Governance)
 **Canonical Source**: APGI-cmy/maturion-foreman-governance
-**Last Updated**: 2026-02-08T10:06:00Z
+**Last Updated**: 2026-02-08T13:30:51Z
 **Updated By**: governance-liaison
 
 ---
@@ -44,6 +44,18 @@ This inventory tracks all governance artifacts layered down from the canonical g
 | AGENT_BASELINE_MANAGEMENT_PROTOCOL.md | governance/canon/AGENT_BASELINE_MANAGEMENT_PROTOCOL.md | 2026-02-08T10:05:00Z | #1044 | ✅ CURRENT |
 | FOREMAN_MEMORY_PROTOCOL.md | governance/canon/FOREMAN_MEMORY_PROTOCOL.md | 2026-02-08T10:05:00Z | #1044 | ✅ CURRENT |
 | FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL.md | governance/canon/FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL.md | 2026-02-08T10:06:00Z | #1044 | ✅ CURRENT |
+
+### Living Agent System v5.0.0 Canon Gap Closures (Issue #1048)
+
+| File | Path | Last Layered-Down | Source PR | Status |
+|------|------|-------------------|-----------|--------|
+| AGENT_CLASS_SPECIFIC_GATE_PROTOCOLS.md | governance/canon/AGENT_CLASS_SPECIFIC_GATE_PROTOCOLS.md | 2026-02-08T13:30:50Z | #1048 | ✅ CURRENT |
+| GOVERNANCE_ARTIFACT_TAXONOMY.md | governance/canon/GOVERNANCE_ARTIFACT_TAXONOMY.md | 2026-02-08T13:30:50Z | #1048 | ✅ CURRENT |
+| SELF_ALIGNMENT_AUTHORITY_MODEL.md | governance/canon/SELF_ALIGNMENT_AUTHORITY_MODEL.md | 2026-02-08T13:30:50Z | #1048 | ✅ CURRENT |
+| LIVING_AGENT_GOVERNANCE_HEALTH_CHECKS.md | governance/canon/LIVING_AGENT_GOVERNANCE_HEALTH_CHECKS.md | 2026-02-08T13:30:51Z | #1048 | ✅ CURRENT |
+| GOVERNANCE_RIPPLE_DETECTION_PROTOCOL.md | governance/canon/GOVERNANCE_RIPPLE_DETECTION_PROTOCOL.md | 2026-02-08T13:30:51Z | #1048 | ✅ CURRENT |
+| GOVERNANCE_VALIDATION_PROTOCOL.md | governance/canon/GOVERNANCE_VALIDATION_PROTOCOL.md | 2026-02-08T13:30:51Z | #1048 | ✅ CURRENT |
+| PENDING_CANON_REFERENCES_INTERIM_GUIDANCE.md | governance/canon/PENDING_CANON_REFERENCES_INTERIM_GUIDANCE.md | 2026-02-08T13:30:51Z | #1048 | ✅ CURRENT |
 
 ### Agent Governance Canon (Batch 2)
 
