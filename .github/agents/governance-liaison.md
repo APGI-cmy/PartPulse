@@ -313,7 +313,6 @@ echo ""
 echo "✅ PRE-HANDOVER VALIDATION PASSED"
 
 # -------------------- PHASE 7: Ready State --------------------
-# -------------------- PHASE 7: Ready State --------------------
 echo ""
 echo "[PHASE 7] Ready State"
 echo "-----------------------------------"
