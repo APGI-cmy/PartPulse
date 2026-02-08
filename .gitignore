@@ -66,3 +66,8 @@ evidence/fixes/*
 !evidence/fixes/README.md
 !evidence/fixes/*/
 !evidence/fixes/*/README.md
+
+# Agent session logs - temporary files not to be committed
+.agent-admin/sessions/**/*.log
+.agent-admin/sessions/**/*_evidence.log
+.agent-admin/sessions/**/*_alignment.log
