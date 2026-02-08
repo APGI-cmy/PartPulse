@@ -106,7 +106,7 @@ echo "[PHASE 3] Generate Session Contract"
 echo "-----------------------------------"
 
 SESSION_ID="codex-$(date +%Y%m%d-%H%M%S)"
-SESSION_DIR=".agent/sessions/CodexAdvisor"
+SESSION_DIR=".agent-admin/sessions/CodexAdvisor"
 mkdir -p "$SESSION_DIR"
 
 SESSION_CONTRACT="$SESSION_DIR/$SESSION_ID.md"
@@ -241,7 +241,7 @@ At session end, update session contract with:
 **Timestamp**: [ISO8601]
 ```
 
-Store in `.agent/sessions/CodexAdvisor/[session-id].md`
+Store in `.agent-admin/sessions/CodexAdvisor/[session-id].md`
 
 ---
 
