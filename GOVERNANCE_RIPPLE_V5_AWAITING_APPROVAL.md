@@ -1,6 +1,21 @@
-# Governance Ripple v5.0.0 - Awaiting CS2 Approval
+# ⚠️ DEPRECATED: Governance Ripple v5.0.0 - Awaiting CS2 Approval
 
-**Status**: 🟡 BLOCKED - Awaiting CS2 Decision
+**⚠️ DEPRECATION NOTICE**: This document is **DEPRECATED** as of 2026-02-08T08:32:00Z
+
+**Reason**: Based on incorrect understanding of agent authority boundaries (attempted cross-repository operations)  
+**Authority**: CS2 (Johan) realignment instruction  
+**Replaced By**: 
+- `GOVERNANCE_CANONICAL_STATUS_V5.md`
+- `GOVERNANCE_CS2_ISSUE_TEMPLATES.md`
+- `GOVERNANCE_REALIGNMENT_AGENT_AUTHORITY.md`
+
+**Preserved for**: Audit trail only - DO NOT USE
+
+---
+
+## Original Document (DEPRECATED)
+
+**Status**: 🟡 BLOCKED - Awaiting CS2 Decision (DEPRECATED - DO NOT USE)
 **Date**: 2026-02-08T06:45:00Z
 **Authority**: CodexAdvisor-agent v5.0.0
 
