@@ -3,7 +3,7 @@
 **Repository**: APGI-cmy/PartPulse
 **Type**: Consumer Repository (Layered-Down Governance)
 **Canonical Source**: APGI-cmy/maturion-foreman-governance
-**Last Updated**: 2026-02-04T10:59:00Z
+**Last Updated**: 2026-02-08T10:06:00Z
 **Updated By**: governance-liaison
 
 ---
@@ -36,6 +36,14 @@ This inventory tracks all governance artifacts layered down from the canonical g
 | STOP_AND_FIX_DOCTRINE.md | governance/canon/STOP_AND_FIX_DOCTRINE.md | 2026-01-27T07:01:22Z | #1023 | ✅ CURRENT |
 | VERSIONING_AND_EVOLUTION_GOVERNANCE.md | governance/canon/VERSIONING_AND_EVOLUTION_GOVERNANCE.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
 | WARNING_DISCOVERY_BLOCKER_PROTOCOL.md | governance/canon/WARNING_DISCOVERY_BLOCKER_PROTOCOL.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
+
+### Living Agent System v5.0.0 Protocols (Layer-Down February 2026)
+
+| File | Path | Last Layered-Down | Source PR | Status |
+|------|------|-------------------|-----------|--------|
+| AGENT_BASELINE_MANAGEMENT_PROTOCOL.md | governance/canon/AGENT_BASELINE_MANAGEMENT_PROTOCOL.md | 2026-02-08T10:05:00Z | #1044 | ✅ CURRENT |
+| FOREMAN_MEMORY_PROTOCOL.md | governance/canon/FOREMAN_MEMORY_PROTOCOL.md | 2026-02-08T10:05:00Z | #1044 | ✅ CURRENT |
+| FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL.md | governance/canon/FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL.md | 2026-02-08T10:06:00Z | #1044 | ✅ CURRENT |
 
 ### Agent Governance Canon (Batch 2)
 
@@ -390,14 +398,69 @@ This inventory tracks all governance artifacts layered down from the canonical g
 
 ---
 
+### 2026-02-08 - Living Agent System v5.0.0: Baseline Management, FM Memory, and Wave Planning Protocols
+
+**Ripple Type**: HIGH-priority Living Agent System v5.0.0 Protocols Layer-Down
+**Source**: Canonical governance repository (APGI-cmy/maturion-foreman-governance)
+**Source PR**: #1044 (https://github.com/APGI-cmy/maturion-foreman-governance/pull/1044)
+**Executed By**: governance-liaison
+**Timestamp**: 2026-02-08T10:06:00Z
+**Related Issue**: Layer Down: Apply Living Agent System v5.0.0 Governance Protocols and Canon to PartPulse
+
+**Files Layered Down** (3 Living Agent System v5.0.0 canonical protocols):
+1. ✅ governance/canon/AGENT_BASELINE_MANAGEMENT_PROTOCOL.md (30 KB, 28035 bytes) - Agent baseline management, validation, and drift reconciliation
+2. ✅ governance/canon/FOREMAN_MEMORY_PROTOCOL.md (28 KB) - FM memory architecture, lifecycle, and learning loop integration
+3. ✅ governance/canon/FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL.md (26 KB) - FM wave planning methodology and issue artifact generation
+
+**Total Size**: ~84 KB across 3 files
+
+**New Artifacts**:
+1. ✅ governance/TIER_0_CANON_MANIFEST.json (5 KB) - Tier-0 Constitutional Canon Manifest (Living Agent System v5.0.0)
+
+**Canon Count Summary**:
+- **Previous Total (Batch 5)**: 54 canon files tracked in inventory
+- **Added (Living Agent System v5.0.0)**: 3 canon files
+- **New Total**: 57 canon files ✅
+
+**Validation**:
+- [COMPLETE] File integrity check - PASS ✅
+- [COMPLETE] File count verification (3/3 present) - PASS ✅
+- [COMPLETE] TIER_0_CANON_MANIFEST.json created - PASS ✅
+- [PENDING] FM agent contract updates (baseline, memory protocol references)
+- [PENDING] Workspace contract template updates
+- [PENDING] Cross-reference validation
+- [PENDING] Script updates (validate_baseline, agent wave closure logic)
+
+**Key Changes**:
+- **AGENT_BASELINE_MANAGEMENT_PROTOCOL.md** establishes canonical baseline management, validation at wake-up, drift detection and reconciliation, CS2-only authority
+- **FOREMAN_MEMORY_PROTOCOL.md** establishes FM memory hierarchy (constitutional, wave, session, learning), continuity requirements, learning loop integration
+- **FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL.md** establishes wave planning methodology, subwave decomposition, issue artifact generation workflow
+
+**Integration Points**:
+- Living Agent System v5.0.0 lifecycle compliance
+- FM wake-up protocol integration (baseline validation, memory load)
+- FM working contract generation (memory context)
+- FM session closure (memory capture, learning loop)
+- Wave progress artifact maintenance per FM_ROLE_CANON.md §6.1
+
+**Notes**:
+- Living Agent System v5.0.0 protocols enable agent self-governance, autonomous FM orchestration, and governance-driven execution
+- Baseline validation is now mandatory at session start (LIVING_AGENT_SYSTEM.md wake-up phase)
+- FM memory provides four-level hierarchy for continuity and learning accumulation
+- Wave planning protocols establish systematic decomposition and issue artifact generation
+- TIER_0_CANON_MANIFEST.json tracks all constitutional canons for validation
+
+---
+
 ## Governance Alignment Status
 
-**Last Checked**: 2026-02-04T13:02:00Z
+**Last Checked**: 2026-02-08T10:06:00Z
 **Status**: **FULLY ALIGNED** ✅
 **Canonical Source**: APGI-cmy/maturion-foreman-governance@main
-**Local Governance Version**: Synchronized as of 2026-02-04T13:02:00Z
+**Local Governance Version**: Living Agent System v5.0.0 (synchronized as of 2026-02-08T10:06:00Z)
 **Agent Contract Binding**: Corrected and validated ✅
 **Agent Contracts Guidance**: Centralized per PR #1027 ✅
+**TIER_0 Manifest**: Created and current (v5.0.0) ✅
 
 ---
 
