@@ -1,8 +1,114 @@
 # Scripts Directory
 
-This directory contains utility scripts for PartPulse administration.
+This directory contains utility scripts for PartPulse administration and governance.
 
 ## Available Scripts
+
+### Governance & Living Agent System Scripts
+
+#### validate_baseline.sh
+
+**Purpose:** Agent baseline validation at startup per Living Agent System v5.0.0
+
+**Usage:**
+```bash
+scripts/validate_baseline.sh [OPTIONS] <agent-type>
+```
+
+**Options:**
+- `-h, --help`: Show help message
+- `-v, --verbose`: Enable verbose output
+- `-a, --auto-fix`: Attempt auto-remediation for minor drift
+- `-r, --repo-root <path>`: Repository root path
+
+**Examples:**
+```bash
+# Validate api-builder agent
+scripts/validate_baseline.sh api-builder
+
+# Validate with auto-fix enabled
+scripts/validate_baseline.sh --auto-fix governance-liaison
+
+# Verbose validation
+scripts/validate_baseline.sh --verbose ForemanApp-agent
+```
+
+**What it validates:**
+1. File existence (baseline and instance)
+2. Version currency (baseline vs instance)
+3. Content integrity (LOCKED sections)
+4. Governance references (canonical file availability)
+5. Mandatory sections (structural validation)
+
+**Exit Codes:**
+- `0`: Validation PASSED
+- `1`: Validation FAILED (critical drift - escalation required)
+- `2`: Validation WARNED (minor drift detected)
+- `3`: Invalid usage or missing files
+
+**Authority:** `governance/canon/AGENT_BASELINE_MANAGEMENT_PROTOCOL.md` §5
+
+**Related Documentation:**
+- [AGENT_BASELINE_MANAGEMENT_PROTOCOL.md](../governance/canon/AGENT_BASELINE_MANAGEMENT_PROTOCOL.md)
+- [LIVING_AGENT_SYSTEM_V5_LAYER_DOWN_COMPLETION.md](../LIVING_AGENT_SYSTEM_V5_LAYER_DOWN_COMPLETION.md)
+
+---
+
+#### wave_closure.sh
+
+**Purpose:** Wave completion certification and closure per Living Agent System v5.0.0
+
+**Usage:**
+```bash
+scripts/wave_closure.sh [OPTIONS] <wave-number>
+```
+
+**Options:**
+- `-h, --help`: Show help message
+- `-v, --verbose`: Enable verbose output
+- `-f, --force`: Force closure even if validation warnings exist
+- `-d, --dry-run`: Validate only, do not create closure artifacts
+- `-r, --repo-root <path>`: Repository root path
+
+**Examples:**
+```bash
+# Close Wave 1
+scripts/wave_closure.sh 1
+
+# Dry-run validation for Wave 2
+scripts/wave_closure.sh --dry-run --verbose 2
+
+# Force closure with warnings
+scripts/wave_closure.sh --force 3
+```
+
+**What it validates:**
+1. Wave progress artifact existence
+2. Architecture documentation completeness
+3. QA suite status (tests passing)
+4. Zero test debt verification
+5. Governance violations check
+
+**What it generates:**
+1. Wave closure certification document
+2. Wave progress artifact update
+3. Session memory entry for FM
+
+**Exit Codes:**
+- `0`: Wave closure COMPLETE
+- `1`: Wave closure FAILED (blocking issues found)
+- `2`: Wave closure WARNED (non-blocking issues found)
+- `3`: Invalid usage or missing files
+
+**Authority:** `governance/canon/FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL.md` §6
+
+**Related Documentation:**
+- [FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL.md](../governance/canon/FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL.md)
+- [FOREMAN_MEMORY_PROTOCOL.md](../governance/canon/FOREMAN_MEMORY_PROTOCOL.md)
+
+---
+
+### Administration Scripts
 
 ### create-defect-labels.sh
 
