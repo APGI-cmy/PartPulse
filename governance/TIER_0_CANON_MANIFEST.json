@@ -1,0 +1,163 @@
+{
+  "$schema": "./schemas/tier-0-canon-manifest-schema.json",
+  "version": "5.0.0",
+  "effective_date": "2026-02-08",
+  "repository": "APGI-cmy/PartPulse",
+  "canonical_source": "APGI-cmy/maturion-foreman-governance",
+  "last_updated": "2026-02-08T10:05:00Z",
+  "updated_by": "governance-liaison",
+  "description": "Tier-0 Constitutional Canon Manifest for Living Agent System v5.0.0",
+  
+  "tier_0_canons": [
+    {
+      "id": "T0-001",
+      "name": "GOVERNANCE_PURPOSE_AND_SCOPE",
+      "path": "governance/canon/GOVERNANCE_PURPOSE_AND_SCOPE.md",
+      "type": "constitutional",
+      "authority": "supreme",
+      "version": "1.0.0",
+      "layered_down": "2026-01-23T13:58:27Z",
+      "status": "current"
+    },
+    {
+      "id": "T0-002",
+      "name": "AGENT_SELF_GOVERNANCE_PROTOCOL",
+      "path": "governance/canon/AGENT_SELF_GOVERNANCE_PROTOCOL.md",
+      "type": "protocol",
+      "authority": "constitutional",
+      "version": "1.0.0",
+      "layered_down": "2026-01-23T13:58:27Z",
+      "status": "current"
+    },
+    {
+      "id": "T0-003",
+      "name": "STOP_AND_FIX_DOCTRINE",
+      "path": "governance/canon/STOP_AND_FIX_DOCTRINE.md",
+      "type": "doctrine",
+      "authority": "constitutional",
+      "version": "2.0.0",
+      "layered_down": "2026-01-27T07:01:22Z",
+      "status": "current"
+    },
+    {
+      "id": "T0-004",
+      "name": "GOVERNANCE_RIPPLE_MODEL",
+      "path": "governance/canon/GOVERNANCE_RIPPLE_MODEL.md",
+      "type": "model",
+      "authority": "constitutional",
+      "version": "1.0.0",
+      "layered_down": "2026-01-23T13:58:27Z",
+      "status": "current"
+    },
+    {
+      "id": "T0-005",
+      "name": "CROSS_REPOSITORY_LAYER_DOWN_PROTOCOL",
+      "path": "governance/canon/CROSS_REPOSITORY_LAYER_DOWN_PROTOCOL.md",
+      "type": "protocol",
+      "authority": "constitutional",
+      "version": "1.0.0",
+      "layered_down": "2026-01-23T13:58:27Z",
+      "status": "current"
+    },
+    {
+      "id": "T0-006",
+      "name": "AGENT_CONTRACT_PROTECTION_PROTOCOL",
+      "path": "governance/canon/AGENT_CONTRACT_PROTECTION_PROTOCOL.md",
+      "type": "protocol",
+      "authority": "constitutional",
+      "version": "1.0.0",
+      "layered_down": "2026-01-23T13:58:27Z",
+      "status": "current"
+    },
+    {
+      "id": "T0-007",
+      "name": "CS2_AGENT_FILE_AUTHORITY_MODEL",
+      "path": "governance/canon/CS2_AGENT_FILE_AUTHORITY_MODEL.md",
+      "type": "model",
+      "authority": "constitutional",
+      "version": "1.0.0",
+      "layered_down": "2026-01-23T13:58:27Z",
+      "status": "current"
+    },
+    {
+      "id": "T0-008",
+      "name": "AGENT_BASELINE_MANAGEMENT_PROTOCOL",
+      "path": "governance/canon/AGENT_BASELINE_MANAGEMENT_PROTOCOL.md",
+      "type": "protocol",
+      "authority": "constitutional",
+      "version": "1.0.0",
+      "layered_down": "2026-02-08T10:05:00Z",
+      "status": "current",
+      "new_in_v5": true
+    },
+    {
+      "id": "T0-009",
+      "name": "FOREMAN_MEMORY_PROTOCOL",
+      "path": "governance/canon/FOREMAN_MEMORY_PROTOCOL.md",
+      "type": "protocol",
+      "authority": "canonical",
+      "version": "1.0.0",
+      "layered_down": "2026-02-08T10:05:00Z",
+      "status": "current",
+      "new_in_v5": true
+    },
+    {
+      "id": "T0-010",
+      "name": "FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL",
+      "path": "governance/canon/FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL.md",
+      "type": "protocol",
+      "authority": "canonical",
+      "version": "1.0.0",
+      "layered_down": "2026-02-08T10:06:00Z",
+      "status": "current",
+      "new_in_v5": true
+    },
+    {
+      "id": "T0-011",
+      "name": "FM_ROLE_CANON",
+      "path": "governance/canon/FM_ROLE_CANON.md",
+      "type": "canon",
+      "authority": "canonical",
+      "version": "1.0.0",
+      "layered_down": "2026-01-23T14:29:00Z",
+      "status": "current"
+    },
+    {
+      "id": "T0-012",
+      "name": "FOREMAN_AUTHORITY_AND_SUPERVISION_MODEL",
+      "path": "governance/canon/FOREMAN_AUTHORITY_AND_SUPERVISION_MODEL.md",
+      "type": "model",
+      "authority": "canonical",
+      "version": "1.0.0",
+      "layered_down": "2026-01-23T14:29:00Z",
+      "status": "current"
+    }
+  ],
+  
+  "living_agent_system": {
+    "version": "5.0.0",
+    "effective_date": "2026-02-08",
+    "key_protocols": [
+      "AGENT_BASELINE_MANAGEMENT_PROTOCOL",
+      "FOREMAN_MEMORY_PROTOCOL",
+      "FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL"
+    ],
+    "description": "Living Agent System v5.0.0 introduces baseline management, FM memory protocols, and wave planning protocols for autonomous agent orchestration"
+  },
+  
+  "governance_ripple": {
+    "source_pr": "https://github.com/APGI-cmy/maturion-foreman-governance/pull/1044",
+    "ripple_date": "2026-02-08",
+    "layer_down_status": "complete",
+    "protocols_added": 3,
+    "protocols_updated": 0,
+    "protocols_deprecated": 0
+  },
+  
+  "validation": {
+    "baseline_validation_required": true,
+    "cross_reference_validation": true,
+    "fm_memory_integration": true,
+    "wave_planning_integration": true
+  }
+}
