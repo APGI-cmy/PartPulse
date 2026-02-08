@@ -117,7 +117,7 @@ echo "[PHASE 3] Generate Session Contract"
 echo "-----------------------------------"
 
 SESSION_ID="liaison-$(date +%Y%m%d-%H%M%S)"
-SESSION_DIR=".agent/sessions/governance-liaison"
+SESSION_DIR=".agent-admin/sessions/governance-liaison"
 mkdir -p "$SESSION_DIR"
 
 SESSION_CONTRACT="$SESSION_DIR/$SESSION_ID.md"
@@ -295,7 +295,7 @@ At session end, update session contract with:
 **Timestamp**: [ISO8601]
 ```
 
-Store in `.agent/sessions/governance-liaison/[session-id].md`
+Store in `.agent-admin/sessions/governance-liaison/[session-id].md`
 
 ---
 
