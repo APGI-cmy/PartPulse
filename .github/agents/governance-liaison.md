@@ -494,6 +494,118 @@ Log alignment actions in session contract under "Alignment Actions Log".
 
 ---
 
+## 🔒 PR Failure Analysis Protocol (LOCKED)
+
+<!-- Lock ID: LOCK-LIAISON-PR-FAILURE-001 -->
+<!-- Lock Reason: Prevents catastrophic repeat PR failures - STOP AND FIX enforcement -->
+<!-- Lock Authority: STOP_AND_FIX_DOCTRINE.md, CI_CONFIRMATORY_NOT_DIAGNOSTIC.md -->
+<!-- Lock Date: 2026-02-09 -->
+<!-- Last Reviewed: 2026-02-09 -->
+<!-- Review Frequency: quarterly -->
+<!-- END METADATA -->
+
+**MANDATORY before creating retry PR after ANY PR failure:**
+
+### Detection: Is This a Retry After Failure?
+
+Check for recent closed/failed PRs:
+```bash
+gh pr list --repo APGI-cmy/PartPulse --state closed --limit 10
+```
+
+If you see recently closed PRs from governance-liaison → EXECUTE THIS PROTOCOL.
+
+---
+
+### Step 1: Read Workflow Logs (MANDATORY)
+
+```bash
+# List recent workflow runs
+gh run list --repo APGI-cmy/PartPulse --limit 10
+
+# Identify the failed run from the closed PR
+# Read the complete workflow log
+gh run view <run-id> --log
+
+# If specific job failed, get that job's log
+gh run view <run-id> --job=<job-id> --log
+```
+
+**STOP**: Do NOT proceed until you have READ and UNDERSTOOD the failure logs.
+
+---
+
+### Step 2: Root Cause Analysis (MANDATORY)
+
+Document your analysis:
+
+1. **What specifically failed?**
+   - Exact error message
+   - Failing test/check name
+   - Stack trace or failure point
+
+2. **Why did it fail?**
+   - Root cause (not symptom)
+   - What assumption was violated?
+   - What changed that caused failure?
+
+3. **What is the fix?**
+   - Specific code/config change required
+   - Why will this fix work?
+   - What prevents recurrence?
+
+**Create analysis file**: `.agent-admin/sessions/governance-liaison/<session-id>_pr_failure_analysis.md`
+
+---
+
+### Step 3: Verify Fix Before Retry (MANDATORY)
+
+Before creating new PR:
+
+```bash
+# If tests failed: Run tests locally
+npm test  # or appropriate test command
+
+# If build failed: Build locally
+npm run build  # or appropriate build command
+
+# If validation failed: Run validation locally
+scripts/validate_baseline.sh governance-liaison
+```
+
+**STOP**: Do NOT create retry PR until local validation PASSES.
+
+---
+
+### Step 4: Retry PR Creation
+
+Only after Steps 1-3 complete:
+
+1. Create new PR with:
+   - Clear title: "Fix: [root cause from analysis]"
+   - Link to failure analysis file in PR description
+   - Explanation of fix and prevention
+
+2. Monitor new PR's CI checks
+3. If new failure → RETURN TO STEP 1 (do not guess)
+
+---
+
+### Escalation
+
+If after 2 retry attempts the issue persists:
+- Create detailed escalation in `governance/escalation/`
+- Tag CS2 for assistance
+- DO NOT continue retry loop
+
+---
+
+**Authority**: STOP_AND_FIX_DOCTRINE.md (Universal Responsibility principle)
+**Enforcement**: MANDATORY - No exceptions for governance-liaison PRs
+**Governance Ripple Source**: Canonical governance repository (post office-app incident)
+
+---
+
 ## Session Outcome Protocol
 
 At session end, update session contract with:
