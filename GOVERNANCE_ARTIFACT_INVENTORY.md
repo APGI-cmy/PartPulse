@@ -3,9 +3,9 @@
 **Repository**: APGI-cmy/PartPulse
 **Type**: Consumer Repository (Layered-Down Governance)
 **Canonical Source**: APGI-cmy/maturion-foreman-governance
-**Last Updated**: 2026-02-09T08:28:00Z
+**Last Updated**: 2026-02-09T11:53:33Z
 **Updated By**: governance-liaison
-**Last Synced**: 2026-02-09T08:28:00Z (PR #1054 + PR #1056)
+**Last Synced**: 2026-02-09T11:53:33Z (Issue #1061 - FM Merge Gate Management Layer-Down)
 
 ---
 
@@ -33,7 +33,7 @@ This inventory tracks all governance artifacts layered down from the canonical g
 | GOVERNANCE_RIPPLE_MODEL.md | governance/canon/GOVERNANCE_RIPPLE_MODEL.md | 2026-02-09T08:28:00Z | #1056 | ✅ CURRENT v1.0 |
 | GOVERNANCE_VERSIONING_AND_SYNC_PROTOCOL.md | governance/canon/GOVERNANCE_VERSIONING_AND_SYNC_PROTOCOL.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
 | MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md | governance/canon/MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
-| MERGE_GATE_PHILOSOPHY.md | governance/canon/MERGE_GATE_PHILOSOPHY.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
+| MERGE_GATE_PHILOSOPHY.md | governance/canon/MERGE_GATE_PHILOSOPHY.md | 2026-02-09T11:53:33Z | #1061 | ✅ CURRENT v1.0.0 |
 | SCOPE_TO_DIFF_RULE.md | governance/canon/SCOPE_TO_DIFF_RULE.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
 | STOP_AND_FIX_DOCTRINE.md | governance/canon/STOP_AND_FIX_DOCTRINE.md | 2026-02-09T07:16:00Z | #1052 | ✅ CURRENT v2.1.0 |
 | VERSIONING_AND_EVOLUTION_GOVERNANCE.md | governance/canon/VERSIONING_AND_EVOLUTION_GOVERNANCE.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
@@ -58,6 +58,13 @@ This inventory tracks all governance artifacts layered down from the canonical g
 | GOVERNANCE_RIPPLE_DETECTION_PROTOCOL.md | governance/canon/GOVERNANCE_RIPPLE_DETECTION_PROTOCOL.md | 2026-02-08T13:30:51Z | #1048 | ✅ CURRENT |
 | GOVERNANCE_VALIDATION_PROTOCOL.md | governance/canon/GOVERNANCE_VALIDATION_PROTOCOL.md | 2026-02-08T13:30:51Z | #1048 | ✅ CURRENT |
 | PENDING_CANON_REFERENCES_INTERIM_GUIDANCE.md | governance/canon/PENDING_CANON_REFERENCES_INTERIM_GUIDANCE.md | 2026-02-08T13:30:51Z | #1048 | ✅ CURRENT |
+
+### FM Merge Gate Management Canon (Issue #1061)
+
+| File | Path | Last Layered-Down | Source PR | Status |
+|------|------|-------------------|-----------|--------|
+| FM_MERGE_GATE_MANAGEMENT_PROTOCOL.md | governance/canon/FM_MERGE_GATE_MANAGEMENT_PROTOCOL.md | 2026-02-09T11:53:33Z | #1061 | ✅ CURRENT v1.0.0 |
+| MERGE_GATE_APPLICABILITY_MATRIX.md | governance/canon/MERGE_GATE_APPLICABILITY_MATRIX.md | 2026-02-09T11:53:33Z | #1061 | ✅ CURRENT v1.0.0 |
 
 ### Agent Governance Canon (Batch 2)
 
