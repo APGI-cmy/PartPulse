@@ -4,7 +4,7 @@
   "effective_date": "2026-02-08",
   "repository": "APGI-cmy/PartPulse",
   "canonical_source": "APGI-cmy/maturion-foreman-governance",
-  "last_updated": "2026-02-08T10:05:00Z",
+  "last_updated": "2026-02-09T07:16:00Z",
   "updated_by": "governance-liaison",
   "description": "Tier-0 Constitutional Canon Manifest for Living Agent System v5.0.0",
   
@@ -35,9 +35,11 @@
       "path": "governance/canon/STOP_AND_FIX_DOCTRINE.md",
       "type": "doctrine",
       "authority": "constitutional",
-      "version": "2.0.0",
-      "layered_down": "2026-01-27T07:01:22Z",
-      "status": "current"
+      "version": "2.1.0",
+      "layered_down": "2026-02-09T07:16:00Z",
+      "status": "current",
+      "updated_in_pr": 1052,
+      "changes": "Section 8: Learning Loop Integration and Improvement Escalation"
     },
     {
       "id": "T0-004",
@@ -97,9 +99,10 @@
       "type": "protocol",
       "authority": "canonical",
       "version": "1.0.0",
-      "layered_down": "2026-02-08T10:05:00Z",
+      "layered_down": "2026-02-09T07:16:00Z",
       "status": "current",
-      "new_in_v5": true
+      "new_in_v5": true,
+      "updated_in_pr": 1052
     },
     {
       "id": "T0-010",
@@ -108,19 +111,22 @@
       "type": "protocol",
       "authority": "canonical",
       "version": "1.0.0",
-      "layered_down": "2026-02-08T10:06:00Z",
+      "layered_down": "2026-02-09T07:16:00Z",
       "status": "current",
-      "new_in_v5": true
+      "new_in_v5": true,
+      "updated_in_pr": 1052
     },
     {
       "id": "T0-011",
       "name": "FM_ROLE_CANON",
-      "path": "governance/canon/FM_ROLE_CANON.md",
+      "path": "governance/maturion/FM_ROLE_CANON.md",
       "type": "canon",
       "authority": "canonical",
       "version": "1.0.0",
-      "layered_down": "2026-01-23T14:29:00Z",
-      "status": "current"
+      "layered_down": "2026-02-09T07:16:00Z",
+      "status": "current",
+      "updated_in_pr": 1052,
+      "changes": "Sections 12, 13: Operational Sandbox and Issue Artifact Generation"
     },
     {
       "id": "T0-012",
@@ -131,6 +137,18 @@
       "version": "1.0.0",
       "layered_down": "2026-01-23T14:29:00Z",
       "status": "current"
+    },
+    {
+      "id": "T0-013",
+      "name": "BOOTSTRAP_EXECUTION_LEARNINGS",
+      "path": "governance/canon/BOOTSTRAP_EXECUTION_LEARNINGS.md",
+      "type": "learnings",
+      "authority": "canonical",
+      "version": "1.0.0",
+      "layered_down": "2026-02-09T07:16:00Z",
+      "status": "current",
+      "updated_in_pr": 1052,
+      "changes": "Appendix A: Learning/Failure/Improvement Classification Matrix"
     }
   ],
   
@@ -146,12 +164,13 @@
   },
   
   "governance_ripple": {
-    "source_pr": "https://github.com/APGI-cmy/maturion-foreman-governance/pull/1044",
-    "ripple_date": "2026-02-08",
+    "source_pr": "https://github.com/APGI-cmy/maturion-foreman-governance/pull/1052",
+    "ripple_date": "2026-02-09",
     "layer_down_status": "complete",
-    "protocols_added": 3,
-    "protocols_updated": 0,
-    "protocols_deprecated": 0
+    "protocols_added": 0,
+    "protocols_updated": 5,
+    "protocols_deprecated": 0,
+    "description": "Foreman Operational Sandbox & Issue Artifact Protocols - PR #1052"
   },
   
   "validation": {
