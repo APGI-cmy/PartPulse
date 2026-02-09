@@ -3,8 +3,9 @@
 **Repository**: APGI-cmy/PartPulse
 **Type**: Consumer Repository (Layered-Down Governance)
 **Canonical Source**: APGI-cmy/maturion-foreman-governance
-**Last Updated**: 2026-02-08T13:30:51Z
+**Last Updated**: 2026-02-09T07:16:00Z
 **Updated By**: governance-liaison
+**Last Synced**: 2026-02-09T07:16:00Z (PR #1052)
 
 ---
 
@@ -33,7 +34,7 @@ This inventory tracks all governance artifacts layered down from the canonical g
 | MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md | governance/canon/MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
 | MERGE_GATE_PHILOSOPHY.md | governance/canon/MERGE_GATE_PHILOSOPHY.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
 | SCOPE_TO_DIFF_RULE.md | governance/canon/SCOPE_TO_DIFF_RULE.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
-| STOP_AND_FIX_DOCTRINE.md | governance/canon/STOP_AND_FIX_DOCTRINE.md | 2026-01-27T07:01:22Z | #1023 | ✅ CURRENT |
+| STOP_AND_FIX_DOCTRINE.md | governance/canon/STOP_AND_FIX_DOCTRINE.md | 2026-02-09T07:16:00Z | #1052 | ✅ CURRENT v2.1.0 |
 | VERSIONING_AND_EVOLUTION_GOVERNANCE.md | governance/canon/VERSIONING_AND_EVOLUTION_GOVERNANCE.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
 | WARNING_DISCOVERY_BLOCKER_PROTOCOL.md | governance/canon/WARNING_DISCOVERY_BLOCKER_PROTOCOL.md | 2026-01-23T13:58:27Z | Batch-1 | ✅ CURRENT |
 
@@ -42,8 +43,8 @@ This inventory tracks all governance artifacts layered down from the canonical g
 | File | Path | Last Layered-Down | Source PR | Status |
 |------|------|-------------------|-----------|--------|
 | AGENT_BASELINE_MANAGEMENT_PROTOCOL.md | governance/canon/AGENT_BASELINE_MANAGEMENT_PROTOCOL.md | 2026-02-08T10:05:00Z | #1044 | ✅ CURRENT |
-| FOREMAN_MEMORY_PROTOCOL.md | governance/canon/FOREMAN_MEMORY_PROTOCOL.md | 2026-02-08T10:05:00Z | #1044 | ✅ CURRENT |
-| FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL.md | governance/canon/FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL.md | 2026-02-08T10:06:00Z | #1044 | ✅ CURRENT |
+| FOREMAN_MEMORY_PROTOCOL.md | governance/canon/FOREMAN_MEMORY_PROTOCOL.md | 2026-02-09T07:16:00Z | #1052 | ✅ CURRENT v1.0.0 |
+| FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL.md | governance/canon/FOREMAN_WAVE_PLANNING_AND_ISSUE_ARTIFACT_GENERATION_PROTOCOL.md | 2026-02-09T07:16:00Z | #1052 | ✅ CURRENT v1.0.0 |
 
 ### Living Agent System v5.0.0 Canon Gap Closures (Issue #1048)
 
@@ -71,6 +72,7 @@ This inventory tracks all governance artifacts layered down from the canonical g
 | FM_GOVERNANCE_LOADING_PROTOCOL.md | governance/canon/FM_GOVERNANCE_LOADING_PROTOCOL.md | 2026-01-23T14:29:00Z | Batch-2 | ✅ CURRENT |
 | FM_RUNTIME_ENFORCEMENT_AND_AWARENESS_MODEL.md | governance/canon/FM_RUNTIME_ENFORCEMENT_AND_AWARENESS_MODEL.md | 2026-01-23T14:29:00Z | Batch-2 | ✅ CURRENT |
 | FOREMAN_AUTHORITY_AND_SUPERVISION_MODEL.md | governance/canon/FOREMAN_AUTHORITY_AND_SUPERVISION_MODEL.md | 2026-01-23T14:29:00Z | Batch-2 | ✅ CURRENT |
+| FM_ROLE_CANON.md | governance/maturion/FM_ROLE_CANON.md | 2026-02-09T07:16:00Z | #1052 | ✅ CURRENT v1.0.0 |
 
 ### PR Gate & Quality Canon (Batch 3)
 
@@ -116,6 +118,7 @@ This inventory tracks all governance artifacts layered down from the canonical g
 | GOVERNANCE_ENFORCEMENT_TRANSITION.md | governance/canon/GOVERNANCE_ENFORCEMENT_TRANSITION.md | 2026-02-04T10:59:00Z | Batch-5 | ✅ CURRENT |
 | GOVERNANCE_LAYERDOWN_CONTRACT.md | governance/canon/GOVERNANCE_LAYERDOWN_CONTRACT.md | 2026-02-04T10:59:00Z | Batch-5 | ✅ CURRENT |
 | ARCHITECTURE_COMPLETENESS_REQUIREMENTS.md | governance/canon/ARCHITECTURE_COMPLETENESS_REQUIREMENTS.md | 2026-02-04T10:59:00Z | Batch-5 | ✅ CURRENT |
+| BOOTSTRAP_EXECUTION_LEARNINGS.md | governance/canon/BOOTSTRAP_EXECUTION_LEARNINGS.md | 2026-02-09T07:16:00Z | #1052 | ✅ CURRENT v1.0.0 |
 
 ### Philosophy Files
 

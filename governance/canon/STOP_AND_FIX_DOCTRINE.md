@@ -1,4 +1,4 @@
-successfully downloaded text file (SHA: 3acefa2cfe21476f4b35cf0dc3fb34a889bec0c5)# STOP-AND-FIX DOCTRINE
+# STOP-AND-FIX DOCTRINE
 
 ## Status
 **Type**: Tier-0 Constitutional Canon
@@ -605,9 +605,262 @@ Stop-and-Fix **feeds** learning promotion:
 
 ---
 
-## 8. Enforcement
+## 8. Learning Loop Integration and Improvement Escalation
 
-### 8.1 Governance Gates
+### 9.1 Purpose
+
+Stop-and-Fix doctrine generates **continuous learning opportunities** that MUST be captured, categorized, and promoted to canonical governance when patterns emerge. This section establishes the integration between immediate remediation (Stop-and-Fix) and systematic improvement (Learning Loop).
+
+**Core Principle**: Every Stop-and-Fix event is a **potential learning**. When the same issue recurs across multiple sessions or agents, it becomes a **governance gap** requiring canonical resolution.
+
+### 9.2 Learning Capture During Stop-and-Fix
+
+When an agent executes Stop-and-Fix, they MUST document:
+
+#### Immediate Documentation (Required)
+```markdown
+## Stop-and-Fix Event
+
+**Date**: YYYY-MM-DD HH:MM:SS UTC  
+**Agent**: <agent-type>  
+**Issue Type**: Test Failure | Governance Violation | Security | Other  
+**Severity**: Low | Medium | High | Critical  
+
+### Issue Description
+<What was discovered?>
+
+### Immediate Remediation
+<What was fixed?>
+
+### Root Cause (if known)
+<Why did this occur?>
+
+### Prevention Recommendation
+<How can this be prevented in future?>
+```
+
+#### Learning Categorization (Per LEARNING_LOOP_CATEGORIES_AND_LIFECYCLE.md)
+- **Architectural Learning (AL)**: Issue reveals architecture gap or pattern
+- **QA Learning (QL)**: Issue reveals QA gap or test coverage need
+- **Builder Supervision Learning (BSL)**: Issue reveals builder instruction gap
+- **Governance Gap Learning (GGL)**: Issue reveals missing or ambiguous governance
+
+### 8.3 Learning Promotion Triggers
+
+Per LEARNING_PROMOTION_RULE.md, a Stop-and-Fix learning is promoted when:
+
+#### Frequency Threshold
+- **3+ occurrences** across independent sessions or waves
+- **2+ agents** encounter the same issue independently
+- **Cross-repository** occurrence (same issue in multiple repos)
+
+#### Severity Threshold
+- **Critical severity** (single occurrence triggers promotion)
+- **High severity** with **2+ occurrences**
+- **Security vulnerability** (any occurrence)
+
+#### Pattern Recognition
+- Issue indicates **systemic governance gap** (no existing canon covers it)
+- Issue indicates **ambiguous governance** (multiple interpretations possible)
+- Issue indicates **outdated governance** (canon contradicts current practice)
+
+### 8.4 Improvement Escalation Workflow
+
+```
+Stop-and-Fix Event
+   ↓
+Agent documents issue + remediation
+   ↓
+Agent categorizes learning (AL/QL/BSL/GGL)
+   ↓
+Agent records in personal/lessons-learned.md
+   ↓
+Session closure: Review learnings
+   ↓
+┌─────────────────────────────────────────────────┐
+│ Is this a recurring pattern?                    │
+│   - Frequency threshold met?                    │
+│   - Severity threshold met?                     │
+│   - Governance gap identified?                  │
+└─────────────────────────────────────────────────┘
+   ↓
+┌─────────────────────────────────────────────────┐
+│ NO: Keep in personal learning memory            │
+│   → Available for future reference              │
+│   → May promote later if pattern emerges        │
+└─────────────────────────────────────────────────┘
+   ↓
+┌─────────────────────────────────────────────────┐
+│ YES: Escalate for governance promotion          │
+│   → Create governance gap issue (GGL)           │
+│   → Include: Pattern evidence, Frequency,       │
+│      Impact, Proposed canonical resolution      │
+│   → CS2 reviews and decides:                    │
+│       a) Create new canonical governance        │
+│       b) Update existing canonical governance   │
+│       c) Clarify ambiguous governance           │
+│       d) Defer (insufficient evidence)          │
+└─────────────────────────────────────────────────┘
+   ↓
+If promoted: Governance ripple executed
+   ↓
+Learning becomes canonical (future agents benefit)
+```
+
+### 8.5 Governance Gap Issue Creation
+
+When learning promotion is triggered, agent MUST create governance gap issue:
+
+```markdown
+# [Governance Gap] <Pattern Description>
+
+## Pattern Evidence
+
+**Occurrences**: <count> times across <count> sessions/agents  
+**First Occurrence**: YYYY-MM-DD  
+**Most Recent**: YYYY-MM-DD  
+**Severity**: Low | Medium | High | Critical  
+
+### Occurrence 1
+- **Date**: YYYY-MM-DD
+- **Agent**: <agent-type>
+- **Context**: <what was being done>
+- **Issue**: <what was discovered>
+- **Remediation**: <what was fixed>
+
+### Occurrence 2
+- **Date**: YYYY-MM-DD
+- **Agent**: <agent-type>
+- **Context**: <what was being done>
+- **Issue**: <what was discovered>
+- **Remediation**: <what was fixed>
+
+### Occurrence 3
+- **Date**: YYYY-MM-DD
+- **Agent**: <agent-type>
+- **Context**: <what was being done>
+- **Issue**: <what was discovered>
+- **Remediation**: <what was fixed>
+
+## Root Cause Analysis
+
+**Why does this keep happening?**  
+<Systemic analysis>
+
+**Governance Gap Identified**:
+- [ ] No canon exists for this scenario
+- [ ] Existing canon is ambiguous
+- [ ] Existing canons conflict
+- [ ] Canon is outdated
+
+## Proposed Canonical Resolution
+
+**Option 1**: <description>  
+**Option 2**: <description>  
+**Recommended**: <which option and why>
+
+## Impact Assessment
+
+**If NOT Resolved**:
+- Agents will continue encountering this issue
+- Remediation effort wasted (recurring cost)
+- Governance integrity risk: <description>
+
+**If Resolved**:
+- Future agents benefit from canonical guidance
+- Remediation effort eliminated
+- Governance integrity strengthened
+
+## CS2 Decision Required
+
+- [ ] Create new canonical governance: <proposed file name>
+- [ ] Update existing canonical governance: <file name>
+- [ ] Clarify ambiguous governance: <file name>
+- [ ] Defer (insufficient evidence / low priority)
+
+---
+**Authority**: STOP_AND_FIX_DOCTRINE.md §8, LEARNING_LOOP_CATEGORIES_AND_LIFECYCLE.md
+```
+
+### 8.6 Integration with Mandatory Enhancement Capture
+
+Per MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md, Stop-and-Fix events that reveal process improvements MUST be captured as enhancement proposals:
+
+**Enhancement Triggers**:
+- Tool/automation could prevent issue
+- Documentation could clarify confusion
+- Template could standardize approach
+- Workflow could eliminate error-prone manual step
+
+**Enhancement Proposal Format** (see MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md):
+- Problem description (Stop-and-Fix context)
+- Proposed enhancement (automation, documentation, template)
+- Expected benefit (elimination of recurring issue)
+- Implementation effort estimate
+- CS2 approval required
+
+### 8.7 Integration with FOREMAN_MEMORY_PROTOCOL.md
+
+FM agents MUST integrate Stop-and-Fix learnings into memory hierarchy:
+
+#### Session Memory (Level 3)
+- Document Stop-and-Fix events in session memory
+- Capture immediate remediation actions
+- Note whether learning promotion triggered
+
+#### Learning Memory (Level 4)
+- Accumulate Stop-and-Fix learnings in personal/lessons-learned.md
+- Track frequency of similar issues
+- Identify patterns for promotion
+
+#### Wave Memory (Level 2)
+- Document Stop-and-Fix events in wave progress artifact
+- Include Stop-and-Fix event count in wave closure certification
+- Highlight learnings for IBWR (In-Between-Wave Reconciliation)
+
+### 8.8 Enforcement
+
+**FM MUST**:
+- ✅ Document all Stop-and-Fix events in wave progress artifact
+- ✅ Categorize all learnings (AL/QL/BSL/GGL)
+- ✅ Track learning frequency in personal memory
+- ✅ Create governance gap issues when promotion threshold met
+- ✅ Include Stop-and-Fix learnings in IBWR report
+
+**Builders MUST**:
+- ✅ Document Stop-and-Fix events in PR description
+- ✅ Capture learnings in session notes (if builder memory enabled)
+- ✅ Escalate recurring issues to FM for promotion
+
+**Governance-Liaison MUST**:
+- ✅ Track Stop-and-Fix patterns across consumer repos
+- ✅ Escalate cross-repository patterns to CS2
+- ✅ Validate governance ripple includes Stop-and-Fix learnings
+
+**CS2 MUST**:
+- ✅ Review governance gap issues from Stop-and-Fix escalations
+- ✅ Decide on canonical governance creation/update
+- ✅ Execute governance ripple after canonical promotion
+- ✅ Audit Stop-and-Fix learning capture compliance
+
+### 8.9 Success Metrics
+
+**Learning Loop Effectiveness**:
+- **Learning Capture Rate**: % of Stop-and-Fix events documented
+- **Promotion Rate**: % of captured learnings promoted to canon
+- **Recurrence Reduction**: Reduction in repeat issues after promotion
+- **Cross-Repository Benefit**: Learnings from Repo A prevent issues in Repo B
+
+**Example**:
+- **Before Promotion**: 15 agents encounter "missing API timeout config" across 3 repos
+- **After Promotion**: ARCHITECTURE_COMPLETENESS_REQUIREMENTS.md updated to mandate timeout config
+- **Result**: 0 subsequent occurrences (learning eliminated issue)
+
+---
+
+## 9. Enforcement
+
+### 9.1 Governance Gates
 
 All PR merge gates enforce Stop-and-Fix requirements:
 - **Test Gate**: No merge if ANY test fails
@@ -618,7 +871,7 @@ All PR merge gates enforce Stop-and-Fix requirements:
 
 Gates are **confirmatory**—they verify Stop-and-Fix was followed, not substitute for it.
 
-### 8.2 Human Review
+### 9.2 Human Review
 
 Human reviewers MUST verify Stop-and-Fix compliance:
 - Check PR for "Stop-and-Fix" sections documenting remediation
@@ -626,7 +879,7 @@ Human reviewers MUST verify Stop-and-Fix compliance:
 - Confirm no technical debt was introduced
 - Ensure audit trail is complete
 
-### 8.3 Governance Violations
+### 9.3 Governance Violations
 
 Violations of Stop-and-Fix doctrine are **critical governance failures**:
 - Partial handovers → Reject PR, require complete remediation
@@ -634,7 +887,7 @@ Violations of Stop-and-Fix doctrine are **critical governance failures**:
 - "Not my job" attitude → Agent training/correction required
 - Repeated violations → Escalate to CS2 for systemic review
 
-### 8.4 Learning and Improvement
+### 9.4 Learning and Improvement
 
 Stop-and-Fix incidents feed continuous improvement:
 - Frequent issues in same area → Governance gap, canonize prevention
@@ -675,9 +928,9 @@ Stop-and-Fix incidents feed continuous improvement:
 
 ---
 
-## 10. Analogies and Inspiration
+## 11. Analogies and Inspiration
 
-### 10.1 Safety-Critical Industries
+### 11.1 Safety-Critical Industries
 
 Stop-and-Fix is inspired by workplace safety practices:
 - **Aviation**: "If you see it, tag it, fix it" (maintenance culture)
@@ -688,7 +941,7 @@ Stop-and-Fix is inspired by workplace safety practices:
 **Key Insight**: In safety-critical systems, EVERYONE is responsible for safety—not just
 the person who created the hazard. Same applies to code quality.
 
-### 10.2 "Broken Windows" Theory
+### 11.2 "Broken Windows" Theory
 
 Allowing small defects to persist signals that quality doesn't matter:
 - One skipped test → "Skipping tests is okay" → Test debt proliferates
@@ -740,7 +993,7 @@ all Stop-and-Fix validation.
 
 ---
 
-## 12. Summary
+## 13. Summary
 
 **Stop-and-Fix in One Sentence:**
 When you encounter ANY error, failure, debt, or violation during work, STOP immediately,
