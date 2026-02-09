@@ -4,10 +4,9 @@
   "effective_date": "2026-02-08",
   "repository": "APGI-cmy/PartPulse",
   "canonical_source": "APGI-cmy/maturion-foreman-governance",
-  "last_updated": "2026-02-09T07:16:00Z",
+  "last_updated": "2026-02-09T11:53:33Z",
   "updated_by": "governance-liaison",
   "description": "Tier-0 Constitutional Canon Manifest for Living Agent System v5.0.0",
-  
   "tier_0_canons": [
     {
       "id": "T0-001",
@@ -149,9 +148,41 @@
       "status": "current",
       "updated_in_pr": 1052,
       "changes": "Appendix A: Learning/Failure/Improvement Classification Matrix"
+    },
+    {
+      "id": "T0-014",
+      "name": "FM_MERGE_GATE_MANAGEMENT_PROTOCOL",
+      "path": "governance/canon/FM_MERGE_GATE_MANAGEMENT_PROTOCOL.md",
+      "type": "protocol",
+      "authority": "constitutional",
+      "version": "1.0.0",
+      "layered_down": "2026-02-09T11:53:33Z",
+      "status": "current",
+      "description": "FM autonomous authority and responsibility for merge gate management"
+    },
+    {
+      "id": "T0-015",
+      "name": "MERGE_GATE_APPLICABILITY_MATRIX",
+      "path": "governance/canon/MERGE_GATE_APPLICABILITY_MATRIX.md",
+      "type": "matrix",
+      "authority": "constitutional",
+      "version": "1.0.0",
+      "layered_down": "2026-02-09T11:53:33Z",
+      "status": "current",
+      "description": "Authoritative mapping of agent roles to applicable merge gates"
+    },
+    {
+      "id": "T0-016",
+      "name": "MERGE_GATE_PHILOSOPHY",
+      "path": "governance/canon/MERGE_GATE_PHILOSOPHY.md",
+      "type": "philosophy",
+      "authority": "constitutional",
+      "version": "1.0.0",
+      "layered_down": "2026-02-09T11:53:33Z",
+      "status": "current",
+      "description": "CI is confirmatory not diagnostic - agent validation philosophy"
     }
   ],
-  
   "living_agent_system": {
     "version": "5.0.0",
     "effective_date": "2026-02-08",
@@ -162,17 +193,15 @@
     ],
     "description": "Living Agent System v5.0.0 introduces baseline management, FM memory protocols, and wave planning protocols for autonomous agent orchestration"
   },
-  
   "governance_ripple": {
-    "source_pr": "https://github.com/APGI-cmy/maturion-foreman-governance/pull/1052",
+    "source_issue": "https://github.com/APGI-cmy/PartPulse/issues/1061",
     "ripple_date": "2026-02-09",
     "layer_down_status": "complete",
-    "protocols_added": 0,
-    "protocols_updated": 5,
+    "protocols_added": 3,
+    "protocols_updated": 0,
     "protocols_deprecated": 0,
-    "description": "Foreman Operational Sandbox & Issue Artifact Protocols - PR #1052"
+    "description": "FM Merge Gate Management Canon Layer-Down - Issue #1061"
   },
-  
   "validation": {
     "baseline_validation_required": true,
     "cross_reference_validation": true,
