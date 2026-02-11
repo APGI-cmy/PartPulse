@@ -1,3 +1,4 @@
+# DEFECT RESOLUTION AND MAINTENANCE CANON
 
 ## Status
 **Type**: Canonical Governance Protocol

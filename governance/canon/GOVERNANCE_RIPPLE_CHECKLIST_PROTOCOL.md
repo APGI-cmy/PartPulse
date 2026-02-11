@@ -3,8 +3,9 @@
 ## Status
 **Type**: Canonical Governance Process — Mandatory Enforcement  
 **Authority**: Supreme - Canonical  
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Effective Date**: 2026-01-26  
+**Updated**: 2026-02-09 (Layer-Up Protocol Integration — STEP 0 Added)  
 **Owner**: Maturion Engineering Leadership (Johan Ras)  
 **Precedence**: Subordinate to GOVERNANCE_PURPOSE_AND_SCOPE.md, implements GOVERNANCE_RIPPLE_MODEL.md
 
@@ -43,6 +44,8 @@ This protocol derives authority from:
 - **STOP_AND_FIX_DOCTRINE.md** — Immediate remediation of discovered issues
 - **Issue #999** — Inventory and tracking mandate
 - **MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md** — Improvement capture requirements
+- **LAYER_UP_PROTOCOL.md** — Pre-canon-change layer-up scan requirement (2026-02-09)
+- **GOVERNANCE_ALIGNMENT_MONITORING_PROTOCOL.md** — Drift detection and alignment monitoring (2026-02-09)
 
 ---
 
@@ -97,6 +100,48 @@ This protocol is NOT required for:
 ## 4. The Governance Ripple Checklist
 
 This checklist MUST be executed sequentially for every governance change requiring ripple.
+
+### 🔴 STEP 0: Pre-Canon-Change Layer-Up Scan (MANDATORY)
+
+**Action**: Before ANY canon changes, scan consumer repositories for drift, pending layer-up, and alignment issues.
+
+**Authority**: **LAYER_UP_PROTOCOL.md** (Section 9.1) — Mandatory layer-up scan before canon changes
+
+**Required Actions**:
+- [ ] Check ripple log for pending layer-up issues: `grep "LAYER_UP.*PROPOSED" .agent-workspace/governance-repo-administrator/ripple-log.md`
+- [ ] Check governance repository for open layer-up issues (label: `layer-up`)
+- [ ] Scan consumer repositories for version mismatches in `GOVERNANCE_ALIGNMENT.md`
+- [ ] Check for pending governance issues in consumer repositories
+- [ ] Check for recent gate failures that may indicate governance gaps
+- [ ] Log layer-up scan results in evidence file
+
+**Evidence Log Format**:
+```
+LAYER_UP_SCAN: <timestamp> | REPOS_SCANNED: 3 | DRIFT_DETECTED: <count> | PENDING_LAYER_UP: <count> | STATUS: [CLEAR/DRIFT/PENDING]
+```
+
+**If Drift Detected**:
+- [ ] **STOP**: Halt canon changes immediately
+- [ ] **DOCUMENT**: Capture full drift evidence (which files, canonical vs. actual, git history)
+- [ ] **ESCALATE TO CS2**: Create critical drift escalation issue with evidence
+- [ ] **AWAIT CS2 DECISION**: Revert drift, validate and layer-up, or follow custom resolution
+- [ ] **DO NOT PROCEED** with new canon changes until drift resolved
+
+**If Pending Layer-Up Issues**:
+- [ ] **REVIEW**: Evaluate each pending layer-up issue
+- [ ] **PRIORITIZE**: Classify as CRITICAL/HIGH/MEDIUM/LOW
+- [ ] **INTEGRATE OR DEFER**: Either integrate pending layer-up before proceeding, or document reason for deferring
+- [ ] **LOG DECISION**: Record in evidence file
+
+**If Clear (No Drift, No Pending Issues)**:
+- [ ] **PROCEED**: Continue to STEP 1
+- [ ] **LOG**: Record layer-up scan results as CLEAR in evidence file
+
+**Prohibition**: Do NOT skip this step. Do NOT proceed with canon changes if drift is detected. Layer-up scan is MANDATORY and NON-NEGOTIABLE.
+
+**Purpose**: Prevents circular drift, detects governance-application misalignment before introducing new changes, ensures governance changes account for current application state.
+
+---
 
 ### 🔴 STEP 1: Identify Ripple Scope
 

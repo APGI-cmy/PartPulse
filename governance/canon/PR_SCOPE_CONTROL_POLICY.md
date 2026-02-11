@@ -45,9 +45,9 @@ Examples of responsibility domains:
 - Test infrastructure
 - CI workflows
 
-"Related" is not sufficient.
-"Already touching it" is not sufficient.
-"Easier together" is not sufficient.
+“Related” is not sufficient.
+“Already touching it” is not sufficient.
+“Easier together” is not sufficient.
 
 Builder-facing rule:
 > If a PR cannot be named with a single noun phrase, it is too large.
@@ -96,9 +96,9 @@ Rules:
 - If a second domain is required, open a new PR with a new scope declaration
 
 Prohibited:
-- "We'll fix tests later"
-- "It will be green after the next change"
-- "Let's bundle while we're here"
+- “We’ll fix tests later”
+- “It will be green after the next change”
+- “Let’s bundle while we’re here”
 
 ---
 
@@ -120,7 +120,7 @@ If a PR fails CI more than **3 consecutive times** with **different root causes*
 the PR MUST be closed and reset.
 
 Not patched.
-Not "one more retry".
+Not “one more retry”.
 Closed.
 
 This prevents compounding fixes and loss of causality.

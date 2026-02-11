@@ -1,3 +1,4 @@
+# BUILDER CONTRACT BINDING CHECKLIST
 
 **Status**: Canonical Governance Validation Checklist  
 **Version**: 1.2.0  

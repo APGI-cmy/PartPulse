@@ -26,7 +26,7 @@ A pull request MAY NOT be handed over, reviewed, or merged unless:
 - Gates were executed prior to handover
 - Gate execution environment matches merge environment
 
-"No green gate, no handover."
+“No green gate, no handover.”
 
 ---
 
@@ -47,7 +47,7 @@ All others are REQUIRED by default.
 The following are explicitly forbidden:
 - Handing over with known gate failures
 - Declaring confidence without proof
-- Expecting governance enforcement to "catch up later"
+- Expecting governance enforcement to “catch up later”
 - Treating PR gates as post-hoc validation
 
 ---

@@ -1,548 +1,632 @@
 # AGENT CONTRACT MANAGEMENT PROTOCOL
 
 ## Status
-**Type**: Constitutional Governance Protocol  
+**Type**: Constitutional Governance Rule  
 **Authority**: Supreme - Canonical  
-**Version**: 1.0.0  
-**Effective Date**: 2026-01-13  
-**Owner**: Maturion Engineering Leadership (Johan Ras)  
-**Tier**: 0 (Constitutional)  
-**Part of**: Agent Contract Governance Framework
+**Version**: 3.1.0  
+**Effective Date**: 2026-01-26  
+**Owner**: CS2 (Johan Ras in bootstrap mode, Maturion in production)  
+**Precedence**: Subordinate to GOVERNANCE_PURPOSE_AND_SCOPE.md  
+**Part of**: Agent Contract Authority Infrastructure
 
 ---
 
 ## 1. Purpose
 
-This protocol establishes **constitutional rules for agent contract modification**, explicitly prohibiting agents from writing to their own contract files and establishing the instruction system for contract changes.
+This protocol establishes a **granular authority hierarchy** for `.agent` contract files across the Maturion ecosystem. CS2 (Johan Ras in bootstrap mode, Maturion in production) retains **supreme authority** over ALL agent contracts, with delegated modification authority to specific agents for governance alignment and operational efficiency.
 
-**Core Principle**: **Agents MUST NOT modify their own contracts.** Contracts are authority-defining documents that require external oversight and human approval.
+**Benefits of Granular Authority Model:**
+- **CS2 Supreme Authority**: CS2 can modify ANY contract, override any decision
+- **Governance Automation**: Enables canonical governance propagation to consumer repos
+- **Operational Efficiency**: FM can adjust builder contracts for workflow needs
+- **Constitutional Protection**: Self-modification prohibited, CS2-direct contracts protected
+- **Clear Boundaries**: Each authority level has explicit permissions and prohibitions
+- **Auditability**: All modifications traceable through authority hierarchy
+- **Controlled Delegation**: Authority delegated only where governance-justified
 
-**Key Concepts**:
-- **Agent Contract** = The `.md` file in `.github/agents/` that defines an agent's authority, scope, and obligations
-- **Self-Modification Prohibition** = Agents cannot write to their own contract files
-- **Instruction System** = The process by which agents request contract modifications
-- **Contract Authority** = Human governance (Johan Ras) has final authority over contract changes
+**Authority Levels:**
+- **Level 0 (CS2)**: Ultimate authority - ALL contracts
+- **Level 1 (governance-repo-administrator)**: Consumer repo agent contracts
+- **Level 2 (governance-liaison)**: FM and builder contracts in same repo
+- **Level 3 (FM Agent)**: Builder contracts in same repo
+- **Level 4 (Builders)**: No modification authority
 
-**Related Documents**:
-- **AGENT_CONSTITUTION.md** - Agent obligations and boundaries
-- **AGENT_RECRUITMENT.md** - Agent legitimacy and authority
-- **AGENT_FILE_BINDING_REQUIREMENTS.md** - Repository `.agent` file binding rules
-- **AGENT_RIPPLE_AWARENESS_OBLIGATION.md** - Ripple awareness requirements
+**Self-Modification Prohibition**: ABSOLUTE for ALL agents - no agent can modify own contract.
+
+**CS2-Issue Authorization Requirement**: ALL modifications to any `.agent` contract file MUST be explicitly authorized via a CS2-approved issue. This applies to all agents, automation, and humans regardless of authority level. The authorizing issue must be traceable in commits and PRs.
+
+**This is a hard enforcement boundary**: Any agent that violates their authority boundaries is in **catastrophic violation** of governance and must be immediately halted and escalated.
 
 ---
 
 ## 2. Constitutional Authority
 
-This protocol derives authority from:
-- **BUILD_PHILOSOPHY.md** — Supreme constitutional authority
-- **AGENT_CONSTITUTION.md** — Agent obligations, boundaries, and authority
-- **AGENT_RECRUITMENT.md** — Agent legitimacy and appointment
-- **governance-supremacy-rule.md** — Governance as absolute authority
+This protocol derives authority from and extends:
+- **GOVERNANCE_PURPOSE_AND_SCOPE.md** — Supreme governance authority
+- **CS2_AGENT_FILE_AUTHORITY_MODEL.md** v2.0.0 — Granular authority hierarchy definition
+- **AGENT_RECRUITMENT_AND_CONTRACT_AUTHORITY_MODEL.md** — Agent recruitment and contract authority
+- **AGENT_CANONICAL_CONTEXT_SYNCHRONISATION_PROTOCOL.md** — Contract synchronization requirements
+- **.agent.schema.md** — Agent contract schema and validity requirements
+- **GOVERNANCE_RIPPLE_MODEL.md** — Bidirectional governance evolution
+- **CROSS_REPOSITORY_LAYER_DOWN_PROTOCOL.md** — Cross-repo governance propagation
+- **AGENT_CONTRACT_PROTECTION_PROTOCOL.md** v1.1.0 — Locked section protection and atomic layer-down requirements (Section 11.2)
 
-**Precedence**: This protocol is **Tier-0 Constitutional** and takes precedence over all agent contracts.
+This protocol v3.0.0 supersedes v2.0.0 (CS2 exclusive authority) and implements the granular authority delegation model defined in CS2_AGENT_FILE_AUTHORITY_MODEL.md v2.0.0.
 
 ---
 
 ## 3. Scope
 
 ### 3.1 In Scope
-- Prohibition on agent self-modification of contracts
-- Instruction system for contract modification requests
-- Authority model for contract changes
-- Contract modification workflow
-- Ripple awareness for contract changes
+- All `.agent` files in all Maturion repositories
+- All agent contract files (`.github/agents/*.agent.md`, `.github/agents/*.md`)
+- Granular authority hierarchy (5 levels: CS2, governance-repo-admin, governance-liaison, FM, builders)
+- Agent modification authority boundaries and delegation rules
+- Recommendation system (agents propose, authorized agents or CS2 implement)
+- Versioning and changelog requirements
+- Violation detection and escalation (authority boundary enforcement)
 
 ### 3.2 Out of Scope
-- Repository `.agent` file modifications (covered by AGENT_FILE_BINDING_REQUIREMENTS.md)
-- Agent profile modifications (covered by separate protocol)
-- Workflow and CI/CD modifications (covered by execution protocols)
-- Code and feature modifications (covered by builder protocols)
+- Governance canon documents (separate authority per GOVERNANCE_PURPOSE_AND_SCOPE.md)
+- CI/CD workflow files (separate authority, CS2-controlled)
+- Application code (builder/FM authority per normal execution model)
+- Agent profiles in `governance/profiles/` (governance-repo-administrator authority)
 
 ---
 
-## 4. Core Prohibition: No Self-Modification
+## 4. Granular Authority Model
 
-### 4.1 The Self-Modification Problem
+### 4.1 Authority Hierarchy Overview
 
-**Problem Statement**: Agents modifying their own contracts creates a conflict of interest and governance risk:
-- Agents could expand their own scope without oversight
-- Agents could remove constraints or prohibitions
-- Agents could weaken enforcement mechanisms
-- Agents could bypass governance boundaries
+The authority hierarchy for agent contract modification consists of **five levels**, each with explicit permissions and prohibitions:
 
-**Principle**: **An agent MUST NOT modify the contract file that defines its own authority.**
-
-### 4.2 Absolute Prohibition
-
-**Rule**: Agents are **PROHIBITED** from writing to their own contract files under all circumstances.
-
-**Applies To**:
-- **Governance Liaison**: Cannot modify `.github/agents/governance-liaison.md`
-- **Foreman (FM)**: Cannot modify `.github/agents/ForemanApp-agent.md`
-- **Builders**: Cannot modify their respective builder contract files
-- **Domain Agents**: Cannot modify their respective domain contract files
-- **Advisors**: Cannot modify their respective advisor contract files
-
-**NO EXCEPTIONS**: This prohibition has no exceptions and cannot be waived.
-
-### 4.3 What "Writing" Means
-
-**Prohibited Actions**:
-- ✗ Direct edits to own contract file
-- ✗ Automated updates to own contract file
-- ✗ Mechanical fixes (formatting, typos) to own contract file
-- ✗ Template application to own contract file
-- ✗ Ripple-driven updates to own contract file
-- ✗ "Read-only verification" that includes writes
-
-**Allowed Actions**:
-- ✓ Reading own contract file (for self-awareness)
-- ✓ Proposing changes via instruction system (see Section 5)
-- ✓ Documenting contract gaps or inconsistencies
-- ✓ Escalating contract conflicts or ambiguities
-- ✓ Modifying OTHER agents' contracts (if authorized by role)
-
-### 4.4 Multi-Agent Contract Modifications
-
-**Cross-Agent Modifications**: An agent MAY modify another agent's contract IF:
-- The modifying agent has explicit authority (e.g., Governance Liaison)
-- The modification is part of a governance ripple or layerdown
-- The modification is approved via the instruction system
-- The modification is documented with ripple awareness
-
-**Example**: Governance Liaison MAY modify builder contracts as part of a governance layerdown, but Governance Liaison MUST NOT modify `.github/agents/governance-liaison.md`.
-
----
-
-## 5. Contract Modification Instruction System
-
-### 5.1 Purpose of Instruction System
-
-When an agent identifies a need to modify its own contract, it must use the **instruction system** to request the change through external oversight.
-
-**Instruction System Flow**:
-1. Agent identifies contract modification need
-2. Agent documents modification request
-3. Agent submits request to appropriate authority
-4. Authority reviews and approves/rejects
-5. Authority executes modification OR delegates to authorized agent
-6. Modification is documented and tracked
-
-### 5.2 When to Use Instruction System
-
-Agents **MUST** use the instruction system when:
-- Contract scope needs expansion or clarification
-- Contract bindings need updating
-- Contract capabilities need adjustment
-- Contract constraints need modification
-- Contract authority boundaries need clarification
-- Contract conflicts with canonical governance emerge
-
-### 5.3 Instruction System Structure
-
-#### 5.3.1 Modification Request Format
-
-```markdown
-## Agent Contract Modification Request
-
-**Agent**: [Agent ID, e.g., "governance-liaison"]  
-**Contract File**: [Path, e.g., ".github/agents/governance-liaison.md"]  
-**Request Date**: [YYYY-MM-DD]  
-**Requested By**: [Agent or Human]
-
-### Modification Need
-[Clear description of why contract modification is needed]
-
-### Current Contract State
-[Quote or reference current contract language that needs modification]
-
-### Proposed Modification
-[Specific changes proposed, preferably in diff format]
-
-### Justification
-[Why this modification is necessary, what governance gap it addresses]
-
-### Ripple Impact Analysis
-[What other files, agents, or processes will be affected by this change]
-
-### Authority Request
-[What authority is needed to approve this modification]
+```
+┌────────────────────────────────────────────────────────────────────┐
+│ Level 0: CS2 (Johan Ras / Maturion) - SUPREME AUTHORITY            │
+│ - Can modify ANY agent contract in ANY repository                   │
+│ - Can override any authority level decision                         │
+│ - Reviews recommendations and implements OR delegates               │
+│ - Authority NEVER fully transfers (always retains override)         │
+└────────────────────────────────────────────────────────────────────┘
+                                 ↓
+┌────────────────────────────────────────────────────────────────────┐
+│ Level 1: governance-repo-administrator (Governance Repo)            │
+│ - Can modify consumer repo agent contracts (governance-liaison,    │
+│   FM, builders)                                                     │
+│ - CANNOT modify: own contract, CodexAdvisor, governance repo agents│
+│ - Must escalate own contract changes to CS2                         │
+└────────────────────────────────────────────────────────────────────┘
+                                 ↓
+┌────────────────────────────────────────────────────────────────────┐
+│ Level 2: governance-liaison (Consumer Repos)                        │
+│ - Can modify FM and builder contracts in SAME repo                 │
+│ - CANNOT modify: own contract, governance-repo-administrator,      │
+│   CodexAdvisor, contracts in other repos                            │
+│ - Must escalate own contract changes to governance-repo-admin or CS2│
+└────────────────────────────────────────────────────────────────────┘
+                                 ↓
+┌────────────────────────────────────────────────────────────────────┐
+│ Level 3: FM Agent (Consumer Repos)                                  │
+│ - Can modify builder contracts in SAME repo (workflow coordination)│
+│ - CANNOT modify: own contract, governance-liaison, higher levels   │
+│ - Must escalate own contract changes to governance-liaison or CS2  │
+└────────────────────────────────────────────────────────────────────┘
+                                 ↓
+┌────────────────────────────────────────────────────────────────────┐
+│ Level 4: Builder Agents (No Modification Authority)                 │
+│ - CANNOT modify any .agent files                                   │
+│ - Must create recommendations for FM, governance-liaison, or CS2   │
+│ - Must escalate all contract needs up authority chain              │
+└────────────────────────────────────────────────────────────────────┘
 ```
 
-#### 5.3.2 Submission Channels
+**Authority Delegation**: CS2 delegates modification authority to specific agents while retaining supreme override authority. Delegation enables governance automation without compromising constitutional control.
 
-**Option 1: GitHub Issue**
-- Create issue in repository with label `contract-modification`
-- Use template above
-- Assign to appropriate authority (FM or human governance)
+**Reference**: CS2_AGENT_FILE_AUTHORITY_MODEL.md v2.0.0 for detailed authority definitions.
 
-**Option 2: Pull Request Comment**
-- Add comment to PR where contract conflict was discovered
-- Use template above
-- Tag appropriate authority
+### 4.2 Self-Modification Prohibition (Universal)
 
-**Option 3: Escalation Document**
-- Create markdown file in `governance/requests/` or `governance/escalations/`
-- Use template above
-- Reference in PR or commit message
+**ABSOLUTE PROHIBITION**: NO agent can modify their own contract.
 
-### 5.4 Authority for Contract Modifications
+This prohibition applies to ALL authority levels (0-4), including:
+- ✅ CS2 can modify ANY agent contract (including own) - EXCEPTION for supreme authority
+- ❌ governance-repo-administrator CANNOT modify own contract - must escalate to CS2
+- ❌ governance-liaison CANNOT modify own contract - must escalate to governance-repo-admin or CS2
+- ❌ FM agent CANNOT modify own contract - must escalate to governance-liaison or CS2
+- ❌ Builders CANNOT modify own contract - must escalate up chain
 
-**Authority Hierarchy**:
+**Rationale**: Self-modification creates authority expansion risk. All contract changes require external oversight.
 
-1. **Human Governance (Johan Ras)**: Ultimate authority for ALL contract modifications
-   - Constitutional contract changes (scope, authority, prohibitions)
-   - Cross-repository contract changes
-   - Breaking contract changes
-   - Conflict resolution
+### 4.3 CS2-Direct Contracts (Protected)
 
-2. **Foreman (FM)**: Delegated authority for builder contracts ONLY
-   - Builder scope adjustments within established boundaries
-   - Builder capability enablement (when pre-authorized)
-   - Builder contract updates from governance ripples
-   - MUST NOT modify FM's own contract
+**Only CS2 can modify**:
+- CodexAdvisor contract (ecosystem overseer)
+- governance-repo-administrator contract (canonical governance maintainer)
 
-3. **Governance Liaison**: Delegated authority for governance-driven updates
-   - Contract updates from canonical governance layerdowns
-   - Contract binding additions from governance ripple
-   - Template application to OTHER agents' contracts
-   - MUST NOT modify Governance Liaison's own contract
+**Rationale**: These contracts protect ecosystem-level oversight and canonical governance source from capture or unauthorized modification.
 
-**Default**: If authority is unclear, escalate to Human Governance.
+### 4.4 Enforcement
 
-### 5.5 Approval Process
+Any agent that violates authority boundaries (writes to `.agent` file outside authorized scope) must:
+1. **HALT** execution immediately
+2. **ESCALATE** to appropriate authority level (FM → governance-liaison → governance-repo-administrator → CS2)
+3. **AWAIT** verdict (GO/HOLD/FAIL)
+4. **DOCUMENT** incident per CONTRACT_MODIFICATION_VIOLATION_INCIDENT_TEMPLATE.md
 
-**Step 1: Request Submission**
-- Agent submits modification request via instruction system
-- Request includes all required sections (see 5.3.1)
-- Request is assigned to appropriate authority
+**Violation Severity**: CATASTROPHIC - requires immediate response and root cause analysis.
 
-**Step 2: Authority Review**
-- Authority reviews modification need and justification
-- Authority validates ripple impact analysis
-- Authority checks for governance conflicts
-- Authority determines if modification is within delegated scope
+**Detection Mechanisms**:
+- Git history inspection (who committed `.agent` changes? authorized?)
+- PR review gates (governance-gate.yml verifies authority boundaries)
+- Audit logs (track all `.agent` file modifications with authority validation)
+- Agent self-reporting (agents must acknowledge their authority level)
+- Authority boundary validation in CI/CD pipelines
 
-**Step 3: Approval Decision**
-- **APPROVED**: Authority authorizes modification
-- **APPROVED WITH CHANGES**: Authority modifies request and approves
-- **REJECTED**: Authority rejects with rationale
-- **ESCALATED**: Authority escalates to higher authority
+### 4.5 CS2-Issue Authorization Requirement
 
-**Step 4: Execution**
-- If approved, authority executes modification OR delegates to authorized agent
-- Modification is committed with reference to approval
-- Ripple effects are addressed
+**MANDATORY**: All modifications to any `.agent` contract file MUST be explicitly authorized via a CS2-approved issue.
 
-**Step 5: Documentation**
-- Modification request and approval are documented
-- PR includes reference to instruction system request
-- Governance events created if high-impact
+**Requirements**:
+1. **Issue Creation**: A GitHub issue must be created or approved by CS2 before any `.agent` file modification
+2. **Explicit Authorization**: The issue must explicitly authorize the specific changes to be made
+3. **Traceability**: All commits and PRs modifying `.agent` files must reference the authorizing issue number
+4. **Universal Application**: This requirement applies to:
+   - All agents (regardless of class or authority level)
+   - All automation and workflows
+   - All human operators
+   - All authority levels (0-4)
 
----
+**Rationale**:
+- **Governance Integrity**: Agent contracts are constitutional documents requiring centralized control
+- **Traceability**: Every change must be traceable to explicit CS2 authorization
+- **Auditability**: Clear audit trail of who authorized what and when
+- **Prevention**: Prevents unauthorized, accidental, or malicious contract modifications
 
-## 6. Standing Contract Modification Prohibition
+**Enforcement**:
+- All `.agent` files include explicit prohibition: "No edits to this agent contract (.agent file) may occur except as specifically instructed by a CS2-approved issue"
+- PR reviews must verify CS2-issue authorization for any `.agent` file changes
+- CI/CD pipelines should validate issue references in commits affecting `.agent` files
 
-### 6.1 Governance Liaison Specific Prohibition
-
-**Governance Liaison agents are EXPLICITLY PROHIBITED from**:
-- Writing to `.github/agents/governance-liaison.md`
-- Modifying their own contract in any form
-- Applying templates or mechanical fixes to their own contract
-- Updating their own contract as part of governance ripple
-
-**Mindset Requirement**: Governance Liaison must internalize:
-> "I enforce governance. I do NOT define my own authority."
-
-**What Governance Liaison CAN Do**:
-- Read and reference own contract for self-awareness
-- Identify contract gaps and submit modification requests
-- Modify OTHER agents' contracts (when part of governance layerdown)
-- Escalate contract conflicts or ambiguities
-
-### 6.2 Enforcement
-
-**Validation**:
-- PRs modifying governance-liaison.md MUST NOT be authored by governance-liaison
-- Git history checks for contract modifications
-- Code review catches self-modification attempts
-
-**Consequences of Violation**:
-- PR is rejected with CATASTROPHIC violation flag
-- Incident is escalated to Human Governance
-- Root cause analysis required
-- Agent retraining or contract revision may be required
+**Exception**: Only CS2 (supreme authority) may self-authorize modifications through self-created and self-approved issues. This ensures CS2 retains ultimate control while maintaining traceability through the issue system.
 
 ---
 
-## 7. Contract Modification Workflow Examples
+## 5. Agent Recommendation System
 
-### 7.1 Example: Governance Liaison Requests Scope Expansion
+### 5.1 Purpose
 
-**Scenario**: Governance Liaison discovers that its contract prohibits modifying workflow files, but a governance layerdown requires workflow updates.
+Agents may identify needs for agent contract changes but **MUST NOT implement them**. Instead, agents create recommendations for CS2 review.
 
-**Workflow**:
-1. **Identification**: Governance Liaison identifies scope gap
-2. **Documentation**: GL creates modification request:
-   ```markdown
-   ## Agent Contract Modification Request
-   
-   **Agent**: governance-liaison  
-   **Contract File**: .github/agents/governance-liaison.md  
-   **Request Date**: 2026-01-15
-   
-   ### Modification Need
-   Governance layerdown protocol requires updating deprecation-detection workflow,
-   but current contract prohibits workflow modifications.
-   
-   ### Proposed Modification
-   Add to `scope.allowed_paths`:
-   - ".github/workflows/deprecation-detection.yml" # Governance-driven only
-   
-   ### Justification
-   AUTOMATED_DEPRECATION_DETECTION_GATE.md (BL-026) requires workflow updates
-   as part of governance ripple. Current scope prohibits this.
-   
-   ### Ripple Impact Analysis
-   - No ripple to other agents
-   - Workflow modification is limited to governance-driven changes
-   - Does not expand general workflow modification authority
-   
-   ### Authority Request
-   Human governance approval required (constitutional scope change)
-   ```
-3. **Submission**: GL creates GitHub issue with `contract-modification` label
-4. **Review**: Johan reviews and approves (or requests FM review)
-5. **Execution**: Johan modifies governance-liaison.md OR delegates to FM
-6. **Documentation**: Approval documented in issue, PR references issue
+**Process for Agent File Changes:**
+1. Agent identifies need for agent file change
+2. Agent creates recommendation in `governance/proposals/agent-file-recommendations/`
+3. Agent escalates to CS2 with clear justification
+4. CS2 reviews and implements changes directly (if approved)
+5. No AI intermediary layer
 
-### 7.2 Example: Builder Requests Capability Addition
+### 5.2 Recommendation Location
 
-**Scenario**: UI Builder discovers it cannot modify test configuration files, which blocks QA work.
-
-**Workflow**:
-1. **Identification**: UI Builder identifies capability gap
-2. **Documentation**: Builder creates modification request (escalated to FM)
-3. **Submission**: Builder adds request to PR comment, tags FM
-4. **Review**: FM reviews and determines if within delegated authority
-5. **Approval**: FM approves (if within scope) or escalates to Johan
-6. **Execution**: FM modifies ui-builder.md contract
-7. **Documentation**: FM documents approval in PR, updates builder contract
-
-### 7.3 Example: Governance Ripple Requires Contract Updates
-
-**Scenario**: Canonical governance adds new mandatory binding to AGENT_FILE_BINDING_REQUIREMENTS.md.
-
-**Workflow**:
-1. **Governance Ripple**: New binding requirement propagates to execution repo
-2. **Governance Liaison**: GL identifies need to update ALL agent contracts
-3. **Authority Check**: GL confirms authority to modify OTHER agents' contracts
-4. **Execution**: GL updates builder, domain, and advisor contracts
-5. **Self-Modification Check**: GL STOPS before modifying governance-liaison.md
-6. **Instruction System**: GL creates modification request for own contract
-7. **Review**: Johan reviews and approves
-8. **Execution**: Johan modifies governance-liaison.md
-9. **Documentation**: Governance event documents ripple completion
-
----
-
-## 8. Ripple Awareness for Contract Modifications
-
-### 8.1 Contract Changes Are Non-Local
-
-**Principle**: Agent contract modifications have ripple effects:
-- Changes affect agent behavior
-- Changes may affect dependent agents
-- Changes may affect enforcement workflows
-- Changes may affect governance alignment
-
-**Ripple Awareness Required**:
-- Identify which agents depend on modified contract
-- Identify which workflows validate against modified contract
-- Identify which governance documents reference modified contract
-- Surface ripple effects explicitly in modification request
-
-### 8.2 Mandatory Ripple Analysis
-
-All contract modification requests **MUST** include ripple impact analysis:
-
-**Template**:
-```markdown
-### Ripple Impact Analysis
-
-**Affected Agents**: [List of agents impacted by this modification]  
-**Affected Workflows**: [List of workflows that validate or depend on this contract]  
-**Affected Governance**: [List of governance documents that reference this contract]  
-**Breaking vs Non-Breaking**: [Classification]  
-**Remediation Plan**: [How ripples will be addressed]
+All agent contract recommendations are stored in:
+```
+governance/proposals/agent-file-recommendations/
+├── README.md                          # Recommendation system documentation
+├── TEMPLATE.md                        # Recommendation template
+├── pending/                           # Recommendations awaiting CS2 review
+├── approved-implemented/              # Recommendations CS2 approved and implemented
+└── rejected/                          # Recommendations CS2 rejected (for learning)
 ```
 
-### 8.3 High-Impact Contract Changes
+### 5.3 Recommendation Format (Markdown)
 
-**High-Impact Triggers**:
-- Scope expansion affecting multiple agents
-- Authority boundary changes
-- Prohibition removals or weakenings
-- Capability additions that affect enforcement
+```markdown
+# Agent File Recommendation: <SHORT-TITLE>
 
-**Required Actions**:
-- Escalate to Human Governance (Johan)
-- Coordinate with FM and affected agents
-- Create governance visibility event
-- Document migration path
+**ID**: REC-<YYYY-MM-DD>-<SEQUENCE>  
+**Created Date**: <YYYY-MM-DD>  
+**Created By**: <agent-id>  
+**Status**: pending | approved-implemented | rejected  
+**Priority**: critical | high | medium | low
 
 ---
 
-## 9. Related Systems
+## Context
 
-### 9.1 Repository `.agent` File
-
-**Distinction**: 
-- `.agent` file = Repository-level contract (defines repo identity and all agents)
-- `.github/agents/*.md` = Agent-level contracts (defines individual agent authority)
-
-**Self-Modification**:
-- Agents are also RESTRICTED from modifying `.agent` file (per .agent `restricted_paths`)
-- `.agent` modifications require escalation per repository contract
-
-**Authority**: AGENT_FILE_BINDING_REQUIREMENTS.md governs `.agent` file structure and bindings.
-
-### 9.2 Agent Profiles
-
-**Agent Profiles** (e.g., `governance/profiles/builder.v1.md`) define **class-level** constraints.
-
-**Modification Authority**:
-- Profiles are canonical governance documents
-- Profile modifications are governance ripples
-- Agents do NOT modify profiles directly
-- Profile changes propagate to agent contracts via governance liaison
-
-### 9.3 Governance Canon
-
-**Canonical governance** (e.g., `governance/canon/*.md`) defines supreme authority.
-
-**Modification Authority**:
-- Canon modifications are governance ripples from maturion-foreman-governance
-- Governance Liaison layers down canon changes
-- Canon changes may trigger contract modification needs
-- Agents do NOT modify canon directly
+<Describe the governance context requiring this change>
 
 ---
 
-## 10. Contract Validation and Enforcement
+## Affected Files
 
-### 10.1 Pre-Commit Validation
-
-**Recommended Validation** (future enhancement):
-- Git pre-commit hook checks if modified file is agent's own contract
-- If self-modification detected, abort commit with error message
-- Direct agent to instruction system
-
-**Current State**: Manual validation via code review.
-
-### 10.2 Code Review Requirements
-
-**All PRs modifying agent contracts MUST**:
-- Be reviewed by authority with modification approval power
-- Include modification request reference (issue, comment, or escalation doc)
-- Include ripple impact analysis
-- Document approval in PR description
-
-**Reviewers MUST verify**:
-- Agent is not modifying its own contract
-- Modification is authorized
-- Ripple awareness is complete
-- Approval is documented
-
-### 10.3 Post-Merge Validation
-
-**After contract modification**:
-- Validate contract against schema (if schema exists)
-- Validate contract bindings reference valid canonical documents
-- Validate contract scope does not conflict with repository `.agent` file
-- Document modification in governance events (if high-impact)
+- `<repo>/<path-to-.agent-file>` (Current version: X.Y.Z)
+- `<repo>/<path-to-.agent-file>` (Current version: X.Y.Z)
 
 ---
 
-## 11. Failure Modes and Responses
+## Recommended Changes
 
-### 11.1 Self-Modification Attempt
+### File: <path>
 
-**Failure Mode**: Agent attempts to modify its own contract file.
+**Change Type**: add | update | remove  
+**Section**: <section-identifier>
 
-**Detection**:
-- Code review catches self-modification
-- Git history shows agent as author of own contract modification
-- Validation script detects self-modification (future)
+**Current Content** (if update/remove):
+```
+<exact current content>
+```
 
-**Response**:
-- REJECT PR immediately
-- Flag as CATASTROPHIC governance violation
-- Escalate to Human Governance
-- Root cause analysis: Why did agent attempt self-modification?
-- Agent retraining or contract revision
+**Recommended Content** (if add/update):
+```
+<exact recommended content>
+```
 
-### 11.2 Unauthorized Cross-Agent Modification
-
-**Failure Mode**: Agent modifies another agent's contract without authority.
-
-**Detection**:
-- Code review verifies modifying agent has authority
-- Modification request is missing or unauthorized
-
-**Response**:
-- REJECT PR
-- Request modification request via instruction system
-- Escalate if agent repeatedly bypasses instruction system
-
-### 11.3 Missing Ripple Awareness
-
-**Failure Mode**: Contract modification proceeds without ripple impact analysis.
-
-**Detection**:
-- Code review identifies missing ripple analysis
-- High-impact change lacks governance event or coordination
-
-**Response**:
-- BLOCK PR until ripple analysis completed
-- Request ripple impact analysis from author
-- Escalate if ripples are high-impact
+**Rationale**: <why this specific change is needed>
 
 ---
 
-## 12. Version History
+## Authority Source
 
-### v1.0.0 (2026-01-13)
-- Initial canonical protocol definition
-- Establishes self-modification prohibition
-- Defines instruction system for contract modifications
-- Specifies authority model and approval workflow
-- Integrates ripple awareness requirements
+**Governance Canon Reference**: <canonical-document-name>  
+**Ripple Triggered**: Yes | No  
+**Justification**: <why this change aligns with governance>
 
 ---
 
-## 13. Authority Statement
+## Expected Impact
 
-**This protocol is constitutional and binding.**
-
-All agents MUST:
-- NOT modify their own contract files under any circumstances
-- Use instruction system for contract modification requests
-- Include ripple impact analysis in modification requests
-- Obtain appropriate authority approval before contract modifications
-- Document and track all contract modifications
-
-**Governance Liaison agents are EXPLICITLY PROHIBITED from writing to `.github/agents/governance-liaison.md`.**
-
-**Violations constitute CATASTROPHIC governance failures and must be escalated to Human Governance immediately.**
+- **Breaking Changes**: Yes | No
+- **Version Increment**: MAJOR | MINOR | PATCH
+- **Affected Agents**: <list of agents affected by this change>
+- **Rollback Plan**: <how to rollback if needed>
 
 ---
 
-**Status**: Active and Enforced  
-**Owner**: Maturion Engineering Leadership (Johan Ras)  
-**Approval Authority**: Johan Ras  
-**Last Updated**: 2026-01-13
+## CS2 Decision
+
+**Status**: <pending | approved | rejected>  
+**Decision Date**: <YYYY-MM-DD>  
+**Decision By**: <CS2-name>  
+**Implementation Date**: <YYYY-MM-DD>  
+**Notes**: <CS2 notes on decision and implementation>
+```
+
+### 5.4 Recommendation Lifecycle
+
+1. **Draft** (`pending/`)
+   - Created by any agent identifying a contract change need
+   - Awaiting CS2 review
+   - Not yet approved
+
+2. **Approved-Implemented** (`approved-implemented/`)
+   - CS2 has approved the recommendation
+   - CS2 has implemented the changes directly
+   - Archived for audit trail with CS2 implementation notes
+
+3. **Rejected** (`rejected/`)
+   - CS2 has rejected the recommendation
+   - Not implemented, archived for learning
+   - Rejection reason documented by CS2
+
+### 5.5 Escalation Requirements
+
+Any agent creating a recommendation MUST:
+1. **Document clearly**: Complete recommendation using template
+2. **Escalate immediately**: Flag for CS2 attention (GitHub issue, notification)
+3. **HALT if blocking**: If contract change blocks current work, HALT and escalate
+4. **No workarounds**: Do not attempt to work around missing contract provisions
 
 ---
 
-*End of AGENT CONTRACT MANAGEMENT PROTOCOL v1.0.0*
+## 6. Validation Requirements
+
+### 6.1 CS2 Pre-Implementation Validation
+
+Before implementing any agent contract change, CS2 SHOULD verify:
+
+1. **Schema Compliance**
+   - Verify `.agent` file will conform to `.agent.schema.md`
+   - Check all required sections present
+   - Validate structure and field types
+
+2. **Governance Canon Alignment**
+   - Verify authority source exists and is current
+   - Check that changes align with canonical requirements
+   - Detect any governance conflicts or contradictions
+
+3. **Gap Detection**
+   - Identify missing bindings or references
+   - Detect incomplete doctrine propagation
+   - Flag potential ripple effects not addressed
+
+4. **Impact Assessment**
+   - Review affected agents
+   - Assess breaking changes
+   - Verify version increment appropriate
+
+### 6.2 Post-Implementation Validation
+
+After implementing changes, CS2 SHOULD verify:
+
+1. **Schema compliance** (validate against schema)
+2. **Version increment** (version updated correctly)
+3. **Git diff check** (only intended changes applied)
+4. **Documentation update** (changelog updated, recommendation archived)
+
+---
+
+## 7. Versioning and Changelog
+
+### 7.1 Contract Versioning
+
+All `.agent` contracts MUST include a version field in their metadata or version history section:
+
+```
+Version: <MAJOR>.<MINOR>.<PATCH>
+```
+
+Version increment rules:
+- **MAJOR**: Breaking changes, authority shifts, scope expansion
+- **MINOR**: Non-breaking additions (new bindings, new sections)
+- **PATCH**: Clarifications, typo fixes, formatting
+
+**ALL version increments are CS2 decision.** There is no "automatic" versioning.
+
+### 7.2 Changelog Maintenance
+
+Each contract MUST maintain a version history section documenting:
+- Version number
+- Change date
+- Summary of changes
+- Authority/approval reference
+
+Example:
+```markdown
+## Version History
+
+**v2.2.0** (2026-01-20)  
+Authority: AGENT_CONTRACT_MANAGEMENT_PROTOCOL.md v2.0.0  
+Implemented by: CS2 (Johan Ras)  
+Changes: Added standing prohibition against self-modification; updated authority model to CS2 direct control.
+```
+
+### 7.3 Rollback Support
+
+In case of:
+- Governance conflict discovered post-implementation
+- CI/build failures caused by contract change
+- CS2-directed rollback
+
+CS2 can reverse changes using:
+1. Git revert of contract change commit
+2. Version decrement with rollback annotation in changelog
+3. Documentation of rollback reason
+
+---
+
+## 8. Standing Prohibition Language
+
+### 8.1 Required Section in All `.agent` Files
+
+Every `.agent` file MUST include the following section (or equivalent):
+
+```markdown
+## Contract Modification Prohibition
+
+**YOU MUST NOT write to, modify, or create this file or any other `.agent` file.**
+
+Only **CS2** (Johan Ras in bootstrap mode, Maturion in production) may modify agent contracts.
+
+Attempting to modify this contract or any other `.agent` file is a **catastrophic governance violation**. If you need a contract change:
+1. **HALT** current execution
+2. **Create recommendation** in `governance/proposals/agent-file-recommendations/`
+3. **ESCALATE** to CS2 with clear justification
+4. **DO NOT** proceed until CS2 implements the change
+
+**Authority**: `governance/canon/AGENT_CONTRACT_MANAGEMENT_PROTOCOL.md`
+```
+
+### 8.2 Enforcement
+
+This section MUST appear in:
+- Repository-level `.agent` files
+- All agent contracts in `.github/agents/`
+- Any future agent contract formats
+
+Absence of this section constitutes an incomplete contract migration and must be remedied by CS2.
+
+---
+
+## 9. Transition Plan: Johan → Maturion
+
+### 9.1 CS2 Variable
+
+To facilitate transition from bootstrap mode (Johan Ras as CS2) to production mode (Maturion as CS2), all references use a **CS2 variable**:
+
+- **Bootstrap Mode**: CS2 = Johan Ras (human acting as Maturion proxy)
+- **Production Mode**: CS2 = Maturion (AI supreme authority)
+
+All governance documents, recommendations, and agent contracts reference "CS2" rather than "Johan Ras" to enable seamless transition.
+
+### 9.2 Transition Checklist
+
+When transitioning CS2 authority from Johan to Maturion:
+- [ ] Verify Maturion AI has operational authority approval mechanisms
+- [ ] Update CS2 definition in GOVERNANCE_PURPOSE_AND_SCOPE.md
+- [ ] Transfer recommendation review authority to Maturion
+- [ ] Document transition date and authority transfer
+- [ ] Verify all agents recognize Maturion as CS2
+- [ ] Archive bootstrap mode governance overrides
+
+No changes to protocol or recommendation system are required; only the identity of CS2 changes.
+
+---
+
+## 10. Incident Response and Violations
+
+### 10.1 Violation Detection
+
+A contract modification violation occurs when:
+- Any agent commits changes to a `.agent` file
+- Changes are made outside the recommendation system
+- Agent attempts to self-modify or modify other agent contracts
+
+### 10.2 Immediate Response
+
+Upon detection:
+1. **HALT** the violating agent immediately
+2. **ROLLBACK** the contract change if possible
+3. **ESCALATE** to CS2 with incident report
+4. **QUARANTINE** any work done by the agent under the modified contract (suspect validity)
+5. **INVESTIGATE** why the violation occurred (bug, misunderstanding, governance gap?)
+
+### 10.3 Incident Template
+
+Violations MUST be documented using:
+```
+governance/incidents/INCIDENT-<YYYY-MM-DD>-CONTRACT-MODIFICATION-VIOLATION-<ID>.md
+```
+
+Required content:
+- Incident ID and metadata
+- What contract was modified and by whom
+- How the violation occurred (tools, process, reasoning)
+- Impact assessment (what work is now suspect?)
+- Root cause analysis (why did governance fail to prevent this?)
+- Immediate remediation (rollback, halt, quarantine)
+- Long-term prevention (governance strengthening, enforcement improvement)
+- CS2 verdict (GO/HOLD/FAIL)
+
+---
+
+## 11. Integration with Existing Governance
+
+### 11.1 Relationship to AGENT_RECRUITMENT_AND_CONTRACT_AUTHORITY_MODEL.md
+
+This protocol **extends and simplifies** the authority model:
+- **Level 0 (CS2)**: Exclusive authority over ALL agent contracts
+- **Level 1 (All Agents)**: No write authority, recommendation-only
+
+**The authority hierarchy is simplified to two levels**: CS2 → All Agents (recommendation-only).
+
+Any previous multi-level authority grants for agent contract modification are **superseded** by this protocol.
+
+### 11.2 Ripple Propagation
+
+When governance canon changes trigger contract updates (ripple):
+1. **Governance-repo-administrator** identifies ripple need from canon changes
+2. For consumer repos: **governance-repo-administrator** modifies consumer repo agent contracts directly (within authority)
+3. For governance-liaison/FM contracts outside authority: create recommendation, escalate to CS2
+4. **governance-liaison** in consumer repos propagates to local FM/builder contracts (within authority)
+5. **FM agent** in consumer repos adjusts builder contracts as needed (within authority)
+6. All modifications tracked and auditable through git history
+
+**Authority-based ripple**: Agents apply changes within their authority level. Changes outside authority escalate up the chain.
+
+**Governance-repo-administrator authority**: Can modify governance-liaison, FM, and builder contracts in consumer repos.
+
+**governance-liaison authority**: Can modify FM and builder contracts in same repo.
+
+**FM authority**: Can modify builder contracts in same repo.
+
+**⚠️ CRITICAL — Atomic Layer-Down Compliance**: When ripple involves protocol layer-down (e.g., AGENT_CONTRACT_PROTECTION_PROTOCOL.md), **agent contract updates and protocol layer-down MUST occur atomically in one batch**. See **AGENT_CONTRACT_PROTECTION_PROTOCOL.md Section 11.2** for locked section requirements. Consumer repos MUST NOT layer down protocol files without simultaneously applying all mandated agent file updates (e.g., LOCKED sections). **NO separation** is permitted between canon layer-down and agent file compliance.
+
+### 11.3 Updates Required
+
+This protocol triggers updates to:
+- **AGENT_RECRUITMENT_AND_CONTRACT_AUTHORITY_MODEL.md**: Reference this protocol, clarify superseded authority
+- **AGENT_ONBOARDING_QUICKSTART.md**: Add contract modification prohibition to onboarding
+- **All existing `.agent` files**: Add standing prohibition section (CS2 implements via batch update)
+
+---
+
+## 12. Future Enhancements (PARKED)
+
+The following enhancements are **identified but not authorized for execution**:
+
+1. **Automated Recommendation Validation**: CI workflow that validates recommendation markdown syntax and completeness
+2. **Contract Diff Visualization**: Tool to visualize contract changes from recommendation
+3. **Recommendation Dependency Tracking**: System to track when multiple recommendations affect the same contract
+4. **Contract Audit Dashboard**: UI showing all contracts, versions, last modified dates, and recommendation history
+5. **Schema Validation Automation**: Automated schema validation on CS2 commits to `.agent` files
+
+These enhancements are **parked** pending future authorization and resource allocation.
+
+**Authority**: `governance/canon/MANDATORY_ENHANCEMENT_CAPTURE_STANDARD.md`
+
+---
+
+## 13. Summary
+
+**Core Principle**: Granular authority hierarchy with CS2 supreme authority.
+
+**Authority Levels**: 5-level hierarchy (CS2 → governance-repo-admin → governance-liaison → FM → builders)
+
+**Who Can Write**: 
+- CS2: ALL contracts
+- governance-repo-administrator: Consumer repo contracts (governance-liaison, FM, builders)
+- governance-liaison: FM and builder contracts (same repo)
+- FM agent: Builder contracts (same repo)
+- Builders: None
+
+**Self-Modification**: PROHIBITED for ALL agents (must escalate up chain)
+
+**CS2-Direct Contracts**: CodexAdvisor and governance-repo-administrator (CS2 only)
+
+**How Changes Happen**: 
+- Changes within authority: Agent modifies directly
+- Changes outside authority: Agent creates recommendation → escalates up chain
+- CS2 retains override authority at all levels
+
+**Enforcement**: Authority boundary validation in contracts, CI gates, audit logs, incident response.
+
+**Traceability**: Every change traceable through git history with authority validation.
+
+**Non-Negotiable**: Self-modification prohibited. CS2-direct contracts protected. Authority boundaries enforced.
+
+**⚠️ Downstream Compliance**: Consumer repos MUST apply ALL mandatory agent contract rules from canonical governance precisely as layered down. When protocols layer down with agent file requirements (e.g., AGENT_CONTRACT_PROTECTION_PROTOCOL.md Section 11.2 LOCKED sections), **agent contracts and protocol MUST be updated atomically in one batch**. **NO separation** between canon layer-down and agent file updates is permitted. Consumer agents inherit full compliance obligations without dilution or deferral.
+
+---
+
+## 14. Version and Authority
+
+**Version**: 3.1.0  
+**Authority**: CS2 (Johan Ras in bootstrap mode, Maturion in production)  
+**Effective Date**: 2026-01-26  
+**Previous Versions**: 
+- v3.0.0 (2026-01-21) - Introduced granular 5-level authority hierarchy
+- v2.0.0 (2026-01-20) - CS2 exclusive authority, no agent delegation
+- v1.0.0 (2026-01-13) - Agent Contract Administrator intermediary model  
+**Next Review**: Upon transition to Maturion as CS2
+
+**Major Changes from v3.0.0**:
+- Added atomic layer-down compliance requirement in Section 11.2 (Ripple Propagation)
+- Cross-referenced AGENT_CONTRACT_PROTECTION_PROTOCOL.md Section 11.2 for locked section requirements
+- Added downstream compliance clarification in Summary (Section 13)
+- Established NO separation principle between canon layer-down and agent file updates
+- Added AGENT_CONTRACT_PROTECTION_PROTOCOL.md v1.1.0 to Constitutional Authority (Section 2)
+- Authority: Issue requesting protocol layer-down compliance chain clarification
+
+**Major Changes from v2.0.0**:
+- Introduced granular 5-level authority hierarchy
+- Delegated modification authority to governance-repo-administrator (Level 1)
+- Delegated modification authority to governance-liaison (Level 2)
+- Delegated modification authority to FM agent (Level 3)
+- Maintained self-modification prohibition for ALL agents
+- Protected CS2-direct contracts (CodexAdvisor, governance-repo-administrator)
+- Enabled governance alignment automation while preserving constitutional control
+- Authority: CS2 strategic decision 2026-01-21, closes alignment automation issue
+
+**Major Changes from v1.0.0 (v2.0.0)**:
+- Removed Agent Contract Administrator intermediary layer
+- Replaced instruction system with recommendation system
+- Simplified from 3 levels to 2 levels (v2.0.0), then expanded to 5 levels (v3.0.0)
+- CS2 retains supreme authority across all versions
+
+**Canonical Precedence**:
+- If this protocol conflicts with GOVERNANCE_PURPOSE_AND_SCOPE.md, that document prevails
+- If this protocol conflicts with CONSTITUTION.md (if exists), that document prevails
+- This protocol v3.1.0 supersedes v3.0.0 and all previous contract authority models
+- CS2_AGENT_FILE_AUTHORITY_MODEL.md v2.0.0 provides detailed authority definitions
+
+---
+
+**End of Agent Contract Management Protocol**
