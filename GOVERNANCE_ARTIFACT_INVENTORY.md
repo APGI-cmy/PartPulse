@@ -3,9 +3,9 @@
 **Repository**: APGI-cmy/PartPulse
 **Type**: Consumer Repository (Layered-Down Governance)
 **Canonical Source**: APGI-cmy/maturion-foreman-governance
-**Last Updated**: 2026-02-09T11:53:33Z
+**Last Updated**: 2026-02-11T13:32:00Z
 **Updated By**: governance-liaison
-**Last Synced**: 2026-02-09T11:53:33Z (Issue #1061 - FM Merge Gate Management Layer-Down)
+**Last Synced**: 2026-02-11T13:32:00Z (PUBLIC_API Governance Canon Remediation - 69 artifacts)
 
 ---
 
@@ -529,3 +529,59 @@ The following canonical files are referenced in existing governance but not yet 
 - Any drift detected triggers automatic self-alignment per Issue #999
 - Agent contract modifications require CS2 approval per AGENT_CONTRACT_PROTECTION_PROTOCOL.md
 - Pending canon files are actively monitored and will be layered down immediately upon availability
+
+---
+
+## PUBLIC_API Governance Canon Artifacts (Remediation - February 2026)
+
+**Layer-Down Date**: 2026-02-11T13:29:00Z - 2026-02-11T13:31:00Z
+**Related Issue**: Modeled after maturion-isms#51 (102 PUBLIC_API artifacts)
+**Session**: liaison-20260211-132547
+**Artifacts Processed**: 69 files (44 missing + 25 mismatched)
+**Final Alignment**: 102/102 PUBLIC_API artifacts present and aligned
+
+### Summary
+
+All 102 PUBLIC_API governance canon artifacts from the canonical governance repository (APGI-cmy/maturion-foreman-governance) have been validated and remediated in this consumer repository. PUBLIC_API designation indicates artifacts intended for layer-down to all consumer repositories.
+
+**Validation Results**:
+- Total PUBLIC_API artifacts (canonical): 102
+- Present locally: 102 (100%)
+- SHA256 aligned: 98 (96%)
+- Canonical inventory staleness: 4 (documented and acceptable)
+
+**Files Layered Down**:
+
+| Category | Files Remediated | Description |
+|----------|------------------|-------------|
+| Agent Governance | 12 | Agent contracts, onboarding, coordination, ignorance prohibition |
+| Policies | 8 | App descriptions, architecture traceability, QA handover, deprecation |
+| Protocols | 25 | Layer-up, ripple awareness, evidence bundles, commissioning, IBWR |
+| Standards & Models | 24 | Merge gates, platform authority, execution monitoring, domain rules |
+
+### Agent Governance PUBLIC_API Artifacts
+
+| File | Last Layered-Down | Status |
+|------|-------------------|--------|
+| AGENT_CANONICAL_CONTEXT_SYNCHRONISATION_PROTOCOL.md | 2026-02-11T13:29:00Z | ✅ CURRENT PUBLIC_API |
+| AGENT_CONTRACT_MANAGEMENT_PROTOCOL.md | 2026-02-11T13:29:00Z | ✅ CURRENT PUBLIC_API |
+| AGENT_CONTRACT_MIGRATION_GUIDE.md | 2026-02-11T13:29:00Z | ✅ CURRENT PUBLIC_API |
+| AGENT_CONTRACT_PROTECTION_PROTOCOL.md | 2026-02-11T13:29:00Z | ✅ CURRENT PUBLIC_API |
+| AGENT_FILE_BINDING_REQUIREMENTS.md | 2026-02-11T13:29:00Z | ✅ CURRENT PUBLIC_API |
+| AGENT_IGNORANCE_PROHIBITION_DOCTRINE.md | 2026-02-11T13:29:00Z | ✅ CURRENT PUBLIC_API |
+| AGENT_ONBOARDING_QUICKSTART.md | 2026-02-11T13:29:00Z | ✅ CURRENT PUBLIC_API |
+| AGENT_RECRUITMENT.md | 2026-02-11T13:29:00Z | ✅ CURRENT PUBLIC_API |
+| AGENT_RECRUITMENT_AND_CONTRACT_AUTHORITY_MODEL.md | 2026-02-11T13:29:00Z | ✅ CURRENT PUBLIC_API |
+| AGENT_RIPPLE_AWARENESS_OBLIGATION.md | 2026-02-11T13:29:00Z | ✅ CURRENT PUBLIC_API |
+| AGENT_ROLE_GATE_APPLICABILITY.md | 2026-02-11T13:29:00Z | ✅ CURRENT PUBLIC_API |
+| CROSS_AGENT_COORDINATION_PROTOCOL.md | 2026-02-11T13:30:00Z | ✅ CURRENT PUBLIC_API |
+
+### Complete List of PUBLIC_API Artifacts (102 Total)
+
+For the complete SHA256-verified list of all 102 PUBLIC_API artifacts, see:
+- Session evidence: `.agent-admin/sessions/governance-liaison/liaison-20260211-132547_public_api_validation.md`
+- Remediation summary: `.agent-admin/sessions/governance-liaison/liaison-20260211-132547_remediation_summary.md`
+- SHA256 verification: `.agent-admin/sessions/governance-liaison/liaison-20260211-132547_sha256_verification.log`
+
+**Note**: Four files show SHA256 variance due to canonical CANON_INVENTORY.json staleness (inventory generated 06:52 UTC, files updated later). Local files match current canonical repository state. See remediation summary for details.
+
