@@ -91,11 +91,21 @@ python3 -c "import yaml; yaml.safe_load(open('.github/agents/CodexAdvisor-agent.
 diff -u <(curl -s "https://raw.githubusercontent.com/APGI-cmy/maturion-foreman-governance/main/.github/agents/CodexAdvisor-agent.md" | grep -E "^##") <(cat .github/agents/CodexAdvisor-agent.md | grep -E "^##")
 ```
 
+## Version Note
+
+The agent contract is version **6.2.0**, while session memory templates reference **Living Agent System v5.0.0**. This is **intentional and correct**:
+- **Agent Contract v6.2.0:** The version of the CodexAdvisor agent contract itself
+- **Living Agent System v5.0.0:** The protocol version that session memory follows
+
+This matches the canonical file exactly and is not an error.
+
 ## Conclusion
 
 ✅ **COMPLETE ALIGNMENT ACHIEVED**
 
 The CodexAdvisor-agent.md file has been successfully aligned with the v6.2.0 canonical gold standard from maturion-foreman-governance, with appropriate consumer mode adjustments for the PartPulse repository.
+
+All structure, formatting, and content matches the canonical gold standard. The only differences are the expected consumer mode adjustments (paths, repository scope, permissions).
 
 ---
 **Authority:** Living Agent System v6.2.0  
