@@ -1,8 +1,13 @@
 # Pending Canon Files - Layer-Down Tracking
 
-**Last Updated**: 2026-02-08
-**Maintained By**: governance-liaison
+**Last Updated**: 2026-02-11  
+**Maintained By**: governance-liaison  
 **Authority**: CROSS_REPOSITORY_LAYER_DOWN_PROTOCOL.md
+
+**Status Summary**:
+- ✅ FM_ROLE_CANON.md: LAYERED DOWN (2026-02-09)
+- 🔍 WAVE_MODEL.md: TRACKED - Not Yet Available
+- 🔍 LIVING_AGENT_SYSTEM.md: TRACKED - Not Yet Available
 
 ---
 
@@ -16,12 +21,16 @@ This document tracks canonical governance files that are referenced in existing 
 
 ### 1. FM_ROLE_CANON.md
 
-**Status**: 🔍 TRACKED - Not Yet Layered Down  
+**Status**: ✅ LAYERED DOWN  
 **Priority**: HIGH  
-**Canonical Path**: `governance/canon/FM_ROLE_CANON.md` or `governance/maturion/FM_ROLE_CANON.md`
+**Local Path**: `governance/maturion/FM_ROLE_CANON.md`  
+**Layered Down**: 2026-02-09T07:16:00Z  
+**Version**: v1.0.0
 
 **Description**:
 FM Role Canon defines the canonical role, responsibilities, and authority boundaries for Foreman (FM) agents. This is a foundational document for FM operations.
+
+**✅ LAYER-DOWN COMPLETE**: This file was successfully layered down on 2026-02-09T07:16:00Z as part of Issue #1052. It is now available at `governance/maturion/FM_ROLE_CANON.md` and registered in TIER_0_CANON_MANIFEST.json as T0-011.
 
 **Referenced In**:
 - `governance/canon/AGENT_BASELINE_MANAGEMENT_PROTOCOL.md` (line 141, 169)
@@ -39,19 +48,21 @@ FM Role Canon defines the canonical role, responsibilities, and authority bounda
 - Builder appointment and supervision authority
 - FM self-governance requirements
 
-**Integration Impact**:
-- High - Required for complete FM agent contract validation
-- Affects FM wake-up protocol references
-- Needed for wave planning methodology completeness
-- Essential for FM memory protocol integration
+**Integration Status**:
+- ✅ High - Required for complete FM agent contract validation
+- ✅ Affects FM wake-up protocol references
+- ✅ Needed for wave planning methodology completeness
+- ✅ Essential for FM memory protocol integration
+- ✅ File available for agent contract references
+- ✅ Listed in TIER_0_CANON_MANIFEST.json (T0-011)
 
-**Action Required When Available**:
-1. Monitor canonical governance repository for release
-2. Execute immediate layer-down via governance-liaison
-3. Update FM agent contract (ForemanApp-agent.md) with canonical references
-4. Update TIER_0_CANON_MANIFEST.json with actual file metadata
-5. Validate all cross-references
-6. Update this tracking document
+**Action Completed**:
+1. ✅ Layered down from canonical governance repository (2026-02-09)
+2. ✅ Placed in governance/maturion/FM_ROLE_CANON.md
+3. ✅ Registered in TIER_0_CANON_MANIFEST.json (T0-011)
+4. ✅ Updated in GOVERNANCE_ARTIFACT_INVENTORY.md
+5. ✅ Cross-references validated
+6. ✅ This tracking document updated (2026-02-11)
 
 ---
 
