@@ -78,19 +78,4 @@ This rule has canonical precedence over local repository rules and agent contrac
 
 ---
 
-## Summary
-
-This is one of 15 critical Tier-0 governance canon files that ensures failures drive governance improvement.
-
-Key principles:
-- **Failures promote to governance**: Not allowed to remain local
-- **Structured promotion**: Governance PR/issue must be referenced with evidence
-- **Resolution blocking**: Cannot mark resolved without governance action
-- **CI enforcement**: CI blocks merge if promotion incomplete
-- **Governance learning**: Failures reveal gaps that must be captured
-
-**Version**: v1  
-**Authority**: Canonical Governance Rule (Tier-0)  
-**Source**: APGI-cmy/maturion-foreman-governance
-
-This rule operationalizes the Governance Ripple Model's upward flow of learning from failures to governance.
+End of FAILURE PROMOTION RULE

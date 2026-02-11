@@ -1,494 +1,837 @@
-# Quality Integrity Watchdog (QIW) Channel Specification
+# WATCHDOG QUALITY INTEGRITY CHANNEL
 
-**Document ID**: QIW-SPEC-001  
+## Status
+**Type**: Canonical Governance Definition  
+**Authority**: Supreme - Canonical  
 **Version**: 1.0.0  
-**Date**: 2026-01-14  
-**Status**: Active  
-**Authority**: Maturion Governance / FM Office  
-**Scope**: Cross-Repository Standard
+**Effective Date**: 2026-01-13  
+**Owner**: Maturion Engineering Leadership (Johan Ras)  
+**Precedence**: Subordinate to WATCHDOG_AUTHORITY_AND_SCOPE.md  
+**Applies To**: All Repositories, All Build Systems, All QA Gates
 
 ---
 
-## Purpose
+## 1. Purpose
 
-The **Quality Integrity Watchdog (QIW)** is a governance monitoring system that observes development lifecycle channels for anomalies, defects, and quality violations. QIW provides continuous oversight across 5 mandatory observation channels to ensure code quality, process compliance, and early defect detection.
+This document formally defines the **Quality Integrity Watchdog (QIW)** as an observational channel within the Independent Watchdog system for monitoring build, lint, test, deployment, and runtime log integrity.
 
-**Mission**: Prevent defects from reaching production through systematic observation, automated anomaly detection, and governance-enforced quality gates.
+The QIW Channel exists to:
+- Prevent QA systems from reporting false positives
+- Detect silent warnings and failures in build artifacts
+- Ensure log integrity before QA pass is allowed
+- Provide governance memory integration for quality incidents
+- Block QA progression when quality anomalies are detected
 
----
-
-## Constitutional Principle
-
-> "Quality cannot be inspected in—it must be built in. QIW ensures quality is monitored continuously, not just at final gates."
-
-**From BUILD_PHILOSOPHY.md**:
-> "One-Time Fully Functional Builds require continuous quality validation. Waiting until the end guarantees rework."
-
-**From Governance Doctrine**:
-> "Every repository MUST implement QIW monitoring. Quality visibility is not optional—it is constitutional."
-
----
-
-## The 5 Observation Channels
-
-QIW monitors quality across five mandatory channels throughout the development lifecycle:
-
-### Channel 1: Build
-**What It Monitors**: Code compilation, dependency resolution, build process health  
-**Purpose**: Detect build failures, dependency conflicts, configuration errors  
-**Frequency**: Every commit, every PR, every deployment preparation
-
-**Key Metrics**:
-- Build success rate
-- Build duration
-- Dependency resolution failures
-- Configuration errors
-- Build artifact integrity
-
-**Anomaly Patterns**:
-- Build failure rate exceeds 5% in main branch
-- Build duration increases >50% without justification
-- Recurring dependency conflicts
-- Intermittent build failures (flaky builds)
-- Build artifact corruption
+This document establishes:
+- What the QIW Channel observes (5 monitoring channels)
+- Detection patterns and anomaly classification
+- QA blocking conditions and escalation triggers
+- Governance memory integration requirements
+- Dashboard visibility and reporting requirements
 
 ---
 
-### Channel 2: Lint
-**What It Monitors**: Code style, static analysis, linting violations  
-**Purpose**: Enforce code quality standards, detect code smells, maintain consistency  
-**Frequency**: Pre-commit, every PR
+## 2. Constitutional Mandate
 
-**Key Metrics**:
-- Linting violation count
-- Violation severity distribution
-- Code complexity metrics
-- Style consistency score
-- Technical debt indicators
-
-**Anomaly Patterns**:
-- Lint violations increase without remediation plan
-- Critical violations merged to main
-- Linting checks bypassed or disabled
-- Consistent violations in specific modules (quality debt accumulation)
-- Code complexity exceeds thresholds
+This policy derives authority from and implements:
+- **WATCHDOG_AUTHORITY_AND_SCOPE.md** - Independent Watchdog authority, observation scope, escalation paths
+- **BUILD_PHILOSOPHY.md** - One-Time Build Law, QA as proof, zero-warning discipline
+- **GOVERNANCE_PURPOSE_AND_SCOPE.md** - Governance as canonical memory and control system
+- **BUILDER_FIRST_PR_MERGE_MODEL.md** - Build-to-Green compliance requirements
+- **WARNING_DISCOVERY_BLOCKER_PROTOCOL.md** - Warning escalation and blocking requirements
 
 ---
 
-### Channel 3: Test
-**What It Monitors**: Test execution, coverage, reliability, test health  
-**Purpose**: Ensure comprehensive testing, detect test gaps, prevent test degradation  
-**Frequency**: Every commit, every PR, scheduled regression runs
+## 3. Core Principles
 
-**Key Metrics**:
-- Test pass rate
-- Test coverage percentage
-- Test execution time
-- Flaky test count
-- Test dodging incidents
-- Test debt (skipped/disabled tests)
+### 3.1 Quality Integrity Contract (QIC) Enforcement
 
-**Anomaly Patterns**:
-- Test pass rate drops below 95%
-- Coverage decreases without approval
-- Flaky tests increase (>2% failure rate on stable code)
-- Test execution time degrades >25%
-- Test dodging detected (code changes without test updates)
-- Skipped tests not tracked in test debt register
+**Definition**: QIW enforces the Quality Integrity Contract defined in application repositories.
 
----
+**Requirements**:
+- MUST scan logs before QA is allowed to pass
+- MUST detect failures, silent warnings, and anomalies
+- MUST block QA when quality violations are detected
+- MUST record all quality incidents in governance memory
 
-### Channel 4: Deployment
-**What It Monitors**: Deployment process, environment health, deployment success  
-**Purpose**: Ensure reliable deployments, detect deployment failures, validate environments  
-**Frequency**: Every deployment, environment health checks
+**Boundaries**:
+- QIW observes log artifacts, not application code
+- QIW detects quality violations, does not fix them
+- QIW blocks QA based on governance rules, not heuristics
+- QIW escalates findings to human authority per severity
 
-**Key Metrics**:
-- Deployment success rate
-- Deployment duration
-- Rollback frequency
-- Environment drift detection
-- Configuration validation failures
-- Post-deployment health check results
+**Rationale**:
+- QA cannot correctly pass when quality violations exist
+- Silent warnings corrupt build integrity
+- Log parsing is required, not just exit codes
+- Quality incidents inform continuous improvement
 
-**Anomaly Patterns**:
-- Deployment failure rate exceeds 10%
-- Repeated rollbacks to same version
-- Environment configuration drift
-- Deployment duration increases significantly
-- Health checks failing post-deployment
-- Manual intervention required frequently
+**Enforcement**:
+- QIW integrated as mandatory QA gate step
+- QA blocking automatic on critical/error severity
+- Governance memory integration mandatory
+- Dashboard visibility required
 
 ---
 
-### Channel 5: Runtime
-**What It Monitors**: Application behavior in production/staging, errors, performance  
-**Purpose**: Detect runtime defects, performance degradation, production incidents  
-**Frequency**: Continuous (real-time monitoring)
+### 3.2 Log Integrity Before QA Pass
 
-**Key Metrics**:
-- Error rate (4xx, 5xx responses)
-- Performance metrics (latency, throughput)
-- Resource utilization (CPU, memory, disk)
-- Exception/crash count
-- User-reported incidents
-- SLA compliance
+**Definition**: QA pass requires clean logs across all monitored channels.
 
-**Anomaly Patterns**:
-- Error rate exceeds baseline by >20%
-- Response time degradation >30%
-- Memory leaks or resource exhaustion
-- Repeated crashes in specific modules
-- SLA violations
-- Production incidents correlating with recent deployments
+**Requirements**:
+- Build logs MUST be parsed for errors and warnings
+- Lint logs MUST be analyzed for violations
+- Test logs MUST be validated for runtime errors
+- Deployment simulation logs MUST be checked for failures
+- Runtime initialization logs MUST be verified for errors
+
+**Boundaries**:
+- Exit code success is insufficient (logs must be analyzed)
+- Zero warnings is the standard (unless explicitly whitelisted)
+- Silent failures MUST be detected and blocked
+- Log parsing MUST use pattern matching, not just exit codes
+
+**Rationale**:
+- Exit codes can lie (process succeeds with logged errors)
+- Silent warnings indicate quality debt
+- Log analysis catches what exit codes miss
+- Clean logs = true quality
+
+**Enforcement**:
+- QIW runs before QA pass decision
+- QA blocked if any channel shows anomalies
+- Anomalies recorded in governance memory
+- Dashboard exposes QIW status
 
 ---
 
-## Severity-Based Blocking Logic
+### 3.3 Governance Memory Integration
 
-QIW uses a severity classification to determine blocking behavior at quality gates:
+**Definition**: All QIW events are recorded in governance memory for learning and improvement.
 
-### Severity Levels
+**Requirements**:
+- Critical and error anomalies MUST be recorded
+- Each incident MUST include: what failed, where, why, recommended fix, missing architecture rule
+- Incidents MUST be tagged for queryability
+- Trends MUST be tracked over time
 
-**CRITICAL (P0)**:
-- Blocks all merges immediately
-- Requires immediate remediation
-- Examples: Build failures, critical security vulnerabilities, production outages
+**Boundaries**:
+- Memory writes follow existing governance memory protocol
+- Incidents are read-write to governance memory locations
+- Incident format follows `QualityIntegrityIncident` schema
+- Memory scope: project-specific or global per configuration
 
-**HIGH (P1)**:
-- Blocks merge to main/production branches
-- Requires remediation before next release
-- Examples: Test failures, high-severity lint violations, deployment failures
+**Rationale**:
+- Quality incidents inform root cause analysis
+- Patterns reveal systemic issues requiring governance changes
+- Memory enables continuous improvement
+- Traceability supports audit and compliance
 
-**MEDIUM (P2)**:
-- Warning issued, does not block
-- Requires remediation within sprint
-- Examples: Coverage decrease, medium lint violations, performance degradation
+**Enforcement**:
+- Governance memory write on every critical/error anomaly
+- Incident structure validated against schema
+- Memory integration tested in QIW implementation
+- Query capabilities for incident analytics
 
-**LOW (P3)**:
-- Informational only
-- Track in backlog for future remediation
-- Examples: Minor style violations, technical debt accumulation
+---
 
-### Blocking Rules
+### 3.4 Read-Only Observation
 
-```
-IF severity = CRITICAL:
-  BLOCK all merges
-  REQUIRE immediate fix
-  ESCALATE to on-call team
+**Definition**: QIW observes logs but does not modify build artifacts or code.
+
+**Requirements**:
+- MUST NOT modify log files
+- MUST NOT alter build outputs
+- MUST NOT change test results
+- MUST NOT execute remediation (only recommend)
+
+**Boundaries**:
+- MAY read all log artifacts
+- MAY parse and analyze log content
+- MAY detect patterns and anomalies
+- MAY block QA based on findings
+- MAY escalate to human authority
+- MAY NOT modify artifacts or execute fixes
+
+**Rationale**:
+- Observation independence preserves evidence integrity
+- Modifications would corrupt audit trail
+- Read-only access aligns with Watchdog independence principle
+- Remediation is developer/agent responsibility, not Watchdog
+
+**Enforcement**:
+- File system access: read-only mode
+- No write operations to log directories
+- No modification of build artifacts
+- Violations escalate to hard stop
+
+---
+
+## 4. QIW Observation Channels
+
+### 4.1 QIW-1: Build Log Monitoring
+
+**Requirement**: Parse build output to detect failures and silent warnings.
+
+**What the QIW Observes**:
+- Build command execution logs
+- Compiler output and error messages
+- Build system warnings
+- Dependency resolution issues
+- Build artifact generation status
+
+**Detection Patterns**:
+- **Critical Patterns**:
+  - `Build failed`
+  - `Compilation error`
+  - `Fatal error`
+  - Exit code non-zero (as secondary indicator)
   
-IF severity = HIGH:
-  IF target_branch IN [main, production, release/*]:
-    BLOCK merge
-    REQUIRE remediation plan
-  ELSE:
-    ALLOW with warning
-    TRACK in incident log
-    
-IF severity = MEDIUM:
-  ALLOW merge
-  CREATE tracking issue
-  REPORT in dashboard
+- **Error Patterns**:
+  - `ERROR` (word boundary)
+  - `ERR` (word boundary)
+  - `TypeError`
+  - `ReferenceError`
+  - `Failed to compile`
+  - `Cannot find module`
+  - `Unresolved dependencies`
   
-IF severity = LOW:
-  ALLOW merge
-  LOG for metrics
-```
+- **Warning Patterns**:
+  - `WARNING` (word boundary)
+  - `WARN` (word boundary)
+  - `Deprecated`
+  - `Module not found` (non-fatal)
+
+**Anomaly Classification**:
+- **Critical**: Build failure preventing artifact generation
+- **Error**: Build succeeds but errors logged (silent failure)
+- **Warning**: Build succeeds with warnings (quality debt)
+- **Info**: Informational messages (no blocking)
+
+**Escalation Triggers**:
+- Critical: Hard stop, QA blocked, immediate escalation
+- Error: QA blocked, governance memory recorded, escalation
+- Warning: QA blocked (per zero-warning discipline), recorded
+- Info: No blocking, logged for visibility
+
+**Governance Memory Integration**:
+- Record all critical and error anomalies
+- Include: what failed, where (file/line if available), why (root cause), recommended fix, missing architecture rule
+- Tag: `quality-integrity`, `build-error`, severity level
+- Scope: project-specific
 
 ---
 
-## Incident Schema
+### 4.2 QIW-2: Lint Log Monitoring
 
-All QIW anomalies are recorded as structured incidents in `memory/PartPulse/qiw-events.json`:
+**Requirement**: Detect warnings, errors, anti-patterns, and deprecated code.
 
-```json
+**What the QIW Observes**:
+- Lint command execution logs
+- ESLint / TSLint / other linter output
+- Style violations and formatting issues
+- Anti-pattern detection results
+- Deprecated API usage warnings
+
+**Detection Patterns**:
+- **Critical Patterns**:
+  - Linting process crash
+  - Configuration error preventing execution
+  
+- **Error Patterns**:
+  - `error` (lint severity level)
+  - `✖` (error marker)
+  - Rule violations marked as errors
+  - Security rule violations
+  
+- **Warning Patterns**:
+  - `warning` (lint severity level)
+  - `⚠` (warning marker)
+  - Deprecated API usage
+  - Anti-pattern detections
+  - Style violations
+
+**Anomaly Classification**:
+- **Critical**: Linter crash or configuration failure
+- **Error**: Lint errors present
+- **Warning**: Lint warnings present (zero-warning discipline)
+- **Info**: Lint metadata (files scanned, rules applied)
+
+**Escalation Triggers**:
+- Critical: Hard stop, immediate escalation
+- Error: QA blocked, recorded, escalation
+- Warning: QA blocked (zero-warning requirement), recorded
+- Info: No blocking, logged
+
+**Governance Memory Integration**:
+- Record all critical and error anomalies
+- Include: rule violated, file/line, explanation, recommended fix
+- Tag: `quality-integrity`, `lint-error`, rule-id, severity
+- Scope: project-specific
+
+**Zero-Warning Discipline**:
+- Warnings MUST be treated as blocking unless explicitly whitelisted
+- Whitelisting requires governance approval
+- Whitelist documented in project configuration
+- Trend analysis: warning count over time (target: zero)
+
+---
+
+### 4.3 QIW-3: Test Log Monitoring
+
+**Requirement**: Detect runtime errors, unexpected passes, skipped tests, and suppressed failures.
+
+**What the QIW Observes**:
+- Test runner execution logs
+- Test result summaries (passed/failed/skipped)
+- Runtime errors during test execution
+- Assertion failures and error messages
+- Test coverage metrics and warnings
+
+**Detection Patterns**:
+- **Critical Patterns**:
+  - Test runner crash
+  - All tests failing
+  - `Cannot run tests` (infrastructure failure)
+  
+- **Error Patterns**:
+  - `FAIL` or `✖` (test failure marker)
+  - `Error:` in test output
+  - `UnhandledPromiseRejectionWarning`
+  - `Segmentation fault`
+  - Assertion failures
+  
+- **Warning Patterns**:
+  - `SKIP` or `⊘` (skipped test marker)
+  - `.only` or `.skip` in test descriptions (test focus/suppression)
+  - Coverage below threshold
+  - `TODO` tests
+  
+- **Unexpected Passes**:
+  - Tests marked `.failing` but passing
+  - Tests expected to fail but succeed (indicates stale test)
+
+**Anomaly Classification**:
+- **Critical**: Test runner failure, infrastructure error
+- **Error**: Test failures, runtime errors during execution
+- **Warning**: Skipped tests, suppressed tests (.skip, .only), unexpected passes
+- **Info**: Test counts, execution time, coverage percentage
+
+**Escalation Triggers**:
+- Critical: Hard stop, immediate escalation
+- Error: QA blocked, recorded, escalation
+- Warning: QA blocked (test debt not allowed), recorded
+- Info: No blocking, logged
+
+**Governance Memory Integration**:
+- Record all critical and error anomalies
+- Include: test name, failure reason, stack trace, recommended fix
+- Tag: `quality-integrity`, `test-error`, test-type, severity
+- Scope: project-specific
+
+**Test Integrity Rules**:
+- Skipped tests are test debt (must be resolved or justified)
+- `.only` and `.skip` are temporary debugging tools (not allowed in commits)
+- Unexpected passes indicate stale tests (must be updated or removed)
+- Runtime errors during tests are build failures (QA blocked)
+
+---
+
+### 4.4 QIW-4: Deployment Simulation Monitoring
+
+**Requirement**: Watch performance of `next build` and `next start` in Preview and Production modes.
+
+**What the QIW Observes**:
+- Deployment build command logs (`next build`, `npm run build`)
+- Server start command logs (`next start`, `npm start`)
+- Preview environment simulation results
+- Production environment simulation results
+- Environment parity validation
+
+**Detection Patterns**:
+- **Critical Patterns**:
+  - Deployment build failure
+  - Server start failure
+  - Port binding errors
+  - Missing environment variables (required)
+  
+- **Error Patterns**:
+  - `Build error` in deployment logs
+  - `Failed to start` server messages
+  - Route compilation errors
+  - API endpoint failures during startup
+  - Database connection errors
+  
+- **Warning Patterns**:
+  - Environment variable warnings (optional vars missing)
+  - Performance warnings (slow builds, slow starts)
+  - Deprecation warnings in deployment logs
+  - Port conflicts (non-fatal)
+
+**Anomaly Classification**:
+- **Critical**: Deployment build failure, server start failure
+- **Error**: Route errors, API failures, required env vars missing
+- **Warning**: Performance issues, optional env vars missing, deprecations
+- **Info**: Build/start duration, memory usage, optimization stats
+
+**Escalation Triggers**:
+- Critical: Hard stop, QA blocked, immediate escalation
+- Error: QA blocked, recorded, escalation
+- Warning: QA blocked (zero-warning discipline), recorded
+- Info: No blocking, logged
+
+**Governance Memory Integration**:
+- Record all critical and error anomalies
+- Include: deployment stage (build/start), error message, environment (preview/production), recommended fix
+- Tag: `quality-integrity`, `deployment-error`, environment, severity
+- Scope: project-specific
+
+**Deployment Simulation Rules**:
+- Preview simulation MUST pass before Production simulation
+- Production simulation MUST pass before QA pass
+- Environment parity MUST be validated (preview ≈ production)
+- Zero warnings in deployment logs (warns indicate potential production issues)
+
+---
+
+### 4.5 QIW-5: Runtime Initialization Monitoring
+
+**Requirement**: Verify runtime initialization logs for errors during application startup.
+
+**What the QIW Observes**:
+- Application initialization logs
+- Service startup sequences
+- Database/external service connections
+- Memory system initialization
+- Governance hook execution
+- Engine initialization status
+
+**Detection Patterns**:
+- **Critical Patterns**:
+  - Application crash during initialization
+  - Fatal errors preventing startup
+  - `Cannot initialize` messages
+  
+- **Error Patterns**:
+  - `Initialization error`
+  - `Failed to connect` (database, services)
+  - `Memory system failure`
+  - `Governance hook failure`
+  - `Engine initialization error`
+  - Unhandled exceptions during startup
+  
+- **Warning Patterns**:
+  - Slow initialization (performance warnings)
+  - Retry attempts during initialization
+  - Fallback modes activated
+  - Configuration warnings
+
+**Anomaly Classification**:
+- **Critical**: Application crash, fatal initialization failure
+- **Error**: Service connection failures, component init failures
+- **Warning**: Performance issues, fallback activations, retries
+- **Info**: Initialization duration, component status, health checks
+
+**Escalation Triggers**:
+- Critical: Hard stop, QA blocked, immediate escalation
+- Error: QA blocked, recorded, escalation
+- Warning: QA blocked (initialization must be clean), recorded
+- Info: No blocking, logged
+
+**Governance Memory Integration**:
+- Record all critical and error anomalies
+- Include: component failed, failure reason, initialization sequence, recommended fix
+- Tag: `quality-integrity`, `runtime-error`, component, severity
+- Scope: project-specific
+
+**Runtime Initialization Rules**:
+- All components MUST initialize successfully
+- Fallback modes indicate missing dependencies (must be resolved)
+- Retry logic during init indicates instability (must be fixed)
+- Initialization errors are QA blockers (cannot pass with init failures)
+
+---
+
+## 5. QA Blocking Conditions
+
+### 5.1 Automatic QA Blocking
+
+**Blocking Rule**: QA is automatically blocked when any of the following conditions are detected:
+
+**Critical Severity** (Always Blocks):
+- Build failure preventing artifact generation
+- Test runner crash or infrastructure failure
+- Deployment build failure
+- Server start failure
+- Application crash during initialization
+- Linter crash or configuration error
+
+**Error Severity** (Always Blocks):
+- Build succeeds but errors logged (silent failures)
+- Lint errors present
+- Test failures or runtime errors during tests
+- Deployment errors (route errors, API failures)
+- Runtime initialization errors (component failures)
+
+**Warning Severity** (Blocks per Zero-Warning Discipline):
+- Build warnings present
+- Lint warnings present (unless whitelisted)
+- Skipped tests or suppressed tests (.skip, .only)
+- Deployment warnings
+- Runtime initialization warnings
+
+**Info Severity** (Does Not Block):
+- Informational messages
+- Performance metrics
+- Execution duration stats
+- Health check successes
+
+### 5.2 QA Blocking Enforcement
+
+**Enforcement Mechanism**:
+1. QIW runs as QA gate step (before QA pass decision)
+2. QIW scans all 5 channels for anomalies
+3. If any blocking anomaly detected:
+   - Set `qaBlocked = true`
+   - Record anomalies in governance memory
+   - Generate blocking report
+   - Escalate per severity
+4. QA runner checks `qaBlocked` flag
+5. If `qaBlocked = true`, QA fails regardless of other checks
+
+**Governance Integration**:
+- QA cannot be manually overridden (requires governance approval)
+- Blocking decisions are auditable (logged to governance memory)
+- Human authority may approve exceptions (documented and justified)
+- Trend analysis: blocking frequency over time (target: decreasing)
+
+### 5.3 Escalation Paths
+
+**Critical Severity Escalation**:
+- **Destination**: Human Authority (immediate)
+- **Type**: Emergency stop
+- **Action**: Hard stop QA, immediate investigation required
+- **Response Time**: <1 hour
+
+**Error Severity Escalation**:
+- **Destination**: Human Authority (priority)
+- **Type**: QA blocked
+- **Action**: Block QA, investigation required before retry
+- **Response Time**: <4 hours
+
+**Warning Severity Escalation**:
+- **Destination**: Dashboard visibility + optional Human notification
+- **Type**: QA blocked (zero-warning discipline)
+- **Action**: Block QA, resolution required (fix or whitelist)
+- **Response Time**: <24 hours
+
+**Info Severity Escalation**:
+- **Destination**: Dashboard visibility only
+- **Type**: Informational
+- **Action**: No blocking, logged for trends
+- **Response Time**: No requirement
+
+---
+
+## 6. Governance Memory Integration
+
+### 6.1 Incident Recording Requirements
+
+**Mandatory Recording**: All critical and error anomalies MUST be recorded to governance memory.
+
+**Incident Structure** (per `QualityIntegrityIncident` schema):
+```typescript
 {
-  "incident_id": "QIW-{CHANNEL}-{TIMESTAMP}-{HASH}",
-  "timestamp": "2026-01-14T07:58:00.000Z",
-  "channel": "build|lint|test|deployment|runtime",
-  "severity": "critical|high|medium|low",
-  "status": "detected|investigating|remediated|false_positive",
-  "title": "Brief description of anomaly",
-  "description": "Detailed description with context",
-  "detection": {
-    "detector": "automated|manual",
-    "detection_method": "threshold|pattern|manual_report",
-    "confidence": 0.0-1.0
-  },
-  "impact": {
-    "affected_components": ["component1", "component2"],
-    "affected_branches": ["main", "feature/xyz"],
-    "user_impact": "none|low|medium|high|critical",
-    "business_impact": "Description of business impact"
-  },
-  "metrics": {
-    "metric_name": "value",
-    "baseline": "expected_value",
-    "deviation": "percentage or absolute difference"
-  },
-  "evidence": {
-    "logs": ["log_reference_1", "log_reference_2"],
-    "commits": ["commit_sha_1"],
-    "pr_numbers": [123],
-    "ci_run_urls": ["https://..."],
-    "screenshots": ["path/to/screenshot"]
-  },
-  "remediation": {
-    "assigned_to": "user_or_team",
-    "remediation_plan": "Description of plan",
-    "completed_at": "2026-01-14T08:30:00.000Z",
-    "resolution": "Description of how resolved",
-    "verification": "How resolution was verified"
-  },
-  "escalation": {
-    "escalated": true,
-    "escalated_to": "team_or_role",
-    "escalated_at": "2026-01-14T08:00:00.000Z",
-    "escalation_reason": "Why escalated"
-  },
-  "metadata": {
-    "created_by": "system|user_id",
-    "updated_at": "2026-01-14T08:15:00.000Z",
-    "tags": ["tag1", "tag2"],
-    "related_incidents": ["QIW-TEST-20260114-ABC"]
+  "whatFailed": string,          // Description of what failed
+  "where": string,                // File/line or component location
+  "why": string,                  // Root cause analysis
+  "recommendedFix": string,       // Actionable fix suggestion
+  "missingArchitectureRule": string, // Governance gap identified
+  "channel": "build" | "lint" | "test" | "deployment_simulation" | "runtime_initialization",
+  "severity": "critical" | "error" | "warning" | "info",
+  "timestamp": ISO8601,
+  "buildSequenceId": string,      // Build/PR identifier
+  "projectId": string,            // Project/repo identifier
+  "metadata": {                   // Additional context
+    "commitSha": string,
+    "branch": string,
+    "environment": string,
+    "anomalyContext": string[]    // Surrounding log lines
   }
 }
 ```
 
----
+**Memory Location**:
+- Project-specific: `memory/{projectId}/qiw-events.json`
+- Global: `memory/global/qiw-events.json`
+- Configuration: Per project QIW configuration
 
-## Dashboard Requirements
+**Memory Write Protocol**:
+- Asynchronous writes (non-blocking to QIW execution)
+- Append-only (no modifications to existing incidents)
+- Timestamped and immutable
+- Queryable by: channel, severity, timestamp, project, build
 
-QIW implementations MUST provide a dashboard with the following features:
+### 6.2 Governance Learning
 
-### Real-Time Views
-- **Channel Health**: Status indicators for all 5 channels (green/yellow/red)
-- **Active Incidents**: Count and list of unresolved incidents by severity
-- **Recent Detections**: Timeline of last 24h incidents
-- **Blocking Status**: Current quality gate block status
+**Learning Extraction**: QIW incidents inform governance improvements.
 
-### Metrics & Trends
-- **Quality Score**: Composite score across all channels (0-100)
-- **Incident Trends**: 7-day, 30-day incident counts by channel and severity
-- **MTTR (Mean Time To Remediation)**: Average time to resolve incidents
-- **Channel Performance**: Individual channel metrics over time
+**Learning Triggers**:
+- **Repeated Incidents**: Same failure 3+ times indicates governance gap
+- **Pattern Emergence**: Multiple related incidents suggest systemic issue
+- **Missing Rules**: `missingArchitectureRule` field populated indicates governance need
+- **Escalation Trends**: Increasing escalation frequency suggests quality degradation
 
-### Reporting
-- **Daily Summary**: Automated daily report of QIW activity
-- **Weekly Digest**: Trends, top issues, recommendations
-- **Incident Reports**: Detailed post-mortem for critical incidents
-- **Compliance Report**: Governance adherence metrics
+**Governance Actions**:
+- Create new governance rules to prevent recurrence
+- Update architecture documents with learned patterns
+- Enhance detection patterns in QIW configuration
+- Document whitelisting criteria for justified warnings
 
-### Alerting
-- **Critical Alerts**: Immediate notification for P0 incidents
-- **Threshold Alerts**: Notifications when metrics exceed thresholds
-- **Escalation Alerts**: Notifications for unresolved incidents past SLA
-- **Digest Notifications**: Scheduled summaries for stakeholders
-
----
-
-## QA Gate Integration
-
-QIW integrates with CI/CD quality gates to enforce blocking logic:
-
-### Pre-Commit Hooks
-- Lint channel validation
-- Local test execution (if configured)
-- Pre-commit quality score check
-
-### Pull Request Gates
-- Build channel validation (must pass)
-- Lint channel validation (must pass or be acknowledged)
-- Test channel validation (must pass, coverage requirements)
-- No critical or high incidents in affected code
-
-### Pre-Merge Gates
-- All PR gates must pass
-- No active critical incidents in target branch
-- Deployment readiness check (if deployment-bound branch)
-
-### Post-Merge Monitoring
-- Runtime channel monitoring for new deployments
-- Incident correlation with recent merges
-- Automatic rollback triggers on critical runtime incidents
+**Memory Analytics**:
+- Query incidents by channel (which logs have most issues?)
+- Query by severity (what's blocking QA most often?)
+- Trend analysis (quality improving or degrading over time?)
+- Root cause distribution (what types of failures are most common?)
 
 ---
 
-## Escalation Workflow
+## 7. Dashboard Visibility Requirements
 
+### 7.1 QIW Status Dashboard
+
+**Required Dashboard Elements**:
+
+**Real-time Status**:
+- QIW overall health: GREEN (no anomalies) / AMBER (warnings) / RED (errors/critical)
+- Per-channel status (5 channels)
+- QA blocked status (true/false)
+- Last scan timestamp
+
+**Recent Anomalies** (last 10):
+- Channel
+- Severity
+- Message summary
+- Timestamp
+- Build/project identifier
+
+**Trends** (7-day minimum):
+- Anomaly count per day
+- Anomaly distribution by channel
+- Anomaly distribution by severity
+- QA blocking frequency
+- Quality improvement trend (improving/stable/degrading)
+
+**Channel Health**:
+- Build: Last scan result, anomaly count
+- Lint: Last scan result, anomaly count
+- Test: Last scan result, anomaly count
+- Deployment: Last scan result, anomaly count
+- Runtime: Last scan result, anomaly count
+
+### 7.2 Dashboard API Requirements
+
+**Endpoint**: Accessible via API for programmatic access
+
+**Minimum Response Fields**:
+```typescript
+{
+  "status": "green" | "amber" | "red",
+  "qaBlocked": boolean,
+  "lastScanTimestamp": ISO8601,
+  "channels": [
+    {
+      "name": "build" | "lint" | "test" | "deployment_simulation" | "runtime_initialization",
+      "status": "green" | "amber" | "red",
+      "lastAnomalyCount": number,
+      "lastScanTimestamp": ISO8601
+    }
+  ],
+  "recentAnomalies": [/* last 10 anomalies */],
+  "trends": {
+    "last7Days": {
+      "anomalyCount": number,
+      "criticalCount": number,
+      "errorCount": number,
+      "warningCount": number,
+      "qaBlockCount": number
+    }
+  }
+}
 ```
-INCIDENT DETECTED
-  ↓
-[Is Severity = Critical?]
-  YES → IMMEDIATE ESCALATION to on-call + block all merges
-  NO → Continue
-  ↓
-[Assign to appropriate team based on channel]
-  ↓
-[Track in incident log]
-  ↓
-[Set remediation SLA based on severity:]
-  Critical: 4 hours
-  High: 24 hours
-  Medium: 7 days
-  Low: 30 days
-  ↓
-[Monitor remediation progress]
-  ↓
-[SLA approaching expiration?]
-  YES → ESCALATE to team lead
-  NO → Continue monitoring
-  ↓
-[SLA exceeded?]
-  YES → ESCALATE to engineering manager + governance liaison
-  NO → Continue
-  ↓
-[Remediation completed?]
-  YES → Verify resolution → Close incident → Update metrics
-  NO → Continue escalation chain
+
+**Refresh Frequency**: Real-time or on-demand (per implementation)
+
+**Access Control**: Dashboard visible to developers, builders, Foreman, human authority
+
+---
+
+## 8. Configuration and Customization
+
+### 8.1 QIW Configuration
+
+**Configuration Location**: Project-specific or global
+
+**Configuration Schema**:
+```typescript
+{
+  "channels": {
+    "build": { "enabled": boolean, "logsPath": string },
+    "lint": { "enabled": boolean, "logsPath": string },
+    "test": { "enabled": boolean, "logsPath": string },
+    "deploymentSimulation": { "enabled": boolean, "logsPath": string },
+    "runtimeInitialization": { "enabled": boolean, "logsPath": string }
+  },
+  "blocking": {
+    "blockOnCritical": boolean,   // Default: true (cannot be false)
+    "blockOnError": boolean,       // Default: true
+    "blockOnWarning": boolean      // Default: true (zero-warning discipline)
+  },
+  "memoryIntegration": {
+    "enabled": boolean,            // Default: true
+    "scope": "project" | "global", // Default: "project"
+    "location": string             // Memory path
+  },
+  "dashboard": {
+    "enabled": boolean,            // Default: true
+    "apiEndpoint": string          // Dashboard API URL
+  }
+}
 ```
 
----
+**Configuration Requirements**:
+- All channels enabled by default (can be disabled per project needs)
+- `blockOnCritical` MUST be true (governance requirement)
+- `blockOnError` MUST be true (QIC requirement)
+- `blockOnWarning` SHOULD be true (zero-warning discipline)
+- Memory integration MUST be enabled (governance requirement)
+- Dashboard SHOULD be enabled (visibility requirement)
 
-## Implementation Requirements
+### 8.2 Detection Pattern Customization
 
-Every repository adopting QIW MUST implement:
+**Pattern Extension**: Projects MAY add custom detection patterns.
 
-1. **Configuration File** (`qiw-config.json`):
-   - Define all 5 channels
-   - Configure thresholds for each channel
-   - Define severity mappings
-   - Configure blocking rules
-   - Define dashboard endpoint
-   - Configure alerting
+**Extension Mechanism**:
+- Custom patterns defined in project QIW configuration
+- Custom patterns MUST NOT weaken canonical patterns
+- Custom patterns additive only (cannot remove canonical patterns)
+- Custom patterns reviewed and approved per governance
 
-2. **Event Memory** (`memory/PartPulse/qiw-events.json`):
-   - Append-only incident log
-   - Schema-validated entries
-   - Indexed for querying
-   - Backed up regularly
-
-3. **Detector Implementation**:
-   - Automated detectors for each channel
-   - Integration with CI/CD pipelines
-   - Real-time monitoring for runtime channel
-   - Threshold-based anomaly detection
-
-4. **Documentation**:
-   - Channel-specific detection patterns
-   - Incident response procedures
-   - Dashboard usage guide
-   - Escalation contacts
-
-5. **Integration**:
-   - CI/CD pipeline integration
-   - Quality gate enforcement
-   - Dashboard deployment
-   - Alert routing
+**Example Custom Patterns**:
+- Project-specific error messages
+- Custom lint rules
+- Domain-specific test patterns
+- Project-specific deployment checks
 
 ---
 
-## Metrics & Reporting
+## 9. Integration with Existing Governance
 
-### Key Performance Indicators (KPIs)
+### 9.1 WATCHDOG_AUTHORITY_AND_SCOPE.md
 
-**Quality Indicators**:
-- Overall Quality Score (composite across all channels)
-- Incident count by severity (trend over time)
-- Mean Time To Detection (MTTD)
-- Mean Time To Remediation (MTTR)
-- Repeat incident rate
+**Alignment**:
+- QIW is an observation channel within the Independent Watchdog
+- QIW observes log artifacts (read-only)
+- QIW escalates anomalies per severity (Section 7 escalation paths)
+- QIW respects hard stop authority for critical violations
 
-**Process Indicators**:
-- Gate block frequency
-- False positive rate
-- SLA compliance rate
-- Escalation frequency
-- Manual intervention rate
+**Extensions**:
+- QIW adds 5 new observation channels (build, lint, test, deployment, runtime)
+- QIW detection patterns specific to quality integrity
+- QIW governance memory integration for quality incidents
 
-**Channel-Specific**:
-- Build success rate
-- Lint compliance score
-- Test coverage and pass rate
-- Deployment success rate
-- Runtime error rate
+### 9.2 BUILD_PHILOSOPHY.md
 
-### Reporting Cadence
+**Alignment**:
+- QIW enforces One-Time Build Law (build must be clean)
+- QIW supports Build-to-Green (QA blocked until logs clean)
+- QIW validates QA as proof (cannot pass with log anomalies)
+- QIW enables evidence-over-intent (logs are evidence)
 
-- **Real-time**: Dashboard updates, critical alerts
-- **Daily**: Incident summary, channel health
-- **Weekly**: Trend analysis, top issues
-- **Monthly**: Governance compliance report, KPI review
-- **Quarterly**: Strategic review, process improvements
+**Extensions**:
+- QIW provides systematic log validation
+- QIW enforces zero-warning discipline
+- QIW blocks QA progression on quality violations
 
----
+### 9.3 WARNING_DISCOVERY_BLOCKER_PROTOCOL.md
 
-## Governance Compliance
+**Alignment**:
+- QIW detects warnings in all 5 channels
+- QIW blocks QA on warning discovery (zero-warning discipline)
+- QIW escalates warnings per severity
+- QIW records warnings for governance learning
 
-### Mandatory Requirements
-
-✅ All 5 channels MUST be configured and monitored  
-✅ Incident schema MUST be followed for all detections  
-✅ Severity-based blocking MUST be enforced at quality gates  
-✅ Dashboard MUST be accessible to all team members  
-✅ Escalation workflow MUST be documented and followed  
-✅ MTTR SLAs MUST be tracked and reported  
-
-### Audit Requirements
-
-QIW implementations are subject to governance audits:
-- Configuration audit: Verify all channels configured
-- Incident audit: Random sample of incidents for proper handling
-- Blocking audit: Verify gates enforcing blocking rules
-- Dashboard audit: Verify dashboard accuracy and uptime
-- Process audit: Verify escalation workflow followed
-
-### Non-Compliance Consequences
-
-- Warning: First violation, 7 days to remediate
-- Escalation: Second violation, governance liaison involved
-- Merge Freeze: Third violation, repository enters governance hold
-- Mandatory Review: Persistent violations trigger FM review
+**Extensions**:
+- QIW provides automated warning detection across multiple log sources
+- QIW integrates warning blocking into QA gate enforcement
 
 ---
 
-## Reference Implementations
+## 10. Implementation Boundaries
 
-**FM Office Repository**: Reference implementation with full dashboard  
-**R_Roster Repository**: Streamlined implementation for smaller projects  
-**Governance Self-Audit PR**: Example integration with governance processes
+### 10.1 What This Document Defines
 
----
+- ✅ QIW observation channels (5 channels)
+- ✅ Detection patterns and anomaly classification
+- ✅ QA blocking conditions and enforcement
+- ✅ Governance memory integration requirements
+- ✅ Dashboard visibility requirements
+- ✅ Escalation paths and response times
+- ✅ Configuration schema and customization rules
 
-## Version History
+### 10.2 What This Document Does NOT Define
 
-| Version | Date | Changes | Authority |
-|---------|------|---------|-----------|
-| 1.0.0 | 2026-01-14 | Initial canonical specification | Maturion Governance / FM Office |
+- ❌ QIW implementation architecture (how QIW is built)
+- ❌ QIW technical integration (APIs, libraries, frameworks)
+- ❌ Log file formats or parsing algorithms (implementation detail)
+- ❌ Dashboard UI design or user experience
+- ❌ Specific regex patterns (implementation tuning)
+- ❌ Runtime execution model or scheduling
 
----
-
-## Canonical Status
-
-**This document is canonical and authoritative.**
-
-**Source**: Maturion Governance  
-**Adopted By**: FM Office, R_Roster, PartPulse, [additional repos]  
-**Enforcement**: Mandatory for all repositories under Maturion Governance  
-**Authority**: Constitutional requirement per Governance Doctrine  
+**Separation**: This is governance definition, not implementation specification.
 
 ---
 
-## Approval
+## 11. Success Criteria
 
-**Status**: ✅ APPROVED  
-**Authority**: Maturion Governance Board  
-**Effective Date**: 2026-01-14  
-**Mandatory Compliance**: YES (Constitutional Requirement)
+This QIW Channel definition is successful when:
+- ✅ QIW observation channels clearly defined (5 channels)
+- ✅ Detection patterns and anomaly classification documented
+- ✅ QA blocking conditions explicitly stated
+- ✅ Governance memory integration requirements specified
+- ✅ Dashboard visibility requirements clear
+- ✅ Escalation paths and response times defined
+- ✅ Configuration schema documented
+- ✅ Integration with existing watchdog governance complete
 
 ---
 
-**Document Classification**: Constitutional - Tier 0 Canon  
-**Cannot Be Waived**: QIW implementation is mandatory  
-**Enforcement**: Governance Liaison + FM (joint authority)
+## 12. Precedence and Final Authority
+
+This document has canonical authority over QIW Channel definition.
+
+If any QIW implementation conflicts with this document, this document prevails.
+
+This document is subordinate to:
+1. Johan Ras (human final authority)
+2. GOVERNANCE_PURPOSE_AND_SCOPE.md (supreme governance authority)
+3. WATCHDOG_AUTHORITY_AND_SCOPE.md (Watchdog authority)
+
+This document is superior to:
+- All QIW implementations (for observation requirements)
+- All project-specific QIW configurations (for mandatory requirements)
+- All dashboard/reporting systems (for visibility requirements)
+
+---
+
+**End of WATCHDOG_QUALITY_INTEGRITY_CHANNEL.md**
+
+---
+
+**Document Metadata**:
+- Channel ID: WATCHDOG_QIW_V1
+- Authority: Canonical Governance Definition
+- Required By: Watchdog Evolution Wave, Quality Integrity Contract enforcement
+- Integrates With: WATCHDOG_AUTHORITY_AND_SCOPE.md, BUILD_PHILOSOPHY.md, WARNING_DISCOVERY_BLOCKER_PROTOCOL.md
+- Resolves: QIW observation scope, QA blocking enforcement, governance memory integration for quality incidents
+- Enforcement: QIW Channel (observation and escalation) + QA Gates (blocking enforcement) + Governance Memory (incident recording) + Human Authority (escalation resolution)

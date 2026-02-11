@@ -2,9 +2,10 @@
 
 ## Status
 Canonical Governance Policy  
-Version: v1.0  
+Version: v1.0.1  
 Authority: Governance Administrator  
 Effective Date: 2025-12-22  
+Updated: 2026-02-09 (Layer-Up Protocol Integration)  
 Required By: GOVERNANCE_PURPOSE_AND_SCOPE.md
 
 ---
@@ -32,6 +33,8 @@ This policy derives authority from:
 - **FAILURE_PROMOTION_RULE.md** - Failure pattern handling
 - **VERSIONING_AND_EVOLUTION_GOVERNANCE.md** - Versioning principles
 - **GOVERNANCE_COMPLETENESS_MODEL.md** - Completeness requirements
+- **LAYER_UP_PROTOCOL.md** - Explicit layer-up (upward ripple) mechanism (2026-02-09)
+- **GOVERNANCE_ALIGNMENT_MONITORING_PROTOCOL.md** - Alignment monitoring and drift detection (2026-02-09)
 
 ---
 
@@ -52,8 +55,12 @@ Governance must support evolution in **both directions**:
 - Lessons learned promote to governance
 - Enforcement insights promote to governance
 - Practical constraints promote to governance
+- Governance drift escalates to governance
+- Governance gaps trigger canon improvements
 
 Both directions are **mandatory and continuous**.
+
+**Layer-Up Protocol**: See **LAYER_UP_PROTOCOL.md** for explicit, controlled mechanism for propagating learnings from application repositories back to canonical governance. Layer-up is **mandatory** before any canon changes to detect drift and gather alignment feedback.
 
 ### 3.2 Evolution Without Weakening
 
@@ -242,12 +249,21 @@ Upward promotion is **mandatory** when:
 
 ### 5.3 Promotion Mechanisms
 
-**Current Mechanism** (manual):
-1. Repository identifies lesson learned
-2. Builder or FM creates failure/learning record
-3. FM evaluates for promotion
-4. If qualified, FM creates governance PR
-5. Governance Administrator reviews
+**Layer-Up Protocol** (systematic, via **LAYER_UP_PROTOCOL.md**):
+1. **Detection**: Application repository identifies trigger (gap, drift, failure pattern, etc.)
+2. **Documentation**: governance-liaison/foreman creates layer-up issue with evidence
+3. **Escalation**: Issue created in governance repository with `layer-up` label
+4. **Intake**: governance-repo-administrator validates and classifies (CRITICAL/HIGH/MEDIUM/LOW)
+5. **Analysis**: governance-repo-administrator drafts governance change with evidence package
+6. **Review**: CS2 (Johan) approves or requests changes
+7. **Integration**: Governance PR merged, originating layer-up marked INTEGRATED
+8. **Ripple Back**: Layer-down ripple triggered to propagate improvement to all repositories
+
+**Pre-Canon-Change Layer-Up Scan** (mandatory, via **LAYER_UP_PROTOCOL.md** Section 9.1):
+- Before ANY canon changes, governance-repo-administrator MUST scan consumer repositories
+- Detect drift, pending layer-up issues, alignment gaps
+- Resolve detected issues BEFORE proceeding with new canon changes
+- Prevents circular drift and governance-application misalignment
 6. Johan approves (if constitutional change)
 7. Governance updated
 
@@ -419,7 +435,7 @@ Every governance change must include:
 
 ### 8.3 Propagation Tracking
 
-Downward propagation must be tracked:
+**Downward propagation** (layer-down) must be tracked:
 - Which repositories received change
 - When propagation occurred
 - Validation status
@@ -428,6 +444,24 @@ Downward propagation must be tracked:
 - **Inventory file update status** (central and consumer inventories synchronized)
 - **Coverage percentage** post-propagation (target: 100% for production repos)
 - **Ripple log entries** (automatic updates with issue numbers, timestamps, and status per GOVERNANCE_RIPPLE_CHECKLIST_PROTOCOL.md STEP 7)
+
+**Upward propagation** (layer-up) must be tracked:
+- Which repository originated layer-up
+- What trigger caused layer-up (gap, drift, failure pattern)
+- Layer-up issue number in governance repository
+- Evidence package preservation
+- Governance PR that integrated layer-up
+- Subsequent layer-down ripple to propagate improvement
+- **Ripple log entries** showing bidirectional flow (layer-up → canon change → layer-down)
+
+**Bidirectional Ripple Log Format**:
+```markdown
+[YYYY-MM-DD HH:MM] LAYER_UP from <app-repo> #<issue> → <canon-file> (PROPOSED)
+[YYYY-MM-DD HH:MM] LAYER_UP <canon-file> → PR #<pr> (INTEGRATED)
+[YYYY-MM-DD HH:MM] PR #<pr> (Layer-Up Origin: <app-repo> #<issue>) → <consumer-repo> (NOTIFIED) #<issue>
+```
+
+**Alignment Monitoring**: See **GOVERNANCE_ALIGNMENT_MONITORING_PROTOCOL.md** for systematic monitoring of governance alignment across all repositories, drift detection, and remediation workflows.
 
 ### 8.4 Learning Archive
 

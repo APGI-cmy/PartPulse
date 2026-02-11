@@ -10,7 +10,7 @@ Applies To: All PRs, All Repositories
 
 ## 1. Purpose
 
-This rule enforces alignment between a PR's declared scope
+This rule enforces alignment between a PR’s declared scope
 and the files actually modified in the PR.
 
 Scope declarations without enforcement are informational only.
@@ -47,7 +47,7 @@ Cross-domain changes are forbidden.
 
 Enforcement is intentionally conservative.
 
-If a file's inclusion is ambiguous:
+If a file’s inclusion is ambiguous:
 - The PR is invalid
 - The Builder must narrow scope or split the PR
 
@@ -64,20 +64,19 @@ Only declared scope and actual diff are authoritative.
 
 ---
 
-## Summary
+ - name: Enforce domain lifecycle state
+        run: |
+          DOMAIN=$(grep "RESPONSIBILITY_DOMAIN:" governance/scope-declaration.md | cut -d':' -f2 | xargs)
 
-This is one of 15 critical Tier-0 governance canon files that enforces scope discipline in PRs.
+          REGISTRY="governance/canon/RESPONSIBILITY_DOMAIN_REGISTRY.md"
 
-Key principles:
-- **Scope declaration binding**: Declared scope is enforceable
-- **File modification alignment**: All modified files must be in declared scope
-- **Conservative enforcement**: Ambiguous files make PR invalid
-- **Domain-based mapping**: Responsibility domains map to specific directories/file types
-- **Authority hierarchy**: Scope/diff, not intent/description
-- **Lifecycle enforcement**: Domain lifecycle states (ACTIVE/DEPRECATED/etc.) validated
+          STATE=$(awk "/### DOMAIN: $DOMAIN/{flag=1} flag && /STATE:/{print \$2; exit}" "$REGISTRY")
 
-**Version**: v1  
-**Authority**: Canonical Governance Rule (Tier-0)  
-**Source**: APGI-cmy/maturion-foreman-governance
+          if [ "$STATE" != "ACTIVE" ]; then
+            echo "❌ GOVERNANCE BLOCK: Domain '$DOMAIN' is in state '$STATE'. Only ACTIVE domains may be used."
+            exit 1
+          fi
 
-For complete details on responsibility domain mapping, enforcement validation, and CI gate implementation, please refer to the full document.
+          echo "✅ Domain lifecycle state ACTIVE"
+
+End of SCOPE TO DIFF GOVERNANCE RULE

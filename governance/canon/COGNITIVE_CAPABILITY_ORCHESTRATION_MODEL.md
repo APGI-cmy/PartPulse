@@ -1,3 +1,4 @@
+# COGNITIVE CAPABILITY ORCHESTRATION MODEL
 
 ## Status
 **Type**: Canonical Governance Definition  
