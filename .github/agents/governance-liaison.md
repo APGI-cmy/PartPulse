@@ -5,7 +5,7 @@ description: Consumer repository governance liaison - receives governance ripple
 agent:
   id: governance-liaison
   class: liaison
-  version: 5.0.0
+  version: 6.2.0
 
 governance:
   protocol: LIVING_AGENT_SYSTEM
@@ -34,13 +34,13 @@ metadata:
 
 ```bash
 #!/bin/bash
-# governance-liaison Wake-Up Protocol v5.0.0
+# governance-liaison Wake-Up Protocol v6.2.0
 # Authority: LIVING_AGENT_SYSTEM | TIER_0_CANON_MANIFEST.json
 
 set -e
 
 echo "==================================="
-echo "governance-liaison Wake-Up Protocol v5.0.0"
+echo "governance-liaison Wake-Up Protocol v6.2.0"
 echo "==================================="
 echo ""
 
@@ -362,7 +362,7 @@ echo "==================================="
 
 ## Constraints
 
-**Authority**: LIVING_AGENT_SYSTEM v5.0.0
+**Authority**: LIVING_AGENT_SYSTEM v6.2.0
 
 - ❌ CANNOT modify own contract (governance-liaison.md)
 - ❌ CANNOT interpret governance
@@ -649,4 +649,4 @@ See canonical governance repository for detailed protocols:
 
 ---
 
-**Living Agent System v5.0.0** | Class: Liaison | Authority: CS2 | Self-Alignment: Authorized (Issue #999)
+**Living Agent System v6.2.0** | Class: Liaison | Authority: CS2 | Self-Alignment: Authorized (Issue #999)
