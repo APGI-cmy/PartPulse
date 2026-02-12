@@ -11,7 +11,6 @@ set -e
 
 AGENT_ID="${1:-foreman}"
 WORKSPACE=".agent-workspace/$AGENT_ID"
-TIMESTAMP=$(date -u +"%Y%m%dT%H%M%SZ")
 SESSION_ID="session-$(date -u +"%Y%m%d-%H%M%S")"
 SESSION_FILE="$WORKSPACE/memory/$SESSION_ID.md"
 
@@ -63,10 +62,18 @@ capture_session_memory() {
     fi
     
     if [ -n "$AGENT_CONTRACT" ]; then
-        # Try to extract version from contract (look for Version: or v pattern)
-        CONTRACT_VERSION=$(grep -oP "(?<=Version:\s)[\d\.]+" "$AGENT_CONTRACT" | head -1 || echo "unknown")
-        if [ "$CONTRACT_VERSION" = "unknown" ]; then
-            CONTRACT_VERSION=$(grep -oP "v[\d\.]+" "$AGENT_CONTRACT" | head -1 || echo "unknown")
+        # Try to extract version from contract
+        # Look for "Version:" pattern first (more flexible regex)
+        CONTRACT_VERSION=$(grep -E "Version:\s*v?[0-9]+\.[0-9]+\.[0-9]+" "$AGENT_CONTRACT" | head -1 | grep -oE "v?[0-9]+\.[0-9]+\.[0-9]+" || echo "")
+        # Fallback: look for standalone version pattern like "v4.5.0"
+        if [ -z "$CONTRACT_VERSION" ]; then
+            CONTRACT_VERSION=$(grep -oE "v[0-9]+\.[0-9]+\.[0-9]+" "$AGENT_CONTRACT" | head -1 || echo "unknown")
+        fi
+        # Clean up: ensure it starts with 'v'
+        if [ -n "$CONTRACT_VERSION" ] && [ "$CONTRACT_VERSION" != "unknown" ]; then
+            [[ ! "$CONTRACT_VERSION" =~ ^v ]] && CONTRACT_VERSION="v$CONTRACT_VERSION"
+        else
+            CONTRACT_VERSION="unknown"
         fi
     fi
     

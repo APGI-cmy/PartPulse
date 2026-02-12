@@ -11,7 +11,6 @@ set -e
 
 AGENT_ID="${1:-foreman}"
 WORKSPACE=".agent-workspace/$AGENT_ID"
-TIMESTAMP=$(date -u +"%Y%m%dT%H%M%SZ")
 SESSION_ID="session-$(date -u +"%Y%m%d-%H%M%S")"
 
 # Colors for output
@@ -68,9 +67,11 @@ phase_1_self_identification() {
     
     log_success "Agent contract found: $AGENT_CONTRACT"
     
-    # Extract agent class (simplified - assumes contract has "agent" or "foreman" in name)
+    # Extract agent class (check for FM suffix, then keywords)
     AGENT_CLASS="unknown"
-    if echo "$AGENT_ID" | grep -qi "foreman"; then
+    if echo "$AGENT_ID" | grep -q "FM$\|_FM$"; then
+        AGENT_CLASS="foreman"
+    elif echo "$AGENT_ID" | grep -qi "foreman"; then
         AGENT_CLASS="foreman"
     elif echo "$AGENT_ID" | grep -qi "liaison"; then
         AGENT_CLASS="liaison"

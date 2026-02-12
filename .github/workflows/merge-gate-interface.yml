@@ -321,9 +321,18 @@ jobs:
             exit 0
           fi
           
-          # Check for placeholder/truncated hashes
-          # Look for strings that are suspiciously short or placeholder text
-          PLACEHOLDERS=$(jq -r '.. | select(type == "string") | select(. == "PLACEHOLDER" or . == "TBD" or . == "TODO" or (length > 0 and length < 20))' governance/CANON_INVENTORY.json 2>/dev/null | wc -l)
+          # Check for placeholder/truncated hashes in canon inventory
+          # Target specific hash fields rather than entire document
+          PLACEHOLDERS=0
+          
+          # Check if file has expected structure (hashes object)
+          if jq -e '.hashes' governance/CANON_INVENTORY.json >/dev/null 2>&1; then
+            # Search hash values specifically
+            PLACEHOLDERS=$(jq -r '.hashes | to_entries[] | .value | select(type == "string") | select(. == "PLACEHOLDER" or . == "TBD" or . == "TODO" or (length > 0 and length < 20))' governance/CANON_INVENTORY.json 2>/dev/null | wc -l)
+          else
+            # Fallback: search all string values if structure unknown
+            PLACEHOLDERS=$(jq -r '.. | select(type == "string") | select(. == "PLACEHOLDER" or . == "TBD" or . == "TODO" or (length > 0 and length < 20))' governance/CANON_INVENTORY.json 2>/dev/null | wc -l)
+          fi
           
           if [ $PLACEHOLDERS -gt 0 ]; then
             echo "validation=failed" >> $GITHUB_OUTPUT
