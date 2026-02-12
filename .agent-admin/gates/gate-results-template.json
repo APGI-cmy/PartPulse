@@ -1,0 +1,36 @@
+{
+  "timestamp": "ISO8601_TIMESTAMP",
+  "pr_number": "PR_NUMBER",
+  "verdict": "PASS|FAIL",
+  "gates": {
+    "merge-gate/verdict": {
+      "status": "PASS|FAIL",
+      "evidence_artifacts": {
+        "prehandover_proof": "path/to/proof",
+        "gate_results": "path/to/results.json",
+        "rca": "path/to/rca.md (if applicable)",
+        "improvements": "path/to/improvements.md"
+      },
+      "issues": []
+    },
+    "governance/alignment": {
+      "status": "PASS|FAIL",
+      "drift_detected": false,
+      "alignment_state": "ALIGNED|DEGRADED|DRIFT",
+      "issues": []
+    },
+    "stop-and-fix/enforcement": {
+      "status": "PASS|FAIL",
+      "stop_and_fix_occurred": false,
+      "rca_required": false,
+      "issues": []
+    }
+  },
+  "test_results": {
+    "total_tests": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "test_debt": "ZERO|DETECTED"
+  }
+}
