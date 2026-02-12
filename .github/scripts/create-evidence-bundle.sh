@@ -94,3 +94,6 @@ echo ""
 echo "📄 Templates created:"
 echo "   - .agent-admin/gates/gate-results-template.json"
 echo "   - .agent-admin/improvements/improvements-template.md"
+
+exit 0
+

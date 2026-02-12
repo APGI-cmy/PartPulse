@@ -305,7 +305,7 @@ Supervise architecture-first execution, create Red QA, appoint builders, and enf
 
 ## Versioning Notes
 - ID remains `foreman`; the filename is versioned (PartPulse-app_FM) to track contract iterations while preserving the canonical agent identity.
-- `version: 6.2.0` (in agent: block) tracks the Living Agent System baseline; `contract_version: 4.4.0` is the agent contract iteration for this repository.
+- `version: 6.2.0` (in YAML frontmatter agent: block above) tracks the Living Agent System baseline; `contract_version: 4.4.0` is the agent contract iteration for this repository.
 - This contract is derived from the canonical foreman-v2.agent.md maintained in APGI-cmy/maturion-foreman-governance.
 
 ## Core Protocols
