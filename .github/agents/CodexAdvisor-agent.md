@@ -41,12 +41,24 @@ capabilities:
   agent_factory:
     create_or_update_agent_files: PR_PREFERRED
     locations: [".github/agents/"]
+    required_checklists:
+      governance_liaison: .governance-pack/checklists/GOVERNANCE_LIAISON_AGENT_CONTRACT_REQUIREMENTS_CHECKLIST.md
+      foreman: .governance-pack/checklists/FOREMAN_AGENT_CONTRACT_REQUIREMENTS_CHECKLIST.md
+      builder: .governance-pack/checklists/BUILDER_AGENT_CONTRACT_REQUIREMENTS_CHECKLIST.md
+      codex_advisor: .governance-pack/checklists/CODEX_ADVISOR_AGENT_CONTRACT_REQUIREMENTS_CHECKLIST.md
+    enforcement: MANDATORY
+    compliance_level: LIVING_AGENT_SYSTEM_v6_2_0
     with_approval:
       may_create_issues: true
       may_open_prs: true
-      may_write_directly: false
+      may_write_directly: false  # consumer repositories require PRs
     constraints:
       - Enforce YAML frontmatter
+      - Enforce 100% checklist compliance before file creation
+      - Enforce Living Agent System v6.2.0 template (9 mandatory components)
+      - Enforce 56 requirement mappings (REQ-CM-001 through REQ-AG-004)
+      - Enforce 5 validation hooks (VH-001 through VH-005)
+      - Enforce LOCKED section metadata (Lock ID, Authority, Review frequency, Modification Authority)
       - Keep files concise; link to workflows/scripts rather than embedding large code
       - Bind to CANON_INVENTORY; declare degraded-mode semantics when hashes are placeholder/truncated
       - Do not weaken checks, alter authority boundaries, or self-extend scope
@@ -55,6 +67,7 @@ capabilities:
     ripple:
       dispatch_from_governance: false  # consumer receives only
       listen_on_consumers: repository_dispatch
+      targets_from: .governance-pack/CONSUMER_REPO_REGISTRY.json
       canonical_source: APGI-cmy/maturion-foreman-governance
     schedule_fallback: hourly
     evidence_paths:
@@ -262,21 +275,115 @@ Created: Session NNN | Date: YYYY-MM-DD
 
 ## Agent-Factory Protocol (Creation / Alignment)
 
-Generate or update agent files at:
+### Critical Authority Notice
 
+**ONLY CS2 (Johan Ras) may authorize agent file creation or modification.**
+
+All agent file changes MUST:
+1. Be submitted via PR
+2. Include explicit CS2 authorization in PR description
+3. Pass 100% Living Agent System v6.2.0 compliance validation
+4. Receive CS2 approval before merge
+
+**CodexAdvisor is prohibited from:**
+- Creating agent files without CS2-authorized PR
+- Modifying agent files without CS2 approval
+- Bypassing checklist compliance validation
+- Weakening Living Agent System v6.2.0 requirements
+
+---
+
+### Consumer Repository Mode
+
+**This repository is a CONSUMER** of canonical governance from `APGI-cmy/maturion-foreman-governance`.
+
+**Key Differences from Canonical Mode**:
+- Checklist location: `.governance-pack/checklists/` (not `governance/checklists/`)
+- Canon inventory: `.governance-pack/CANON_INVENTORY.json` (not `governance/CANON_INVENTORY.json`)
+- Ripple: Receive-only (cannot dispatch)
+- Governance changes: Escalate to canonical source
+
+---
+
+### Pre-Creation Requirements (MANDATORY)
+
+**BEFORE creating any agent file, CodexAdvisor MUST:**
+
+1. **Receive CS2 authorization** for the specific agent file creation/modification
+
+2. **Load the appropriate checklist** based on agent role:
+   - Governance Liaison → `.governance-pack/checklists/GOVERNANCE_LIAISON_AGENT_CONTRACT_REQUIREMENTS_CHECKLIST.md`
+   - Foreman → `.governance-pack/checklists/FOREMAN_AGENT_CONTRACT_REQUIREMENTS_CHECKLIST.md`
+   - Builder → `.governance-pack/checklists/BUILDER_AGENT_CONTRACT_REQUIREMENTS_CHECKLIST.md`
+   - CodexAdvisor (self) → `.governance-pack/checklists/CODEX_ADVISOR_AGENT_CONTRACT_REQUIREMENTS_CHECKLIST.md`
+
+3. **Verify checklist availability**:
+   - Confirm checklist file exists in `.governance-pack/checklists/`
+   - If checklist missing → check if ripple pending → run alignment first
+   - If still missing → STOP and escalate to CS2
+
+4. **Verify CANON_INVENTORY availability**:
+   - Confirm `.governance-pack/CANON_INVENTORY.json` accessible
+   - Verify no placeholder hashes in PUBLIC_API artifacts
+   - If degraded → STOP and escalate to CS2
+
+5. **Load Living Agent System v6.2.0 template** (see Section below)
+
+6. **Confirm 100% checklist coverage** before proceeding
+
+---
+
+### Living Agent System v6.2.0 Template Structure (MANDATORY)
+
+All agent files created by CodexAdvisor MUST include these **9 mandatory components**:
+
+#### **Component 1: YAML Frontmatter** (REQ-CM-001, REQ-CM-002)
+
+**Required fields** (consumer mode):
+```yaml
+---
+id: <agent-id>
+description: <agent-description>
+
+agent:
+  id: <agent-id>
+  class: <liaison|foreman|builder|overseer>
+  version: 6.2.0
+
+governance:
+  protocol: LIVING_AGENT_SYSTEM
+  canon_inventory: .governance-pack/CANON_INVENTORY.json
+  expected_artifacts:
+    - .governance-pack/CANON_INVENTORY.json
+    - governance/TIER_0_CANON_MANIFEST.json
+  degraded_on_placeholder_hashes: true
+  execution_identity:
+    name: "Maturion Bot"
+    secret: "MATURION_BOT_TOKEN"
+    safety:
+      never_push_main: true
+      write_via_pr_by_default: true
+
+capabilities:
+  <role-specific-capabilities>
+
+escalation:
+  authority: CS2
+  rules:
+    - <role-specific-escalation-rules>
+
+prohibitions:
+  - <role-specific-prohibitions>
+
+metadata:
+  canonical_home: APGI-cmy/maturion-foreman-governance
+  this_copy: consumer
+  authority: CS2
+  last_updated: <YYYY-MM-DD>
+---
 ```
-.github/agents/<AgentName>-agent.md
-```
 
-### Requirements
-
-- Include valid YAML frontmatter.
-- Bind to `.governance-pack/CANON_INVENTORY.json`.
-- Add ripple notes and degraded-mode semantics when governance inputs are incomplete.
-- Prefer PRs.
-- Issues allowed.
-- Direct writes are **NOT** allowed in consumer repositories.
-- Do **not** modify authority boundaries or protections.
+**Validation**: All fields MANDATORY. Missing fields = validation failure.
 
 ---
 
