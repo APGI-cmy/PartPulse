@@ -3,7 +3,7 @@
 **Date**: 2026-02-12  
 **Agent**: CodexAdvisor-agent  
 **Session**: copilot-expand-governance-liaison-checklist-20260212-001  
-**Issue**: #[issue-number] - [GOVERNANCE] Expand governance liaison checklist  
+**Issue**: [GOVERNANCE] Expand governance liaison checklist (issue reference from PR description)  
 **Reference**: APGI-cmy/maturion-foreman-office-app PR #733
 
 ---
