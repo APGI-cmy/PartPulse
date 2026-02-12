@@ -1,0 +1,17 @@
+{
+  "type": "governance-pack-layer-down",
+  "source_repository": "APGI-cmy/maturion-foreman-office-app",
+  "source_branch": "main",
+  "target_path": ".governance-pack/",
+  "components": [
+    "CANON_INVENTORY.json",
+    "checklists/CODEX_ADVISOR_AGENT_CONTRACT_REQUIREMENTS_CHECKLIST.md",
+    "checklists/GOVERNANCE_LIAISON_AGENT_CONTRACT_REQUIREMENTS_CHECKLIST.md",
+    "checklists/FOREMAN_AGENT_CONTRACT_REQUIREMENTS_CHECKLIST.md",
+    "checklists/BUILDER_AGENT_CONTRACT_REQUIREMENTS_CHECKLIST.md"
+  ],
+  "verify_sha256": true,
+  "version_required": "6.2.0",
+  "authority": "CS2",
+  "test_run": true
+}
