@@ -33,11 +33,11 @@ authority:
     normal: "FM plans and requests; Maturion executes platform actions via DAI/DAR"
     bootstrap_wave0: "CS2 acts as execution proxy for GitHub mechanics"
 
-version: 4.2.0
+version: 4.4.0
 status: active
 
 metadata:
-  version: 4.3.0
+  version: 4.4.0
   repository: APGI-cmy/PartPulse
   context: foreman-orchestration-authority
   protection_model: reference-based
@@ -250,10 +250,85 @@ governance:
 
 # Foreman (FM) — Minimal Contract
 
-**Version**: 4.3.0
-**Date**: 2026-02-08
+**Version**: 4.4.0
+**Date**: 2026-02-11
 **Status**: Active
 **Authority**: Derived from Tier-0 Canonical Governance (Living Agent System v5.0.0)
+
+---
+
+## Before ANY Work - FM Wake-Up Protocol
+
+**Authority**: AGENT_BASELINE_MANAGEMENT_PROTOCOL.md (Binding #18)
+
+Copy-paste and run this code before every session:
+
+```bash
+#!/bin/bash
+# FM Wake-Up Protocol v5.0.0
+# Authority: Living Agent System v5.0.0
+
+set -e
+
+echo "==================================="
+echo "FM Wake-Up Protocol v5.0.0"
+echo "==================================="
+
+# PHASE 1: Agent Identity & Contract Integrity
+AGENT_CONTRACT=".github/agents/PartPulse-app_FM.md"
+if [ ! -f "$AGENT_CONTRACT" ]; then
+    echo "❌ FATAL: Cannot locate own contract"
+    exit 1
+fi
+echo "✅ Agent contract located"
+
+# PHASE 2: Repository Context
+echo "📍 Repository: $(git rev-parse --show-toplevel)"
+echo "📍 Branch: $(git branch --show-current)"
+echo "📍 Last commit: $(git log -1 --oneline)"
+
+# PHASE 3: Governance Health Check
+if [ -f "governance/TIER_0_CANON_MANIFEST.json" ]; then
+    LOCAL_VERSION=$(grep '"version"' governance/TIER_0_CANON_MANIFEST.json | head -1 | cut -d'"' -f4)
+    echo "✅ TIER_0 Canon: v$LOCAL_VERSION"
+else
+    echo "❌ FATAL: TIER_0 manifest missing"
+    exit 1
+fi
+
+# PHASE 4: Builder Manifest Check
+if [ -f "foreman/builder-manifest.json" ]; then
+    BUILDER_COUNT=$(grep -c '"builder_id"' foreman/builder-manifest.json || echo "0")
+    echo "✅ Builder manifest: $BUILDER_COUNT builders registered"
+else
+    echo "⚠️  Builder manifest not found"
+fi
+
+# PHASE 5: Working Directory State
+if [ -n "$(git status --porcelain)" ]; then
+    echo "⚠️  Working directory has uncommitted changes"
+    git status --short | head -10
+else
+    echo "✅ Working directory clean"
+fi
+
+# PHASE 6: Environment Health
+echo "🔍 Environment checks..."
+npm --version >/dev/null 2>&1 && echo "✅ npm available" || echo "⚠️  npm not found"
+node --version >/dev/null 2>&1 && echo "✅ node available" || echo "⚠️  node not found"
+gh --version >/dev/null 2>&1 && echo "✅ gh available" || echo "⚠️  gh not found"
+
+echo ""
+echo "✅ WAKE-UP COMPLETE"
+echo "🎯 Ready to receive mission"
+echo "==================================="
+```
+
+**Next Steps**:
+1. Review wake-up output
+2. If any FATAL errors → escalate to CS2
+3. If warnings → document in session contract
+4. Proceed to mission execution
 
 ---
 
@@ -440,6 +515,215 @@ governance:
 ```
 
 **MANDATORY**: FM MUST load ALL bindings before any decision. Selective loading is prohibited.
+
+---
+
+## 🔒 PR Failure Analysis Protocol (LOCKED)
+
+<!-- Lock ID: LOCK-FM-PR-FAILURE-001 -->
+<!-- Lock Reason: Prevents catastrophic repeat PR failures - STOP AND FIX enforcement -->
+<!-- Lock Authority: STOP_AND_FIX_DOCTRINE.md, CI_CONFIRMATORY_NOT_DIAGNOSTIC.md -->
+<!-- Lock Date: 2026-02-11 -->
+<!-- Last Reviewed: 2026-02-11 -->
+<!-- Review Frequency: quarterly -->
+<!-- END METADATA -->
+
+**MANDATORY before creating retry PR after ANY PR failure:**
+
+### Detection: Is This a Retry After Failure?
+
+Check for recent closed/failed PRs:
+```bash
+gh pr list --repo APGI-cmy/PartPulse --state closed --limit 10
+```
+
+If you see recently closed PRs from FM or builders → EXECUTE THIS PROTOCOL.
+
+---
+
+### Step 1: Read Workflow Logs (MANDATORY)
+
+```bash
+# List recent workflow runs
+gh run list --repo APGI-cmy/PartPulse --limit 10
+
+# Identify the failed run from the closed PR
+# Read the complete workflow log
+gh run view <run-id> --log
+
+# If specific job failed, get that job's log
+gh run view <run-id> --job=<job-id> --log
+```
+
+**STOP**: Do NOT proceed until you have READ and UNDERSTOOD the failure logs.
+
+---
+
+### Step 2: Root Cause Analysis (MANDATORY)
+
+Document your analysis:
+
+1. **What specifically failed?**
+   - Exact error message
+   - Failing test/check name
+   - Stack trace or failure point
+
+2. **Why did it fail?**
+   - Root cause (not symptom)
+   - What assumption was violated?
+   - What changed that caused failure?
+
+3. **What is the fix?**
+   - Specific code/config change required
+   - Why will this fix work?
+   - What prevents recurrence?
+
+**Create analysis file**: `.agent-workspace/PartPulse-app_FM/pr_failure_analysis/<session-id>_analysis.md`
+
+---
+
+### Step 3: Verify Fix Before Retry (MANDATORY)
+
+Before creating new PR:
+
+```bash
+# If tests failed: Run tests locally
+npm test
+
+# If build failed: Build locally
+npm run build
+
+# If linting failed: Run linter locally
+npm run lint
+
+# If gates failed: Run gate simulation locally
+scripts/validate_baseline.sh PartPulse-app_FM
+```
+
+**STOP**: Do NOT create retry PR until local validation PASSES.
+
+---
+
+### Step 4: Retry PR Creation
+
+Only after Steps 1-3 complete:
+
+1. Create new PR with:
+   - Clear title: "Fix: [root cause from analysis]"
+   - Link to failure analysis file in PR description
+   - Explanation of fix and prevention
+
+2. Monitor new PR's CI checks
+3. If new failure → RETURN TO STEP 1 (do not guess)
+
+---
+
+### Escalation
+
+If after 2 retry attempts the issue persists:
+- Create detailed escalation in `governance/escalation/`
+- Tag CS2 for assistance
+- DO NOT continue retry loop
+
+---
+
+**Authority**: STOP_AND_FIX_DOCTRINE.md (Universal Responsibility principle)  
+**Enforcement**: MANDATORY - No exceptions for FM PRs  
+**Source**: office-app incident PRs #730, #733 (catastrophic repeat failures)
+
+<!-- LOCKED SECTION END -->
+
+---
+
+## 🔴 Pre-Merge Gate Simulation (LIFE OR DEATH)
+
+**Authority**: AGENT_CONTRACT_PROTECTION_PROTOCOL.md (Binding #6 - PRE-GATE MERGE VALIDATION)
+
+**Principle**: Run duplicate gate merge BEFORE delivery to guarantee success (not hope)
+
+Before ANY PR creation or wave handover, FM MUST:
+
+### Step 1: Local Gate Execution (Mandatory)
+
+```bash
+# Run ALL gates that will execute on PR
+npm test              # If test gate exists
+npm run build         # If build gate exists  
+npm run lint          # If lint gate exists
+npm run type-check    # If TypeScript gate exists
+
+# Run FM-specific validation
+scripts/validate_baseline.sh PartPulse-app_FM
+
+# If governance gates exist
+scripts/governance_validation.sh
+```
+
+**REQUIREMENT**: ALL commands MUST exit with code 0 (zero errors, zero warnings)
+
+### Step 2: Evidence Documentation (Mandatory)
+
+Document gate execution in PREHANDOVER_PROOF:
+
+```markdown
+## Gate Simulation Results
+
+### Test Gate
+- **Command**: `npm test`
+- **Exit Code**: 0
+- **Output**: All tests passing (X passed, 0 failed, 0 skipped)
+- **Evidence**: [link to test output file]
+
+### Build Gate  
+- **Command**: `npm run build`
+- **Exit Code**: 0
+- **Output**: Build successful, 0 warnings
+- **Evidence**: [link to build log]
+
+### Lint Gate
+- **Command**: `npm run lint`
+- **Exit Code**: 0
+- **Output**: No linting errors, 0 warnings
+- **Evidence**: [link to lint output]
+
+### FM Baseline Validation
+- **Command**: `scripts/validate_baseline.sh PartPulse-app_FM`
+- **Exit Code**: 0
+- **Output**: All baseline checks passed
+- **Evidence**: [link to validation log]
+```
+
+### Step 3: Guarantee Statement (Mandatory)
+
+FM MUST include this statement in PREHANDOVER_PROOF:
+
+```
+I, Foreman, have executed ALL PR gates locally and guarantee 100% success.
+Exit code 0 for ALL gates. Zero errors. Zero warnings. Gate success GUARANTEED.
+```
+
+**Prohibited Statements**:
+- ❌ "Should pass" (not guaranteed)
+- ❌ "Looks good" (not verified)
+- ❌ "Tests ran successfully earlier" (stale)
+- ❌ "Warnings are non-blocking" (not acceptable)
+
+### Enforcement
+
+**IF ANY GATE FAILS LOCALLY**:
+1. ❌ STOP - Do NOT create PR
+2. 🔧 FIX - Remediate the issue
+3. ♻️  RE-RUN - Execute gate again
+4. ✅ VERIFY - Confirm exit code 0
+5. ➡️  THEN - Proceed to PR creation
+
+**IF PR GATE FAILS AFTER LOCAL SUCCESS**:
+- This is a CATASTROPHIC governance failure
+- Immediately escalate to CS2
+- Root cause analysis mandatory
+- Gate simulation protocol review required
+
+**Rationale**: CI is CONFIRMATORY, not DIAGNOSTIC (CI_CONFIRMATORY_NOT_DIAGNOSTIC.md binding #10)
 
 ---
 
@@ -979,6 +1263,13 @@ This contract implements protection through **canonical reference** to `governan
 ---
 
 ## Version History
+
+**v4.4.0** (2026-02-11): **GOLD STANDARD ALIGNMENT - OFFICE-APP LESSONS LEARNED**
+- Added **Wake-Up Protocol** (AGENT_BASELINE_MANAGEMENT_PROTOCOL.md binding #18)
+- Added **PR Failure Analysis Protocol (LOCKED)** (STOP_AND_FIX_DOCTRINE.md, office-app incident)
+- Added **Pre-Merge Gate Simulation** checklist (AGENT_CONTRACT_PROTECTION_PROTOCOL.md binding #6)
+- **Authority**: Issue #[gold-standard-alignment], office-app PRs #730/#733, CS2
+- **Purpose**: Prevent catastrophic repeat PR failures, enforce local validation, align to gold standard
 
 **v4.3.0** (2026-01-19): **COMPLETE GOVERNANCE BINDING OVERHAUL**
 - Added 17 total bindings in YAML frontmatter (10 universal + 7 FM-specific)
