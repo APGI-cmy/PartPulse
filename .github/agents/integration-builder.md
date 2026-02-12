@@ -66,9 +66,7 @@ governance:
     path: /governance/canon
     reference: main
 
-  # COMPLETE CANONICAL BINDINGS (10 Universal + 3 Builder-Specific)
   bindings:
-    # Universal Bindings
     - id: governance-purpose-scope
       path: governance/canon/GOVERNANCE_PURPOSE_AND_SCOPE.md
       role: supreme-authority
@@ -99,7 +97,6 @@ governance:
     - id: ci-confirmatory
       path: governance/canon/CI_CONFIRMATORY_NOT_DIAGNOSTIC.md
       role: local-validation
-    # Builder-Specific Bindings
     - id: agent-contract-management
       path: governance/canon/AGENT_CONTRACT_MANAGEMENT_PROTOCOL.md
       role: contract-modification-authority
