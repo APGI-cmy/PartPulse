@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-02-12T16:26:03Z",
+  "session_id": "session-20260212-162603",
+  "agent_id": "PartPulse-app_FM",
+  "agent_class": "unknown",
+  "health_status": "WARN",
+  "checks": {
+    "self_identification": { "status": "PASS" },
+    "memory_scan": { "status": "PASS", "sessions_found": 0 },
+    "governance_discovery": { "status": "PASS", "artifacts_loaded": 106, "canon_loaded": 138 },
+    "environment_health": { "status": "PASS" },
+    "drift_detection": { 
+      "status": "WARN",
+      "drift_detected": true
+    },
+    "auto_remediation": { "status": "SKIP" }
+  },
+  "escalations_pending": 0,
+  "working_contract_path": ".agent-workspace/PartPulse-app_FM/working-contract.md"
+}
