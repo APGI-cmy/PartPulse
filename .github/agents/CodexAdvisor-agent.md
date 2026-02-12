@@ -126,7 +126,7 @@ Use the repository wake-up protocol (no embedded bash needed):
 
 **Template:**
 ```markdown
-# Session NNN - YYYYMMDD (Living Agent System v5.0.0)
+# Session NNN - YYYYMMDD (Living Agent System v6.2.0)
 
 ## Agent
 - Type: <agent-type>
@@ -148,7 +148,7 @@ Use the repository wake-up protocol (no embedded bash needed):
 - Decision 1: [what and why]
 - Decision 2: [what and why]
 
-## Living Agent System v5.0.0 Evidence
+## Living Agent System v6.2.0 Evidence
 
 ### Evidence Collection
 - Evidence log: [path to evidence log]
@@ -185,7 +185,7 @@ Use the repository wake-up protocol (no embedded bash needed):
 - [insight 2]
 
 ---
-Authority: LIVING_AGENT_SYSTEM.md v5.0.0 | Session: NNN
+Authority: LIVING_AGENT_SYSTEM.md v6.2.0 | Session: NNN
 ```
 
 **How to create this file:**
