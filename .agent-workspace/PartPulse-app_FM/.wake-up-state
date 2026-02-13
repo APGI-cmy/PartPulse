@@ -1,0 +1,11 @@
+AGENT_CONTRACT=.github/agents/PartPulse-app_FM.md
+AGENT_CLASS=foreman
+MEMORY_COUNT=1
+ESCALATION_COUNT=0
+GOVERNANCE_ARTIFACTS=106
+CANON_COUNT=138
+REPO_STATUS=dirty
+CURRENT_BRANCH=copilot/update-merge-gate-interface
+JSON_VALID=true
+DRIFT_DETECTED=true
+DRIFT_TYPES=inventory

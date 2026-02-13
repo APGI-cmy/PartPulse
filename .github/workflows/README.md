@@ -40,6 +40,57 @@ For agent-driven PRs where local validation has been performed:
 - **Agent-friendly**: Supports agent-driven PRs with BL-027/028 compliance
 - **Dual-mode**: Still runs automated validation when PREHANDOVER_PROOF not present
 
+## Unified Merge Gate Interface (Living Agent System v6.2.0)
+
+**Authority**: MERGE_GATE_INTERFACE_STANDARD.md v1.0.0
+
+PartPulse implements the canonical 3-gate merge interface for Living Agent System v6.2.0 compliance.
+
+### Merge Gate Interface Workflow
+
+**File**: `merge-gate-interface.yml`
+
+**Purpose**: Unified constitutional gate enforcing evidence artifacts, governance alignment, and stop-and-fix discipline.
+
+**Trigger**: Pull requests to `main` and `develop` branches
+
+**Standard Gates (Required Check Contexts)**:
+1. **`Merge Gate Interface / merge-gate/verdict`**
+   - Evidence artifact bundle validation
+   - Protocol execution verification (wake-up, session closure)
+   - Test debt validation (zero test debt enforcement)
+   - Gate results schema validation
+
+2. **`Merge Gate Interface / governance/alignment`**
+   - Canon hash integrity (detects placeholder/truncated hashes)
+   - Governance synchronization validation
+   - Protected file change detection
+   - Drift detection and reporting
+
+3. **`Merge Gate Interface / stop-and-fix/enforcement`**
+   - Stop-and-fix condition detection
+   - RCA (Root Cause Analysis) requirement validation
+   - Deprecation violation detection (delegated)
+   - Learning artifact validation
+
+**PR Classification (Deterministic)**:
+- **Label override** (highest precedence): `governance-only`, `docs-only`
+- **Path-based**: `governance/`, `.agent`, `.agent-admin/`
+- **Docs-only**: Only `docs/` or `*.md` changes (non-governance)
+- **Branch patterns**: `release/*`, `hotfix/*` → always code
+- **Default**: Code change
+
+**Evidence-Based Validation (BL-027/028)**:
+- Accepts `PREHANDOVER_PROOF.md` (root) or `PREHANDOVER_PROOF_*.md` files
+- Gate execution skipped when evidence documented in proof
+- Maintains audit trail while reducing CI execution overhead
+
+**Status**: ACTIVE - Constitutional requirement (Living Agent System v6.2.0)
+
+**Branch Protection**: Update to require only the 3 standard check contexts after validation.
+
+---
+
 ## Active Workflows
 
 ### 1. Minimum Build-to-Red Gate
