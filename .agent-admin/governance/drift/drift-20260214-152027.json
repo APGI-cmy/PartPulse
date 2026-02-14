@@ -1,0 +1,4 @@
+{"timestamp":"2026-02-14T15:20:26Z","current_commit":"null","target_commit":"a4e4513287eea07cb8928cbb3ef701101863ae9a","current_version":"null","target_version":"1.0.0","reasons":[
+  "Canonical commit behind: null -> a4e4513287eea07cb8928cbb3ef701101863ae9a",
+  "Inventory version mismatch: null -> 1.0.0"
+]}
