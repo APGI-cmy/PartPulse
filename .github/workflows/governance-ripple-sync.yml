@@ -10,6 +10,22 @@ name: Governance Ripple Sync
 on:
   repository_dispatch:
     types: [governance_ripple]
+  
+  # Manual trigger (for testing)
+  workflow_dispatch:
+    inputs:
+      canonical_commit:
+        description: 'Canonical commit SHA (optional, fetches latest if not provided)'
+        required: false
+        type: string
+      inventory_version:
+        description: 'Inventory version (optional)'
+        required: false
+        type: string
+      dispatch_id:
+        description: 'Test dispatch ID (optional, auto-generated if not provided)'
+        required: false
+        type: string
 
 # Explicit, least-privilege permissions
 permissions:
@@ -43,13 +59,25 @@ jobs:
           echo "╚═══════════════════════════════════════════════════════════╝"
           echo ""
           
-          # Extract payload
-          EVENT_TYPE="${{ github.event.action }}"
-          CANONICAL_COMMIT="${{ github.event.client_payload.canonical_commit }}"
-          INVENTORY_VERSION="${{ github.event.client_payload.inventory_version }}"
-          DISPATCH_ID="${{ github.event.client_payload.dispatch_id }}"
-          TIMESTAMP="${{ github.event.client_payload.timestamp }}"
-          SENDER="${{ github.event.client_payload.sender }}"
+          # Extract payload (handle both repository_dispatch and workflow_dispatch)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # Manual trigger - use inputs
+            EVENT_TYPE="manual"
+            CANONICAL_COMMIT="${{ inputs.canonical_commit }}"
+            INVENTORY_VERSION="${{ inputs.inventory_version }}"
+            DISPATCH_ID="${{ inputs.dispatch_id }}"
+            [ -z "$DISPATCH_ID" ] && DISPATCH_ID="manual-$(date +%s)"
+            TIMESTAMP="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+            SENDER="manual-trigger"
+          else
+            # Repository dispatch - use client_payload
+            EVENT_TYPE="${{ github.event.action }}"
+            CANONICAL_COMMIT="${{ github.event.client_payload.canonical_commit }}"
+            INVENTORY_VERSION="${{ github.event.client_payload.inventory_version }}"
+            DISPATCH_ID="${{ github.event.client_payload.dispatch_id }}"
+            TIMESTAMP="${{ github.event.client_payload.timestamp }}"
+            SENDER="${{ github.event.client_payload.sender }}"
+          fi
           
           echo "Event Details:"
           echo "  Event Type: $EVENT_TYPE"
