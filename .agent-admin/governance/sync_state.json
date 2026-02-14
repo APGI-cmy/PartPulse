@@ -1,9 +1,9 @@
 {
   "last_sync": null,
-  "canonical_commit": null,
-  "inventory_version": null,
-  "alignment_status": "unknown",
-  "drift_detected": false,
-  "last_check": null,
+  "canonical_commit": "a4e4513287eea07cb8928cbb3ef701101863ae9a",
+  "inventory_version": "1.0.0",
+  "alignment_status": "drift",
+  "drift_detected": true,
+  "last_check": "2026-02-14T23:19:14Z",
   "schema_version": "1.0.0"
 }
