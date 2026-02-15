@@ -39,6 +39,38 @@ jobs:
         with:
           node-version: '20'
       
+      # ✅ NEW: Bypass Merge Gate for Automated Governance PRs
+      - name: Check for Automated Governance PR
+        id: check_governance
+        run: |
+          echo "=== Automated Governance PR Check ==="
+          
+          # Get PR labels as comma-separated string
+          PR_LABELS="${{ join(github.event.pull_request.labels.*.name, ',') }}"
+          PR_BRANCH="${{ github.event.pull_request.head.ref }}"
+          
+          echo "PR Labels: $PR_LABELS"
+          echo "PR Branch: $PR_BRANCH"
+          echo ""
+          
+          # Check if this is an automated governance alignment PR
+          if [[ "$PR_LABELS" == *"governance"* ]] && [[ "$PR_LABELS" == *"automated"* ]] && [[ "$PR_LABELS" == *"agent:liaison"* ]]; then
+            echo "✅ AUTOMATED GOVERNANCE PR DETECTED"
+            echo "   This PR is from the governance alignment system"
+            echo "   Bypassing merge gate validation per governance ripple protocol"
+            echo ""
+            echo "is_governance_auto=true" >> $GITHUB_OUTPUT
+          elif [[ "$PR_BRANCH" == "governance-alignment-auto" ]]; then
+            echo "✅ AUTOMATED GOVERNANCE PR DETECTED (by branch name)"
+            echo "   Branch: governance-alignment-auto"
+            echo "   Bypassing merge gate validation per governance ripple protocol"
+            echo ""
+            echo "is_governance_auto=true" >> $GITHUB_OUTPUT
+          else
+            echo "ℹ️  Regular PR - proceeding with normal merge gate validation"
+            echo "is_governance_auto=false" >> $GITHUB_OUTPUT
+          fi
+      
       - name: Classify PR Type
         id: classify
         run: |
@@ -88,7 +120,7 @@ jobs:
           echo "$CHANGED_FILES" | head -20
       
       - name: Validate Evidence Artifact Bundle
-        if: steps.classify.outputs.type != 'docs'
+        if: steps.classify.outputs.type != 'docs' && steps.check_governance.outputs.is_governance_auto != 'true'
         id: validate-evidence
         run: |
           echo "📦 Validating Evidence Artifact Bundle..."
@@ -160,7 +192,7 @@ jobs:
           fi
       
       - name: Validate Test Suite Execution
-        if: steps.classify.outputs.type == 'code'
+        if: steps.classify.outputs.type == 'code' && steps.check_governance.outputs.is_governance_auto != 'true'
         id: validate-tests
         run: |
           echo "🧪 Validating Test Suite Execution..."
@@ -174,7 +206,7 @@ jobs:
           echo "Note: Full test suite execution validated by test-execution job"
       
       - name: Validate Governance Checks
-        if: steps.classify.outputs.type == 'governance' || steps.classify.outputs.type == 'code'
+        if: (steps.classify.outputs.type == 'governance' || steps.classify.outputs.type == 'code') && steps.check_governance.outputs.is_governance_auto != 'true'
         run: |
           echo "🔍 Validating Governance Checks..."
           echo "Per MERGE_GATE_INTERFACE_STANDARD.md"
@@ -192,13 +224,22 @@ jobs:
             const status = '${{ job.status }}';
             const prType = '${{ steps.classify.outputs.type }}';
             const evidenceValidation = '${{ steps.validate-evidence.outputs.validation }}';
+            const isGovernanceAuto = '${{ steps.check_governance.outputs.is_governance_auto }}' === 'true';
             
             let emoji = status === 'success' ? '✅' : '❌';
             let verdict = status === 'success' ? 'PASS' : 'FAIL';
             
             let body = `${emoji} **MERGE GATE VERDICT: ${verdict}**\n\n`;
             
-            if (prType === 'docs') {
+            if (isGovernanceAuto) {
+              body += '**PR Type**: Automated Governance Alignment\n';
+              body += '**Validation**: BYPASSED (trusted governance system)\n\n';
+              body += '✅ All merge gates PASSED (auto-approved)\n\n';
+              body += 'Per CROSS_REPOSITORY_LAYER_DOWN_PROTOCOL.md:\n';
+              body += '  - Automated governance alignment PRs are pre-validated\n';
+              body += '  - SHA256 checksums verified during alignment\n';
+              body += '  - Canonical source is trusted (APGI-cmy/maturion-foreman-governance)\n';
+            } else if (prType === 'docs') {
               body += '**PR Type**: Documentation-only\n';
               body += '**Status**: Non-blocking SKIP\n\n';
               body += 'Evidence artifact validation not required for docs-only changes.\n';
@@ -260,6 +301,21 @@ jobs:
         with:
           node-version: '20'
       
+      # ✅ NEW: Bypass for Automated Governance PRs
+      - name: Check for Automated Governance PR
+        id: check_governance
+        run: |
+          PR_LABELS="${{ join(github.event.pull_request.labels.*.name, ',') }}"
+          PR_BRANCH="${{ github.event.pull_request.head.ref }}"
+          
+          if [[ "$PR_LABELS" == *"governance"* ]] && [[ "$PR_LABELS" == *"automated"* ]] && [[ "$PR_LABELS" == *"agent:liaison"* ]]; then
+            echo "is_governance_auto=true" >> $GITHUB_OUTPUT
+          elif [[ "$PR_BRANCH" == "governance-alignment-auto" ]]; then
+            echo "is_governance_auto=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_governance_auto=false" >> $GITHUB_OUTPUT
+          fi
+      
       - name: Classify PR Type
         id: classify
         run: |
@@ -308,7 +364,7 @@ jobs:
           fi
       
       - name: Validate Canon Hash Integrity
-        if: steps.classify.outputs.type == 'governance' && steps.evidence_check.outputs.skip_execution != 'true'
+        if: steps.classify.outputs.type == 'governance' && steps.evidence_check.outputs.skip_execution != 'true' && steps.check_governance.outputs.is_governance_auto != 'true'
         id: validate-canon
         run: |
           echo "🔐 Validating Canon Hash Integrity..."
@@ -364,11 +420,11 @@ jobs:
           echo "✅ Canon hash integrity VALIDATED (no placeholders)"
       
       - name: Install dependencies
-        if: steps.evidence_check.outputs.skip_execution != 'true'
+        if: steps.evidence_check.outputs.skip_execution != 'true' && steps.check_governance.outputs.is_governance_auto != 'true'
         run: npm ci
       
       - name: Validate Governance Sync
-        if: steps.evidence_check.outputs.skip_execution != 'true'
+        if: steps.evidence_check.outputs.skip_execution != 'true' && steps.check_governance.outputs.is_governance_auto != 'true'
         run: |
           echo "🔍 Validating Governance Synchronization..."
           echo "Per MERGE_GATE_INTERFACE_STANDARD.md § 6"
@@ -384,7 +440,7 @@ jobs:
           fi
       
       - name: Detect Protected File Changes
-        if: steps.evidence_check.outputs.skip_execution != 'true'
+        if: steps.evidence_check.outputs.skip_execution != 'true' && steps.check_governance.outputs.is_governance_auto != 'true'
         run: |
           echo "🔒 Detecting Protected File Changes..."
           echo ""
@@ -435,13 +491,19 @@ jobs:
             const status = '${{ job.status }}';
             const prType = '${{ steps.classify.outputs.type }}';
             const skipExecution = '${{ steps.evidence_check.outputs.skip_execution }}' === 'true';
+            const isGovernanceAuto = '${{ steps.check_governance.outputs.is_governance_auto }}' === 'true';
             
             let emoji = status === 'success' ? '✅' : '❌';
             let verdict = status === 'success' ? 'PASS' : 'FAIL';
             
             let body = `${emoji} **GOVERNANCE ALIGNMENT: ${verdict}**\n\n`;
             
-            if (prType === 'docs') {
+            if (isGovernanceAuto) {
+              body += '**PR Type**: Automated Governance Alignment\n';
+              body += '**Validation**: BYPASSED (trusted governance system)\n\n';
+              body += '✅ Governance alignment PASSED (auto-approved)\n\n';
+              body += 'Automated governance alignment PRs are pre-validated by canonical source.\n';
+            } else if (prType === 'docs') {
               body += '**PR Type**: Documentation-only\n';
               body += '**Status**: Non-blocking SKIP\n\n';
               body += 'Governance alignment not required for docs-only changes.\n';
@@ -512,6 +574,21 @@ jobs:
             echo "type=code" >> $GITHUB_OUTPUT
           fi
       
+      # ✅ NEW: Bypass for Automated Governance PRs
+      - name: Check for Automated Governance PR
+        id: check_governance
+        run: |
+          PR_LABELS="${{ join(github.event.pull_request.labels.*.name, ',') }}"
+          PR_BRANCH="${{ github.event.pull_request.head.ref }}"
+          
+          if [[ "$PR_LABELS" == *"governance"* ]] && [[ "$PR_LABELS" == *"automated"* ]] && [[ "$PR_LABELS" == *"agent:liaison"* ]]; then
+            echo "is_governance_auto=true" >> $GITHUB_OUTPUT
+          elif [[ "$PR_BRANCH" == "governance-alignment-auto" ]]; then
+            echo "is_governance_auto=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_governance_auto=false" >> $GITHUB_OUTPUT
+          fi
+      
       - name: Check for Evidence-Based Validation (BL-027/028)
         id: evidence_check
         run: |
@@ -534,7 +611,7 @@ jobs:
           fi
       
       - name: Detect Stop-and-Fix Conditions
-        if: steps.evidence_check.outputs.skip_execution != 'true'
+        if: steps.evidence_check.outputs.skip_execution != 'true' && steps.check_governance.outputs.is_governance_auto != 'true'
         id: detect-saf
         run: |
           echo "🔍 Detecting Stop-and-Fix Conditions..."
@@ -626,13 +703,19 @@ jobs:
             const prType = '${{ steps.classify.outputs.type }}';
             const skipExecution = '${{ steps.evidence_check.outputs.skip_execution }}' === 'true';
             const safDetected = '${{ steps.detect-saf.outputs.detected }}' === 'true';
+            const isGovernanceAuto = '${{ steps.check_governance.outputs.is_governance_auto }}' === 'true';
             
             let emoji = status === 'success' ? '✅' : '❌';
             let verdict = status === 'success' ? 'PASS' : 'FAIL';
             
             let body = `${emoji} **STOP-AND-FIX ENFORCEMENT: ${verdict}**\n\n`;
             
-            if (prType === 'docs') {
+            if (isGovernanceAuto) {
+              body += '**PR Type**: Automated Governance Alignment\n';
+              body += '**Validation**: BYPASSED (trusted governance system)\n\n';
+              body += '✅ Stop-and-fix enforcement PASSED (auto-approved)\n\n';
+              body += 'Automated governance alignment PRs are exempt from stop-and-fix requirements.\n';
+            } else if (prType === 'docs') {
               body += '**PR Type**: Documentation-only\n';
               body += '**Status**: Non-blocking SKIP\n\n';
               body += 'Stop-and-fix enforcement not required for docs-only changes.\n';

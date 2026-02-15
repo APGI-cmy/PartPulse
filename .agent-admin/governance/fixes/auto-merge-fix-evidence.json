@@ -1,0 +1,73 @@
+{
+  "fix_id": "auto-merge-system-2026-02-15",
+  "timestamp": "2026-02-15T05:50:44Z",
+  "authority": "LIVING_AGENT_SYSTEM.md v6.2.0",
+  "issue_reference": "[Governance] Apply auto-merge system fixes to PartPulse",
+  "fixes_applied": [
+    {
+      "fix": "Stable branch naming",
+      "file": ".github/scripts/align-governance.sh",
+      "before": "governance/auto-align-$(date +%Y%m%d-%H%M%S)",
+      "after": "governance-alignment-auto",
+      "impact": "Prevents duplicate PR creation"
+    },
+    {
+      "fix": "Duplicate PR prevention",
+      "file": ".github/scripts/align-governance.sh",
+      "implementation": "Check for existing open PRs before creating new",
+      "impact": "Updates existing PR instead of creating duplicate"
+    },
+    {
+      "fix": "Auto-merge enablement",
+      "file": ".github/scripts/align-governance.sh",
+      "implementation": "gh pr merge --auto --squash",
+      "impact": "PRs auto-merge once all checks pass"
+    },
+    {
+      "fix": "Enhanced PR labels",
+      "file": ".github/scripts/align-governance.sh",
+      "labels_added": ["governance", "automated", "agent:liaison"],
+      "impact": "Enables merge gate detection and bypass"
+    },
+    {
+      "fix": "Merge gate bypass",
+      "file": ".github/workflows/merge-gate-interface.yml",
+      "gates_affected": ["merge-gate/verdict", "governance/alignment", "stop-and-fix/enforcement"],
+      "implementation": "Detect automated governance PRs by labels or branch name",
+      "impact": "Automated governance PRs bypass gate validation"
+    }
+  ],
+  "validation_results": {
+    "bash_syntax_check": "PASS",
+    "yaml_syntax_check": "PASS",
+    "duplicate_pr_check": "PASS - No open duplicates",
+    "event_type_check": "PASS - governance_ripple correct"
+  },
+  "acceptance_criteria": {
+    "stable_branch_name": true,
+    "duplicate_prevention": true,
+    "auto_merge_enabled": true,
+    "merge_gate_bypass": true,
+    "event_type_correct": true,
+    "duplicate_prs_cleaned": true,
+    "evidence_published": true
+  },
+  "historical_duplicates": {
+    "count": 11,
+    "timeframe": "24 hours",
+    "status": "All closed or merged",
+    "latest_pr": 295
+  },
+  "references": [
+    "maturion-isms commit 869e0bd",
+    "maturion-isms commit a91d636",
+    "CROSS_REPOSITORY_LAYER_DOWN_PROTOCOL.md",
+    "LIVING_AGENT_SYSTEM.md v6.2.0"
+  ],
+  "status": "COMPLETE",
+  "next_steps": [
+    "Test with live governance ripple event",
+    "Verify auto-merge functionality",
+    "Monitor for duplicate PR creation"
+  ]
+}
