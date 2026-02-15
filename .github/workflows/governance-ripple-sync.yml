@@ -4,12 +4,14 @@ name: Governance Ripple Sync
 # Purpose: Receive governance ripple events and trigger alignment
 # Failure Semantics: Creates PR on drift, does not block merges
 # Authority: CROSS_REPO_RIPPLE_TRANSPORT_PROTOCOL.md v1.0.0
-# Version: 1.0.0 (PartPulse)
+# Version: 1.1.0 (PartPulse)
 # Created: 2026-02-14
+# Updated: 2026-02-15 - Fixed payload compatibility
 
 on:
   repository_dispatch:
     types: [governance_ripple]
+  workflow_dispatch:  # Manual trigger for testing
 
 # Explicit, least-privilege permissions
 permissions:
@@ -35,29 +37,32 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.MATURION_BOT_TOKEN }}
       
+      - name: Configure Git
+        run: |
+          git config --global user.name "Maturion Bot"
+          git config --global user.email "bot@maturion.com"
+      
       - name: Log Ripple Event
         id: log-ripple
+        if: github.event_name == 'repository_dispatch'
         run: |
           echo "╔═══════════════════════════════════════════════════════════╗"
           echo "║  GOVERNANCE RIPPLE RECEIVED"
           echo "╚═══════════════════════════════════════════════════════════╝"
           echo ""
           
-          # Extract payload
-          EVENT_TYPE="${{ github.event.action }}"
-          CANONICAL_COMMIT="${{ github.event.client_payload.canonical_commit }}"
-          INVENTORY_VERSION="${{ github.event.client_payload.inventory_version }}"
-          DISPATCH_ID="${{ github.event.client_payload.dispatch_id }}"
+          # Extract payload (canonical dispatch format)
+          SOURCE_REPO="${{ github.event.client_payload.source_repo }}"
+          CANONICAL_COMMIT="${{ github.event.client_payload.commit_sha }}"
+          COMMIT_MESSAGE="${{ github.event.client_payload.commit_message }}"
           TIMESTAMP="${{ github.event.client_payload.timestamp }}"
-          SENDER="${{ github.event.client_payload.sender }}"
           
           echo "Event Details:"
-          echo "  Event Type: $EVENT_TYPE"
+          echo "  Source Repo: $SOURCE_REPO"
           echo "  Canonical Commit: $CANONICAL_COMMIT"
-          echo "  Inventory Version: $INVENTORY_VERSION"
-          echo "  Dispatch ID: $DISPATCH_ID"
+          echo "  Commit Message: $COMMIT_MESSAGE"
           echo "  Timestamp: $TIMESTAMP"
-          echo "  Sender: $SENDER"
+          echo "  Received At: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
           echo ""
           
           # Ensure governance directory exists
@@ -71,22 +76,18 @@ jobs:
             echo '{"ripple_events":[],"last_updated":null,"schema_version":"1.0.0"}' > "$RIPPLE_LOG"
           fi
           
-          # Append event
+          # Append event (using canonical format)
           RIPPLE_ENTRY=$(jq -n \
-            --arg event_type "$EVENT_TYPE" \
+            --arg source_repo "$SOURCE_REPO" \
             --arg canonical_commit "$CANONICAL_COMMIT" \
-            --arg inventory_version "$INVENTORY_VERSION" \
-            --arg dispatch_id "$DISPATCH_ID" \
+            --arg commit_message "$COMMIT_MESSAGE" \
             --arg timestamp "$TIMESTAMP" \
-            --arg sender "$SENDER" \
             --arg received "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
             '{
-              event_type: $event_type,
+              source_repo: $source_repo,
               canonical_commit: $canonical_commit,
-              inventory_version: $inventory_version,
-              dispatch_id: $dispatch_id,
+              commit_message: $commit_message,
               timestamp: $timestamp,
-              sender: $sender,
               received_at: $received,
               status: "received"
             }')
@@ -102,8 +103,7 @@ jobs:
           
           # Output for next steps
           echo "canonical_commit=$CANONICAL_COMMIT" >> $GITHUB_OUTPUT
-          echo "inventory_version=$INVENTORY_VERSION" >> $GITHUB_OUTPUT
-          echo "dispatch_id=$DISPATCH_ID" >> $GITHUB_OUTPUT
+          echo "source_repo=$SOURCE_REPO" >> $GITHUB_OUTPUT
       
       - name: Execute Alignment Check
         id: align
@@ -114,8 +114,8 @@ jobs:
           echo "🔍 Executing governance alignment check..."
           echo ""
           
-          # Execute alignment script with canonical commit and version
-          if .github/scripts/align-governance.sh "${{ steps.log-ripple.outputs.canonical_commit }}" "${{ steps.log-ripple.outputs.inventory_version }}"; then
+          # Execute alignment script with canonical commit (no inventory version from dispatch)
+          if .github/scripts/align-governance.sh "${{ steps.log-ripple.outputs.canonical_commit }}"; then
             echo "alignment_status=aligned" >> $GITHUB_OUTPUT
             echo "✅ Governance is aligned"
           else
@@ -129,7 +129,7 @@ jobs:
           echo "📝 Updating ripple event status..."
           
           RIPPLE_LOG=".agent-admin/governance/ripple-log.json"
-          DISPATCH_ID="${{ steps.log-ripple.outputs.dispatch_id }}"
+          CANONICAL_COMMIT="${{ steps.log-ripple.outputs.canonical_commit }}"
           STATUS="${{ steps.align.outputs.alignment_status }}"
           
           if [ "$STATUS" = "aligned" ]; then
@@ -140,11 +140,11 @@ jobs:
             FINAL_STATUS="failed"
           fi
           
-          # Update the latest event status
-          jq --arg dispatch_id "$DISPATCH_ID" \
+          # Update the latest event status (match by canonical_commit)
+          jq --arg canonical_commit "$CANONICAL_COMMIT" \
              --arg status "$FINAL_STATUS" \
              --arg completed "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-             '(.ripple_events[] | select(.dispatch_id == $dispatch_id)) |= (. + {status: $status, completed_at: $completed})' \
+             '(.ripple_events[] | select(.canonical_commit == $canonical_commit)) |= (. + {status: $status, completed_at: $completed})' \
              "$RIPPLE_LOG" > "$RIPPLE_LOG.tmp"
           mv "$RIPPLE_LOG.tmp" "$RIPPLE_LOG"
           
@@ -158,18 +158,16 @@ jobs:
           script: |
             const status = '${{ steps.align.outputs.alignment_status }}';
             const canonicalCommit = '${{ steps.log-ripple.outputs.canonical_commit }}';
-            const inventoryVersion = '${{ steps.log-ripple.outputs.inventory_version }}';
-            const dispatchId = '${{ steps.log-ripple.outputs.dispatch_id }}';
+            const sourceRepo = '${{ steps.log-ripple.outputs.source_repo }}';
             
             let emoji = status === 'aligned' ? '✅' : '⚠️';
             let title = status === 'aligned' ? 'ALIGNED' : 'DRIFT DETECTED';
             
             let body = `${emoji} **GOVERNANCE RIPPLE: ${title}**\n\n`;
             body += `**Ripple Event**\n`;
-            body += `- Dispatch ID: \`${dispatchId}\`\n`;
+            body += `- Source Repo: \`${sourceRepo}\`\n`;
             body += `- Canonical Commit: \`${canonicalCommit}\`\n`;
-            body += `- Inventory Version: \`${inventoryVersion}\`\n`;
-            body += `- Sender: APGI-cmy/maturion-foreman-governance\n\n`;
+            body += `- Received At: \`${new Date().toISOString()}\`\n\n`;
             
             if (status === 'aligned') {
               body += `**Status**: Governance is aligned with canonical source\n\n`;
