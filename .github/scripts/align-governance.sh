@@ -176,6 +176,9 @@ $(printf '%s\n' "${DRIFT_REASONS[@]}")
 
 Authority: CROSS_REPO_RIPPLE_TRANSPORT_PROTOCOL.md" || echo "No changes to commit"
     
+    # Force-push to prevent race conditions when concurrent governance events occur
+    # This ensures the branch can be updated even if multiple ripple events trigger simultaneously
+    # Reference: R_Roster PR #122, Issue #299
     git push -u origin "$BRANCH_NAME" --force
     
     if [ -z "$EXISTING_PRS" ]; then
