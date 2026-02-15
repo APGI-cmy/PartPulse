@@ -69,6 +69,18 @@ This log tracks governance ripple propagation from canonical governance reposito
 - Session: liaison-20260209-082714
 - Status: COMPLETE
 
+### 2026-02-15 - Baseline Establishment (Scheduled Check)
+[2026-02-15 11:13] Baseline Establishment: Initialize sync_state.json → PartPulse (APPLIED)
+- Trigger: Scheduled governance alignment check (scheduled-20260215-082747)
+- Operation: Baseline establishment - no new files to layer down
+- Canonical Commit: a4e4513287eea07cb8928cbb3ef701101863ae9a
+- Inventory Version: 1.0.0
+- Root Cause: sync_state.json not initialized despite 69+ governance files already present
+- Resolution: Updated sync_state.json to reflect current aligned state
+- Evidence: .agent-admin/governance/layer-down/baseline-establishment-20260215/
+- Session: session-20260215-111040
+- Status: COMPLETE
+
 ---
 
 ## Notes
