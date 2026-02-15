@@ -1,11 +1,11 @@
 AGENT_CONTRACT=.github/agents/governance-liaison.md
 AGENT_CLASS=liaison
-MEMORY_COUNT=1
+MEMORY_COUNT=2
 ESCALATION_COUNT=0
 GOVERNANCE_ARTIFACTS=106
 CANON_COUNT=138
 REPO_STATUS=dirty
-CURRENT_BRANCH=copilot/apply-auto-merge-fixes
+CURRENT_BRANCH=copilot/add-force-push-strategy
 JSON_VALID=true
 DRIFT_DETECTED=true
 DRIFT_TYPES=inventory
