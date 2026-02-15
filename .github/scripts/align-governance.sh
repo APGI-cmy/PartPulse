@@ -129,6 +129,9 @@ if [ "$DRIFT_DETECTED" = true ]; then
   echo "📄 Drift logged to: $(basename $DRIFT_LOG)"
   echo ""
   
+  # Return to repo root before PR creation
+  cd "$REPO_ROOT"
+  
   # Create PR if running in CI with bot token
   if [ -n "${GITHUB_ACTIONS:-}" ] && [ -n "${MATURION_BOT_TOKEN:-}" ]; then
     echo "🔧 Creating alignment PR..."
@@ -164,7 +167,6 @@ if [ "$DRIFT_DETECTED" = true ]; then
     git config --global user.email "bot@maturion.com"
     git config --global user.name "Maturion Bot"
     
-    cd "$REPO_ROOT"
     git add "$SYNC_STATE" "$DRIFT_LOG"
     git commit -m "governance: drift detected - alignment required
 
