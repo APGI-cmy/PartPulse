@@ -133,13 +133,38 @@ if [ "$DRIFT_DETECTED" = true ]; then
   if [ -n "${GITHUB_ACTIONS:-}" ] && [ -n "${MATURION_BOT_TOKEN:-}" ]; then
     echo "🔧 Creating alignment PR..."
     
-    # Create branch for alignment
-    BRANCH_NAME="governance/auto-align-$(date +%Y%m%d-%H%M%S)"
+    # Use stable branch name (prevents duplicate PRs)
+    BRANCH_NAME="governance-alignment-auto"
+    
+    # Check for existing open governance alignment PRs
+    echo "Checking for existing governance alignment PRs..."
+    EXISTING_PRS=$(gh pr list --state open --label "governance-ripple-required" --json number,headRefName | jq -r '.[] | select(.headRefName == "governance-alignment-auto") | .number')
+    
+    if [ -n "$EXISTING_PRS" ]; then
+      echo "⚠️  Existing governance alignment PR found: #$EXISTING_PRS"
+      echo "Updating existing PR instead of creating duplicate..."
+      
+      # Switch to existing branch and update
+      git fetch origin "$BRANCH_NAME" || true
+      git checkout "$BRANCH_NAME" 2>/dev/null || git checkout -b "$BRANCH_NAME"
+      git merge --strategy-option=theirs origin/main -m "Merge latest main" || true
+    else
+      echo "No existing PR found - creating new alignment PR"
+      
+      # Delete local branch if exists
+      git branch -D "$BRANCH_NAME" 2>/dev/null || true
+      
+      # Delete remote branch if exists
+      git push origin --delete "$BRANCH_NAME" 2>/dev/null || true
+      
+      # Create new branch
+      git checkout -b "$BRANCH_NAME"
+    fi
+    
     git config --global user.email "bot@maturion.com"
     git config --global user.name "Maturion Bot"
     
     cd "$REPO_ROOT"
-    git checkout -b "$BRANCH_NAME"
     git add "$SYNC_STATE" "$DRIFT_LOG"
     git commit -m "governance: drift detected - alignment required
 
@@ -149,14 +174,16 @@ Inventory version: $TARGET_VERSION
 Drift reasons:
 $(printf '%s\n' "${DRIFT_REASONS[@]}")
 
-Authority: CROSS_REPO_RIPPLE_TRANSPORT_PROTOCOL.md"
+Authority: CROSS_REPO_RIPPLE_TRANSPORT_PROTOCOL.md" || echo "No changes to commit"
     
-    git push -u origin "$BRANCH_NAME"
+    git push -u origin "$BRANCH_NAME" --force
     
-    # Create PR using GitHub CLI
-    gh pr create \
-      --title "governance: automatic alignment required" \
-      --body "## Governance Drift Detected
+    if [ -z "$EXISTING_PRS" ]; then
+      # Create new PR with auto-merge enabled
+      echo "Creating new PR with auto-merge enabled..."
+      gh pr create \
+        --title "governance: automatic alignment required" \
+        --body "## Governance Drift Detected
 
 **Canonical Commit**: \`$TARGET_COMMIT\`  
 **Inventory Version**: \`$TARGET_VERSION\`
@@ -172,11 +199,28 @@ $(printf '- %s\n' "${DRIFT_REASONS[@]}")
 5. Update sync state on completion
 
 **Authority**: CROSS_REPO_RIPPLE_TRANSPORT_PROTOCOL.md § 5
-**Assignee**: @governance-liaison" \
-      --label "governance-ripple-required" \
-      --label "governance-only"
-    
-    echo "✅ Alignment PR created"
+**Assignee**: @governance-liaison
+
+---
+
+🤖 **Auto-merge enabled** - This PR will merge automatically once all checks pass." \
+        --label "governance-ripple-required" \
+        --label "governance-only" \
+        --label "governance" \
+        --label "automated" \
+        --label "agent:liaison"
+      
+      # Enable auto-merge on the created PR
+      PR_NUMBER=$(gh pr list --head "$BRANCH_NAME" --json number -q '.[0].number')
+      if [ -n "$PR_NUMBER" ]; then
+        echo "Enabling auto-merge on PR #$PR_NUMBER..."
+        gh pr merge "$PR_NUMBER" --auto --squash || echo "⚠️  Auto-merge enablement failed - may require manual enablement"
+      fi
+      
+      echo "✅ Alignment PR created with auto-merge enabled"
+    else
+      echo "✅ Existing alignment PR updated"
+    fi
   else
     echo "ℹ️  Not running in CI or MATURION_BOT_TOKEN not set - PR creation skipped"
   fi
