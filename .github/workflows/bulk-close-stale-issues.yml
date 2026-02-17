@@ -1,0 +1,132 @@
+name: Bulk Close Stale Issues (Manual Trigger Only)
+
+# Purpose: Close stale drift/ripple issues created before Feb 15, 2026
+# Authority: GOVERNANCE_LIAISON_ROLE_SURVEY.md
+# Reference: Issue #356
+# Usage: Manual workflow_dispatch trigger only (requires admin approval)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "CONFIRM" to proceed with bulk closure'
+        required: true
+        default: ''
+
+permissions:
+  issues: write
+
+jobs:
+  bulk-close-stale-issues:
+    name: Bulk Close Stale Issues
+    runs-on: ubuntu-latest
+    if: github.event.inputs.confirm == 'CONFIRM'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Bulk Close Issues
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const staleIssues = [168, 182, 193, 195, 218, 249, 253, 257, 272, 284];
+            const closureDate = '2026-02-17';
+            
+            const resolutionComment = `## Bulk Closure: Stale Drift/Ripple Issue
+
+            This issue is being closed as part of a bulk cleanup operation for stale governance drift/ripple issues.
+
+            ### Resolution Context
+            This issue was created before **February 15, 2026** and is now obsolete due to recent fixes:
+
+            - **PR #305** - Fixed governance ripple receiver payload incompatibility
+            - **PR #316** - Fixed directory context bug in alignment PR creation  
+            - **PR #298** - Fixed duplicate PR pileup and auto-merge failure
+
+            ### Current Status
+            The governance ripple system is now operational with:
+            - ✅ Correct payload field handling (commit_sha, source_repo, commit_message)
+            - ✅ Proper directory context for git operations
+            - ✅ Single stable branch name preventing duplicate PRs
+            - ✅ Auto-merge enabled on alignment PRs
+
+            ### Evidence
+            - Audit Report: maturion-foreman-governance/pull/1141
+            - System Health: \`.agent-admin/governance/SYSTEM_HEALTH_REPORT_2026-02-17.md\`
+            - Bulk Closure Audit: \`.agent-admin/governance/BULK_CLOSURE_AUDIT_2026-02-17.md\`
+            - Recent successful alignment: PR #313+ (post-fix)
+
+            ### Action Required
+            No action required. The governance alignment system will automatically handle future drift detection.
+
+            ---
+
+            **Bulk Closure Authority**: Governance Liaison Agent  
+            **Closure Date**: ${closureDate}  
+            **Reference**: Issue #356 (Bulk Close Drift/Ripple Issues)
+            `;
+            
+            console.log('╔═══════════════════════════════════════════════════════════╗');
+            console.log('║  BULK CLOSING STALE DRIFT/RIPPLE ISSUES');
+            console.log('╚═══════════════════════════════════════════════════════════╝');
+            console.log('');
+            console.log(`Total Issues to Close: ${staleIssues.length}`);
+            console.log('');
+            
+            const results = [];
+            
+            for (const issueNum of staleIssues) {
+              console.log(`Processing Issue #${issueNum}...`);
+              
+              try {
+                // Add closure comment
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNum,
+                  body: resolutionComment
+                });
+                console.log(`  ✅ Added closure comment`);
+                
+                // Close issue
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNum,
+                  state: 'closed',
+                  state_reason: 'not_planned'
+                });
+                console.log(`  ✅ Closed issue #${issueNum}`);
+                
+                results.push({ number: issueNum, status: 'success' });
+              } catch (error) {
+                console.error(`  ❌ Failed: ${error.message}`);
+                results.push({ number: issueNum, status: 'failed', error: error.message });
+              }
+              
+              console.log('');
+            }
+            
+            console.log('╔═══════════════════════════════════════════════════════════╗');
+            console.log('║  BULK CLOSURE COMPLETE');
+            console.log('╚═══════════════════════════════════════════════════════════╝');
+            console.log('');
+            
+            const successful = results.filter(r => r.status === 'success').length;
+            const failed = results.filter(r => r.status === 'failed').length;
+            
+            console.log(`Summary:`);
+            console.log(`  Total: ${staleIssues.length}`);
+            console.log(`  Successful: ${successful}`);
+            console.log(`  Failed: ${failed}`);
+            
+            if (failed > 0) {
+              console.log('');
+              console.log('Failed Issues:');
+              results.filter(r => r.status === 'failed').forEach(r => {
+                console.log(`  #${r.number}: ${r.error}`);
+              });
+              core.setFailed(`${failed} issue(s) failed to close`);
+            }

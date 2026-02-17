@@ -4,8 +4,9 @@ name: Governance Alignment Schedule
 # Purpose: Scheduled fallback for governance alignment verification
 # Failure Semantics: Creates PR on drift, does not block merges
 # Authority: CROSS_REPO_RIPPLE_TRANSPORT_PROTOCOL.md v1.0.0 § 2
-# Version: 1.0.0 (PartPulse)
+# Version: 1.1.0 (PartPulse) - Added deduplication to prevent issue spam
 # Created: 2026-02-14
+# Updated: 2026-02-17 - Issue deduplication (PR #356)
 
 on:
   schedule:
@@ -85,11 +86,53 @@ jobs:
               return;
             }
             
+            // Check for existing open scheduled drift detection issues to prevent spam
+            const existingIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'governance-ripple-required,governance-only',
+              per_page: 100
+            });
+            
+            // Filter for scheduled drift detection issues only
+            const scheduledDriftIssues = existingIssues.data.filter(issue => 
+              issue.title.includes('Scheduled Governance Alignment: Drift Detected')
+            );
+            
+            const timestamp = new Date().toISOString();
+            
+            if (scheduledDriftIssues.length > 0) {
+              // Update existing issue instead of creating duplicate
+              const issueNumber = scheduledDriftIssues[0].number;
+              console.log(`Found existing scheduled drift issue #${issueNumber} - updating instead of creating duplicate`);
+              
+              let updateBody = `⚠️ **Drift Still Detected** (Check ID: \`${checkId}\`)\n\n`;
+              updateBody += `**Timestamp**: ${timestamp}\n`;
+              updateBody += `**Status**: Drift persists - alignment PR should auto-merge once checks pass\n\n`;
+              updateBody += `The governance alignment PR (\`governance-alignment-auto\` branch) is still pending.\n`;
+              updateBody += `Auto-merge is enabled and will complete automatically once all CI checks pass.\n\n`;
+              updateBody += `If this issue persists for >24 hours, investigate for new bugs or check CI failures.\n`;
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: updateBody
+              });
+              
+              console.log(`Updated existing issue #${issueNumber} with new drift check`);
+              return;
+            }
+            
+            // No existing issue - create new one
+            console.log('No existing scheduled drift issue found - creating new issue');
+            
             let body = `⚠️ **SCHEDULED GOVERNANCE ALIGNMENT: DRIFT DETECTED**\n\n`;
             body += `**Scheduled Check**\n`;
             body += `- Check ID: \`${checkId}\`\n`;
             body += `- Check Type: Scheduled Fallback (Hourly)\n`;
-            body += `- Timestamp: ${new Date().toISOString()}\n\n`;
+            body += `- Timestamp: ${timestamp}\n\n`;
             
             body += `**Status**: Drift detected during scheduled alignment check\n\n`;
             body += `An alignment PR has been automatically created to synchronize\n`;
@@ -104,6 +147,9 @@ jobs:
             body += `3. Verify SHA256 hashes (REQ-CM-001)\n`;
             body += `4. Update local governance artifacts\n`;
             body += `5. Merge alignment PR to restore alignment\n\n`;
+            
+            body += `**Auto-Resolution**: This issue will be updated hourly until drift is resolved.\n`;
+            body += `Close this issue manually once alignment PR is merged.\n\n`;
             
             body += `---\n\n`;
             body += `**Authority**: CROSS_REPO_RIPPLE_TRANSPORT_PROTOCOL.md § 2, § 8\n`;
