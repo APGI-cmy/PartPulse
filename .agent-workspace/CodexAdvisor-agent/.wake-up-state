@@ -1,0 +1,11 @@
+AGENT_CONTRACT=.github/agents/CodexAdvisor-agent.md
+AGENT_CLASS=overseer
+MEMORY_COUNT=3
+ESCALATION_COUNT=1
+GOVERNANCE_ARTIFACTS=106
+CANON_COUNT=138
+REPO_STATUS=dirty
+CURRENT_BRANCH=copilot/align-foreman-agent-contract
+JSON_VALID=true
+DRIFT_DETECTED=true
+DRIFT_TYPES=inventory
