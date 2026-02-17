@@ -1,11 +1,11 @@
 AGENT_CONTRACT=.github/agents/governance-liaison.md
 AGENT_CLASS=liaison
-MEMORY_COUNT=5
+MEMORY_COUNT=6
 ESCALATION_COUNT=0
 GOVERNANCE_ARTIFACTS=106
 CANON_COUNT=138
 REPO_STATUS=dirty
-CURRENT_BRANCH=copilot/bulk-close-drift-ripple-issues
+CURRENT_BRANCH=copilot/delegate-foreman-checklist-creation
 JSON_VALID=true
 DRIFT_DETECTED=true
 DRIFT_TYPES=inventory
