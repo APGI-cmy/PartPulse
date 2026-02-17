@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-02-17T08:22:37Z",
-  "session_id": "session-20260217-082237",
+  "timestamp": "2026-02-17T10:39:20Z",
+  "session_id": "session-20260217-103920",
   "agent_id": "governance-liaison",
   "agent_class": "liaison",
   "health_status": "WARN",
   "checks": {
     "self_identification": { "status": "PASS" },
-    "memory_scan": { "status": "PASS", "sessions_found": 5 },
+    "memory_scan": { "status": "PASS", "sessions_found": 6 },
     "governance_discovery": { "status": "PASS", "artifacts_loaded": 106, "canon_loaded": 138 },
     "environment_health": { "status": "PASS" },
     "drift_detection": { 
