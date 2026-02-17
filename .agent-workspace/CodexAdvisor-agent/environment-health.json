@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-02-17T10:01:13Z",
+  "session_id": "session-20260217-100113",
+  "agent_id": "CodexAdvisor-agent",
+  "agent_class": "overseer",
+  "health_status": "WARN",
+  "checks": {
+    "self_identification": { "status": "PASS" },
+    "memory_scan": { "status": "PASS", "sessions_found": 3 },
+    "governance_discovery": { "status": "PASS", "artifacts_loaded": 106, "canon_loaded": 138 },
+    "environment_health": { "status": "PASS" },
+    "drift_detection": { 
+      "status": "WARN",
+      "drift_detected": true
+    },
+    "auto_remediation": { "status": "SKIP" }
+  },
+  "escalations_pending": 1,
+  "working_contract_path": ".agent-workspace/CodexAdvisor-agent/working-contract.md"
+}
