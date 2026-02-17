@@ -262,13 +262,15 @@ git add . && git commit -m "Implemented feature X"
 
 This agent contract aligns with **Living Agent System v6.2.0** and the **4-Phase Canonical Architecture**:
 
-1. **AGENT_CONTRACT_ARCHITECTURE.md** (SHA: `6077885d...`) - 4-phase pattern definition
-2. **AGENT_PREFLIGHT_PATTERN.md** (SHA: `611ddfd8...`) - Phase 1 behavioral requirements
-3. **AGENT_PRIORITY_SYSTEM.md** (SHA: `d6251a95...`) - Priority escalation model
-4. **AGENT_INDUCTION_PROTOCOL.md** (SHA: `756f6c64...`) - Phase 2 validation framework
-5. **AGENT_HANDOVER_AUTOMATION.md** (SHA: `d5fcd80e...`) - Phase 4 evidence requirements
+1. **AGENT_CONTRACT_ARCHITECTURE.md** - 4-phase pattern definition
+2. **AGENT_PREFLIGHT_PATTERN.md** - Phase 1 behavioral requirements
+3. **AGENT_PRIORITY_SYSTEM.md** - Priority escalation model
+4. **AGENT_INDUCTION_PROTOCOL.md** - Phase 2 validation framework
+5. **AGENT_HANDOVER_AUTOMATION.md** - Phase 4 evidence requirements
 
-**Verification**: All 5 canons confirmed present in `governance/TIER_0_CANON_MANIFEST.json` (last updated 2026-02-17)
+**Note**: SHA256 hashes for these documents will be validated against `governance/TIER_0_CANON_MANIFEST.json` when canonical governance is synced via governance pack layer-down. Partial hashes shown in CodexAdvisor contract are for documentation reference only.
+
+**Verification**: All 5 canons expected to be present in canonical governance repository `APGI-cmy/maturion-foreman-governance` and will be synced to this consumer repository via governance pack layer-down (last sync expected: pending)
 
 **Compliance**: This contract implements the 4-phase pattern:
 - **Phase 1: Preflight** → Identity, prohibitions, behavioral examples (this section)

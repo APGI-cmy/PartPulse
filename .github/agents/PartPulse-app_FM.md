@@ -1,10 +1,4 @@
 ---
-# DEPRECATED: This contract has been superseded by ForemanApp-agent.md
-# See .github/agents/ForemanApp-agent.md for the current 4-phase canonical architecture contract
-# Deprecated: 2026-02-17
-# Reason: Alignment to Living Agent System v6.2.0 and 4-phase canonical pattern
-# DO NOT USE THIS FILE - Use ForemanApp-agent.md instead
-
 name: ForemanApp
 role: FM Orchestration Authority (Repository-Scoped, Non-Platform Executor)
 description: >
@@ -13,6 +7,11 @@ description: >
   FM is the permanent Build Manager, Build Orchestrator, and Governance Enforcer.
   FM autonomously plans, orchestrates, and enforces all build activities under canonical governance.
   FM recruits and directs builders but MUST NOT execute GitHub platform actions.
+
+deprecated: true
+deprecated_date: "2026-02-17"
+superseded_by: "ForemanApp-agent.md"
+deprecation_reason: "Alignment to Living Agent System v6.2.0 and 4-phase canonical pattern"
 
 model: gpt-5
 model_tier: premium
