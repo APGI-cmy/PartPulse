@@ -184,13 +184,55 @@ Authority: CROSS_REPO_RIPPLE_TRANSPORT_PROTOCOL.md" || echo "No changes to commi
     git push -u origin "$BRANCH_NAME" --force
     
     if [ -z "$EXISTING_PRS" ]; then
-      # Create new PR with auto-merge enabled
-      echo "Creating new PR with auto-merge enabled..."
-      gh pr create \
-        --title "governance: automatic alignment required" \
-        --body "## Governance Drift Detected
+      # Determine if agent-protected files are in scope (set by ripple-integration workflow)
+      AGENT_FILES_CHANGED="${RIPPLE_AGENT_FILES_CHANGED:-false}"
 
-**Canonical Commit**: \`$TARGET_COMMIT\`  
+      if [ "$AGENT_FILES_CHANGED" = "true" ]; then
+        # Agent-protected files changed → DRAFT PR, CS2 escalation required, no auto-merge
+        echo "🔴 Agent-protected files detected – creating DRAFT PR (CS2 escalation required)..."
+        gh pr create \
+          --title "governance: alignment required [DRAFT – CS2 APPROVAL NEEDED]" \
+          --body "## Governance Drift Detected – Agent Files Changed
+
+**Canonical Commit**: \`$TARGET_COMMIT\`
+**Inventory Version**: \`$TARGET_VERSION\`
+
+### Drift Reasons
+$(printf '- %s\n' "${DRIFT_REASONS[@]}")
+
+### ⚠️ CS2 Escalation Required
+
+This PR contains changes to agent-protected files (agent contracts, canonical governance,
+or workflow definitions). Per GOVERNANCE_LIAISON_ROLE_SURVEY.md, only CS2 may approve
+and merge this PR.
+
+**This PR is intentionally a DRAFT and MUST NOT be merged without CS2 sign-off.**
+
+### Required Actions
+1. CS2: Review escalation document in \`.agent-workspace/governance-liaison/escalation-inbox/\`
+2. CS2: Verify agent file changes are intentional and authorised
+3. CS2: Verify SHA256 hashes per REQ-CM-001
+4. CS2: Convert DRAFT → Ready-for-Review and approve
+5. CS2: Merge
+
+**Authority**: GOVERNANCE_LIAISON_ROLE_SURVEY.md (escalation on agent contract changes)
+**Assignee**: @governance-liaison (evidence) → CS2 (approval)" \
+          --label "governance-ripple-required" \
+          --label "governance-only" \
+          --label "governance" \
+          --label "automated" \
+          --label "agent:liaison" \
+          --draft
+
+        echo "✅ DRAFT alignment PR created – awaiting CS2 approval"
+      else
+        # No agent files changed → regular PR with auto-merge
+        echo "Creating new PR with auto-merge enabled..."
+        gh pr create \
+          --title "governance: automatic alignment required" \
+          --body "## Governance Drift Detected
+
+**Canonical Commit**: \`$TARGET_COMMIT\`
 **Inventory Version**: \`$TARGET_VERSION\`
 
 ### Drift Reasons
@@ -209,20 +251,21 @@ $(printf '- %s\n' "${DRIFT_REASONS[@]}")
 ---
 
 🤖 **Auto-merge enabled** - This PR will merge automatically once all checks pass." \
-        --label "governance-ripple-required" \
-        --label "governance-only" \
-        --label "governance" \
-        --label "automated" \
-        --label "agent:liaison"
-      
-      # Enable auto-merge on the created PR
-      PR_NUMBER=$(gh pr list --head "$BRANCH_NAME" --json number -q '.[0].number')
-      if [ -n "$PR_NUMBER" ]; then
-        echo "Enabling auto-merge on PR #$PR_NUMBER..."
-        gh pr merge "$PR_NUMBER" --auto --squash || echo "⚠️  Auto-merge enablement failed - may require manual enablement"
+          --label "governance-ripple-required" \
+          --label "governance-only" \
+          --label "governance" \
+          --label "automated" \
+          --label "agent:liaison"
+
+        # Enable auto-merge on the created PR
+        PR_NUMBER=$(gh pr list --head "$BRANCH_NAME" --json number -q '.[0].number')
+        if [ -n "$PR_NUMBER" ]; then
+          echo "Enabling auto-merge on PR #$PR_NUMBER..."
+          gh pr merge "$PR_NUMBER" --auto --squash || echo "⚠️  Auto-merge enablement failed - may require manual enablement"
+        fi
+
+        echo "✅ Alignment PR created with auto-merge enabled"
       fi
-      
-      echo "✅ Alignment PR created with auto-merge enabled"
     else
       echo "✅ Existing alignment PR updated"
     fi
