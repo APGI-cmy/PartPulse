@@ -1,0 +1,393 @@
+name: Ripple Integration
+
+# CI CLASSIFICATION: Governance Automation (Non-blocking)
+# Purpose: Listen for governance layer-down issues and orchestrate ripple integration.
+#          Detects agent-protected file changes and routes to DRAFT PR + CS2 escalation
+#          or regular auto-merge PR accordingly.
+# Failure Semantics: Creates PR on layer-down issues; does not block other merges
+# Authority: LAYERING_AND_RIPPLING_AUTOMATION_STRATEGY.md §4–6
+#            GOVERNANCE_LIAISON_ROLE_SURVEY.md (self-alignment authority)
+# Version: 1.0.0 (PartPulse)
+# Created: 2026-02-21
+
+on:
+  issues:
+    types: [opened, labeled]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Governance issue number to process"
+        required: false
+        default: ""
+
+# Explicit, least-privilege permissions
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  # ============================================================================
+  # RIPPLE ISSUE LISTENER
+  # Triggers on governance layer-down issues created by the canonical repo dispatch.
+  # ============================================================================
+
+  ripple-listener:
+    name: Ripple Issue Listener
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    # Only process issues labelled with governance-layer-down or governance-ripple-required
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issues' &&
+        (contains(github.event.issue.labels.*.name, 'governance-layer-down') ||
+         contains(github.event.issue.labels.*.name, 'governance-ripple-required')))
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.MATURION_BOT_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "Maturion Bot"
+          git config --global user.email "bot@maturion.com"
+
+      # -----------------------------------------------------------------------
+      # Ensure ripple-inbox filesystem exists (idempotent)
+      # -----------------------------------------------------------------------
+      - name: Ensure Ripple Filesystem
+        run: |
+          mkdir -p .agent-admin/ripple
+          mkdir -p .agent-workspace/governance-liaison/ripple-inbox/pending
+          mkdir -p .agent-workspace/governance-liaison/ripple-inbox/in-progress
+          mkdir -p .agent-workspace/governance-liaison/ripple-inbox/completed
+          mkdir -p .agent-workspace/governance-liaison/ripple-inbox/failed
+          # Ensure placeholder files exist for empty dirs
+          for DIR in pending in-progress completed failed; do
+            KEEP=".agent-workspace/governance-liaison/ripple-inbox/$DIR/.gitkeep"
+            [ -f "$KEEP" ] || touch "$KEEP"
+          done
+
+      # -----------------------------------------------------------------------
+      # Extract issue metadata
+      # -----------------------------------------------------------------------
+      - name: Extract Issue Metadata
+        id: issue-meta
+        env:
+          GH_TOKEN: ${{ secrets.MATURION_BOT_TOKEN }}
+        run: |
+          ISSUE_NUMBER="${{ github.event.issue.number }}"
+          if [ -z "$ISSUE_NUMBER" ]; then
+            ISSUE_NUMBER="${{ github.event.inputs.issue_number }}"
+          fi
+          ISSUE_TITLE="${{ github.event.issue.title }}"
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          RIPPLE_ID="ripple-$(date -u +"%Y%m%d-%H%M%S")"
+
+          echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
+          echo "issue_title=$ISSUE_TITLE"   >> $GITHUB_OUTPUT
+          echo "timestamp=$TIMESTAMP"       >> $GITHUB_OUTPUT
+          echo "ripple_id=$RIPPLE_ID"       >> $GITHUB_OUTPUT
+
+          echo "📥 Processing issue #$ISSUE_NUMBER: $ISSUE_TITLE"
+          echo "Ripple ID: $RIPPLE_ID"
+
+      # -----------------------------------------------------------------------
+      # Move ripple notification to in-progress
+      # -----------------------------------------------------------------------
+      - name: Log Ripple to Inbox
+        id: log-ripple
+        run: |
+          RIPPLE_ID="${{ steps.issue-meta.outputs.ripple_id }}"
+          TIMESTAMP="${{ steps.issue-meta.outputs.timestamp }}"
+          ISSUE_NUMBER="${{ steps.issue-meta.outputs.issue_number }}"
+          ISSUE_TITLE="${{ steps.issue-meta.outputs.issue_title }}"
+
+          # Write notification file to in-progress
+          INBOX_FILE=".agent-workspace/governance-liaison/ripple-inbox/in-progress/${RIPPLE_ID}.json"
+          cat > "$INBOX_FILE" <<EOF
+          {
+            "ripple_id": "$RIPPLE_ID",
+            "issue_number": "$ISSUE_NUMBER",
+            "issue_title": "$ISSUE_TITLE",
+            "received_at": "$TIMESTAMP",
+            "status": "in-progress"
+          }
+          EOF
+
+          # Log to dispatch log
+          DISPATCH_LOG=".agent-admin/ripple/dispatch-log.json"
+          if [ ! -f "$DISPATCH_LOG" ]; then
+            echo '{"dispatches":[],"schema_version":"1.0.0"}' > "$DISPATCH_LOG"
+          fi
+          jq --arg id "$RIPPLE_ID" \
+             --arg issue "$ISSUE_NUMBER" \
+             --arg title "$ISSUE_TITLE" \
+             --arg ts "$TIMESTAMP" \
+             '.dispatches += [{"ripple_id":$id,"issue_number":$issue,"issue_title":$title,"received_at":$ts,"status":"processing"}]' \
+             "$DISPATCH_LOG" > "$DISPATCH_LOG.tmp"
+          mv "$DISPATCH_LOG.tmp" "$DISPATCH_LOG"
+
+          echo "✅ Ripple $RIPPLE_ID logged to in-progress inbox"
+          echo "inbox_file=$INBOX_FILE" >> $GITHUB_OUTPUT
+
+      # -----------------------------------------------------------------------
+      # Label the issue as layer-down if not already labelled
+      # -----------------------------------------------------------------------
+      - name: Label Issue
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ secrets.MATURION_BOT_TOKEN }}
+        run: |
+          ISSUE_NUMBER="${{ steps.issue-meta.outputs.issue_number }}"
+          # Add governance-layer-down label (idempotent – gh cli ignores duplicates)
+          gh issue edit "$ISSUE_NUMBER" \
+            --add-label "governance-layer-down,governance-ripple-required,governance-only" \
+            2>/dev/null || echo "⚠️  Label update skipped (may already be set)"
+
+      # -----------------------------------------------------------------------
+      # Fetch canonical governance and determine changed files
+      # -----------------------------------------------------------------------
+      - name: Fetch Canonical Governance
+        id: fetch-canonical
+        env:
+          MATURION_BOT_TOKEN: ${{ secrets.MATURION_BOT_TOKEN }}
+          GH_TOKEN: ${{ secrets.MATURION_BOT_TOKEN }}
+        run: |
+          CANONICAL_REPO="APGI-cmy/maturion-foreman-governance"
+          TEMP_DIR=$(mktemp -d)
+          echo "Cloning canonical governance repo..."
+          git clone --depth 1 "https://${{ secrets.MATURION_BOT_TOKEN }}@github.com/$CANONICAL_REPO.git" "$TEMP_DIR/canonical" 2>&1 | tail -3
+          CANONICAL_COMMIT=$(git -C "$TEMP_DIR/canonical" rev-parse HEAD)
+          echo "canonical_commit=$CANONICAL_COMMIT" >> $GITHUB_OUTPUT
+          echo "canonical_dir=$TEMP_DIR/canonical" >> $GITHUB_OUTPUT
+          echo "Canonical commit: $CANONICAL_COMMIT"
+
+      # -----------------------------------------------------------------------
+      # Detect whether agent-protected files are in the change set
+      # -----------------------------------------------------------------------
+      - name: Detect Agent File Changes
+        id: detect-agent
+        run: |
+          chmod +x .github/scripts/detect-agent-changes.sh
+
+          # Build list of changed governance files by comparing local vs canonical
+          CANONICAL_DIR="${{ steps.fetch-canonical.outputs.canonical_dir }}"
+
+          # Find files that differ between canonical and local governance/canon.
+          # diff -rq output format:
+          #   "Files <canonical_path> and <local_path> differ"  → extract local path
+          #   "Only in <dir>: <file>"                           → file exists in one side only
+          RAW_DIFF=""
+          if [ -d "$CANONICAL_DIR/governance/canon" ] && [ -d "governance/canon" ]; then
+            RAW_DIFF=$(diff -rq --exclude=".git" \
+              "$CANONICAL_DIR/governance/canon" \
+              "governance/canon" 2>/dev/null \
+              | grep -E "^(Files|Only in)" || true)
+
+            # Extract file names from diff output and prepend the repo-relative prefix
+            CANON_CHANGED=$(echo "$RAW_DIFF" \
+              | sed "s|Files ${CANONICAL_DIR}/governance/canon/||;s| and .*||" \
+              | sed "s|Only in ${CANONICAL_DIR}/governance/canon[^:]*: ||" \
+              | grep -v "^Files\|^Only" \
+              | sed 's|^|governance/canon/|' || true)
+          else
+            CANON_CHANGED=""
+          fi
+
+          # Also check agent contracts and workflows if present in canonical.
+          # We only need to know *whether* a directory has differences, not the exact files,
+          # because detect-agent-changes.sh matches on the directory prefix.
+          OTHER_CHANGED=""
+          for DIR in ".github/agents" "governance/agent-contracts" ".github/workflows"; do
+            if [ -d "$CANONICAL_DIR/$DIR" ] && [ -d "$DIR" ]; then
+              DELTA=$(diff -rq --exclude=".git" \
+                "$CANONICAL_DIR/$DIR" \
+                "$DIR" 2>/dev/null \
+                | grep -E "^(Files|Only in)" || true)
+              if [ -n "$DELTA" ]; then
+                # Record a representative path so detect-agent-changes.sh matches the prefix
+                OTHER_CHANGED="$OTHER_CHANGED ${DIR}/changed"
+              fi
+            fi
+          done
+
+          # Normalise to a deduplicated, newline-separated list
+          CANDIDATE_FILES=$(printf '%s\n%s\n' "$CANON_CHANGED" "$OTHER_CHANGED" \
+            | tr ' ' '\n' | grep -v '^$' | sort -u | tr '\n' ' ')
+          echo "Candidate changed files: $CANDIDATE_FILES"
+
+          if [ -n "$CANDIDATE_FILES" ]; then
+            if .github/scripts/detect-agent-changes.sh --files "$CANDIDATE_FILES"; then
+              echo "agent_files_changed=false" >> $GITHUB_OUTPUT
+            else
+              echo "agent_files_changed=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "agent_files_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      # -----------------------------------------------------------------------
+      # Run alignment check (uses existing align-governance.sh)
+      # -----------------------------------------------------------------------
+      - name: Execute Alignment
+        id: align
+        env:
+          MATURION_BOT_TOKEN: ${{ secrets.MATURION_BOT_TOKEN }}
+          GH_TOKEN: ${{ secrets.MATURION_BOT_TOKEN }}
+          RIPPLE_AGENT_FILES_CHANGED: "${{ steps.detect-agent.outputs.agent_files_changed }}"
+        run: |
+          CANONICAL_COMMIT="${{ steps.fetch-canonical.outputs.canonical_commit }}"
+          if .github/scripts/align-governance.sh "$CANONICAL_COMMIT"; then
+            echo "alignment_status=aligned" >> $GITHUB_OUTPUT
+          else
+            echo "alignment_status=drift" >> $GITHUB_OUTPUT
+          fi
+
+      # -----------------------------------------------------------------------
+      # Create CS2 escalation document when agent files are involved
+      # -----------------------------------------------------------------------
+      - name: Create Escalation Document
+        if: steps.detect-agent.outputs.agent_files_changed == 'true'
+        run: |
+          RIPPLE_ID="${{ steps.issue-meta.outputs.ripple_id }}"
+          TIMESTAMP="${{ steps.issue-meta.outputs.timestamp }}"
+          ISSUE_NUMBER="${{ steps.issue-meta.outputs.issue_number }}"
+          CANONICAL_COMMIT="${{ steps.fetch-canonical.outputs.canonical_commit }}"
+
+          ESCALATION_DIR=".agent-workspace/governance-liaison/escalation-inbox"
+          mkdir -p "$ESCALATION_DIR"
+
+          cat > "$ESCALATION_DIR/escalation-${RIPPLE_ID}.md" <<EOF
+          # CS2 Escalation – Agent-Protected Files Detected
+
+          **Escalation ID**: $RIPPLE_ID
+          **Timestamp**: $TIMESTAMP
+          **Source Issue**: #$ISSUE_NUMBER
+          **Canonical Commit**: $CANONICAL_COMMIT
+          **Authority**: GOVERNANCE_LIAISON_ROLE_SURVEY.md (CS2 escalation on agent contract changes)
+
+          ## Summary
+
+          The governance layer-down ripple for issue #$ISSUE_NUMBER contains changes to
+          agent-protected files (agent contracts, canonical governance, or workflow files).
+
+          Per GOVERNANCE_LIAISON_ROLE_SURVEY.md, agent contract changes require CS2 approval
+          before merging. The alignment PR has been created as a **DRAFT** and must NOT be
+          merged without explicit CS2 sign-off.
+
+          ## Required Actions (CS2)
+
+          1. Review the DRAFT alignment PR associated with ripple $RIPPLE_ID
+          2. Verify the agent file changes are intentional and authorised
+          3. Confirm SHA256 verification has been completed (REQ-CM-001)
+          4. Convert PR from DRAFT to Ready-for-Review and approve
+          5. Merge the PR (governance-liaison MAY NOT self-merge agent file changes)
+
+          ## Evidence
+
+          - Ripple inbox: \`.agent-workspace/governance-liaison/ripple-inbox/in-progress/${RIPPLE_ID}.json\`
+          - Dispatch log: \`.agent-admin/ripple/dispatch-log.json\`
+
+          ---
+          *Generated by: ripple-integration workflow*
+          *Agent: governance-liaison*
+          EOF
+
+          echo "✅ CS2 escalation document created: $ESCALATION_DIR/escalation-${RIPPLE_ID}.md"
+
+      # -----------------------------------------------------------------------
+      # Move ripple notification to completed or failed
+      # -----------------------------------------------------------------------
+      - name: Finalise Ripple Inbox
+        if: always()
+        run: |
+          RIPPLE_ID="${{ steps.issue-meta.outputs.ripple_id }}"
+          ALIGN_STATUS="${{ steps.align.outputs.alignment_status }}"
+          AGENT_CHANGED="${{ steps.detect-agent.outputs.agent_files_changed }}"
+
+          IN_PROGRESS=".agent-workspace/governance-liaison/ripple-inbox/in-progress/${RIPPLE_ID}.json"
+
+          if [ "$ALIGN_STATUS" = "aligned" ]; then
+            TARGET_DIR=".agent-workspace/governance-liaison/ripple-inbox/completed"
+            FINAL_STATUS="completed"
+          elif [ "$ALIGN_STATUS" = "drift" ]; then
+            TARGET_DIR=".agent-workspace/governance-liaison/ripple-inbox/completed"
+            FINAL_STATUS="pr-created"
+          else
+            TARGET_DIR=".agent-workspace/governance-liaison/ripple-inbox/failed"
+            FINAL_STATUS="failed"
+          fi
+
+          if [ -f "$IN_PROGRESS" ]; then
+            # Update status field
+            jq --arg status "$FINAL_STATUS" \
+               --arg agent_changed "$AGENT_CHANGED" \
+               '. + {status: $status, agent_files_changed: $agent_changed}' \
+               "$IN_PROGRESS" > "${IN_PROGRESS}.tmp"
+            mv "${IN_PROGRESS}.tmp" "$TARGET_DIR/${RIPPLE_ID}.json"
+            rm -f "$IN_PROGRESS"
+          fi
+
+          # Update dispatch log
+          DISPATCH_LOG=".agent-admin/ripple/dispatch-log.json"
+          if [ -f "$DISPATCH_LOG" ]; then
+            jq --arg id "$RIPPLE_ID" \
+               --arg status "$FINAL_STATUS" \
+               --arg completed "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+               '(.dispatches[] | select(.ripple_id == $id)) |= (. + {status: $status, completed_at: $completed})' \
+               "$DISPATCH_LOG" > "$DISPATCH_LOG.tmp"
+            mv "$DISPATCH_LOG.tmp" "$DISPATCH_LOG"
+          fi
+
+          echo "✅ Ripple $RIPPLE_ID finalised: $FINAL_STATUS"
+
+      # -----------------------------------------------------------------------
+      # Comment on the issue with integration result
+      # -----------------------------------------------------------------------
+      - name: Comment on Issue
+        if: github.event_name == 'issues' && steps.issue-meta.outputs.issue_number != ''
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.MATURION_BOT_TOKEN }}
+          script: |
+            const issueNumber = parseInt('${{ steps.issue-meta.outputs.issue_number }}', 10);
+            const alignStatus  = '${{ steps.align.outputs.alignment_status }}';
+            const agentChanged = '${{ steps.detect-agent.outputs.agent_files_changed }}';
+            const rippleId     = '${{ steps.issue-meta.outputs.ripple_id }}';
+
+            let body;
+            if (alignStatus === 'aligned') {
+              body = `✅ **Ripple Integration: ALIGNED**\n\n`
+                   + `Governance is already aligned with the canonical source. No PR required.\n\n`
+                   + `- Ripple ID: \`${rippleId}\`\n`
+                   + `- Agent files changed: \`${agentChanged}\`\n\n`
+                   + `*Handled by ripple-integration workflow.*`;
+            } else if (agentChanged === 'true') {
+              body = `⚠️ **Ripple Integration: DRAFT PR CREATED – CS2 ESCALATION REQUIRED**\n\n`
+                   + `Agent-protected files are included in this layer-down. A **DRAFT** alignment PR has been created.\n\n`
+                   + `**This PR must NOT be merged without CS2 approval.**\n\n`
+                   + `- Ripple ID: \`${rippleId}\`\n`
+                   + `- Escalation doc: \`.agent-workspace/governance-liaison/escalation-inbox/escalation-${rippleId}.md\`\n\n`
+                   + `*Handled by ripple-integration workflow.*`;
+            } else {
+              body = `🔄 **Ripple Integration: ALIGNMENT PR CREATED**\n\n`
+                   + `Drift detected. A regular alignment PR with auto-merge enabled has been created.\n\n`
+                   + `- Ripple ID: \`${rippleId}\`\n\n`
+                   + `*Handled by ripple-integration workflow.*`;
+            }
+
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: body
+              });
+            } catch (err) {
+              core.warning(`Could not comment on issue: ${err.message}`);
+            }
